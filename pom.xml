@@ -6,14 +6,15 @@
 	<artifactId>alfresco-tas-tester</artifactId>
 	<name>alfresco-tas-tester</name>
 	<groupId>org.alfresco</groupId>
-	<version>5.1.0-SNAPSHOT</version>
-	
+	<version>1.0-SNAPSHOT</version>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.build.sourceVersion>1.8</maven.build.sourceVersion>
 		<spring.version>4.0.5.RELEASE</spring.version>
 		<suiteXmlFile>testng.xml</suiteXmlFile>
 		<testNG.version>6.8.8</testNG.version>
+		<dataPrep.version>1.9</dataPrep.version>
 	</properties>
 
 	<dependencies>
@@ -43,9 +44,16 @@
 			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.testng</groupId>
-			<artifactId>testng</artifactId>
-			<version>${testNG.version}</version>
+			<groupId>org.alfresco.test</groupId>
+			<artifactId>dataprep</artifactId>
+			<version>${dataPrep.version}</version>
+		</dependency>
+
+		<!-- DATA PREPARATION -->
+		<dependency>
+			<groupId>org.alfresco.test</groupId>
+			<artifactId>dataprep</artifactId>
+			<version>${dataPrep.version}</version>
 		</dependency>
 	</dependencies>
 

@@ -1,5 +1,6 @@
 package org.alfresco.tester;
 
+import org.alfresco.dataprep.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -7,10 +8,13 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 @ContextConfiguration("classpath:alfresco-tester-context.xml")
-public class EnvPropertiesTest extends AbstractTestNGSpringContextTests {
+public class BeansTest extends AbstractTestNGSpringContextTests {
 
 	@Autowired
 	protected EnvProperties properties;
+
+	@Autowired
+	protected UserService userService;
 
 	@Test
 	public void getEnvPropertiesBean() {
@@ -25,5 +29,10 @@ public class EnvPropertiesTest extends AbstractTestNGSpringContextTests {
 	@Test
 	public void getAdminPassword() {
 		Assert.assertEquals(properties.getAdminUser(), "admin");
+	}
+
+	@Test
+	public void getUserServiceBean() {
+		Assert.assertNotNull(properties, "Bean UserService is initialised");
 	}
 }
