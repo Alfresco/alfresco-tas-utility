@@ -15,6 +15,7 @@
 		<suiteXmlFile>testng.xml</suiteXmlFile>
 		<testNG.version>6.8.8</testNG.version>
 		<dataPrep.version>1.9</dataPrep.version>
+		<slf4j.version>1.7.2</slf4j.version>
 	</properties>
 
 	<dependencies>
@@ -55,6 +56,14 @@
 			<artifactId>dataprep</artifactId>
 			<version>${dataPrep.version}</version>
 		</dependency>
+
+		<!-- default logger -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
