@@ -1,7 +1,6 @@
 package org.alfresco.tester;
 
-import java.net.URL;
-
+import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -25,14 +24,20 @@ public class EnvProperties {
 	@Autowired
 	Environment env;
 
-	@Value("${alfresco.url}")
-	private URL alfrescoUrl;
-
 	@Value("${admin.user}")
 	private String adminUserName;
 
 	@Value("${admin.password}")
 	private String adminPassword;
+
+	@Value("${alfresco.scheme}")
+	private String scheme;
+
+	@Value("${alfresco.server}")
+	private String server;
+
+	@Value("${alfresco.port}")
+	private int port;
 
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
@@ -59,13 +64,35 @@ public class EnvProperties {
 		this.adminPassword = adminPassword;
 	}
 
-	public int getAlfrescoPort() {
-
-		return alfrescoUrl.getPort();
+	public String getScheme() {
+		return scheme;
 	}
 
-	public String getHost() {
-		return alfrescoUrl.getHost();
+	public void setScheme(String scheme) {
+		this.scheme = scheme;
+	}
+
+	public String getServer() {
+		return server;
+	}
+
+	public void setServer(String server) {
+		this.server = server;
+	}
+
+	public int getPort() {
+		return port;
+	}
+
+	public void setPort(int port) {
+		this.port = port;
+	}
+
+	/**
+	 * @return Base URL of Test Server
+	 */
+	public String getBaseURL() {
+		return new UrlBuilder(getScheme(), getServer(), getPort(), "").toString();
 	}
 
 }
