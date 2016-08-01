@@ -1,12 +1,19 @@
 package org.alfresco.tester;
 
 import org.alfresco.dataprep.UserService;
+import org.alfresco.tester.data.DataUser;
+import org.alfresco.tester.exception.DataPreparationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+/**
+ * Unit testing bean configurations
+ * @author Paul Brodner
+ *
+ */
 @ContextConfiguration("classpath:alfresco-tester-context.xml")
 public class BeansTest extends AbstractTestNGSpringContextTests {
 
@@ -15,6 +22,9 @@ public class BeansTest extends AbstractTestNGSpringContextTests {
 
 	@Autowired
 	protected UserService userService;
+
+	@Autowired
+	protected DataUser dataUser;
 
 	@Test
 	public void getEnvPropertiesBean() {
@@ -34,5 +44,15 @@ public class BeansTest extends AbstractTestNGSpringContextTests {
 	@Test
 	public void getUserServiceBean() {
 		Assert.assertNotNull(properties, "Bean UserService is initialised");
+	}
+
+	@Test
+	public void getDataUserBean() {
+		Assert.assertNotNull(dataUser, "Bean DataUser is initialised");
+	}
+
+	@Test
+	public void createNewUser() throws DataPreparationException {
+		dataUser.createUser("abcdef");
 	}
 }

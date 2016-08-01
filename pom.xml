@@ -44,11 +44,6 @@
 			<artifactId>spring-test</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.alfresco.test</groupId>
-			<artifactId>dataprep</artifactId>
-			<version>${dataPrep.version}</version>
-		</dependency>
 
 		<!-- DATA PREPARATION -->
 		<dependency>
