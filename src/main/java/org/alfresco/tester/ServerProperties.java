@@ -20,7 +20,7 @@ import org.springframework.core.env.Environment;
 @Configuration
 @PropertySource("classpath:default.properties")
 @PropertySource(value = "classpath:${environment}.properties", ignoreResourceNotFound = true)
-public class EnvProperties {
+public class ServerProperties {
 	@Autowired
 	Environment env;
 
@@ -45,10 +45,6 @@ public class EnvProperties {
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
 		return new PropertySourcesPlaceholderConfigurer();
-	}
-
-	public Environment getEnv() {
-		return env;
 	}
 
 	public String getAdminUser() {

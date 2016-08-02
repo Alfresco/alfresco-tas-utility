@@ -1,7 +1,6 @@
 package org.alfresco.tester;
 
 import org.alfresco.dataprep.UserService;
-import org.alfresco.tester.EnvProperties;
 import org.alfresco.tester.data.DataUser;
 import org.alfresco.tester.exception.DataPreparationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,7 @@ import org.testng.annotations.Test;
 public class BeansTest extends AbstractTestNGSpringContextTests {
 
 	@Autowired
-	protected EnvProperties properties;
+	protected ServerProperties properties;
 
 	@Autowired
 	protected UserService userService;
