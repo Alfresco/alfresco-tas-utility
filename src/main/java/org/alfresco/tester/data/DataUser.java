@@ -1,7 +1,7 @@
 package org.alfresco.tester.data;
 
 import org.alfresco.dataprep.UserService;
-import org.alfresco.tester.EnvProperties;
+import org.alfresco.tester.ServerProperties;
 import org.alfresco.tester.exception.DataPreparationException;
 import org.alfresco.tester.model.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class DataUser extends TestData {
 	static String USER_NOT_CREATED = "User %s  not created";
 
 	/**
-	 * Creates a new random user on test server defined in {@link EnvProperties}
+	 * Creates a new random user on test server defined in {@link ServerProperties}
 	 * file.
 	 * 
 	 * @param userName
