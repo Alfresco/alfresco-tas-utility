@@ -39,6 +39,9 @@ public class EnvProperties {
 	@Value("${alfresco.port}")
 	private int port;
 
+	@Value("${alfresco.port}")
+	private int ftpPort;
+	
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
 		return new PropertySourcesPlaceholderConfigurer();
@@ -86,6 +89,14 @@ public class EnvProperties {
 
 	public void setPort(int port) {
 		this.port = port;
+	}
+	
+	public int getFtpPort() {
+		return ftpPort;
+	}
+
+	public void setFtpPort(int port) {
+		this.ftpPort = port;
 	}
 
 	/**
