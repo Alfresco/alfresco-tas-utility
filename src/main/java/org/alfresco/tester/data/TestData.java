@@ -8,13 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class TestData
 {
-    static Logger LOG = LogFactory.getLogger();
 
+    static Logger LOG = LogFactory.getLogger();
     @Autowired
     protected ServerProperties properties;
 
     protected static String PASSWORD = "password";
     protected static String EMAIL = "%s@tas-automation.org";
+    protected static String USER = "user";
 
     public static String getRandomAlphanumeric()
     {
@@ -22,4 +23,12 @@ public abstract class TestData
         LOG.info("Generating alphanumeric string: {}", value);
         return value;
     }
+
+    public static String getRandomUser()
+    {
+        String newUser = String.format("%s%s", USER, RandomStringUtils.randomNumeric(5));
+        LOG.info("Generating new user string: {}", newUser);
+        return newUser;
+    }
+
 }
