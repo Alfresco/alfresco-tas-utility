@@ -41,7 +41,7 @@ public class ServerProperties {
 
 	@Value("${alfresco.port}")
 	private int ftpPort;
-	
+
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
 		return new PropertySourcesPlaceholderConfigurer();
@@ -86,7 +86,7 @@ public class ServerProperties {
 	public void setPort(int port) {
 		this.port = port;
 	}
-	
+
 	public int getFtpPort() {
 		return ftpPort;
 	}
@@ -96,10 +96,17 @@ public class ServerProperties {
 	}
 
 	/**
-	 * @return Base URL of Test Server
+	 * @return host: <schema>://<server>:<port>
 	 */
-	public String getBaseURL() {
+	public String getFullServerUrl() {
 		return new UrlBuilder(getScheme(), getServer(), getPort(), "").toString();
+	}
+
+	/**
+	 * @return host: <schema>://<server>
+	 */
+	public String getTestServerUrl() {
+		return String.format("%s://%s", getScheme(), getServer());
 	}
 
 }
