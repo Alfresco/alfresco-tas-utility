@@ -17,6 +17,7 @@
 		<testNG.version>6.8.8</testNG.version>
 		<dataPrep.version>1.9</dataPrep.version>
 		<slf4j.version>1.7.2</slf4j.version>
+		<maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
 	</properties>
 
 	<dependencies>
@@ -67,7 +68,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.5.1</version>
+				<version>${maven-compiler-plugin.version}</version>
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
