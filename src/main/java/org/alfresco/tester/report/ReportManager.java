@@ -27,8 +27,7 @@ public class ReportManager
         {
             LOG.info("Using ReportManager to generate HTML report on {}", REPORT_PATH);
             extent = new ExtentReports(REPORT_PATH, true);
-
-            extent.loadConfig(FileUtils.getFile("src", "test", "resources", EXTENT_CONFIGURATION_FILE_NAME));
+            //extent.loadConfig(FileUtils.getFile("src", "test", "resources", EXTENT_CONFIGURATION_FILE_NAME));
         }
         return extent;
     }
