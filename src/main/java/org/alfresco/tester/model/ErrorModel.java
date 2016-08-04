@@ -1,50 +1,62 @@
 package org.alfresco.tester.model;
 
-public class ErrorModel {
-	private String errorKey = "";
-	private int statusCode = 0;
-	private String briefSummary = "";
-	private String stackTrace = "";
-	private String descriptionURL = "";
+public class ErrorModel
+{
+    private String errorKey = "";
+    private int statusCode = 0;
 
-	public String getErrorKey() {
-		return errorKey;
-	}
+    private String briefSummary = "";
+    private String stackTrace = "";
+    private String descriptionURL = "";
 
-	public void setErrorKey(String errorKey) {
-		this.errorKey = errorKey;
-	}
+    public String getErrorKey()
+    {
+        return errorKey;
+    }
 
-	public int getStatusCode() {
-		return statusCode;
-	}
+    public void setErrorKey(String errorKey)
+    {
+        this.errorKey = errorKey;
+    }
 
-	public void setStatusCode(int statusCode) {
-		this.statusCode = statusCode;
-	}
+    public int getStatusCode()
+    {
+        return statusCode;
+    }
 
-	public String getBriefSummary() {
-		return briefSummary;
-	}
+    public void setStatusCode(int statusCode)
+    {
+        this.statusCode = statusCode;
+    }
 
-	public void setBriefSummary(String briefSummary) {
-		this.briefSummary = briefSummary;
-	}
+    public String getBriefSummary()
+    {
+        return briefSummary;
+    }
 
-	public String getStackTrace() {
-		return stackTrace;
-	}
+    public void setBriefSummary(String briefSummary)
+    {
+        this.briefSummary = briefSummary;
+    }
 
-	public void setStackTrace(String stackTrace) {
-		this.stackTrace = stackTrace;
-	}
+    public String getStackTrace()
+    {
+        return stackTrace;
+    }
 
-	public String getDescriptionURL() {
-		return descriptionURL;
-	}
+    public void setStackTrace(String stackTrace)
+    {
+        this.stackTrace = stackTrace;
+    }
 
-	public void setDescriptionURL(String descriptionURL) {
-		this.descriptionURL = descriptionURL;
-	}
+    public String getDescriptionURL()
+    {
+        return descriptionURL;
+    }
+
+    public void setDescriptionURL(String descriptionURL)
+    {
+        this.descriptionURL = descriptionURL;
+    }
 
 }

@@ -4,7 +4,7 @@ import org.alfresco.tester.model.UserModel;
 
 public interface DSLClient<Client>
 {
-    public Client withAuthUser(UserModel userModel) throws Exception;
+    public Client authenticateUser(UserModel userModel) throws Exception;
 
     public Client disconnect() throws Exception;
 
