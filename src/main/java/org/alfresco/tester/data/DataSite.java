@@ -1,7 +1,7 @@
 package org.alfresco.tester.data;
 
 import org.alfresco.dataprep.SiteService;
-import org.alfresco.tester.ServerProperties;
+import org.alfresco.tester.TasProperties;
 import org.alfresco.tester.exception.DataPreparationException;
 import org.alfresco.tester.model.SiteModel;
 import org.alfresco.tester.model.UserModel;
@@ -24,7 +24,7 @@ public class DataSite extends TestData
     static String SITE_NOT_CREATED = "Site %s  not created";
 
     /**
-     * Creates a new random site on test server defined in {@link ServerProperties}
+     * Creates a new random site on test server defined in {@link TasProperties}
      * file.
      * 
      * @param role
