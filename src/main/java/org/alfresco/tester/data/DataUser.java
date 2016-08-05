@@ -31,7 +31,7 @@ public class DataUser extends TestData
      */
     public UserModel createUser(String userName) throws DataPreparationException
     {
-        UserModel newUser = new UserModel(userName, userName);
+        UserModel newUser = new UserModel(userName, PASSWORD);
         LOG.info("Create user {}", newUser.toString());
         Boolean created = userService.create(properties.getAdminUser(), properties.getAdminPassword(), userName, PASSWORD, String.format(userName, EMAIL),
                 String.format("%s FirstName", userName), String.format("LN-%s", userName));
