@@ -67,7 +67,7 @@ public class BeansTest extends AbstractTestNGSpringContextTests
     @Test
     public void getDataUserBean()
     {
-        Assert.assertNull(dataUser, "Bean DataUser is initialised");
+        Assert.assertNotNull(dataUser, "Bean DataUser is initialised");
     }
 
     // @Test
