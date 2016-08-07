@@ -1,6 +1,6 @@
 package org.alfresco.tester.model;
 
-public class FolderModel
+public class FolderModel extends TestModel
 {
 
     private String path;

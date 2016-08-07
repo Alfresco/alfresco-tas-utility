@@ -6,7 +6,6 @@ import org.alfresco.tester.exception.DataPreparationException;
 import org.alfresco.tester.model.SiteModel;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.social.alfresco.api.entities.Role;
 import org.springframework.social.alfresco.api.entities.Site.Visibility;
 import org.springframework.stereotype.Service;
 
@@ -43,10 +42,10 @@ public class DataSite extends TestData
      * 
      * @return
      */
-    public SiteModel createPublicSite()
+    public SiteModel createPublicRandomSite()
     {
-        SiteModel siteModel = new SiteModel(Role.SiteManager.toString(), Visibility.PUBLIC, "", RandomStringUtils.randomAlphanumeric(20),
-                RandomStringUtils.randomAlphanumeric(20), RandomStringUtils.randomAlphanumeric(20));
+        SiteModel siteModel = new SiteModel(Visibility.PUBLIC, "", RandomStringUtils.randomAlphanumeric(20), RandomStringUtils.randomAlphanumeric(20),
+                RandomStringUtils.randomAlphanumeric(20));
 
         siteService.create(properties.getAdminUser(), properties.getAdminPassword(), String.format(RandomStringUtils.randomAlphanumeric(20), EMAIL),
                 siteModel.getId(), siteModel.getTitle(), siteModel.getDescription(), siteModel.getVisibility());

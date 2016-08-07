@@ -2,22 +2,20 @@ package org.alfresco.tester.model;
 
 import org.springframework.social.alfresco.api.entities.Site.Visibility;
 
-public class SiteModel
-{
-    private String role = "no-role";
-    private Visibility visibility;
-    private String guid = "no-guid";
-    private String id = "no-id";
-    private String title = "no-title";
-    private String description = "no-description";
+public class SiteModel extends TestModel
+{    
+    protected Visibility visibility;
+    protected String guid = "no-guid";
+    protected String id = "no-id";
+    protected String title = "no-title";
+    protected String description = "no-description";
 
     public SiteModel()
     {
     }
 
-    public SiteModel(String role, Visibility visibility, String guid, String id, String title, String description)
-    {
-        this.role = role;
+    public SiteModel(Visibility visibility, String guid, String id, String title, String description)
+    {        
         this.visibility = visibility;
         this.guid = guid;
         this.id = id;
@@ -35,15 +33,7 @@ public class SiteModel
         this.description = description;
     }
 
-    public String getRole()
-    {
-        return role;
-    }
-
-    public void setRole(String role)
-    {
-        this.role = role;
-    }
+   
 
     public Visibility getVisibility()
     {

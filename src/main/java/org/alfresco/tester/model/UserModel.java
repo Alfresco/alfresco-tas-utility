@@ -1,6 +1,6 @@
 package org.alfresco.tester.model;
 
-public class UserModel
+public class UserModel extends TestModel
 {
     private String username;
     private String password;
@@ -29,12 +29,5 @@ public class UserModel
     public void setUsername(String username)
     {
         this.username = username;
-    }
-
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder("UserModel [");
-        sb.append("Username=").append(getUsername()).append(" Password=").append(getPassword()).append("]");
-        return sb.toString();
     }
 }

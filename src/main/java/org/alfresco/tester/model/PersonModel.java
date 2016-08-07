@@ -32,7 +32,7 @@ package org.alfresco.tester.model;
 }
  *
  */
-public class PersonModel
+public class PersonModel extends TestModel
 {
     private String firstName = "no-firstName";
     private String lastName = "no-lastname";
@@ -53,7 +53,6 @@ public class PersonModel
 
     public PersonModel()
     {
-
     }
 
     public PersonModel(String firstName, String emailNotificationsEnabled, Company company, String id, String enabled, String email)

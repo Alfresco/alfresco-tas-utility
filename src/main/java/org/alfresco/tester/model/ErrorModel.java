@@ -1,6 +1,6 @@
 package org.alfresco.tester.model;
 
-public class ErrorModel
+public class ErrorModel extends TestModel
 {
     private String errorKey = "";
     private int statusCode = 0;

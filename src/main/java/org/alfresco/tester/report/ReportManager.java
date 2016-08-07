@@ -1,7 +1,6 @@
 package org.alfresco.tester.report;
 
 import org.alfresco.tester.LogFactory;
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 

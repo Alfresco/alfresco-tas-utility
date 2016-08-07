@@ -12,9 +12,8 @@ package org.alfresco.tester.model;
       "email": "qLZ41D2QnXQcqySNK09J@yahoo.com"
     }
  */
-public class Company
+public class Company extends TestModel
 {
-
     private String organization = "no-organization";
     private String address1 = "no-address1";
     private String address2 = "no-address2";

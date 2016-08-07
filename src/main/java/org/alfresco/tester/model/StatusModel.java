@@ -1,6 +1,6 @@
 package org.alfresco.tester.model;
 
-public class StatusModel
+public class StatusModel extends TestModel
 {
     private int code = 0;
     private String name = "n/a";
