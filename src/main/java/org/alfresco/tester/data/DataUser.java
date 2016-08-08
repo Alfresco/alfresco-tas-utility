@@ -46,6 +46,11 @@ public class DataUser extends TestData
     {
         return createUser(RandomStringUtils.randomAlphanumeric(20));
     }
+    
+    public UserModel getAdminUser()
+    {
+        return new UserModel(properties.getAdminUser(), properties.getAdminPassword());
+    }
 
     public void assertUserExist(UserModel user)
     {
