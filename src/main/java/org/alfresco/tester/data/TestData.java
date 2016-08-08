@@ -23,19 +23,4 @@ public abstract class TestData
         LOG.info("Generating alphanumeric string: {}", value);
         return value;
     }
-
-    public static String getRandomUser()
-    {
-        String newUser = String.format("%s%s", USER, RandomStringUtils.randomNumeric(5));
-        LOG.info("Generating new user string: {}", newUser);
-        return newUser;
-    }
-
-    public static String getRandomUser(String user)
-    {
-        String newUser = String.format("%s%s", user, RandomStringUtils.randomNumeric(5));
-        LOG.info("Generating new user string: {}", newUser);
-        return newUser;
-    }
-
 }
