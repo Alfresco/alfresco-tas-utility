@@ -4,8 +4,8 @@
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.alfresco</groupId>
-	<artifactId>tas-tester</artifactId>
-	<name>alfresco-tas-tester</name>
+	<artifactId>tas-utility</artifactId>
+	<name>alfresco-tas-utility</name>
 
 	<version>1.0-SNAPSHOT</version>
 
