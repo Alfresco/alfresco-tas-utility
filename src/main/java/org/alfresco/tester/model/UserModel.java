@@ -4,6 +4,7 @@ public class UserModel extends TestModel
 {
     private String username;
     private String password;
+    private String domain="";
 
     public UserModel(String username, String password)
     {
@@ -29,5 +30,15 @@ public class UserModel extends TestModel
     public void setUsername(String username)
     {
         this.username = username;
+    }
+
+    public String getDomain()
+    {
+        return domain;
+    }
+
+    public void setDomain(String domain)
+    {
+        this.domain = domain;
     }
 }
