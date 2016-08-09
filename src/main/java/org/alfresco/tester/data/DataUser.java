@@ -4,7 +4,6 @@ import org.alfresco.dataprep.UserService;
 import org.alfresco.tester.TasProperties;
 import org.alfresco.tester.exception.DataPreparationException;
 import org.alfresco.tester.model.UserModel;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.testng.Assert;

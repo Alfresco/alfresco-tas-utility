@@ -19,6 +19,7 @@
 		<slf4j.version>1.7.2</slf4j.version>
 		<maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
 		<extentreports.version>2.41.1</extentreports.version>
+		<google.guava.version>19.0</google.guava.version>
 	</properties>
 
 	<build>
@@ -35,6 +36,15 @@
 		</plugins>
 	</build>
 	<dependencies>
+		<!--Guava is a suite of core and expanded libraries that include utility 
+			classes, google's collections, io classes, and much much more -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>${google.guava.version}</version>
+		</dependency>
+
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-beans</artifactId>

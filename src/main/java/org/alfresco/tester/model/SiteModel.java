@@ -13,6 +13,12 @@ public class SiteModel extends TestModel
     public SiteModel()
     {
     }
+    
+    public SiteModel(String title)
+    {
+        setTitle(title);
+        setId(title);
+    }
 
     public SiteModel(Visibility visibility, String guid, String id, String title, String description)
     {        
