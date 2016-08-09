@@ -1,16 +1,18 @@
 package org.alfresco.tester.model;
 
+import java.nio.file.Path;
+
 public class FolderModel extends TestModel
 {
 
-    private String path;
+    private Path path;
 
-    public String getPath()
+    public Path getPath()
     {
         return path;
     }
 
-    public void setPath(String path)
+    public void setPath(Path path)
     {
         this.path = path;
     }
