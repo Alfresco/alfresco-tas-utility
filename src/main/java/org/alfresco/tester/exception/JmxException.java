@@ -6,6 +6,6 @@ public class JmxException extends Exception
 
     public JmxException(String message)
     {
-        super(String.format("JMX connection cannot be established: %s", message));
+        super(String.format("JMX exception encountered with the following message: %s", message));
     }
 }

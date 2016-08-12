@@ -6,9 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.management.Attribute;
-import javax.management.AttributeNotFoundException;
 import javax.management.InstanceNotFoundException;
-import javax.management.InvalidAttributeValueException;
 import javax.management.MBeanException;
 import javax.management.MBeanServerConnection;
 import javax.management.MalformedObjectNameException;
@@ -19,8 +17,8 @@ import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.alfresco.tester.exception.JmxException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,21 +27,19 @@ public class JmxClient
     @Autowired
     protected TasProperties properties;
 
+    public enum JmxPropertyOperation
+    {
+        stop, start
+    }
+
     /**
      * Get server property value
      * 
      * @param objectName
      * @param attributeName
      * @return
-     * @throws IOException
-     * @throws ReflectionException
-     * @throws MBeanException
-     * @throws AttributeNotFoundException
-     * @throws MalformedObjectNameException
-     * @throws InstanceNotFoundException
      */
-    public Object getServerProperty(String objectName, String attributeName) throws JmxException, IOException, AttributeNotFoundException,
-            InstanceNotFoundException, MBeanException, ReflectionException, MalformedObjectNameException
+    public Object getServerProperty(String objectName, String attributeName) throws Exception
     {
         JMXConnector connector = createJmxConnection();
         MBeanServerConnection mBSC = connector.getMBeanServerConnection();
@@ -55,24 +51,15 @@ public class JmxClient
     }
 
     /**
-     * Set property value on server side
+     * Set property value on server side, for example if you want to disable email server, you'll use the following parameters: <br/>
+     * setServerProperty("Alfresco:Type=Configuration,Category=email,id1=inbound", "email.server.enabled", "false")
      * 
      * @param objectName
      * @param attributeName
      * @param attributeValue
      * @return
-     * @throws IOException
-     * @throws ReflectionException
-     * @throws MBeanException
-     * @throws InstanceNotFoundException
-     * @throws AttributeNotFoundException
-     * @throws NullPointerException
-     * @throws MalformedObjectNameException
-     * @throws InvalidAttributeValueException
      */
-    public Object setServerProperty(String objectName, String attributeName, Object attributeValue)
-            throws JmxException, IOException, AttributeNotFoundException, InstanceNotFoundException, MBeanException, ReflectionException,
-            InvalidAttributeValueException, MalformedObjectNameException, NullPointerException
+    public Object setServerProperty(String objectName, String attributeName, Object attributeValue) throws Exception
     {
         JMXConnector connector = createJmxConnection();
         MBeanServerConnection mBSC = connector.getMBeanServerConnection();
@@ -86,15 +73,10 @@ public class JmxClient
     }
 
     /**
-     * Get string name of an object from JMX
-     * 
      * @param objectName
      * @return String name from JMX with expected date in accordance with params
-     * @throws JmxException
-     * @throws IOException
-     * @throws MalformedObjectNameException
      */
-    public String getStringNameFromJmxObject(String objectName) throws JmxException, IOException, MalformedObjectNameException
+    public String getStringNameFromJmxObject(String objectName) throws Exception
     {
         JMXConnector connector = getJmxConnection();
         MBeanServerConnection mBSC = connector.getMBeanServerConnection();
@@ -148,13 +130,12 @@ public class JmxClient
      * @throws MBeanException
      * @throws InstanceNotFoundException
      */
-    public void invokeServerProperty(String objectName, String operation)
-            throws JmxException, IOException, MalformedObjectNameException, InstanceNotFoundException, MBeanException, ReflectionException
+    public void refreshServerProperty(String objectName, JmxPropertyOperation operation) throws Exception
     {
         JMXConnector connector = createJmxConnection();
         MBeanServerConnection mBSC = connector.getMBeanServerConnection();
         ObjectName objectJmx = new ObjectName(objectName);
-        mBSC.invoke(objectJmx, operation, new Object[] {}, new String[] {});
+        mBSC.invoke(objectJmx, operation.toString(), new Object[] {}, new String[] {});
         connector.close();
     }
 
