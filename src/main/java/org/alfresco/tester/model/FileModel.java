@@ -2,36 +2,41 @@ package org.alfresco.tester.model;
 
 import java.io.File;
 
-public class DocumentModel extends TestModel
+import com.google.common.io.Files;
+
+public class FileModel extends TestModel
 { 
-    private String cmisObjecTypeId = "cmis:document";
     private String title;
     private String description;
-    private String name;
     private File path;
     private String content;
 
-    private DocumentType documentType;
+    private FileType fileType;
     
-    public DocumentModel()
+    public FileModel()
     {
     }
     
-    public DocumentModel(String name, String title, String description, String content, DocumentType documentType, File path)
+    public FileModel(FileType fileType, File fullPath)
     {
-        setName(name);
+        setFileType(fileType);
+        setPath(path);
+        setTitle(Files.getNameWithoutExtension(path.getName()));
+    }
+    
+    public FileModel(FileType fileType, File fullPath, String title, String description)
+    {
+        this(fileType, fullPath);
         setTitle(title);
         setDescription(description);
-        setContent(content);
-        setDocumentType(documentType);
-        setPath(path);
     }
     
-    public String getCmisObjecTypeId()
+    public FileModel(FileType fileType, File fullPath, String title, String description, String content)
     {
-        return cmisObjecTypeId;
+        this(fileType, fullPath,title, description);
+        setContent(content);
     }
-    
+
     public String getContent()
     {
         return content;
@@ -62,16 +67,6 @@ public class DocumentModel extends TestModel
         this.description = description;
     }
 
-    public String getName()
-    {
-        return name;
-    }
-
-    public void setName(String name)
-    {
-        this.name = name;
-    }
-
     public File getPath()
     {
         return path;
@@ -82,13 +77,13 @@ public class DocumentModel extends TestModel
         this.path = path;
     }
 
-    public DocumentType getDocumentType()
+    public FileType getFileType()
     {
-        return documentType;
+        return fileType;
     }
 
-    public void setDocumentType(DocumentType documentType)
+    public void setFileType(FileType fileType)
     {
-        this.documentType = documentType;
+        this.fileType = fileType;
     }
 }

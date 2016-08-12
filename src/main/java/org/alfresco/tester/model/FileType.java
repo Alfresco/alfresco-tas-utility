@@ -1,6 +1,6 @@
 package org.alfresco.tester.model;
 
-public enum DocumentType
+public enum FileType
 {
     TEXT_PLAIN("text/plain"),
     XML("text/xml"),
@@ -10,7 +10,7 @@ public enum DocumentType
     MSEXCEL("application/vnd.ms-excel"),
     MSPOWERPOINT("application/vnd.ms-powerpoint");
     public final String type;
-    DocumentType(String type)
+    FileType(String type)
     {
         this.type = type;
     }

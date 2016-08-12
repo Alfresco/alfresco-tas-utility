@@ -2,31 +2,36 @@ package org.alfresco.tester.model;
 
 import java.io.File;
 
+import com.google.common.io.Files;
+
 public class FolderModel extends TestModel
 {
     private String title;
     private String description;
-    private String name;
-    private String cmisObjecTypeId = "cmis:folder";
     private File path;
     
     public FolderModel()
     {
     }
-    
-    public FolderModel(String name, String title, String description, File path)
-    {
-        setName(name);
-        setTitle(title);
-        setDescription(description);
-        setPath(path);
-    }
-    
+
     public FolderModel(File path)
     {
-        this.path = path;
+        setPath(path);
+        setTitle(Files.getNameWithoutExtension(path.getName()));
     }
- 
+    
+    public FolderModel(File path, String tile)
+    {
+        setPath(path);
+        setTitle(tile);
+    }
+    
+    public FolderModel(File path, String title, String description)
+    {
+        this(path, title);
+        setDescription(description);
+    }
+    
     public File getPath()
     {
         return path;
@@ -56,20 +61,4 @@ public class FolderModel extends TestModel
     {
         this.description = description;
     }
-
-    public String getName()
-    {
-        return name;
-    }
-
-    public void setName(String name)
-    {
-        this.name = name;
-    }
-
-    public String getCmisObjecTypeId()
-    {
-        return cmisObjecTypeId;
-    }
-
 }
