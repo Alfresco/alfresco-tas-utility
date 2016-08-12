@@ -40,12 +40,24 @@ public class TasProperties
     @Value("${alfresco.port}")
     private int port;
 
+    @Value("${jmx.user}")
+    private String jmxUser;
+
+    @Value("${jmx.password}")
+    private String jmxPassword;
+
+    @Value("${jmx.port}")
+    private String jmxPort;
+    
+    @Value("${jmx.url}")
+    private String jmxUrl;
+
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer()
     {
         return new PropertySourcesPlaceholderConfigurer();
     }
-    
+
     public Environment getEnv()
     {
         return env;
@@ -101,6 +113,46 @@ public class TasProperties
         this.port = port;
     }
 
+    public String getJmxUser()
+    {
+        return jmxUser;
+    }
+
+    public void setJmxUser(String jmxUser)
+    {
+        this.jmxUser = jmxUser;
+    }
+
+    public String getJmxPassword()
+    {
+        return jmxPassword;
+    }
+
+    public void setJmxPassword(String jmxPassword)
+    {
+        this.jmxPassword = jmxPassword;
+    }
+
+    public String getJmxPort()
+    {
+        return jmxPort;
+    }
+
+    public void setJmxPort(String jmxPort)
+    {
+        this.jmxPort = jmxPort;
+    }
+
+    public String getJmxUrl()
+    {
+        return jmxUrl;
+    }
+
+    public void setJmxUrl(String jmxUrl)
+    {
+        this.jmxUrl = jmxUrl;
+    }
+    
     /**
      * @return host: <schema>://<server>:<port>
      */
