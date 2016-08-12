@@ -48,6 +48,9 @@ public class TasProperties
 
     @Value("${jmx.port}")
     private String jmxPort;
+    
+    @Value("${jmx.url}")
+    private String jmxUrl;
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer()
@@ -135,11 +138,21 @@ public class TasProperties
         return jmxPort;
     }
 
-    public void setPort(String jmxPort)
+    public void setJmxPort(String jmxPort)
     {
         this.jmxPort = jmxPort;
     }
 
+    public String getJmxUrl()
+    {
+        return jmxUrl;
+    }
+
+    public void setJmxUrl(String jmxUrl)
+    {
+        this.jmxUrl = jmxUrl;
+    }
+    
     /**
      * @return host: <schema>://<server>:<port>
      */
