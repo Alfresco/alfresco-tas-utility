@@ -40,16 +40,16 @@ public class TasProperties
     @Value("${alfresco.port}")
     private int port;
 
-    @Value("${jmx.user}")
+    @Value("${jmx.user:controlRole}")   
     private String jmxUser;
 
-    @Value("${jmx.password}")
+    @Value("${jmx.password:change_asap}")
     private String jmxPassword;
 
-    @Value("${jmx.port}")
+    @Value("${jmx.port:50500}")
     private String jmxPort;
     
-    @Value("${jmx.url}")
+    @Value("${jmx.url:'not-set-in-properties'")
     private String jmxUrl;
 
     @Bean
