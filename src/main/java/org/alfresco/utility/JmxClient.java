@@ -52,10 +52,10 @@ public class JmxClient
         JMXConnector connector = createJmxConnection();
         MBeanServerConnection mBSC = connector.getMBeanServerConnection();
         ObjectName objectJmx = new ObjectName(objectName);
-        
+
         Object value = mBSC.getAttribute(objectJmx, attributeName);
         LOG.info("JMX Object [{}] with attribute [{}] has value [{}]", objectJmx, attributeName, value.toString());
-        return value ;
+        return value;
     }
 
     public void closeConnection() throws IOException
@@ -81,10 +81,8 @@ public class JmxClient
         ObjectName objectJmx = new ObjectName(objectName);
 
         mBSC.setAttribute(ObjectName.getInstance(objectName), new Attribute(attributeName, attributeValue));
-        Object result = mBSC.getAttribute(objectJmx, attributeName);
-        connector.close();
 
-        return result;
+        return mBSC.getAttribute(objectJmx, attributeName);
     }
 
     /**
@@ -99,10 +97,8 @@ public class JmxClient
         Set<?> set = mBSC.queryMBeans(wasObjectName, null);
         ObjectInstance oi = (ObjectInstance) set.toArray()[0];
         ObjectName oName = oi.getObjectName();
-        String result = oName.toString();
-        connector.close();
 
-        return result;
+        return oName.toString();
     }
 
     /**
@@ -136,6 +132,7 @@ public class JmxClient
                     properties.getJmxPassword());
             jmxConnector = JMXConnectorFactory.connect(jmxUrl, env);
         }
+        
         return jmxConnector;
     }
 
@@ -154,6 +151,7 @@ public class JmxClient
         JMXConnector connector = createJmxConnection();
         MBeanServerConnection mBSC = connector.getMBeanServerConnection();
         ObjectName objectJmx = new ObjectName(objectName);
+        
         mBSC.invoke(objectJmx, operation.toString(), new Object[] {}, new String[] {});
     }
 
