@@ -1,10 +1,10 @@
-package org.alfresco.tester;
+package org.alfresco.utility;
 
 import org.alfresco.dataprep.UserService;
-import org.alfresco.tester.data.DataUser;
-import org.alfresco.tester.exception.DataPreparationException;
-import org.alfresco.tester.model.UserModel;
-import org.alfresco.tester.report.ReportListenerAdapter;
+import org.alfresco.utility.data.DataUser;
+import org.alfresco.utility.exception.DataPreparationException;
+import org.alfresco.utility.model.UserModel;
+import org.alfresco.utility.report.ReportListenerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
