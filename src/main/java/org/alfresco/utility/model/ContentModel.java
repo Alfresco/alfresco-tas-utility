@@ -56,6 +56,11 @@ public class ContentModel extends TestModel
         return location.getPath();
     }
 
+    public File getLocationPath()
+    {
+        return location;
+    }
+
     public void setLocation(File location)
     {
         this.location = location;

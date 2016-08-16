@@ -1,5 +1,7 @@
 package org.alfresco.utility.dsl;
 
+import java.util.List;
+
 import org.alfresco.utility.model.FileModel;
 import org.alfresco.utility.model.FolderModel;
 
@@ -28,4 +30,6 @@ public interface DSLCrudFile<Protocol>
     public Protocol moveFile(String sourceFullPath, String destinationFullPath) throws Exception;
 
     public Protocol moveFile(FileModel fileModelSource, FolderModel destination) throws Exception;
+    
+    public List<FileModel> getRepositoryFiles() throws Exception;
 }

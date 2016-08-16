@@ -5,7 +5,7 @@ import static org.alfresco.utility.Utility.checkObjectIsInitialized;
 import org.alfresco.utility.JmxClient;
 import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.data.DataContent;
-import org.alfresco.utility.data.LastTestData;
+import org.alfresco.utility.data.LastContentModel;
 import org.alfresco.utility.exception.JmxException;
 import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.model.ContentModel;
@@ -32,7 +32,7 @@ public abstract class DSLWrapper<Client> implements DSLEndPoint
     protected Logger LOG = LogFactory.getLogger();
 
     private String currentRepositorySpace = null;
-    private LastTestData lastTestDataCreated = new LastTestData(this);
+    private LastContentModel lastContentModel = new LastContentModel(this);
 
     // HELPERS ----------------------------------------------------------
 
@@ -140,14 +140,14 @@ public abstract class DSLWrapper<Client> implements DSLEndPoint
         this.currentRepositorySpace = currentRepositorySpace;
     }
 
-    public String getLastTestDataCreated()
+    public String getLastContentModelUsed()
     {
-        return lastTestDataCreated.getFullPath();
+        return lastContentModel.getFullPath();
     }
 
-    public void setLastTestDataCreated(String fullPath)
-    {        
-        this.lastTestDataCreated.setFullPath(fullPath);
+    public void setLastContentModelUsed(String fullPath)
+    {
+        this.lastContentModel.setFullPath(fullPath);
     }
 
     public String getProtocolName()
@@ -196,8 +196,8 @@ public abstract class DSLWrapper<Client> implements DSLEndPoint
     @SuppressWarnings("unchecked")
     public Client usingContent(ContentModel model) throws Exception
     {
-        checkObjectIsInitialized(model, "model");        
-        setLastTestDataCreated(String.format("%s%s", getCurrentRepositorySpace(), model.getLocation()));
+        checkObjectIsInitialized(model, "model");
+        setLastContentModelUsed(model.getLocation());
         return (Client) this;
     }
 
@@ -223,14 +223,14 @@ public abstract class DSLWrapper<Client> implements DSLEndPoint
     @SuppressWarnings("unchecked")
     public Client assertThatExistsInRepo()
     {
-        dataContent.assertContentExist(getLastTestDataCreated());
+        dataContent.assertContentExist(getLastContentModelUsed());
         return (Client) this;
     }
 
     @SuppressWarnings("unchecked")
     public Client assertThatDoesNotExistInRepo()
     {
-        dataContent.assertContentDoesNotExist(getLastTestDataCreated());
+        dataContent.assertContentDoesNotExist(getLastContentModelUsed());
         return (Client) this;
     }
 

@@ -5,12 +5,12 @@ import org.alfresco.utility.dsl.DSLWrapper;
 /**
  * This will handle the last objects created in repository
  */
-public class LastTestData
+public class LastContentModel
 {
     private DSLWrapper<?> clientWrapper;
     private String fullPath = "";
 
-    public LastTestData(DSLWrapper<?> clientWrapper)
+    public LastContentModel(DSLWrapper<?> clientWrapper)
     {
         this.clientWrapper = clientWrapper;
     }
@@ -18,6 +18,11 @@ public class LastTestData
     public String getFullPath()
     {
         return fullPath.replaceAll(clientWrapper.getRepositoryPrefixPath(), "");
+    }
+
+    public String getOriginalFullPath()
+    {
+        return fullPath;
     }
 
     public void setFullPath(String lastData)

@@ -45,13 +45,13 @@ public abstract class TestData
      */
     public File getRandomFile(String extention)
     {
-        String fileName = String.format("file-%s%s", RandomStringUtils.randomAlphanumeric(10), extention);
+        String fileName = String.format("file-%s.%s", RandomStringUtils.randomAlphanumeric(10), extention);
         return new File(fileName);
     }
 
     public FileModel generateRandomFilePathModel(FileType fileType)
     {
-        FileModel model = new FileModel(fileType, getRandomFile(fileType.extention));
+        FileModel model = new FileModel(getRandomFile(fileType.extention));
         LOG.info("Generating new Model: {}", model.toString());
         return model;
     }

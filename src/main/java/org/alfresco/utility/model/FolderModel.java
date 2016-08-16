@@ -1,11 +1,8 @@
 package org.alfresco.utility.model;
 
 import java.io.File;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.commons.lang3.RandomStringUtils;
 
 public class FolderModel extends ContentModel
 {
@@ -34,9 +31,7 @@ public class FolderModel extends ContentModel
      */
     public FolderModel addRandomFile(FileType fileType)
     {
-        File location = Paths.get(getLocation(), String.format("file-%s%s", RandomStringUtils.randomAlphanumeric(10), fileType.extention)).toFile();
-        FileModel newFile = new FileModel(fileType, location);
-        addFile(newFile);
+        addFile(FileModel.getRandomFileModel(fileType, getLocation()));
         return this;
     }
 
