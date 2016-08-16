@@ -19,8 +19,8 @@ public class DataContent extends TestData
     
     public void assertContentDoesNotExist(String fullPath)
     {        
-        boolean contentDoesNotExist = checkContent(fullPath);
-        Assert.assertTrue(contentDoesNotExist, String.format("Content {%s} was NOT found in repository", fullPath));
+        boolean contentDoesNotExist = !checkContent(fullPath);
+        Assert.assertFalse(contentDoesNotExist, String.format("Content {%s} was NOT found in repository", fullPath));
     }
     
     

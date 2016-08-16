@@ -29,13 +29,13 @@ public class FolderModel extends ContentModel
      * @param fileType
      * @return FileModel inside this folder
      */
-    public FolderModel addRandomFile(FileType fileType)
+    public FolderModel generateRandomFileChild(FileType fileType)
     {
-        addFile(FileModel.getRandomFileModel(fileType, getLocation()));
+        addFileAsChild(FileModel.getRandomFileModel(fileType, getLocation()));
         return this;
     }
 
-    public FolderModel addFile(FileModel fileModel)
+    public FolderModel addFileAsChild(FileModel fileModel)
     {
         getFiles().add(fileModel);
         return this;

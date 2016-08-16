@@ -2,10 +2,14 @@ package org.alfresco.utility.dsl;
 
 import static org.alfresco.utility.Utility.checkObjectIsInitialized;
 
+import java.io.File;
+import java.nio.file.Paths;
+
 import org.alfresco.utility.JmxClient;
 import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.LastContentModel;
+import org.alfresco.utility.data.TestData;
 import org.alfresco.utility.exception.JmxException;
 import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.model.ContentModel;
@@ -38,7 +42,7 @@ public abstract class DSLWrapper<Client> implements DSLEndPoint
 
     public String getRootPath() throws TestConfigurationException
     {
-        return String.format("%s/%s", getRepositoryPrefixPath(), "/");
+        return String.format("%s/%s", getRepositoryPrefixPath(), "");
     }
 
     public String getSitesPath() throws TestConfigurationException
@@ -138,6 +142,7 @@ public abstract class DSLWrapper<Client> implements DSLEndPoint
     public void setCurrentRepositorySpace(String currentRepositorySpace)
     {
         this.currentRepositorySpace = currentRepositorySpace;
+        setLastContentModelUsed(currentRepositorySpace);
     }
 
     public String getLastContentModelUsed()
@@ -177,6 +182,13 @@ public abstract class DSLWrapper<Client> implements DSLEndPoint
     }
 
     @SuppressWarnings("unchecked")
+    public Client usingRoot() throws Exception
+    {
+        setCurrentRepositorySpace(getRootPath());
+        return (Client) this;
+    }
+
+    @SuppressWarnings("unchecked")
     public Client usingSite(SiteModel siteModel) throws Exception
     {
         checkObjectIsInitialized(siteModel, "SiteModel");
@@ -196,8 +208,23 @@ public abstract class DSLWrapper<Client> implements DSLEndPoint
     @SuppressWarnings("unchecked")
     public Client usingContent(ContentModel model) throws Exception
     {
-        checkObjectIsInitialized(model, "model");
-        setLastContentModelUsed(model.getLocation());
+        usingContent(model.getLocation());
+        return (Client) this;
+    }
+
+    /**
+     * Operations on files or folders
+     * If you call this method you can use all assertion within this wrapper
+     * 
+     * @param contentName
+     * @return
+     * @throws Exception
+     */
+    @SuppressWarnings("unchecked")
+    public Client usingContent(String contentName) throws Exception
+    {
+        checkObjectIsInitialized(contentName, "contentName");
+        setCurrentRepositorySpace(String.format("%s%s/", getCurrentRepositorySpace(), contentName));
         return (Client) this;
     }
 
@@ -221,16 +248,48 @@ public abstract class DSLWrapper<Client> implements DSLEndPoint
 
     // ASSERTIONS ----------------------------------------------------------
     @SuppressWarnings("unchecked")
-    public Client assertThatExistsInRepo()
+    public Client assertExistsInRepo()
     {
         dataContent.assertContentExist(getLastContentModelUsed());
         return (Client) this;
     }
 
     @SuppressWarnings("unchecked")
-    public Client assertThatDoesNotExistInRepo()
+    public Client assertDoesNotExistInRepo()
     {
         dataContent.assertContentDoesNotExist(getLastContentModelUsed());
+        return (Client) this;
+    }
+
+    /**
+     * Check for content in repository
+     * Just pass in the contentName that you are looking for
+     * This assertion works well if you are using first {@link #usingContent(ContentModel)}
+     * {@link #usingRoot()}, {@link #usingSite(String)}, etc prefixed with <using> keyword
+     * 
+     * @param contentName
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public Client assertContentExist(String contentName)
+    {
+        if (TestData.isAFile(getLastContentModelUsed()))
+        {
+            String useParent = new File(getLastContentModelUsed()).getParentFile().toString();
+            dataContent.assertContentExist(Paths.get(useParent, contentName).toString());
+        }
+        else
+        {
+            dataContent.assertContentExist(Paths.get(getLastContentModelUsed(), contentName).toString());
+        }
+
+        return (Client) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public Client assertContentDoesNotExist(String contentName)
+    {
+        dataContent.assertContentDoesNotExist(Paths.get(getLastContentModelUsed(), contentName).toString());
         return (Client) this;
     }
 

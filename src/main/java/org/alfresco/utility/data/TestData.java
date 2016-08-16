@@ -43,15 +43,15 @@ public abstract class TestData
      * @param extention - as "txt", "pdf", "doc"
      * @return random file with <extention>
      */
-    public File getRandomFile(String extention)
+    public File getRandomFile(FileType fileType)
     {
-        String fileName = String.format("file-%s.%s", RandomStringUtils.randomAlphanumeric(10), extention);
+        String fileName = String.format("file-%s.%s", RandomStringUtils.randomAlphanumeric(10), fileType.extention);
         return new File(fileName);
     }
 
     public FileModel generateRandomFilePathModel(FileType fileType)
     {
-        FileModel model = new FileModel(getRandomFile(fileType.extention));
+        FileModel model = new FileModel(getRandomFile(fileType));
         LOG.info("Generating new Model: {}", model.toString());
         return model;
     }
