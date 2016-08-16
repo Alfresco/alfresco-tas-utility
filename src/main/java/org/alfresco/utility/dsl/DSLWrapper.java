@@ -47,13 +47,21 @@ public abstract class DSLWrapper<Client> implements DSLEndPoint
 
     public String getUserHomesPath() throws TestConfigurationException
     {
-        return String.format("%s/%s", getRepositoryPrefixPath(), "User Homes");
+        return String.format("%s%s", getRepositoryPrefixPath(), "/User Homes");
     }
 
     public String getDataDictionaryPath() throws TestConfigurationException
     {
         return String.format("%s/%s", getRepositoryPrefixPath(), "Data Dictionary");
     }
+
+    /**
+     * get the current status true/false of the protocol on test server
+     * 
+     * @return
+     * @throws Exception
+     */
+    protected abstract String getProtocolJMXConfigurationStatus() throws Exception;
 
     /**
      * @return true/false if current protocl is enabled on server
@@ -64,7 +72,7 @@ public abstract class DSLWrapper<Client> implements DSLEndPoint
         if (!jmxClient.isJMXEnabled())
             throw new JmxException("JMX not enabled on server");
 
-        LOG.info("Check [{}] protocol is enabled", getProtocolName());
+        LOG.info("Check [{}] protocol is enabled via JMX calls", getProtocolName());
 
         String status = getProtocolJMXConfigurationStatus();
 
@@ -99,10 +107,23 @@ public abstract class DSLWrapper<Client> implements DSLEndPoint
         String root = String.format("%s/%s/%s", getSitesPath(), siteId, "documentLibrary");
         return buildPath(root, filesOrFoldersHierarcy);
     }
+    
+    /**
+     * @param siteId
+     * @param filesOrFoldersHierarcy
+     * @return the full path of <filesOrFoldersHierarcy> inside /User Home/<username>
+     * @throws TestConfigurationException
+     */
+    protected String buildUserHomePath(String username, String... filesOrFoldersHierarcy) throws TestConfigurationException
+    {
+        String root = String.format("%s/%s", getUserHomesPath(), username);
+        return buildPath(root, filesOrFoldersHierarcy);
+    }
 
     /**
-     * @return the current Repository Space
+     * @return the current Repository Space, can be: getSitesPath(), getRootPath(), getUserHomesPath(), etc                    
      *         If nothing is specified, the root folder is used
+     *         
      * @throws TestConfigurationException
      */
     @Override
@@ -134,7 +155,10 @@ public abstract class DSLWrapper<Client> implements DSLEndPoint
         return this.getClass().getSimpleName().replaceAll("Wrapper", "");
     }
 
-    // DSL ----------------------------------------------------------
+    // DSL ----------------------------------------------------------    
+    public abstract Client authenticateUser(UserModel userModel) throws Exception;
+
+    public abstract Client disconnect() throws Exception;
 
     /**
      * Just verify using JMX calls if the protocl is enabled on server or not
@@ -143,14 +167,6 @@ public abstract class DSLWrapper<Client> implements DSLEndPoint
     {
         Assert.assertTrue(isProtocolEnabled(), String.format("%s protocol is enabled", getProtocolName()));
     }
-
-    /**
-     * get the current status true/false of the protocol on test server
-     * 
-     * @return
-     * @throws Exception
-     */
-    protected abstract String getProtocolJMXConfigurationStatus() throws Exception;
 
     @SuppressWarnings("unchecked")
     public Client usingSite(String siteId) throws Exception
@@ -168,19 +184,28 @@ public abstract class DSLWrapper<Client> implements DSLEndPoint
         setCurrentRepositorySpace(path);
         return (Client) this;
     }
+    
+    @SuppressWarnings("unchecked")
+    public Client usingUserHome(String username) throws Exception
+    {
+        checkObjectIsInitialized(username, "username");
+        setCurrentRepositorySpace(buildUserHomePath(username, ""));
+        return (Client) this;
+    }
 
     @SuppressWarnings("unchecked")
     public Client and()
     {
         return (Client) this;
     }
-    
+
     @SuppressWarnings("unchecked")
     public Client then()
     {
         return (Client) this;
     }
 
+    // ASSERTIONS ----------------------------------------------------------
     @SuppressWarnings("unchecked")
     public Client assertThatExistsInRepo()
     {
@@ -188,8 +213,6 @@ public abstract class DSLWrapper<Client> implements DSLEndPoint
         return (Client) this;
     }
 
-    public abstract Client authenticateUser(UserModel userModel) throws Exception;
-
-    public abstract Client disconnect() throws Exception;
+    
 
 }

@@ -12,12 +12,23 @@ public class DataContent extends TestData
     private ContentService contentService;
 
     public void assertContentExist(String fullPath)
-    {
-        LOG.info("Asserting content exist in repository: {}", fullPath);
-        boolean contentExist = !contentService.getNodeRefByPath(
-                                                    tasProperties.getAdminUser(), 
-                                                    tasProperties.getAdminPassword(), fullPath)
-                                                .isEmpty();
+    {        
+        boolean contentExist = !checkContent(fullPath);
         Assert.assertTrue(contentExist, String.format("Content {%s} was found in repository", fullPath));
+    }
+    
+    public void assertContentDoesNotExist(String fullPath)
+    {        
+        boolean contentDoesNotExist = checkContent(fullPath);
+        Assert.assertTrue(contentDoesNotExist, String.format("Content {%s} was NOT found in repository", fullPath));
+    }
+    
+    
+    private boolean checkContent(String fullPath)
+    {
+        LOG.info("Check for content in repository: {}", fullPath);
+        return contentService.getNodeRefByPath(tasProperties.getAdminUser(), 
+                                               tasProperties.getAdminPassword(), fullPath)
+                                                .isEmpty();
     }
 }
