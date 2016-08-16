@@ -4,6 +4,8 @@ import java.io.File;
 
 import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.TasProperties;
+import org.alfresco.utility.model.FileModel;
+import org.alfresco.utility.model.FileType;
 import org.alfresco.utility.model.FolderModel;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
@@ -43,13 +45,13 @@ public abstract class TestData
      */
     public File getRandomFile(String extention)
     {
-        String fileName = String.format("file-%s.%s", RandomStringUtils.randomAlphanumeric(10), extention);
+        String fileName = String.format("file-%s%s", RandomStringUtils.randomAlphanumeric(10), extention);
         return new File(fileName);
     }
 
-    public FolderModel generateRandomFilePathModel(String extention)
+    public FileModel generateRandomFilePathModel(FileType fileType)
     {
-        FolderModel model = new FolderModel(getRandomFile(extention));
+        FileModel model = new FileModel(fileType, getRandomFile(fileType.extention));
         LOG.info("Generating new Model: {}", model.toString());
         return model;
     }
