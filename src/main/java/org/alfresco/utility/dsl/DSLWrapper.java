@@ -35,7 +35,7 @@ public abstract class DSLWrapper<Client> implements DSLEndPoint
 
     public String getSitesPath() throws TestConfigurationException
     {
-        return String.format("%s/%s", getRepositoryPrefixPath(), "/Sites");
+        return String.format("%s/%s", getRepositoryPrefixPath(), "Sites");
     }
 
     public String getUserHomesPath() throws TestConfigurationException
@@ -49,13 +49,13 @@ public abstract class DSLWrapper<Client> implements DSLEndPoint
     }
 
     /**
-     * @param root
+     * @param parent
      * @param paths
-     * @return concatenated paths of <root> + each <paths>
+     * @return concatenated paths of <parent> + each <paths>
      */
-    protected String buildPath(String root, String... paths)
+    protected String buildPath(String parent, String... paths)
     {
-        StringBuilder concatenatedPaths = new StringBuilder(root);
+        StringBuilder concatenatedPaths = new StringBuilder(parent);
         for (String path : paths)
         {
             concatenatedPaths.append(path);
@@ -131,7 +131,7 @@ public abstract class DSLWrapper<Client> implements DSLEndPoint
     }
 
     @SuppressWarnings("unchecked")
-    public Client assertThatExistInRepo()
+    public Client assertThatExistsInRepo()
     {
         dataContent.assertContentExist(getLastTestDataCreated());
         return (Client) this;

@@ -7,7 +7,7 @@ import javax.annotation.PostConstruct;
 import org.alfresco.utility.data.node.action.Action;
 import org.alfresco.utility.data.node.action.ActionBase;
 import org.alfresco.utility.data.node.action.NodeAction;
-import org.alfresco.utility.dsl.DSLCrud;
+import org.alfresco.utility.dsl.DSLCrudFile;
 import org.alfresco.utility.exception.TestConfigurationException;
 
 public abstract class RepositoryNodesBuilder extends NodeBase
@@ -39,7 +39,7 @@ public abstract class RepositoryNodesBuilder extends NodeBase
     @PostConstruct
     public abstract void registerActions();
 
-    public void useClient(DSLCrud<?> client)
+    public void useClient(DSLCrudFile<?> client)
     {
         for (Action action : getActions())
         {
