@@ -18,7 +18,7 @@ public abstract class TestData
     static Logger LOG = LogFactory.getLogger();
 
     @Autowired
-    protected TasProperties properties;
+    protected TasProperties tasProperties;
 
     protected static String PASSWORD = "password";
     protected static String EMAIL = "%s@tas-automation.org";

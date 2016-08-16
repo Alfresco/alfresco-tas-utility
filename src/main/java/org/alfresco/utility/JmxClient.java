@@ -52,10 +52,10 @@ public class JmxClient
         JMXConnector connector = createJmxConnection();
         MBeanServerConnection mBSC = connector.getMBeanServerConnection();
         ObjectName objectJmx = new ObjectName(objectName);
-
-        LOG.info("Read server JMX Object [{}]  attribute [{}]", objectJmx, attributeName);
-
-        return mBSC.getAttribute(objectJmx, attributeName);
+        
+        Object value = mBSC.getAttribute(objectJmx, attributeName);
+        LOG.info("JMX Object [{}] with attribute [{}] has value [{}]", objectJmx, attributeName, value.toString());
+        return value ;
     }
 
     public void closeConnection() throws IOException

@@ -31,8 +31,14 @@ public class DataSite extends TestData
      */
     public SiteModel createSite(SiteModel siteModel) throws DataPreparationException
     {
-        siteService.create(properties.getAdminUser(), properties.getAdminPassword(), String.format(RandomStringUtils.randomAlphanumeric(10), EMAIL),
-                siteModel.getId(), siteModel.getTitle(), siteModel.getDescription(), siteModel.getVisibility());
+        siteService.create(
+                tasProperties.getAdminUser(), 
+                tasProperties.getAdminPassword(), 
+                String.format(RandomStringUtils.randomAlphanumeric(10), EMAIL),
+                siteModel.getId(), 
+                siteModel.getTitle(), 
+                siteModel.getDescription(), 
+                siteModel.getVisibility());
 
         return siteModel;
     }
@@ -44,11 +50,18 @@ public class DataSite extends TestData
      */
     public SiteModel createPublicRandomSite()
     {
-        SiteModel siteModel = new SiteModel(Visibility.PUBLIC, "", RandomStringUtils.randomAlphanumeric(20), RandomStringUtils.randomAlphanumeric(20),
-                RandomStringUtils.randomAlphanumeric(20));
-
-        siteService.create(properties.getAdminUser(), properties.getAdminPassword(), String.format(RandomStringUtils.randomAlphanumeric(20), EMAIL),
-                siteModel.getId(), siteModel.getTitle(), siteModel.getDescription(), siteModel.getVisibility());
+        SiteModel siteModel = new SiteModel(Visibility.PUBLIC, "", 
+                                            RandomStringUtils.randomAlphanumeric(20), 
+                                            RandomStringUtils.randomAlphanumeric(20),
+                                            RandomStringUtils.randomAlphanumeric(20));
+        siteService.create(
+                tasProperties.getAdminUser(), 
+                tasProperties.getAdminPassword(), 
+                String.format(RandomStringUtils.randomAlphanumeric(20), EMAIL),
+                siteModel.getId(), 
+                siteModel.getTitle(), 
+                siteModel.getDescription(), 
+                siteModel.getVisibility());
 
         return siteModel;
     }

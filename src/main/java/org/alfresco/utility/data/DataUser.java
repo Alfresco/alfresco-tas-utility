@@ -33,8 +33,12 @@ public class DataUser extends TestData
     {
         UserModel newUser = new UserModel(userName, PASSWORD);
         LOG.info("Create user {}", newUser.toString());
-        Boolean created = userService.create(properties.getAdminUser(), properties.getAdminPassword(), userName, PASSWORD, String.format(userName, EMAIL),
-                String.format("%s FirstName", userName), String.format("LN-%s", userName));
+        
+        Boolean created = userService.create(tasProperties.getAdminUser(), 
+                                            tasProperties.getAdminPassword(), 
+                                            userName, PASSWORD, String.format(userName, EMAIL),
+                                            String.format("%s FirstName", userName), 
+                                            String.format("LN-%s", userName));
         if (!created)
             throw new DataPreparationException(String.format(USER_NOT_CREATED, newUser.toString()));
 
@@ -53,20 +57,31 @@ public class DataUser extends TestData
 
     public UserModel getAdminUser()
     {
-        return new UserModel(properties.getAdminUser(), properties.getAdminPassword());
+        return new UserModel(tasProperties.getAdminUser(), tasProperties.getAdminPassword());
     }
 
     public void assertUserExist(UserModel user)
     {
-        LOG.info("Check user {} exist in repository", user.toString());
-        Assert.assertTrue(userService.userExists(properties.getAdminUser(), properties.getAdminPassword(), user.getUsername()),
-                String.format("User {} exist in repository", user.toString()));
+        assertUserExist(user.getUsername());        
+    }
+    
+    public void assertUserExist(String username)
+    {
+        LOG.info("Check user {} exist in repository", username.toString());
+        Assert.assertTrue(userService.userExists(
+                            tasProperties.getAdminUser(), 
+                            tasProperties.getAdminPassword(), 
+                            username),
+                            String.format("User {} exist in repository", username));  
     }
 
-    public void assertDoesNotUserExist(UserModel user)
+    public void assertUserDoesNotExist(UserModel user)
     {
         LOG.info("Check user {} does not exist in repository", user.toString());
-        Assert.assertFalse(userService.userExists(properties.getAdminUser(), properties.getAdminPassword(), user.getUsername()),
+        Assert.assertFalse(userService.userExists(
+                              tasProperties.getAdminUser(), 
+                              tasProperties.getAdminPassword(), 
+                              user.getUsername()),
                 String.format("User {} exist in repository", user.toString()));
     }
 }

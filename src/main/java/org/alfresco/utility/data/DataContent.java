@@ -14,7 +14,10 @@ public class DataContent extends TestData
     public void assertContentExist(String fullPath)
     {
         LOG.info("Asserting content exist in repository: {}", fullPath);
-        boolean contentExist = !contentService.getNodeRefByPath(properties.getAdminUser(), properties.getAdminPassword(), fullPath).isEmpty();
+        boolean contentExist = !contentService.getNodeRefByPath(
+                                                    tasProperties.getAdminUser(), 
+                                                    tasProperties.getAdminPassword(), fullPath)
+                                                .isEmpty();
         Assert.assertTrue(contentExist, String.format("Content {%s} was found in repository", fullPath));
     }
 }

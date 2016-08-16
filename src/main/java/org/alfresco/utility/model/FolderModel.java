@@ -2,11 +2,13 @@ package org.alfresco.utility.model;
 
 import java.io.File;
 
+import org.alfresco.utility.data.DataValue;
+
 import com.google.common.io.Files;
 
 public class FolderModel extends TestModel
 {
-    private File path;
+    private File folderLocation = new File(DataValue.UNDEFINED.name());
     private String description;
     private String title;
 
@@ -30,12 +32,12 @@ public class FolderModel extends TestModel
 
     public File getPath()
     {
-        return path;
+        return folderLocation;
     }
 
     public void setPath(File path)
     {
-        this.path = path;
+        this.folderLocation = path;
     }
 
     public void setTitle(String title)
@@ -60,7 +62,12 @@ public class FolderModel extends TestModel
 
     public String getName()
     {
-        return getPath().getName();
+        return this.folderLocation.getName();
+    }
+    
+    public String getLocation()
+    {
+        return getPath().getPath();
     }
 
 }

@@ -174,6 +174,12 @@ public abstract class DSLWrapper<Client> implements DSLEndPoint
     {
         return (Client) this;
     }
+    
+    @SuppressWarnings("unchecked")
+    public Client then()
+    {
+        return (Client) this;
+    }
 
     @SuppressWarnings("unchecked")
     public Client assertThatExistsInRepo()
