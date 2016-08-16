@@ -18,6 +18,7 @@ import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 
 import org.alfresco.utility.exception.JmxException;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,8 @@ public class JmxClient
 {
     @Autowired
     protected TasProperties properties;
+
+    static Logger LOG = LogFactory.getLogger();
 
     public enum JmxPropertyOperation
     {
@@ -110,9 +113,8 @@ public class JmxClient
      * @throws IOException
      */
     private JMXConnector createJmxConnection() throws JmxException, IOException
-    {
-        String jmxUrlStr = String.format(properties.getJmxUrl(), properties.getServer(), properties.getJmxPort());
-        JMXServiceURL jmxUrl = new JMXServiceURL(jmxUrlStr);
+    {        
+        JMXServiceURL jmxUrl = new JMXServiceURL(properties.getJmxUrl());
         Map<String, String[]> env = new HashMap<>();
         env.put(JMXConnector.CREDENTIALS, new String[] { properties.getJmxUser(), properties.getJmxPassword() });
         JMXConnector connector = JMXConnectorFactory.connect(jmxUrl, env);
@@ -137,6 +139,24 @@ public class JmxClient
         ObjectName objectJmx = new ObjectName(objectName);
         mBSC.invoke(objectJmx, operation.toString(), new Object[] {}, new String[] {});
         connector.close();
+    }
+
+    public boolean isJMXEnabled()
+    {
+        boolean isAlive = false;
+        try
+        {
+            JMXConnector connector = createJmxConnection();            
+            isAlive = true;
+            connector.close();
+        }
+        catch (Exception e)
+        {
+            LOG.error("Cannot establish JMX Connection {}", e.getMessage());
+            e.printStackTrace();
+        }
+
+        return isAlive;
     }
 
 }

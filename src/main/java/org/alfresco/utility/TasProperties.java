@@ -48,10 +48,7 @@ public class TasProperties
 
     @Value("${jmx.port:50500}")
     private String jmxPort;
-    
-    @Value("${jmx.url:'not-set-in-properties'")
-    private String jmxUrl;
-
+   
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer()
     {
@@ -145,13 +142,10 @@ public class TasProperties
 
     public String getJmxUrl()
     {
-        return jmxUrl;
+        return String.format("service:jmx:rmi:///jndi/rmi://%s:%s/alfresco/jmxrmi", getServer(),getJmxPort());
     }
 
-    public void setJmxUrl(String jmxUrl)
-    {
-        this.jmxUrl = jmxUrl;
-    }
+     
     
     /**
      * @return host: <schema>://<server>:<port>
