@@ -1,73 +1,59 @@
 package org.alfresco.utility.model;
 
 import java.io.File;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.alfresco.utility.data.DataValue;
+import org.apache.commons.lang3.RandomStringUtils;
 
-import com.google.common.io.Files;
-
-public class FolderModel extends TestModel
+public class FolderModel extends ContentModel
 {
-    private File folderLocation = new File(DataValue.UNDEFINED.name());
-    private String description;
-    private String title;
+    List<FileModel> files = new ArrayList<FileModel>();
 
-    public FolderModel(File path, String title, String description)
+    public FolderModel(File location)
     {
-        this(path, title);
-        setDescription(description);
+        super(location);
     }
 
-    public FolderModel(File path, String tile)
+    public FolderModel(File location, String tile)
     {
-        setPath(path);
-        setTitle(tile);
+        super(location, tile);
     }
 
-    public FolderModel(File path)
+    public FolderModel(File location, String title, String description)
     {
-        setPath(path);
-        setTitle(Files.getNameWithoutExtension(path.getName()));
+        super(location, title, description);
     }
 
-    public File getPath()
+    /**
+     * Generate a new random FileModel object
+     * 
+     * @param fileType
+     * @return FileModel inside this folder
+     */
+    public FolderModel addRandomFile(FileType fileType)
     {
-        return folderLocation;
+        File location = Paths.get(getLocation(), String.format("file-%s%s", RandomStringUtils.randomAlphanumeric(10), fileType.extention)).toFile();
+        FileModel newFile = new FileModel(fileType, location);
+        addFile(newFile);
+        return this;
     }
 
-    public void setPath(File path)
+    public FolderModel addFile(FileModel fileModel)
     {
-        this.folderLocation = path;
+        getFiles().add(fileModel);
+        return this;
     }
 
-    public void setTitle(String title)
+    public List<FileModel> getFiles()
     {
-        this.title = title;
+        return files;
     }
 
-    public String getTitle()
+    public FileModel lastFile()
     {
-        return title;
-    }
-
-    public String getDescription()
-    {
-        return description;
-    }
-
-    public void setDescription(String description)
-    {
-        this.description = description;
-    }
-
-    public String getName()
-    {
-        return this.folderLocation.getName();
-    }
-    
-    public String getLocation()
-    {
-        return getPath().getPath();
+        return getFiles().get(getFiles().size() - 1);
     }
 
 }

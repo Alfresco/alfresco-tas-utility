@@ -8,6 +8,7 @@ import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.LastTestData;
 import org.alfresco.utility.exception.JmxException;
 import org.alfresco.utility.exception.TestConfigurationException;
+import org.alfresco.utility.model.ContentModel;
 import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.UserModel;
 import org.slf4j.Logger;
@@ -107,7 +108,7 @@ public abstract class DSLWrapper<Client> implements DSLEndPoint
         String root = String.format("%s/%s/%s", getSitesPath(), siteId, "documentLibrary");
         return buildPath(root, filesOrFoldersHierarcy);
     }
-    
+
     /**
      * @param siteId
      * @param filesOrFoldersHierarcy
@@ -121,9 +122,8 @@ public abstract class DSLWrapper<Client> implements DSLEndPoint
     }
 
     /**
-     * @return the current Repository Space, can be: getSitesPath(), getRootPath(), getUserHomesPath(), etc                    
+     * @return the current Repository Space, can be: getSitesPath(), getRootPath(), getUserHomesPath(), etc
      *         If nothing is specified, the root folder is used
-     *         
      * @throws TestConfigurationException
      */
     @Override
@@ -146,7 +146,7 @@ public abstract class DSLWrapper<Client> implements DSLEndPoint
     }
 
     public void setLastTestDataCreated(String fullPath)
-    {
+    {        
         this.lastTestDataCreated.setFullPath(fullPath);
     }
 
@@ -155,7 +155,7 @@ public abstract class DSLWrapper<Client> implements DSLEndPoint
         return this.getClass().getSimpleName().replaceAll("Wrapper", "");
     }
 
-    // DSL ----------------------------------------------------------    
+    // DSL ----------------------------------------------------------
     public abstract Client authenticateUser(UserModel userModel) throws Exception;
 
     public abstract Client disconnect() throws Exception;
@@ -184,12 +184,20 @@ public abstract class DSLWrapper<Client> implements DSLEndPoint
         setCurrentRepositorySpace(path);
         return (Client) this;
     }
-    
+
     @SuppressWarnings("unchecked")
     public Client usingUserHome(String username) throws Exception
     {
         checkObjectIsInitialized(username, "username");
         setCurrentRepositorySpace(buildUserHomePath(username, ""));
+        return (Client) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public Client usingContent(ContentModel model) throws Exception
+    {
+        checkObjectIsInitialized(model, "model");        
+        setLastTestDataCreated(String.format("%s%s", getCurrentRepositorySpace(), model.getLocation()));
         return (Client) this;
     }
 
@@ -205,6 +213,12 @@ public abstract class DSLWrapper<Client> implements DSLEndPoint
         return (Client) this;
     }
 
+    @SuppressWarnings("unchecked")
+    public Client when()
+    {
+        return (Client) this;
+    }
+
     // ASSERTIONS ----------------------------------------------------------
     @SuppressWarnings("unchecked")
     public Client assertThatExistsInRepo()
@@ -213,6 +227,11 @@ public abstract class DSLWrapper<Client> implements DSLEndPoint
         return (Client) this;
     }
 
-    
+    @SuppressWarnings("unchecked")
+    public Client assertThatDoesNotExistInRepo()
+    {
+        dataContent.assertContentDoesNotExist(getLastTestDataCreated());
+        return (Client) this;
+    }
 
 }

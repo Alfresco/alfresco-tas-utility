@@ -8,9 +8,9 @@ public interface DSLCrudFolder<Protocol>
 
     public Protocol createFolder(FolderModel folderModel) throws Exception;
 
-    public Protocol renameFolder(String fullPath) throws Exception;
+    public Protocol renameFolder(String fullPath, String newName) throws Exception;
 
-    public Protocol renameFolder(FolderModel folderModel) throws Exception;
+    public Protocol renameFolder(FolderModel folderModel, String newName) throws Exception;
 
     public Protocol deleteFolder(String fullPath) throws Exception;
 

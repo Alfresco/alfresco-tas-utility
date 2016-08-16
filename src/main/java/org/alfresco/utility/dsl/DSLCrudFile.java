@@ -9,17 +9,17 @@ public interface DSLCrudFile<Protocol>
 
     public Protocol createFile(FileModel model) throws Exception;
 
-    public Protocol renameFile(String fullPath) throws Exception;
+    public Protocol renameFile(String fullPath, String newName) throws Exception;
 
-    public Protocol renameFile(FileModel fileModel) throws Exception;
+    public Protocol renameFile(FileModel fileModel, String newName) throws Exception;
 
     public Protocol updateFile(String fullPath, String content) throws Exception;
 
     public Protocol updateFile(FileModel fileModel, String content) throws Exception;
 
-    public Protocol deleteFile(String fullPath);
+    public Protocol deleteFile(String fullPath) throws Exception;
 
-    public Protocol deleteFile(FileModel fileModel);
+    public Protocol deleteFile(FileModel fileModel) throws Exception;
 
     public Protocol copyFile(String sourceFullPath, String destinationFullPath) throws Exception;
 
