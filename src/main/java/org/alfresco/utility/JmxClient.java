@@ -30,6 +30,8 @@ public class JmxClient
 
     static Logger LOG = LogFactory.getLogger();
 
+    private JMXConnector jmxConnector;
+
     public enum JmxPropertyOperation
     {
         stop, start
@@ -37,6 +39,9 @@ public class JmxClient
 
     /**
      * Get server property value
+     * Example:
+     * Alfresco:Name=FileServerConfig, CIFSServerEnabled
+     * getServerProperty("Alfresco:Name=FileServerConfig", "CIFSServerEnabled")
      * 
      * @param objectName
      * @param attributeName
@@ -47,14 +52,21 @@ public class JmxClient
         JMXConnector connector = createJmxConnection();
         MBeanServerConnection mBSC = connector.getMBeanServerConnection();
         ObjectName objectJmx = new ObjectName(objectName);
-        Object result = mBSC.getAttribute(objectJmx, attributeName);
-        connector.close();
 
-        return result;
+        LOG.info("Read server JMX Object [{}]  attribute [{}]", objectJmx, attributeName);
+
+        return mBSC.getAttribute(objectJmx, attributeName);
+    }
+
+    public void closeConnection() throws IOException
+    {
+        if (jmxConnector != null)
+            jmxConnector.close();
     }
 
     /**
-     * Set property value on server side, for example if you want to disable email server, you'll use the following parameters: <br/>
+     * Set property value on server side, for example if you want to disable email server, you'll use the following parameters:
+     * <br/>
      * setServerProperty("Alfresco:Type=Configuration,Category=email,id1=inbound", "email.server.enabled", "false")
      * 
      * @param objectName
@@ -113,13 +125,18 @@ public class JmxClient
      * @throws IOException
      */
     private JMXConnector createJmxConnection() throws JmxException, IOException
-    {        
-        JMXServiceURL jmxUrl = new JMXServiceURL(properties.getJmxUrl());
-        Map<String, String[]> env = new HashMap<>();
-        env.put(JMXConnector.CREDENTIALS, new String[] { properties.getJmxUser(), properties.getJmxPassword() });
-        JMXConnector connector = JMXConnectorFactory.connect(jmxUrl, env);
+    {
+        if (jmxConnector == null)
+        {
+            JMXServiceURL jmxUrl = new JMXServiceURL(properties.getJmxUrl());
+            Map<String, String[]> env = new HashMap<>();
+            env.put(JMXConnector.CREDENTIALS, new String[] { properties.getJmxUser(), properties.getJmxPassword() });
 
-        return connector;
+            LOG.info("Create JMX Connection using [{}] with username [{}] and password [{}] ", properties.getJmxUrl(), properties.getJmxUser(),
+                    properties.getJmxPassword());
+            jmxConnector = JMXConnectorFactory.connect(jmxUrl, env);
+        }
+        return jmxConnector;
     }
 
     /**
@@ -138,7 +155,6 @@ public class JmxClient
         MBeanServerConnection mBSC = connector.getMBeanServerConnection();
         ObjectName objectJmx = new ObjectName(objectName);
         mBSC.invoke(objectJmx, operation.toString(), new Object[] {}, new String[] {});
-        connector.close();
     }
 
     public boolean isJMXEnabled()
@@ -146,9 +162,8 @@ public class JmxClient
         boolean isAlive = false;
         try
         {
-            JMXConnector connector = createJmxConnection();            
+            createJmxConnection();
             isAlive = true;
-            connector.close();
         }
         catch (Exception e)
         {

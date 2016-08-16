@@ -37,7 +37,7 @@ public class BeansTest extends AbstractTestNGSpringContextTests
     @BeforeClass
     public void checkServerHealth() throws Exception
     {
-        serverHealth.assertIfServerOnline();
+        serverHealth.assertServerIsOnline();
     }
 
     @Test

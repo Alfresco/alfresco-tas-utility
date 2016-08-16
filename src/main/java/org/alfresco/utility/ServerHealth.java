@@ -24,7 +24,7 @@ public class ServerHealth
         return reachable;
     }
 
-    public void assertIfServerOnline() throws Exception
+    public void assertServerIsOnline() throws Exception
     {
         Assert.assertTrue(isServerReachable(), String.format("Server {%s} is online", properties.getServer()));
         

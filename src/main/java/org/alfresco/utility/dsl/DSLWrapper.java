@@ -2,14 +2,17 @@ package org.alfresco.utility.dsl;
 
 import static org.alfresco.utility.Utility.checkObjectIsInitialized;
 
+import org.alfresco.utility.JmxClient;
 import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.LastTestData;
+import org.alfresco.utility.exception.JmxException;
 import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.UserModel;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.testng.Assert;
 
 /**
  * Wrapper on Client
@@ -21,6 +24,10 @@ public abstract class DSLWrapper<Client> implements DSLEndPoint
 
     @Autowired
     DataContent dataContent;
+
+    @Autowired
+    protected JmxClient jmxClient;
+
     protected Logger LOG = LogFactory.getLogger();
 
     private String currentRepositorySpace = null;
@@ -46,6 +53,23 @@ public abstract class DSLWrapper<Client> implements DSLEndPoint
     public String getDataDictionaryPath() throws TestConfigurationException
     {
         return String.format("%s/%s", getRepositoryPrefixPath(), "Data Dictionary");
+    }
+
+    /**
+     * @return true/false if current protocl is enabled on server
+     * @throws Exception
+     */
+    public boolean isProtocolEnabled() throws Exception
+    {
+        if (!jmxClient.isJMXEnabled())
+            throw new JmxException("JMX not enabled on server");
+
+        LOG.info("Check [{}] protocol is enabled", getProtocolName());
+
+        String status = getProtocolJMXConfigurationStatus();
+
+        jmxClient.closeConnection();
+        return status.equals("true");
     }
 
     /**
@@ -105,7 +129,28 @@ public abstract class DSLWrapper<Client> implements DSLEndPoint
         this.lastTestDataCreated.setFullPath(fullPath);
     }
 
+    public String getProtocolName()
+    {
+        return this.getClass().getSimpleName().replaceAll("Wrapper", "");
+    }
+
     // DSL ----------------------------------------------------------
+
+    /**
+     * Just verify using JMX calls if the protocl is enabled on server or not
+     */
+    public void assertProtocolIsEnabled() throws Exception
+    {
+        Assert.assertTrue(isProtocolEnabled(), String.format("%s protocol is enabled", getProtocolName()));
+    }
+
+    /**
+     * get the current status true/false of the protocol on test server
+     * 
+     * @return
+     * @throws Exception
+     */
+    protected abstract String getProtocolJMXConfigurationStatus() throws Exception;
 
     @SuppressWarnings("unchecked")
     public Client usingSite(String siteId) throws Exception
