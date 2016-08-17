@@ -1,23 +1,23 @@
 package org.alfresco.utility.data;
 
-import org.alfresco.utility.dsl.DSLWrapper;
+import org.alfresco.utility.dsl.DSLProtocol;
 
 /**
  * This will handle the last objects created in repository
  */
 public class ResourceContent
 {
-    private DSLWrapper<?> clientWrapper;
+    private DSLProtocol<?> protocol;
     private String fullPath = "";
 
-    public ResourceContent(DSLWrapper<?> clientWrapper)
+    public ResourceContent(DSLProtocol<?> protocol)
     {
-        this.clientWrapper = clientWrapper;
+        this.protocol = protocol;
     }
 
     public String getFullPath()
     {
-        return fullPath.replaceAll(clientWrapper.getRepositoryPrefixPath(), "");
+        return fullPath.replaceAll(protocol.getRepositoryPrefixPath(), "");
     }
 
     public String getOriginalFullPath()
