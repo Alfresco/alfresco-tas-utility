@@ -25,6 +25,8 @@ public interface DSLCrudFolder<Protocol>
     public Protocol moveFolder(String sourceFullPath, String destinationFullPath) throws Exception;
 
     public Protocol moveFolder(FolderModel source, String destination) throws Exception;
-    
-    public List<FolderModel> getRepositoryFolder() throws Exception;
+
+    public List<FolderModel> getFolders(String parent) throws Exception;
+
+    public List<FolderModel> getFolders() throws Exception;
 }

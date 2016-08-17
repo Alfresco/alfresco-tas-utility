@@ -30,6 +30,8 @@ public interface DSLCrudFile<Protocol>
     public Protocol moveFile(String sourceFullPath, String destinationFullPath) throws Exception;
 
     public Protocol moveFile(FileModel fileModelSource, FolderModel destination) throws Exception;
-    
-    public List<FileModel> getRepositoryFiles() throws Exception;
+
+    public List<FileModel> getFiles(String parent) throws Exception;
+
+    public List<FileModel> getFiles() throws Exception;
 }

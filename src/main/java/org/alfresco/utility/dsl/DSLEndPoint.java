@@ -6,5 +6,5 @@ public interface DSLEndPoint
 {
     public String getRepositoryPrefixPath();
 
-    public String getCurrentRepositorySpace() throws TestConfigurationException;
+    public String getCurrentSpace() throws TestConfigurationException;
 }
