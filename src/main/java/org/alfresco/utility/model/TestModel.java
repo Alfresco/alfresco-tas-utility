@@ -14,7 +14,7 @@ public abstract class TestModel implements Model
 
     public String toString()
     {
-        return toInfo();
+        return String.format("\n%s", toInfo());
     }
 
     public String getNodeRef()

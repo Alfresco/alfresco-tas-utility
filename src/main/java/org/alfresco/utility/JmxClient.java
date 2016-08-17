@@ -165,7 +165,7 @@ public class JmxClient
         }
         catch (Exception e)
         {
-            LOG.error("Cannot establish JMX Connection {}", e.getMessage());
+            LOG.error("Cannot establish JMX Connection: {}", e.getMessage());
             e.printStackTrace();
         }
 
