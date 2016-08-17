@@ -20,9 +20,8 @@ public abstract class TestData
     @Autowired
     protected TasProperties tasProperties;
 
-    protected static String PASSWORD = "password";
-    protected static String EMAIL = "%s@tas-automation.org";
-    protected static String USER = "user";
+    public static String PASSWORD = "password";
+    public static String EMAIL = "%s@tas-automation.org";    
 
     public static String getRandomAlphanumeric()
     {
