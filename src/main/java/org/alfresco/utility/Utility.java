@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.exception.TestObjectNotDefinedException;
+import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 
 public class Utility
@@ -55,5 +56,15 @@ public class Utility
             throw new TestConfigurationException(String.format("Cannot read from file %s. Error thrown: %s", fileName, e.getMessage()));
         }
         return result.toString();
+    }
+    
+    public static String convertBackslashToSlash(String value)
+    {
+        if (SystemUtils.IS_OS_WINDOWS)
+        {
+            value = value.replace("\\", "/");
+        }
+
+        return value;
     }
 }
