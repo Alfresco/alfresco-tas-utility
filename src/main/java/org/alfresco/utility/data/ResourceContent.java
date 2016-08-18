@@ -17,7 +17,7 @@ public class ResourceContent
 
     public String getFullPath()
     {
-        return fullPath.replaceAll(protocol.getRepositoryPrefixPath(), "");
+        return fullPath.replaceAll(protocol.getPrefixSpace(), "");
     }
 
     public String getOriginalFullPath()
