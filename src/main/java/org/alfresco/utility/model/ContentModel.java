@@ -19,10 +19,10 @@ public class ContentModel extends TestModel
         setTitle(Files.getNameWithoutExtension(location.getName()));
     }
 
-    public ContentModel(File location, String tile)
+    public ContentModel(File location, String title)
     {
         setLocation(location);
-        setTitle(tile);
+        setTitle(title);
     }
 
     public ContentModel(File location, String title, String description)
