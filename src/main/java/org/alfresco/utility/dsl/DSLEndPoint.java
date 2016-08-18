@@ -4,7 +4,7 @@ import org.alfresco.utility.exception.TestConfigurationException;
 
 public interface DSLEndPoint
 {
-    public String getRepositoryPrefixPath();
+    public String getPrefixSpace();
 
     public String getCurrentSpace() throws TestConfigurationException;
 }
