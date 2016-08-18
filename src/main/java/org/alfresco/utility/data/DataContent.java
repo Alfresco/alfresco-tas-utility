@@ -1,6 +1,7 @@
 package org.alfresco.utility.data;
 
 import org.alfresco.dataprep.ContentService;
+import org.alfresco.utility.Utility;
 import org.alfresco.utility.model.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,9 +28,9 @@ public class DataContent extends TestData
     }
         
     private boolean checkContent(String fullPath, UserModel userModel)
-    {        
-        return contentService.getNodeRefByPath(userModel.getUsername(), 
-                                               userModel.getPassword(), fullPath)
-                                                .isEmpty();
+    {
+        return contentService.getNodeRefByPath(userModel.getUsername(), userModel.getPassword(), 
+                Utility.convertBackslashToSlash(fullPath)).isEmpty();
     }
+    
 }
