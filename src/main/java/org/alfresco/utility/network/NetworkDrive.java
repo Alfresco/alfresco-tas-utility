@@ -90,9 +90,9 @@ public abstract class NetworkDrive
         this.serverNetworkPath = serverNetworkPath;
     }
 
-    public void assertNetworkDriveIsMounted() throws Exception
+    public boolean isNetworkDriveMounted() throws Exception
     {
-        LOG.info("Verify if network drive is mounted correctly: {}", getLocalVolumePath());
+        LOG.info("Verify network mounted drive : {}", getLocalVolumePath());
         long counter = 0;
         File mountedDrive = Paths.get(getLocalVolumePath()).toFile();
         while (counter < 20 && !mountedDrive.exists())
@@ -100,19 +100,16 @@ public abstract class NetworkDrive
             TimeUnit.MILLISECONDS.sleep(200);
             counter++;
         }
-        Assert.assertTrue(mountedDrive.exists(), String.format("Network Drive [{}] was mounted successfully", getLocalVolumePath()));
+        return mountedDrive.exists();
+    }
+
+    public void assertNetworkDriveIsMounted() throws Exception
+    {
+        Assert.assertTrue(isNetworkDriveMounted(), String.format("Network Drive [{}] was mounted successfully", getLocalVolumePath()));
     }
 
     public void assertNetworkDriveIsUmounted() throws Exception
     {
-        LOG.info("Verify if network drive is umounted correctly: {}", getLocalVolumePath());
-        long counter = 0;
-        File mountedDrive = Paths.get(getLocalVolumePath()).toFile();
-        while (counter < 20 && mountedDrive.exists())
-        {
-            TimeUnit.MILLISECONDS.sleep(200);
-            counter++;
-        }
-        Assert.assertFalse(mountedDrive.exists(), String.format("Network Drive [{}] was umounted successfully", getLocalVolumePath()));
+        Assert.assertFalse(isNetworkDriveMounted(), String.format("Network Drive [{}] was umounted successfully", getLocalVolumePath()));
     }
 }
