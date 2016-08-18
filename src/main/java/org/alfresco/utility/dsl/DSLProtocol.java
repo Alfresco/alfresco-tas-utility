@@ -96,6 +96,14 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
         this.currentSpace = currentRepositorySpace;
         setLastResource(currentRepositorySpace);
     }
+    
+    @SuppressWarnings("unchecked")
+    public Client closeJmxConnection() throws IOException
+    {
+        jmxClient.closeConnection();
+
+        return (Client) this;
+    }
 
     /**
      * get the current status true/false of the protocol on test server
@@ -174,8 +182,6 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
 
     public abstract Client usingUserHome() throws Exception;
     
-    public abstract Client closeJmxConnection() throws IOException;
-
     public abstract String getRootPath() throws TestConfigurationException;
 
     public abstract String getSitesPath() throws TestConfigurationException;
