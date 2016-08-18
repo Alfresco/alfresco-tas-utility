@@ -1,6 +1,7 @@
 package org.alfresco.utility.dsl;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Paths;
 
 import org.alfresco.utility.data.ResourceContent;
@@ -117,7 +118,6 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
 
         String status = getProtocolJMXConfigurationStatus();
 
-        jmxClient.closeConnection();
         return status.equals("true");
     }
 
@@ -173,6 +173,8 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
     public abstract Client usingUserHome(String username) throws Exception;
 
     public abstract Client usingUserHome() throws Exception;
+    
+    public abstract Client closeJmxConnection() throws IOException;
 
     public abstract String getRootPath() throws TestConfigurationException;
 
@@ -181,7 +183,7 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
     public abstract String getUserHomesPath() throws TestConfigurationException;
 
     public abstract String getDataDictionaryPath() throws TestConfigurationException;
-
+    
     /**
      * Operations on files or folders
      * If you call this method you can use all assertion within this wrapper
