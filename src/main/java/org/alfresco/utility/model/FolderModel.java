@@ -13,9 +13,9 @@ public class FolderModel extends ContentModel
         super(location);
     }
 
-    public FolderModel(File location, String tile)
+    public FolderModel(File location, String title)
     {
-        super(location, tile);
+        super(location, title);
     }
 
     public FolderModel(File location, String title, String description)

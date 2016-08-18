@@ -22,9 +22,9 @@ public class FileModel extends ContentModel
         setFileType(fileType);
     }
 
-    public FileModel(FileType fileType, File location, String tile)
+    public FileModel(FileType fileType, File location, String title)
     {
-        super(location, tile);
+        super(location, title);
         setFileType(fileType);
     }
 
