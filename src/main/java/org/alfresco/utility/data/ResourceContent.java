@@ -17,12 +17,12 @@ public class ResourceContent
 
     public String getFullPath()
     {
-        return fullPath.replaceAll(protocol.getPrefixSpace(), "");
+        return fullPath;//.replaceAll(protocol.getPrefixSpace(), "");
     }
 
-    public String getOriginalFullPath()
+    public String getPathWithoutPrefix()
     {
-        return fullPath;
+        return fullPath.replaceAll(protocol.getPrefixSpace(), "");
     }
 
     public void setFullPath(String lastData)

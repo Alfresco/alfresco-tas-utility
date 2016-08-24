@@ -42,9 +42,15 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
      * @param paths
      * @return concatenated paths of <parent> + each <paths>
      */
-    protected String buildPath(String parent, String... paths)
+    public String buildPath(String parent, String... paths)
     {
-        StringBuilder concatenatedPaths = new StringBuilder(parent);
+
+       StringBuilder concatenatedPaths = new StringBuilder(parent);
+       if(paths.length == 0)
+           return concatenatedPaths.toString();
+       
+       if(!parent.endsWith("/"))
+           concatenatedPaths.append("/");
         for (String path : paths)
         {
             concatenatedPaths.append(path);
@@ -133,6 +139,11 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
     {
         return lastResource.getFullPath();
     }
+    
+    public String getLastResourceWithoutPrefix()
+    {
+        return lastResource.getPathWithoutPrefix();
+    }
 
     public void setLastResource(String fullPath)
     {
@@ -207,14 +218,14 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
     @SuppressWarnings("unchecked")
     public Client assertExistsInRepo()
     {
-        dataContent.assertContentExist(getLastResource(), getTestUser());
+        dataContent.assertContentExist(getLastResourceWithoutPrefix(), getTestUser());
         return (Client) this;
     }
 
     @SuppressWarnings("unchecked")
     public Client assertDoesNotExistInRepo()
     {
-        dataContent.assertContentDoesNotExist(getLastResource(), getTestUser());
+        dataContent.assertContentDoesNotExist(getLastResourceWithoutPrefix(), getTestUser());
         return (Client) this;
     }
 

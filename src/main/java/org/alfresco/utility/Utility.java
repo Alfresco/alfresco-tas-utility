@@ -23,7 +23,7 @@ public class Utility
     public static File getResourceTestDataFile(String fileName) throws Exception
     {
         LOG.info("Get resource test/resources/testdata/{}", fileName);
-        File resource = new File(Utility.class.getClassLoader().getResource(fileName).getFile());
+        File resource = new File(Utility.class.getClassLoader().getResource("testdata/" + fileName).getFile());
         if (resource == null)
         {
             throw new TestConfigurationException(String.format("Your file %s was not found in test/resources/testdata folder", fileName));

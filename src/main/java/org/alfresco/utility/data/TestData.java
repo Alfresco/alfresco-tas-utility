@@ -62,6 +62,14 @@ public abstract class TestData
         return model;
     }
 
+    
+    public FolderModel generateRandomFolderModel()
+    {
+        FolderModel model = new FolderModel(getRandomFolderName());
+        LOG.info("Generating new Model: {}", model.toString());
+        return model;
+    }
+
     /**
      * @return random folder
      */
@@ -69,5 +77,11 @@ public abstract class TestData
     {
         String folderName = String.format("folder-%s", RandomStringUtils.randomAlphanumeric(10));
         return new File(folderName);
+    }
+    
+    
+    public String getRandomFolderName()
+    {
+        return String.format("folder-%s", RandomStringUtils.randomAlphanumeric(10));
     }
 }
