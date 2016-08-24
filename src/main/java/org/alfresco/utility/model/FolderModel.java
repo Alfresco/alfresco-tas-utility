@@ -8,6 +8,11 @@ public class FolderModel extends ContentModel
 {
     List<FileModel> files = new ArrayList<FileModel>();
 
+    public FolderModel(String name)
+    {
+        super(name);
+    }
+
     public FolderModel(File location)
     {
         super(location);

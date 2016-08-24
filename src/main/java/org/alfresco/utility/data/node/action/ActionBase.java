@@ -1,17 +1,17 @@
 package org.alfresco.utility.data.node.action;
 
-import org.alfresco.utility.dsl.DSLCrudFile;
+import org.alfresco.utility.dsl.DSLFile;
 
 public class ActionBase
 {
-    private DSLCrudFile<?> client;
+    private DSLFile<?> client;
 
-    public DSLCrudFile<?> getClient()
+    public DSLFile<?> getClient()
     {
         return client;
     }
 
-    public void setClient(DSLCrudFile<?> client)
+    public void setClient(DSLFile<?> client)
     {
         this.client = client;
     }

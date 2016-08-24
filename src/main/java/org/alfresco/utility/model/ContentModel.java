@@ -9,10 +9,18 @@ import com.google.common.io.Files;
 public class ContentModel extends TestModel
 {
     private String title;
+    private String name;
+    
     private String description;
 
     private File location = new File(DataValue.UNDEFINED.name());
+    private  String protocolLocation;
 
+    public ContentModel (String name)
+    {
+        setName(name);
+    }
+    
     public ContentModel(File location)
     {
         setLocation(location);
@@ -64,11 +72,27 @@ public class ContentModel extends TestModel
     public void setLocation(File location)
     {
         this.location = location;
+        this.name = location.getName();
     }
 
     public String getName()
     {
-        return location.getName();
+        return this.name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    public String getProtocolLocation()
+    {
+        return protocolLocation;
+    }
+
+    public void setProtocolLocation(String protocolLocation)
+    {
+        this.protocolLocation = protocolLocation;
     }
 
 }

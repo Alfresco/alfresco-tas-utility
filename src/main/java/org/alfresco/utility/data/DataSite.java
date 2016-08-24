@@ -50,9 +50,10 @@ public class DataSite extends TestData
      */
     public SiteModel createPublicRandomSite()
     {
+        String randomSite = RandomStringUtils.randomAlphanumeric(20);
         SiteModel siteModel = new SiteModel(Visibility.PUBLIC, "", 
-                                            RandomStringUtils.randomAlphanumeric(20), 
-                                            RandomStringUtils.randomAlphanumeric(20),
+                                            randomSite, 
+                                            randomSite,
                                             RandomStringUtils.randomAlphanumeric(20));
         siteService.create(
                 tasProperties.getAdminUser(), 
