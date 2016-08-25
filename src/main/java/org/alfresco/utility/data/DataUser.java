@@ -3,8 +3,10 @@ package org.alfresco.utility.data;
 import org.alfresco.dataprep.UserService;
 import org.alfresco.utility.TasProperties;
 import org.alfresco.utility.exception.DataPreparationException;
+import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.social.alfresco.api.entities.Role;
 import org.springframework.stereotype.Service;
 import org.testng.Assert;
 
@@ -36,7 +38,7 @@ public class DataUser extends TestData
         
         Boolean created = userService.create(tasProperties.getAdminUser(), 
                                             tasProperties.getAdminPassword(), 
-                                            userName, PASSWORD, String.format(userName, EMAIL),
+                                            userName, PASSWORD, String.format(EMAIL, userName),
                                             String.format("%s FirstName", userName), 
                                             String.format("LN-%s", userName));
         if (!created)
@@ -58,6 +60,12 @@ public class DataUser extends TestData
     public UserModel getAdminUser()
     {
         return new UserModel(tasProperties.getAdminUser(), tasProperties.getAdminPassword());
+    }
+    
+    public void addUserToSite(UserModel userModel, SiteModel siteModel, Role role)
+    {
+        userService.createSiteMember(tasProperties.getAdminUser(), tasProperties.getAdminPassword(), 
+                userModel.getUsername(), siteModel.getId(), role.toString());
     }
 
     public void assertUserExist(UserModel user)
