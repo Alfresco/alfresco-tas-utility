@@ -11,6 +11,7 @@ import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.model.ContentModel;
 import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.UserModel;
+import org.apache.commons.lang3.StringUtils;
 import org.testng.Assert;
 
 public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements DSLEndPoint
@@ -46,7 +47,8 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
     {
 
        StringBuilder concatenatedPaths = new StringBuilder(parent);
-       if(paths.length == 0)
+       int lenPaths = paths.length;
+       if(lenPaths == 0)
            return concatenatedPaths.toString();
        
        if(!parent.endsWith("/"))
@@ -56,7 +58,10 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
             concatenatedPaths.append(path);
             concatenatedPaths.append("/");
         }
-        return concatenatedPaths.toString();
+        String concatenated = concatenatedPaths.toString();
+        if(lenPaths > 0  && paths[lenPaths-1].contains("."))
+            concatenated = StringUtils.removeEnd(concatenated, "/");
+        return concatenated;
     }
 
     /**
