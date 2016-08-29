@@ -1,11 +1,8 @@
 package org.alfresco.utility.dsl;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 
 import org.alfresco.utility.data.ResourceContent;
-import org.alfresco.utility.data.TestData;
 import org.alfresco.utility.exception.JmxException;
 import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.model.ContentModel;
@@ -52,7 +49,6 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client>
      */
     public String buildPath(String parent, String... paths)
     {
-
        StringBuilder concatenatedPaths = new StringBuilder(parent);
        int lenPaths = paths.length;
        if(lenPaths == 0)
@@ -60,10 +56,14 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client>
        
        if(!parent.endsWith("/"))
            concatenatedPaths.append("/");
+       
         for (String path : paths)
         {
-            concatenatedPaths.append(path);
-            concatenatedPaths.append("/");
+            if(!path.isEmpty())
+            {
+                concatenatedPaths.append(path);
+                concatenatedPaths.append("/");    
+            }            
         }
         String concatenated = concatenatedPaths.toString();
         if(lenPaths > 0  && paths[lenPaths-1].contains("."))
@@ -146,16 +146,35 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client>
         return status.equals("true");
     }
 
+    /**
+     * Returns the last ContentModel resource created within alfresco repository
+     * This will return the full path so something like:  
+     *  
+     *  or -> smb://172.29.100.215/alfresco/Sites/qcAqgLSMO2OU5txtPMQG/documentLibrary//folder-syKFUjMWgY 
+     *  if CIFS protocol is used
+     */
     public String getLastResource()
     {
         return lastResource.getFullPath();
     }
     
+    /**
+     * The same as {@link #getLastResource()} but without the repository prefix
+     * So if the lastResource is smb://172.29.100.215/alfresco/Sites/qcAqgLSMO2OU5txtPMQG/documentLibrary/folder-syKFUjMWgY
+     * we will return only "/Sites/qcAqgLSMO2OU5txtPMQG/documentLibrary//folder-syKFUjMWgY" without "smb://172.29.100.215/alfresco" 
+     * prefix defined in {@link #getPrefixSpace()} method
+     * 
+     */
     public String getLastResourceWithoutPrefix()
     {
         return lastResource.getPathWithoutPrefix();
     }
 
+    /**
+     * The last resource should be the full path of the last file/folder used in tests
+     *  
+     * @param fullPath
+     */
     public void setLastResource(String fullPath)
     {
         this.lastResource.setFullPath(fullPath);
@@ -243,39 +262,7 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client>
     }
 
     /**
-     * Check for content in repository
-     * Just pass in the contentName that you are looking for
-     * This assertion works well if you are using first {@link #usingResource(ContentModel)}
-     * {@link #usingRoot()}, {@link #usingSite(String)}, etc prefixed with <using> keyword
-     * 
-     * @param contentName
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    public Client assertContentExist(String contentName)
-    {
-        if (TestData.isAFile(getLastResource()))
-        {
-            String useParent = new File(getLastResource()).getParentFile().toString();
-            dataContent.assertContentExist(Paths.get(useParent, contentName).toString(), getTestUser());
-        }
-        else
-        {
-            dataContent.assertContentExist(Paths.get(getLastResource(), contentName).toString(), getTestUser());
-        }
-
-        return (Client) this;
-    }
-
-    @SuppressWarnings("unchecked")
-    public Client assertContentDoesNotExist(String contentName)
-    {
-        dataContent.assertContentDoesNotExist(Paths.get(getLastResource(), contentName).toString(), getTestUser());
-        return (Client) this;
-    }
-
-    /**
-     * Just verify using JMX calls if the protocl is enabled on server or not
+     * Just verify using JMX calls if the protocol is enabled on server or not
      */
     public void assertProtocolIsEnabled() throws Exception
     {

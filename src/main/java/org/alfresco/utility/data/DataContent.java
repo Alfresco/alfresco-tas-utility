@@ -13,6 +13,10 @@ public class DataContent extends TestData
     @Autowired
     private ContentService contentService;
 
+    /**     
+     * @param fullPath - the full path to CMIS object
+     * @param userModel
+     */
     public void assertContentExist(String fullPath, UserModel userModel)
     {   
         LOG.info("Using User {}, asserting that content Exist in Repository {}",userModel.toString(), fullPath);        

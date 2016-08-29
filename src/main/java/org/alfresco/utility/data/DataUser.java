@@ -54,7 +54,7 @@ public class DataUser extends TestData
 
     public UserModel createRandomTestUser(String prefix) throws DataPreparationException
     {
-        return createUser(String.format("%s%s", prefix, getRandomAlphanumeric()));
+        return createUser(getRandomName(prefix));
     }
 
     public UserModel getAdminUser()

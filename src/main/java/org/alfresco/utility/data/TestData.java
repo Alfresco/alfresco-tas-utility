@@ -13,75 +13,60 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.io.Files;
 
-public abstract class TestData
-{
-    static Logger LOG = LogFactory.getLogger();
+public abstract class TestData {
+	static Logger LOG = LogFactory.getLogger();
 
-    @Autowired
-    protected TasProperties tasProperties;
+	@Autowired
+	protected TasProperties tasProperties;
 
-    public static String PASSWORD = "password";
-    public static String EMAIL = "%s@tas-automation.org";    
+	public static String PASSWORD = "password";
+	public static String EMAIL = "%s@tas-automation.org";
 
-    public static String getRandomAlphanumeric()
-    {
-        String value = RandomStringUtils.randomAlphabetic(10);
-        LOG.info("Generating alphanumeric string: {}", value);
-        return value;
-    }
+	public static String getRandomAlphanumeric() {
+		String value = RandomStringUtils.randomAlphabetic(10);
+		LOG.debug("Generating alphanumeric string: {}", value);
+		return value;
+	}
 
-    /**
-     * Check if <filename> passed as parameter is a file or not based on extention
-     */
-    public static boolean isAFile(String filename)
-    {
-        return Files.getFileExtension(filename).length() == 3;
-    }
+	/**
+	 * Check if <filename> passed as parameter is a file or not based on
+	 * extension
+	 */
+	public static boolean isAFile(String filename) {
+		return Files.getFileExtension(filename).length() == 3;
+	}
 
-    /**
-     * @param extention - as "txt", "pdf", "doc"
-     * @return random file with <extention>
-     */
-    public File getRandomFile(FileType fileType)
-    {
-        String fileName = String.format("file-%s.%s", RandomStringUtils.randomAlphanumeric(10), fileType.extention);
-        return new File(fileName);
-    }
+	/**
+	 * @param extention
+	 *            - as "txt", "pdf", "doc"
+	 * @return random file with <extention>
+	 */
+	public File getRandomFile(FileType fileType) {			
+		String fileName = String.format("%s.%s", getRandomName("file"), fileType.extention);
+		return new File(fileName);
+	}
 
-    public FileModel generateRandomFilePathModel(FileType fileType)
-    {
-        FileModel model = new FileModel(getRandomFile(fileType));
-        LOG.info("Generating new Model: {}", model.toString());
-        return model;
-    }
+	public FileModel generateRandomFileModel(FileType fileType) {
+		FileModel model = new FileModel(getRandomFile(fileType));
+		LOG.info("Generating new Model: {}", model.toString());
+		return model;
+	}
 
-    public FolderModel generateRandomFolderPathModel()
-    {
-        FolderModel model = new FolderModel(getRandomFolder());
-        LOG.info("Generating new Model: {}", model.toString());
-        return model;
-    }
+	public FolderModel generateRandomFolderModel() {
+		FolderModel model = new FolderModel(getRandomFolder().getName());
+		LOG.info("Generating new Model: {}", model.toString());
+		return model;
+	}
 
-    
-    public FolderModel generateRandomFolderModel()
-    {
-        FolderModel model = new FolderModel(getRandomFolderName());
-        LOG.info("Generating new Model: {}", model.toString());
-        return model;
-    }
-
-    /**
-     * @return random folder
-     */
-    public File getRandomFolder()
-    {
-        String folderName = String.format("folder-%s", RandomStringUtils.randomAlphanumeric(10));
-        return new File(folderName);
-    }
-    
-    
-    public String getRandomFolderName()
-    {
-        return String.format("folder-%s", RandomStringUtils.randomAlphanumeric(10));
-    }
+	/**
+	 * @return random folder
+	 */
+	public File getRandomFolder() {		
+		return new File(getRandomName("folder"));
+	}
+	 
+	public String getRandomName(String prefix) {
+		return String.format("%s-%s", prefix, getRandomAlphanumeric());
+	}
+	 
 }
