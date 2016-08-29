@@ -14,7 +14,14 @@ import org.alfresco.utility.model.UserModel;
 import org.apache.commons.lang3.StringUtils;
 import org.testng.Assert;
 
-public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements DSLEndPoint
+/**
+ * Extend this class if you want add implementation for a new protocol.
+ * 
+ * See example of CifsWrapper, FtpWrapper
+ *
+ * @param <Client>
+ */
+public abstract class DSLProtocol<Client> extends DSLWrapper<Client>
 {
 
     /**
@@ -92,8 +99,7 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
      * @return the current Repository Space, can be: getSitesPath(), getRootPath(), getUserHomesPath(), etc
      *         If nothing is specified, the root folder is used
      * @throws TestConfigurationException
-     */
-    @Override
+     */    
     public String getCurrentSpace() throws TestConfigurationException
     {
         if (currentSpace == null)
@@ -205,6 +211,8 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
     public abstract String getUserHomesPath() throws TestConfigurationException;
 
     public abstract String getDataDictionaryPath() throws TestConfigurationException;
+    
+    public abstract String getPrefixSpace();
     
     /**
      * Operations on files or folders

@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Wrapper on Client
+ * Client Wrapper
  *
  * @param <Client>
  */

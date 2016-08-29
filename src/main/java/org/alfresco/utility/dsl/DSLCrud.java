@@ -1,6 +1,6 @@
 package org.alfresco.utility.dsl;
 
-import org.alfresco.utility.model.FolderModel;
+import org.alfresco.utility.model.ContentModel;
 
 public interface DSLCrud<Protocol> extends DSLFile<Protocol>, DSLFolder<Protocol>
 {
@@ -10,7 +10,7 @@ public interface DSLCrud<Protocol> extends DSLFile<Protocol>, DSLFolder<Protocol
 
     public Protocol delete() throws Exception;
 
-    public Protocol copyTo(FolderModel destination) throws Exception;
+    public Protocol copyTo(ContentModel destination) throws Exception;
 
-    public Protocol moveTo(FolderModel destination) throws Exception;
+    public Protocol moveTo(ContentModel destination) throws Exception;
 }
