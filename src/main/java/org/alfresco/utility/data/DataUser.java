@@ -36,8 +36,8 @@ public class DataUser extends TestData<DataUser>
         UserModel newUser = new UserModel(userName, PASSWORD);
         LOG.info("Create user {}", newUser.toString());
         
-        Boolean created = userService.create(tasProperties.getAdminUser(), 
-                                            tasProperties.getAdminPassword(), 
+        Boolean created = userService.create(getCurrentUser().getUsername(), 
+                                            getCurrentUser().getPassword(), 
                                             userName, PASSWORD, String.format(EMAIL, userName),
                                             String.format("%s FirstName", userName), 
                                             String.format("LN-%s", userName));
@@ -57,10 +57,7 @@ public class DataUser extends TestData<DataUser>
         return createUser(getRandomName(prefix));
     }
 
-    public UserModel getAdminUser()
-    {
-        return new UserModel(tasProperties.getAdminUser(), tasProperties.getAdminPassword());
-    }
+    
     
     public void addUserToSite(UserModel userModel, SiteModel siteModel, Role role)
     {

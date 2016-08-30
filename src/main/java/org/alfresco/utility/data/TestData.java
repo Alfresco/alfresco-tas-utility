@@ -97,11 +97,22 @@ public abstract class TestData<Data> {
 		return (Data) this;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public Data usingAdmin() {
+		currentUser = getAdminUser();
+		return (Data) this;
+	}
+	
 	protected UserModel getCurrentUser() {
 		if (currentUser == null) {
-			currentUser = new UserModel(tasProperties.getAdminUser(), tasProperties.getAdminPassword());
+			usingAdmin();
 		}
 		return currentUser;
 	}
+	
+	public UserModel getAdminUser()
+    {
+        return new UserModel(tasProperties.getAdminUser(), tasProperties.getAdminPassword());
+    }
 
 }

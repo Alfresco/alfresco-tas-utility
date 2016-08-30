@@ -21,12 +21,12 @@ public class DataContent extends TestData<DataContent>
     
     public Folder createFolder(String folderName, SiteModel site)
     {
-        return contentService.createFolder(tasProperties.getAdminUser(), 
-                    tasProperties.getAdminPassword(), folderName, site.getId());
+        return contentService.createFolder(getCurrentUser().getUsername(), 
+                    getCurrentUser().getPassword(), folderName, site.getId());
     }
 
     public void addEmailAlias(SiteModel site, String folderName, String alias) {
-        contentAspect.addEmailAlias(tasProperties.getAdminUser(), tasProperties.getAdminPassword(), 
+        contentAspect.addEmailAlias(getCurrentUser().getUsername(), getCurrentUser().getPassword(), 
                 site.getId(), folderName, alias);
     }
     
