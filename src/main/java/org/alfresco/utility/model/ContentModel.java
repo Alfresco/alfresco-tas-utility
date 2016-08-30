@@ -1,8 +1,7 @@
 package org.alfresco.utility.model;
 
 import java.io.File;
-
-import org.alfresco.utility.data.DataValue;
+import java.nio.file.Paths;
 
 import com.google.common.io.Files;
 
@@ -13,12 +12,13 @@ public class ContentModel extends TestModel
     
     private String description;
 
-    private File location = new File(DataValue.UNDEFINED.name());
+    private File location;
     private  String protocolLocation;
 
     public ContentModel (String name)
     {
         setName(name);
+        setLocation(Paths.get(name).toFile());
     }
     
     public ContentModel(File location)
@@ -60,7 +60,7 @@ public class ContentModel extends TestModel
     }
 
     public String getLocation()
-    {
+    {    	 
         return location.getPath();
     }
 
