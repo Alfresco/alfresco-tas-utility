@@ -1,10 +1,12 @@
 package org.alfresco.utility.data;
 
+import org.alfresco.dataprep.CMISUtil.DocumentType;
 import org.alfresco.dataprep.ContentAspects;
 import org.alfresco.dataprep.ContentService;
 import org.alfresco.utility.Utility;
 import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.UserModel;
+import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,13 +23,39 @@ public class DataContent extends TestData<DataContent>
     
     public Folder createFolder(String folderName, SiteModel site)
     {
-        return contentService.createFolder(getCurrentUser().getUsername(), 
-                    getCurrentUser().getPassword(), folderName, site.getId());
+        return contentService.createFolder(
+        			getCurrentUser().getUsername(), 
+                    getCurrentUser().getPassword(), 
+                    folderName, 
+                    site.getId());
     }
 
     public void addEmailAlias(SiteModel site, String folderName, String alias) {
-        contentAspect.addEmailAlias(getCurrentUser().getUsername(), getCurrentUser().getPassword(), 
-                site.getId(), folderName, alias);
+        contentAspect.addEmailAlias(
+        		getCurrentUser().getUsername(), 
+        		getCurrentUser().getPassword(), 
+                site.getId(), 
+                folderName, 
+                alias);
+    }
+    
+    /**
+     * Creates a random document based on {@link DocumentType} passed
+     * Return the {@link Document} object on success creation
+     * 
+     * @param documentType
+     * @return
+     */
+    public Document createDocument(DocumentType documentType)
+    {    	
+    	String randomFile = String.format("%s.%s", getRandomName("file"), Utility.cmisDocTypeToExtentions(documentType));
+    	
+    	LOG.info("Creating a new document {}/{} path" , getCurrentPath(), randomFile);
+    	return contentService.createDocumentInRepository(
+    			getCurrentUser().getUsername(), 
+                getCurrentUser().getPassword(), 
+                getCurrentPath(), 
+                documentType, randomFile, "This is a file file");
     }
     
     /**     

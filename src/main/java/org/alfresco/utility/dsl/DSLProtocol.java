@@ -47,7 +47,7 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client>
      * @param paths
      * @return concatenated paths of <parent> + each <paths>
      */
-    public String buildPath(String parent, String... paths)
+    protected String buildPath(String parent, String... paths)
     {
        StringBuilder concatenatedPaths = new StringBuilder(parent);
        int lenPaths = paths.length;

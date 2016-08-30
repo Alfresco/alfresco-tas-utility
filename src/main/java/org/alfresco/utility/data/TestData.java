@@ -16,12 +16,19 @@ import com.google.common.io.Files;
 
 public abstract class TestData<Data> {
 	static Logger LOG = LogFactory.getLogger();
-	
+
 	/**
 	 * This is the currentUser that we will use for creating specific test data
-	 * If none specified we will use the admin user defined in default.properties
+	 * If none specified we will use the admin user defined in
+	 * default.properties
 	 */
 	private UserModel currentUser;
+	
+	/**
+	 * The current path where we want to create test data
+	 * It can be the root path, or /Shared or /Sites/<sitename> etc.
+	 */
+	private String currentPath ="/";
 
 	@Autowired
 	protected TasProperties tasProperties;
@@ -31,6 +38,7 @@ public abstract class TestData<Data> {
 
 	/**
 	 * Returns a random alphabetic number of 10 characters
+	 * 
 	 * @return
 	 */
 	public static String getRandomAlphanumeric() {
@@ -87,7 +95,9 @@ public abstract class TestData<Data> {
 	}
 
 	/**
-	 * Call this method if you want to use another user rather than admin defined in {@link TasProperties} properties file
+	 * Call this method if you want to use another user rather than admin
+	 * defined in {@link TasProperties} properties file
+	 * 
 	 * @param user
 	 * @return
 	 */
@@ -96,13 +106,13 @@ public abstract class TestData<Data> {
 		currentUser = user;
 		return (Data) this;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public Data usingAdmin() {
 		currentUser = getAdminUser();
 		return (Data) this;
 	}
-	
+
 	protected UserModel getCurrentUser() {
 		if (currentUser == null) {
 			usingAdmin();
@@ -110,9 +120,19 @@ public abstract class TestData<Data> {
 		return currentUser;
 	}
 	
-	public UserModel getAdminUser()
-    {
-        return new UserModel(tasProperties.getAdminUser(), tasProperties.getAdminPassword());
-    }
+	
+	@SuppressWarnings("unchecked")
+	public Data usingPath(String path) {
+		currentPath = path;
+		return (Data) this;
+	}
+	protected String getCurrentPath()
+	{
+		return currentPath;
+	}
+
+	public UserModel getAdminUser() {
+		return new UserModel(tasProperties.getAdminUser(), tasProperties.getAdminPassword());
+	}
 
 }
