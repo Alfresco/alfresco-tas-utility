@@ -1,9 +1,9 @@
 package org.alfresco.utility;
 
 import org.alfresco.dataprep.UserService;
+import org.alfresco.utility.data.DataSite;
 import org.alfresco.utility.data.DataUser;
 import org.alfresco.utility.exception.DataPreparationException;
-import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.report.ReportListenerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -30,6 +30,9 @@ public class BeansTest extends AbstractTestNGSpringContextTests
 
     @Autowired
     protected DataUser dataUser;
+    
+    @Autowired
+    protected DataSite dataSite;
 
     @Autowired
     protected ServerHealth serverHealth;
@@ -70,10 +73,9 @@ public class BeansTest extends AbstractTestNGSpringContextTests
         Assert.assertNotNull(dataUser, "Bean DataUser is initialised");
     }
 
-    // @Test
-    public void createNewUser() throws DataPreparationException
+    @Test
+    public void createNewSite() throws DataPreparationException
     {
-        UserModel newUser = dataUser.createUser(DataUser.getRandomAlphanumeric());
-        dataUser.assertUserExist(newUser);
+    	dataSite.usingUser(dataUser.getAdminUser()).createSite("aa");
     }
 }

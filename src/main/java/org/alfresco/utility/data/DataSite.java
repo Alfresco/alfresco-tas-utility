@@ -4,40 +4,56 @@ import org.alfresco.dataprep.SiteService;
 import org.alfresco.utility.TasProperties;
 import org.alfresco.utility.exception.DataPreparationException;
 import org.alfresco.utility.model.SiteModel;
-import org.alfresco.utility.model.UserModel;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.social.alfresco.api.entities.Site.Visibility;
 import org.springframework.stereotype.Service;
+
 
 /**
  * Data Preparation for Sites
+ * 
+ * This class with handle all aspects of creating sites using dataprep project
+ * In the future we will remove this dataprep dependencies if there will be another solution of creating sites.
  */
 @Service
-public class DataSite extends TestData
+public class DataSite extends TestData<DataSite>
 {
-
     @Autowired
     private SiteService siteService;
-    
-    @Autowired
-    private DataUser dataUser;
-    
-    private UserModel currentUser;
-
+   
     static String SITE_NOT_CREATED = "Site %s  not created";
 
     /**
      * Creates a new random site on test server defined in {@link TasProperties} file.
      * 
+     * You can also use the {@link #usingUser(org.alfresco.utility.model.UserModel)}
+     * 
+     * method for defining a new user rather than admin
      * @param siteModel
      * @param userModel
      * @return
      * @throws DataPreparationException
      */
     public SiteModel createSite(SiteModel siteModel) throws DataPreparationException
-    {    	
-    	LOG.debug("Creating site {} with user {}", siteModel.toString(), currentUser.toString());
+    {    	    	
+        return createSite(siteModel.getTitle());
+    }
+    
+    /**
+     * Creates a new random site on test server defined in {@link TasProperties} file.
+     * 
+     * You can also use the {@link #usingUser(org.alfresco.utility.model.UserModel)}
+     * 
+     * method for defining a new user rather than admin
+     * @param siteModel
+     * @param userModel
+     * @return
+     * @throws DataPreparationException
+     */
+    public SiteModel createSite(String siteName) throws DataPreparationException
+    {
+    	SiteModel siteModel = new SiteModel(siteName);
+    	LOG.info("Creating site {} with user {}", siteModel.toString(), getCurrentUser().toString());
     	
         siteService.create(
         		getCurrentUser().getUsername(), 
@@ -51,43 +67,18 @@ public class DataSite extends TestData
         return siteModel;
     }
     
-    public DataSite usingUser(UserModel user)
-    {
-    	currentUser = user;
-    	return this;
-    }
     
-    protected UserModel getCurrentUser()
-    {
-    	if(currentUser==null)
-    	{
-    		currentUser = dataUser.getAdminUser();
-    	}
-    	return currentUser;
-    }
 
     /**
      * Create public site immediately
      * 
      * @return
+     * @throws DataPreparationException 
      */
-    public SiteModel createPublicRandomSite()
+    public SiteModel createPublicRandomSite() throws DataPreparationException
     {
-        String randomSite = getRandomName("site");
-        SiteModel siteModel = new SiteModel(Visibility.PUBLIC, "", 
-                                            randomSite, 
-                                            randomSite,
-                                            randomSite + " description");
-        siteService.create(
-        		getCurrentUser().getUsername(), 
-        		getCurrentUser().getPassword(),        		
-                String.format(EMAIL,RandomStringUtils.randomAlphanumeric(20)),
-                siteModel.getId(), 
-                siteModel.getTitle(), 
-                siteModel.getDescription(), 
-                siteModel.getVisibility());
-
-        return siteModel;
+        String randomSite = getRandomName("site");       
+        return createSite(randomSite);
     }
 
 }

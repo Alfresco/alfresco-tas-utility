@@ -16,7 +16,7 @@ import org.testng.Assert;
  * @author Paul Brodner
  */
 @Service
-public class DataUser extends TestData
+public class DataUser extends TestData<DataUser>
 {
     @Autowired
     private UserService userService;

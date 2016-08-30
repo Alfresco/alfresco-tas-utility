@@ -4,11 +4,11 @@ import org.springframework.social.alfresco.api.entities.Site.Visibility;
 
 public class SiteModel extends TestModel
 {    
-    protected Visibility visibility;
+    protected Visibility visibility = Visibility.PUBLIC;
     protected String guid = "no-guid";
     protected String id = "no-id";
     protected String title = "no-title";
-    protected String description = "no-description";
+    protected String description = "description";
 
     public SiteModel()
     {
@@ -17,7 +17,7 @@ public class SiteModel extends TestModel
     public SiteModel(String title)
     {
         setTitle(title);
-        setId(title);
+        setId(title);        
     }
 
     public SiteModel(Visibility visibility, String guid, String id, String title, String description)

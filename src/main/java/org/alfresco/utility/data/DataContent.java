@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.testng.Assert;
 
 @Service
-public class DataContent extends TestData
+public class DataContent extends TestData<DataContent>
 {
     @Autowired
     private ContentService contentService;
