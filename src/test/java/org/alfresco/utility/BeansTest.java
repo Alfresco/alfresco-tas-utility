@@ -76,6 +76,6 @@ public class BeansTest extends AbstractTestNGSpringContextTests
     @Test
     public void createNewSite() throws DataPreparationException
     {
-    	dataSite.usingUser(dataUser.getAdminUser()).createSite("aa");    	
+    	dataSite.usingUser(dataUser.getAdminUser()).createPublicRandomSite();    	
     }
 }
