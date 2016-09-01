@@ -80,5 +80,19 @@ public class DataSite extends TestData<DataSite>
         String randomSite = getRandomName("site");       
         return createSite(randomSite);
     }
+    
+    /**
+     * Create IMAP site immediately
+     * 
+     * @return
+     * @throws DataPreparationException 
+     */
+    public SiteModel createIMAPSite() throws DataPreparationException
+    {
+        String imapSite = getRandomName("IMAPsite");       
+        SiteModel siteModel = createSite(imapSite);
+        siteService.setIMAPFavorite(getCurrentUser().getUsername(), getCurrentUser().getPassword(), imapSite);
+        return siteModel;
+    }
 
 }
