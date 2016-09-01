@@ -3,6 +3,7 @@ package org.alfresco.utility.model;
 import java.io.File;
 import java.nio.file.Paths;
 
+import org.alfresco.utility.data.RandomData;
 import org.apache.commons.lang3.RandomStringUtils;
 
 public class FileModel extends ContentModel
@@ -60,10 +61,24 @@ public class FileModel extends ContentModel
         this.fileType = fileType;
     }
 
+    /**
+     * Generates a new random {@link FileModel} object
+     */
     public static FileModel getRandomFileModel(FileType fileType, String parent)
     {
         File location = Paths.get(parent, String.format("file-%s.%s", RandomStringUtils.randomAlphanumeric(10), fileType.extention)).toFile();
-        FileModel newFile = new FileModel(location);
-        return newFile;
+        FileModel newFileModel = new FileModel(location);
+        LOG.info("Generating new FileModel: {}", newFileModel.toString());
+        return newFileModel;
+    }
+
+    /**
+     * Generates a new random {@link FileModel} object
+     */
+    public static FileModel getRandomFileModel(FileType fileType)
+    {
+        FileModel newFileModel = new FileModel(RandomData.getRandomFile(fileType));
+        LOG.info("Generating new FileModel: {}", newFileModel.toString());
+        return newFileModel;
     }
 }

@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.alfresco.utility.data.RandomData;
+
 public class FolderModel extends ContentModel
 {
     List<FileModel> files = new ArrayList<FileModel>();
@@ -54,6 +56,16 @@ public class FolderModel extends ContentModel
     public FileModel lastFile()
     {
         return getFiles().get(getFiles().size() - 1);
+    }
+
+    /**
+     * Generates a new random {@link FolderModel} object
+     */
+    public static FolderModel getRandomFolderModel()
+    {
+        FolderModel model = new FolderModel(RandomData.getRandomFolder().getName());
+        LOG.info("Generating new FolderModel: {}", model.toString());
+        return model;
     }
 
 }

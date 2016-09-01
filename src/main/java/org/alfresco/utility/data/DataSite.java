@@ -77,7 +77,7 @@ public class DataSite extends TestData<DataSite>
      */
     public SiteModel createPublicRandomSite() throws DataPreparationException
     {
-        String randomSite = getRandomName("site");       
+        String randomSite = RandomData.getRandomName("site");       
         return createSite(randomSite);
     }
     
@@ -89,10 +89,11 @@ public class DataSite extends TestData<DataSite>
      */
     public SiteModel createIMAPSite() throws DataPreparationException
     {
-        String imapSite = getRandomName("IMAPsite");       
+        String imapSite = RandomData.getRandomName("IMAPsite");       
         SiteModel siteModel = createSite(imapSite);
         siteService.setIMAPFavorite(getCurrentUser().getUsername(), getCurrentUser().getPassword(), imapSite);
         return siteModel;
     }
 
+   
 }

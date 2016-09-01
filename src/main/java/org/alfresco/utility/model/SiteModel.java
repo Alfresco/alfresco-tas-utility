@@ -1,9 +1,10 @@
 package org.alfresco.utility.model;
 
+import org.alfresco.utility.data.RandomData;
 import org.springframework.social.alfresco.api.entities.Site.Visibility;
 
 public class SiteModel extends TestModel
-{    
+{
     protected Visibility visibility = Visibility.PUBLIC;
     protected String guid = "no-guid";
     protected String id = "no-id";
@@ -13,15 +14,15 @@ public class SiteModel extends TestModel
     public SiteModel()
     {
     }
-    
+
     public SiteModel(String title)
     {
         setTitle(title);
-        setId(title);        
+        setId(title);
     }
 
     public SiteModel(Visibility visibility, String guid, String id, String title, String description)
-    {        
+    {
         this.visibility = visibility;
         this.guid = guid;
         this.id = id;
@@ -38,8 +39,6 @@ public class SiteModel extends TestModel
     {
         this.description = description;
     }
-
-   
 
     public Visibility getVisibility()
     {
@@ -79,6 +78,13 @@ public class SiteModel extends TestModel
     public void setTitle(String title)
     {
         this.title = title;
+    }
+
+    public static SiteModel getRandomSiteModel()
+    {
+        String siteName = RandomData.getRandomName("site");
+        LOG.info("Generating new FileModel: {}", siteName);
+        return new SiteModel(siteName);
     }
 
 }

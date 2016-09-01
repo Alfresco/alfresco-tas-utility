@@ -48,7 +48,7 @@ public class DataContent extends TestData<DataContent>
      */
     public Document createDocument(DocumentType documentType)
     {    	
-    	String randomFile = String.format("%s.%s", getRandomName("file"), Utility.cmisDocTypeToExtentions(documentType));
+    	String randomFile = String.format("%s.%s", RandomData.getRandomName("file"), Utility.cmisDocTypeToExtentions(documentType));
     	
     	LOG.info("Creating a new document {}/{} path" , getCurrentPath(), randomFile);
     	return contentService.createDocumentInRepository(
