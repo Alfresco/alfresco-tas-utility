@@ -1,5 +1,11 @@
 package org.alfresco.utility.model;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * {
   "entry": {
@@ -32,24 +38,32 @@ package org.alfresco.utility.model;
 }
  *
  */
+
 public class PersonModel extends TestModel
 {
-    private String firstName = "no-firstName";
-    private String lastName = "no-lastname";
-    private String emailNotificationsEnabled = "no-notification";
+    @JsonProperty(required = true)
+    private String firstName;
+    @JsonProperty(required = true)
+    private String id;
+    @JsonProperty(required = true)
+    private String enabled;
+    @JsonProperty(required = true)
+    private String email;
+    
+    private String lastName;
+    private String emailNotificationsEnabled;
+    
     private CompanyModel company;
-    private String id = "no-id";
-    private String enabled = "no-enabled";
-    private String email = "no-email";
-    private String avatarId = "no-avatar";
-    private String location = "no-location";
-    private String instantMessageId = "no-instantMessage";
-    private String googleId = "no-google";
-    private String skypeId = "no-skype";
-    private String description = "no-description";
-    private String telephone = "no-telephone";
-    private String jobTitle = "no-job";
-    private String mobile = "no-mobile";
+    
+    private String avatarId;
+    private String location;
+    private String instantMessageId;
+    private String googleId;
+    private String skypeId;
+    private String description;
+    private String telephone;
+    private String jobTitle;
+    private String mobile;
 
     public PersonModel()
     {
