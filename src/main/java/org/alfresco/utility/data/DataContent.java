@@ -32,6 +32,8 @@ public class DataContent extends TestData<DataContent>
     {    	    	    	
     	String location  = Utility.buildPath(getCurrentSpace(), folderName);
     	LOG.info("Creating a new folder content {} in {} " , folderName, location);
+
+    	setLastResource(location);
     	Folder cmisFolder = contentService.createFolderInRepository(getCurrentUser().getUsername(), 
     													  getCurrentUser().getPassword(), 
     													  folderName, getCurrentSpace());    	
@@ -46,10 +48,7 @@ public class DataContent extends TestData<DataContent>
      */
     public FolderModel createFolder()
     {
-    	if(getLastResource().isEmpty())
-    		setLastResource(RandomData.getRandomName("Folder"));
-    	
-    	FolderModel folderModel = new FolderModel(getLastResource());
+    	FolderModel folderModel = new FolderModel(RandomData.getRandomName("Folder"));
     	return createFolder(folderModel.getLocation());
     }
 
@@ -73,7 +72,7 @@ public class DataContent extends TestData<DataContent>
     {    	    	
     	String newContent = String.format("%s.%s", RandomData.getRandomName("file"), Utility.cmisDocTypeToExtentions(documentType));
     	
-    	String location  = Utility.buildPath(getCurrentSpace(), getLastResource());
+    	String location  =getLastResource();
     	LOG.info("Creating a new non-empty content {} in {} " , newContent, location);
     	
     	if(getLastResource().isEmpty())
