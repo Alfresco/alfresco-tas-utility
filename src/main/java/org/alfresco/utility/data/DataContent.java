@@ -30,15 +30,15 @@ public class DataContent extends TestData<DataContent>
     
     public FolderModel createFolder(String folderName)
     {    	    	    	
-    	String location  = Utility.buildPath(getCurrentSpace(), folderName);
-    	LOG.info("Creating a new folder content {} in {} " , folderName, location);
+    	LOG.info("Creating a new folder content {} in {} " , folderName, getCurrentSpace());
 
+    	String location  = Utility.buildPath(getCurrentSpace(), folderName);
     	setLastResource(location);
     	Folder cmisFolder = contentService.createFolderInRepository(getCurrentUser().getUsername(), 
     													  getCurrentUser().getPassword(), 
     													  folderName, getCurrentSpace());    	
     	
-    	FolderModel folderModel = new FolderModel(cmisFolder.getPath());    	
+    	FolderModel folderModel = new FolderModel(cmisFolder.getPath());    
     	folderModel.setNodeRef(cmisFolder.getId());
     	return folderModel;
     }

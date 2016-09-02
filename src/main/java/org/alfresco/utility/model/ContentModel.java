@@ -3,6 +3,8 @@ package org.alfresco.utility.model;
 import java.io.File;
 import java.nio.file.Paths;
 
+import org.alfresco.utility.Utility;
+
 import com.google.common.io.Files;
 
 public class ContentModel extends TestModel
@@ -61,7 +63,7 @@ public class ContentModel extends TestModel
 
     public String getLocation()
     {    	 
-        return location.getPath();
+        return Utility.convertBackslashToSlash(location.getPath());
     }
 
     public File getLocationPath()
