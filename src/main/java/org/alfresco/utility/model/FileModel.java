@@ -11,6 +11,12 @@ public class FileModel extends ContentModel
     private String content;
     private FileType fileType;
 
+    public FileModel(String location)
+    {
+    	super(location);
+    	setFileType(FileType.fromPath(getLocation()));
+    }
+    
     public FileModel(File location)
     {
         super(location);

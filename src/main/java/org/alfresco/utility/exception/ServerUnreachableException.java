@@ -7,6 +7,6 @@ public class ServerUnreachableException extends Exception {
 	private static final long serialVersionUID = 1L;
 
 	public ServerUnreachableException(TasProperties properties) {
-		super(String.format("Server {} is unreachable.", properties.getServer()));
+		super(String.format("Server {%s} is unreachable.", properties.getServer()));
 	}
 }
