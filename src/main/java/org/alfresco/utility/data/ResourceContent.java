@@ -4,6 +4,13 @@ import org.alfresco.utility.dsl.DSLProtocol;
 
 /**
  * This will handle the last objects created in repository
+ * On some protocols, the location of the content created has a prefixed keyword
+ * Example: smb://<address>:<port>/Sites/....
+ * In some cases we want to assert the existance of this resources using just the CMIS path
+ * so /Sites/.... stripping the protocol prefix.
+ * 
+ * This class will do exactly this.
+ * 
  */
 public class ResourceContent
 {
@@ -17,7 +24,7 @@ public class ResourceContent
 
     public String getFullPath()
     {
-        return fullPath;//.replaceAll(protocol.getPrefixSpace(), "");
+        return fullPath;
     }
 
     public String getPathWithoutPrefix()

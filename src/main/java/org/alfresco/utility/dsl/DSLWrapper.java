@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public abstract class DSLWrapper<Client>
 {
-
     @Autowired
     DataContent dataContent;
 
@@ -53,25 +52,6 @@ public abstract class DSLWrapper<Client>
         this.testUser = testUser;
     }
 
-    /*
-     * DSL ----------------------------------------------------------
-     */
 
-    @SuppressWarnings("unchecked")
-    public Client and()
-    {
-        return (Client) this;
-    }
-
-    @SuppressWarnings("unchecked")
-    public Client then()
-    {
-        return (Client) this;
-    }
-
-    @SuppressWarnings("unchecked")
-    public Client when()
-    {
-        return (Client) this;
-    }    
+   
 }

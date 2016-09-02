@@ -4,6 +4,9 @@ import org.alfresco.dataprep.CMISUtil.DocumentType;
 import org.alfresco.dataprep.ContentAspects;
 import org.alfresco.dataprep.ContentService;
 import org.alfresco.utility.Utility;
+import org.alfresco.utility.model.ContentModel;
+import org.alfresco.utility.model.FileModel;
+import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.UserModel;
 import org.apache.chemistry.opencmis.client.api.Document;
@@ -12,6 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.testng.Assert;
 
+/**
+ * Utility for creating files and folders, asserting they exist in repository
+ * 
+ */
 @Service
 public class DataContent extends TestData<DataContent>
 {
@@ -21,13 +28,29 @@ public class DataContent extends TestData<DataContent>
     @Autowired
     private ContentAspects contentAspect;
     
-    public Folder createFolder(String folderName, SiteModel site)
+    public FolderModel createFolder(String folderName)
+    {    	    	    	
+    	String location  = Utility.buildPath(getCurrentSpace(), folderName);
+    	LOG.info("Creating a new folder content {} in {} " , folderName, location);
+    	Folder cmisFolder = contentService.createFolderInRepository(getCurrentUser().getUsername(), 
+    													  getCurrentUser().getPassword(), 
+    													  folderName, getCurrentSpace());    	
+    	
+    	FolderModel folderModel = new FolderModel(cmisFolder.getPath());    	
+    	folderModel.setNodeRef(cmisFolder.getId());
+    	return folderModel;
+    }
+    
+    /**
+     * It will create a folder in current resource 
+     */
+    public FolderModel createFolder()
     {
-        return contentService.createFolder(
-        			getCurrentUser().getUsername(), 
-                    getCurrentUser().getPassword(), 
-                    folderName, 
-                    site.getId());
+    	if(getLastResource().isEmpty())
+    		setLastResource(RandomData.getRandomName("Folder"));
+    	
+    	FolderModel folderModel = new FolderModel(getLastResource());
+    	return createFolder(folderModel.getLocation());
     }
 
     public void addEmailAlias(SiteModel site, String folderName, String alias) {
@@ -46,33 +69,54 @@ public class DataContent extends TestData<DataContent>
      * @param documentType
      * @return
      */
-    public Document createDocument(DocumentType documentType)
-    {    	
-    	String randomFile = String.format("%s.%s", RandomData.getRandomName("file"), Utility.cmisDocTypeToExtentions(documentType));
+    public FileModel createContent(DocumentType documentType)
+    {    	    	
+    	String newContent = String.format("%s.%s", RandomData.getRandomName("file"), Utility.cmisDocTypeToExtentions(documentType));
     	
-    	LOG.info("Creating a new document {}/{} path" , getCurrentPath(), randomFile);
-    	return contentService.createDocumentInRepository(
+    	String location  = Utility.buildPath(getCurrentSpace(), getLastResource());
+    	LOG.info("Creating a new non-empty content {} in {} " , newContent, location);
+    	
+    	if(getLastResource().isEmpty())
+    		setLastResource(RandomData.getRandomName("Folder"));
+    	
+    	Document cmisDocument = contentService.createDocumentInRepository(
     			getCurrentUser().getUsername(), 
-                getCurrentUser().getPassword(), 
-                getCurrentPath(), 
-                documentType, randomFile, "This is a file file");
+    			getCurrentUser().getPassword(), 
+    			location, 
+    			documentType, 
+    			newContent, 
+    			"This is a file file");
+    
+    	FileModel newFile = new FileModel(cmisDocument.getPaths().get(0).toString());
+    	
+    	newFile.setNodeRef(cmisDocument.getId());
+    	return newFile;
     }
     
     /**     
      * @param fullPath - the full path to CMIS object
      * @param userModel
      */
-    public void assertContentExist(String fullPath, UserModel userModel)
+    public void assertContentExist(String fullPath)
     {   
-        LOG.info("Using User {}, asserting that content Exist in Repository {}",userModel.toString(), fullPath);        
-        boolean contentExist = !checkContent(fullPath, userModel);
+        LOG.info("Using User {}, asserting that content Exist in Repository {}",getCurrentUser().toString(), fullPath);        
+        boolean contentExist = !checkContent(fullPath, getCurrentUser());
         Assert.assertTrue(contentExist, String.format("Content {%s} was found in repository", fullPath));
     }
     
-    public void assertContentDoesNotExist(String fullPath, UserModel userModel)
+    /**     
+     * @param fullPath - the full path to CMIS object
+     * @param userModel
+     */
+    public void assertContentExist(ContentModel contentModel)
+    {
+    	assertContentExist(contentModel.getLocation());
+    }
+    
+    public void assertContentDoesNotExist(String fullPath)
     {        
-        LOG.info("Using User {}, asserting that content Does NOT Exist in Repository {}",userModel.toString(), fullPath);
-        boolean contentDoesNotExist = !checkContent(fullPath, userModel);
+        LOG.info("Using User {}, asserting that content Does NOT Exist in Repository {}",getCurrentUser().toString(), fullPath);
+        boolean contentDoesNotExist = !checkContent(fullPath, getCurrentUser());
         Assert.assertFalse(contentDoesNotExist, String.format("Content {%s} was NOT found in repository", fullPath));
     }
         
@@ -81,5 +125,7 @@ public class DataContent extends TestData<DataContent>
         return contentService.getNodeRefByPath(userModel.getUsername(), userModel.getPassword(), 
                 Utility.convertBackslashToSlash(fullPath)).isEmpty();
     }
+
+	 
     
 }

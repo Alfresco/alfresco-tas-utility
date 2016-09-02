@@ -13,7 +13,6 @@ import org.testng.Assert;
 /**
  * Data Preparation for Users
  * 
- * @author Paul Brodner
  */
 @Service
 public class DataUser extends TestData<DataUser>

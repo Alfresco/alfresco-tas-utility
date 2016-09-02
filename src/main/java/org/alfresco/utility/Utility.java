@@ -7,6 +7,7 @@ import java.util.Scanner;
 import org.alfresco.dataprep.CMISUtil.DocumentType;
 import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.exception.TestObjectNotDefinedException;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 
@@ -81,5 +82,33 @@ public class Utility {
 			break;
 		}
 		return "txt";
+	}
+	
+	/**
+	 * Helper for building strings of the resource passed as parameter
+	 * 
+	 * @param parent
+	 * @param paths
+	 * @return concatenated paths of <parent> + each <paths>
+	 */
+	public static String buildPath(String parent, String... paths) {
+		StringBuilder concatenatedPaths = new StringBuilder(parent);
+		int lenPaths = paths.length;
+		if (lenPaths == 0)
+			return concatenatedPaths.toString();
+
+		if (!parent.endsWith("/"))
+			concatenatedPaths.append("/");
+
+		for (String path : paths) {
+			if (!path.isEmpty()) {
+				concatenatedPaths.append(path);
+				concatenatedPaths.append("/");
+			}
+		}
+		String concatenated = concatenatedPaths.toString();
+		if (lenPaths > 0 && paths[lenPaths - 1].contains("."))
+			concatenated = StringUtils.removeEnd(concatenated, "/");
+		return concatenated;
 	}
 }
