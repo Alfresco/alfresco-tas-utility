@@ -20,6 +20,7 @@
 		<maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
 		<extentreports.version>2.41.1</extentreports.version>
 		<google.guava.version>19.0</google.guava.version>
+		<jackson-databind.version>2.4.4</jackson-databind.version>
 	</properties>
 
 	<build>
@@ -103,6 +104,13 @@
 			<groupId>com.relevantcodes</groupId>
 			<artifactId>extentreports</artifactId>
 			<version>${extentreports.version}</version>
+		</dependency>
+		
+		<!-- @JsonProperty -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson-databind.version}</version>
 		</dependency>
 	</dependencies>
 

@@ -14,14 +14,14 @@ package org.alfresco.utility.model;
  */
 public class CompanyModel extends TestModel
 {
-    private String organization = "no-organization";
-    private String address1 = "no-address1";
-    private String address2 = "no-address2";
-    private String address3 = "no-address3";
-    private String postcode = "no-postcode";
-    private String telephone = "no-telephone";
-    private String fax = "no-fax";
-    private String email = "no-email";
+    private String organization;
+    private String address1;
+    private String address2;
+    private String address3;
+    private String postcode;
+    private String telephone;
+    private String fax;
+    private String email;
 
     public String getOrganization()
     {

@@ -3,13 +3,23 @@ package org.alfresco.utility.model;
 import org.alfresco.utility.data.RandomData;
 import org.springframework.social.alfresco.api.entities.Site.Visibility;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class SiteModel extends TestModel
 {
-    protected Visibility visibility = Visibility.PUBLIC;
-    protected String guid = "no-guid";
-    protected String id = "no-id";
-    protected String title = "no-title";
-    protected String description = "description";
+    @JsonProperty(required = true)
+    protected Visibility visibility;
+    
+    @JsonProperty(required = true)
+    protected String guid;
+    
+    @JsonProperty(required = true)
+    protected String id;
+    
+    @JsonProperty(required = true)
+    protected String title;
+    
+    protected String description;
 
     public SiteModel()
     {
@@ -19,6 +29,8 @@ public class SiteModel extends TestModel
     {
         setTitle(title);
         setId(title);
+        this.visibility = Visibility.PUBLIC;
+        setDescription(RandomData.getRandomAlphanumeric());
     }
 
     public SiteModel(Visibility visibility, String guid, String id, String title, String description)
