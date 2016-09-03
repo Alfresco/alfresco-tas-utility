@@ -16,6 +16,7 @@ import java.util.Map;
 import javax.xml.bind.DatatypeConverter;
 
 import org.alfresco.utility.LogFactory;
+import org.alfresco.utility.testrail.annotation.TestRail;
 import org.alfresco.utility.testrail.model.Section;
 import org.alfresco.utility.testrail.model.TestCase;
 import org.json.simple.JSONObject;
@@ -30,7 +31,6 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 
 public class TestRailApi
 {
-    private static final int TEST_TYPE_AUTOMATED = 3;
     private static final int TEST_PRIORITY_MEDIUM = 2;
     Logger LOG = LogFactory.getLogger();
     private String username;
@@ -221,49 +221,43 @@ public class TestRailApi
     }
 
     @SuppressWarnings("unchecked")
-    public void addTestCase(String testName, Section section)
+    public void addTestCase(String testName, Section section, TestRail annotation)
     {
-        if (isAutomatedTestCaseInSection(testName, section))
-        {
-            LOG.info("Test Case [{}] is already uploaded to Test Rail under section {}", testName, section.getName());
-        }
-        else
-        {
-            try
-            {
-                /*
-                 * {
-                 * "title": "aa",
-                 * "template_id": 1, -> testcase
-                 * "type_id": 3, -> automated
-                 * "priority_id": 2 -> mediu
-                 * }
-                 */
-                @SuppressWarnings("rawtypes")
-                Map data = new HashMap();
-                data.put("title", testName);
-                data.put("template_id", new Integer(1));
-                data.put("type_id", new Integer(TEST_TYPE_AUTOMATED));
-                data.put("priority_id", new Integer(TEST_PRIORITY_MEDIUM));
 
-                postRequest("add_case/" + section.getId(), data);
-            }
-            catch (Exception e)
-            {
-                LOG.error(e.getMessage());
-            }
+        try
+        {
+            /*
+             * {
+             * "title": "aa",
+             * "template_id": 1, -> testcase
+             * "type_id": 3, -> automated
+             * "priority_id": 2 -> mediu
+             * }
+             */
+            @SuppressWarnings("rawtypes")
+            Map data = new HashMap();
+            data.put("title", testName);
+            data.put("template_id", new Integer(1));
+            data.put("type_id", annotation.type().value());
+            data.put("priority_id", new Integer(TEST_PRIORITY_MEDIUM));
+
+            postRequest("add_case/" + section.getId(), data);
+        }
+        catch (Exception e)
+        {
+            LOG.error(e.getMessage());
         }
 
     }
 
-    public boolean isAutomatedTestCaseInSection(String testName, Section section)
+    public boolean isAutomatedTestCaseInSection(String testName, Section section, TestRail annotation)
     {
         // type_id=3 -> automated
         // index.php?/api/v2/get_cases/1&section_id=2&type_id=3
         tmpTestCase = null;
         try
         {
-            Object response = getRequest("/get_cases/" + currentProjectID + "&type_id=" + TEST_TYPE_AUTOMATED + "&section_id=" + section.getId());
+            Object response = getRequest("/get_cases/" + currentProjectID + "&type_id=" + annotation.type().value() +"&section_id=" + section.getId());
             List<TestCase> existingTestCases = toCollection(response, TestCase.class);
             for (TestCase tc : existingTestCases)
             {

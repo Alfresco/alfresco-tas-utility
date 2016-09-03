@@ -15,7 +15,7 @@ public class TestRailTestNGTestListener implements ITestListener
     public void onTestStart(ITestResult result)
     {
         System.out.println("onTestStart1");        
-        testCaseUploader.addInTestRailIfNotExist(result);
+        testCaseUploader.addTestRailIfNotExist(result);
     }
 
     @Override
@@ -55,6 +55,7 @@ public class TestRailTestNGTestListener implements ITestListener
     public void onFinish(ITestContext context)
     {
         System.out.println("onFinish");
+        testCaseUploader.showTestCasesNotUploaded();
     }
 
 }
