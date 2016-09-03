@@ -1,6 +1,7 @@
 package org.alfresco.utility.testrail.model;
 
 /**
+ * Represents one Test Case object from Test Rail
  * {
  * "id": 10,
  * "title": "adminShouldCreateComments",

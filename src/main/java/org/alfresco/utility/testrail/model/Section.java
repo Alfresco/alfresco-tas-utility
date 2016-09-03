@@ -1,6 +1,7 @@
 package org.alfresco.utility.testrail.model;
 
 /**
+ * Represents a Section from TestRail
  * {
  * "id": 1,
  * "suite_id": 1,
