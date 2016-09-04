@@ -12,9 +12,17 @@ import org.alfresco.utility.testrail.TestType;
 public @interface TestRail
 {
 
+    
+    /**
+     * Define the Test Rail sections where the current test will be created
+     * section = {"level1", "level2", "level3"}
+     */
     String[] section();
 
     String description() default "";
 
+   /**
+    * Define the test type as it exist in Test Rails 
+    */
     TestType type() default TestType.AUTOMATED;  
 }

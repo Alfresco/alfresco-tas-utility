@@ -7,11 +7,15 @@ import org.alfresco.utility.testrail.model.Section;
 
 public class SectionUtil
 {
+    /*
+     * retain all the section annotated in tests
+     */
     String[] section;
-
     private Section rootSection = null;
-    private Section lastSection = null;
 
+    /*
+     * get all the section names without the root name
+     */
     public List<String> getRootChildSections()
     {
         List<String> remaining = new ArrayList<String>();
@@ -37,15 +41,10 @@ public class SectionUtil
     {
         this.rootSection = section;
     }
-    
+
     public Section getRootSection()
     {
         return this.rootSection;
-    }
-
-    public void setLastSection(Section lastSection)
-    {
-        this.lastSection = lastSection;
     }
 
     public boolean hasRoot()

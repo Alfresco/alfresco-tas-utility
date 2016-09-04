@@ -7,34 +7,32 @@ import org.testng.ITestResult;
 /**
  * Listen for all test cases created and update them accordingly
  */
-public class TestRailTestNGTestListener implements ITestListener
+public class TestRailTestNGListener implements ITestListener
 {
     private static TestCaseUploader testCaseUploader = new TestCaseUploader();
-  
+
     @Override
     public void onTestStart(ITestResult result)
     {
-        System.out.println("onTestStart1");        
         testCaseUploader.addTestRailIfNotExist(result);
     }
 
     @Override
     public void onTestSuccess(ITestResult result)
-    {        
+    {
         testCaseUploader.updateTestRailTestCase(result);
     }
 
     @Override
     public void onTestFailure(ITestResult result)
     {
-        System.out.println("onTestFailure");
-
+        testCaseUploader.updateTestRailTestCase(result);
     }
 
     @Override
     public void onTestSkipped(ITestResult result)
     {
-        System.out.println("onTestSkipped");
+        testCaseUploader.updateTestRailTestCase(result);
 
     }
 
@@ -42,19 +40,19 @@ public class TestRailTestNGTestListener implements ITestListener
     public void onTestFailedButWithinSuccessPercentage(ITestResult result)
     {
         System.out.println("onTestFailedButWithSuccessPers");
+        testCaseUploader.updateTestRailTestCase(result);
 
     }
-
+   
     @Override
     public void onStart(ITestContext context)
-    {
-        System.out.println("onStart");
+    {     
+        testCaseUploader.oneTimeUpdateFromTestRail();
     }
 
     @Override
     public void onFinish(ITestContext context)
     {
-        System.out.println("onFinish");
         testCaseUploader.showTestCasesNotUploaded();
     }
 

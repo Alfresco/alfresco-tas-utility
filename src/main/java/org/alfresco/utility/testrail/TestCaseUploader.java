@@ -8,13 +8,20 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.alfresco.utility.LogFactory;
+import org.alfresco.utility.TestRailSampleTest;
 import org.alfresco.utility.testrail.annotation.SectionUtil;
 import org.alfresco.utility.testrail.annotation.TestRail;
+import org.alfresco.utility.testrail.model.Run;
 import org.alfresco.utility.testrail.model.Section;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.testng.ITestResult;
 
+/**
+ * Handle uploads of test cases in test rails based on the sections defined in {@link TestRail} annotation
+ * Take a look at {@link TestRailSampleTest} for simple examples
+ * Notice that those sections should exist in Test Rail.
+ */
 public class TestCaseUploader
 {
     Logger LOG = LogFactory.getLogger();
@@ -24,10 +31,12 @@ public class TestCaseUploader
     private TestRail annotation = null;
 
     List<Section> allSections = new ArrayList<Section>();
+    private Run currentTestRun = null;
 
-    public TestCaseUploader()
-    {
-        allSections = testRail.getSections(1);
+    public void oneTimeUpdateFromTestRail()
+    {                   
+        allSections = testRail.getSectionsOfCurrentProject();
+        currentTestRun = testRail.getRunOfCurrentProject();
     }
 
     public void addTestRailIfNotExist(ITestResult result)
@@ -65,37 +74,42 @@ public class TestCaseUploader
                 {
                     if (testRail.isAutomatedTestCaseInSection(result.getName(), lastChildSection, annotation))
                     {
-                        LOG.info("Test Case [{}] is already uploaded under section(s) {}.", result.getName(), ArrayUtils.toString(annotation.section()));
+                        LOG.info("Test Case [{}] is already uploaded under Section(s) {}.", result.getName(), ArrayUtils.toString(annotation.section()));
                     }
                     else
                     {
                         testRail.addTestCase(result.getName(), lastChildSection, annotation);
-                        LOG.info("Test Case [{}] marked as [{}] Test Type is uploaded under section(s) {}.", result.getName(), annotation.type().toString(),
-                                ArrayUtils.toString(annotation.section()));
+                        LOG.info("Test Case [{}] marked as [{}] Test Type is uploaded under Section(s) {}.", getFullTestCaseName(result),
+                                annotation.type().toString(), ArrayUtils.toString(annotation.section()));
                     }
                 }
                 else
                 {
-                    testCasesNotUploaded.put(result.getName(), "Cannot find section:" + sectionUtil.getRootChildSections().toString()
+                    testCasesNotUploaded.put(getFullTestCaseName(result), "Cannot find Section:" + sectionUtil.getRootChildSections().toString()
                             + " having as root, section: " + sectionUtil.getRootSectionName());
                 }
             }
             else
             {
-                testCasesNotUploaded.put(result.getName(), "Cannot find root Section in Test Rail: " + sectionUtil.getRootSectionName());
+                testCasesNotUploaded.put(getFullTestCaseName(result), "Cannot find root Section in Test Rail named : " + sectionUtil.getRootSectionName());
             }
 
         }
         else
         {
-            LOG.info("Test Case [{}] is NOT marked for Test Rail.", result.getName());
+            testCasesNotUploaded.put(getFullTestCaseName(result), "Test Case is NOT marked for Test Rail. Use @TestRail annotation.");
         }
 
     }
 
+    private String getFullTestCaseName(ITestResult result)
+    {
+        return String.format("%s#%s", result.getInstanceName(), result.getName());
+    }
+
     public void updateTestRailTestCase(ITestResult result)
     {
-        testRail.updateTestCaseResult(result);
+        testRail.updateTestCaseResult(result, currentTestRun);
     }
 
     public void showTestCasesNotUploaded()
@@ -107,7 +121,7 @@ public class TestCaseUploader
             Entry thisEntry = (Entry) entries.next();
             Object key = thisEntry.getKey();
             Object value = thisEntry.getValue();
-            LOG.error("Review Test Case {}, cannot upload to Test Rail due to: {}", key, value);
+            LOG.error("Review Test Case [{}], I cannot upload to Test Rail due to: [{}]", key, value);
         }
     }
 
