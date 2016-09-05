@@ -25,74 +25,82 @@ import org.testng.annotations.Test;
  */
 @ContextConfiguration("classpath:alfresco-tester-context.xml")
 @Listeners(value = ReportListenerAdapter.class)
-public class BeansTest extends AbstractTestNGSpringContextTests {
-	@Autowired
-	protected TasProperties properties;
+public class BeansTest extends AbstractTestNGSpringContextTests
+{
+    @Autowired
+    protected TasProperties properties;
 
-	@Autowired
-	protected UserService userService;
+    @Autowired
+    protected UserService userService;
 
-	@Autowired
-	protected DataUser dataUser;
+    @Autowired
+    protected DataUser dataUser;
 
-	@Autowired
-	protected DataSite dataSite;
+    @Autowired
+    protected DataSite dataSite;
 
-	@Autowired
-	protected DataContent dataContent;
+    @Autowired
+    protected DataContent dataContent;
 
-	@Autowired
-	protected ServerHealth serverHealth;
+    @Autowired
+    protected ServerHealth serverHealth;
 
-	SiteModel siteModel;
+    SiteModel siteModel;
 
-	@BeforeClass
-	public void checkServerHealth() throws Exception {
-		serverHealth.assertServerIsOnline();
-		siteModel = dataSite.createPublicRandomSite();
-	}
+    @BeforeClass
+    public void checkServerHealth() throws Exception
+    {
+        serverHealth.assertServerIsOnline();
+        siteModel = dataSite.createPublicRandomSite();
+    }
 
-	@Test
-	public void getEnvPropertiesBean() {
-		Assert.assertNotNull(properties, "Bean EnvProperties is initialised");
-	}
+    @Test
+    public void getEnvPropertiesBean()
+    {
+        Assert.assertNotNull(properties, "Bean EnvProperties is initialised");
+    }
 
-	@Test
-	public void getAdminUsername() {
-		Assert.assertEquals(properties.getAdminUser(), "admin");
-	}
+    @Test
+    public void getAdminUsername()
+    {
+        Assert.assertEquals(properties.getAdminUser(), "admin");
+    }
 
-	@Test
-	public void getAdminPassword() {
-		Assert.assertEquals(properties.getAdminUser(), "admin");
-	}
+    @Test
+    public void getAdminPassword()
+    {
+        Assert.assertEquals(properties.getAdminUser(), "admin");
+    }
 
-	@Test
-	public void getUserServiceBean() {
-		Assert.assertNotNull(properties, "Bean UserService is initialised");
-	}
+    @Test
+    public void getUserServiceBean()
+    {
+        Assert.assertNotNull(properties, "Bean UserService is initialised");
+    }
 
-	@Test
-	public void getDataUserBean() {
-		Assert.assertNotNull(dataUser, "Bean DataUser is initialised");
-	}
+    @Test
+    public void getDataUserBean()
+    {
+        Assert.assertNotNull(dataUser, "Bean DataUser is initialised");
+    }
 
-	@Test
-	public void createFolderAndContent() throws Exception {
-		FolderModel newFolder = dataContent.usingAdmin().usingSite(siteModel).createFolder();
-		dataContent.assertContentExist(newFolder);
-		
+    @Test
+    public void createFolderAndContent() throws Exception
+    {
+        FolderModel newFolder = dataContent.usingAdmin().usingSite(siteModel).createFolder();
+        dataContent.assertContentExist(newFolder);
 
-		FileModel newFile = dataContent.createContent(DocumentType.MSEXCEL);
-		dataContent.assertContentExist(newFile);
-	}
-	
-	@Test
-	public void createFolderAndContentInSpaces() throws Exception {
-		FolderModel newFolder;
-		
-		UserModel newUser = dataUser.createRandomTestUser();
-		newFolder = dataContent.usingUser(newUser).usingUserHome().createFolder();
-		dataContent.assertContentExist(newFolder);
-	}
+        FileModel newFile = dataContent.createContent(DocumentType.MSEXCEL);
+        dataContent.assertContentExist(newFile);
+    }
+
+    @Test
+    public void createFolderAndContentInSpaces() throws Exception
+    {
+        FolderModel newFolder;
+
+        UserModel newUser = dataUser.createRandomTestUser();
+        newFolder = dataContent.usingUser(newUser).usingUserHome().createFolder();
+        dataContent.assertContentExist(newFolder);
+    }
 }

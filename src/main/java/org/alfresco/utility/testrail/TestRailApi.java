@@ -14,10 +14,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.xml.bind.DatatypeConverter;
 
 import org.alfresco.utility.LogFactory;
+import org.alfresco.utility.Utility;
 import org.alfresco.utility.testrail.annotation.TestRail;
 import org.alfresco.utility.testrail.model.Run;
 import org.alfresco.utility.testrail.model.Section;
@@ -34,20 +36,23 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 
 public class TestRailApi
 {
-    private static final int TEST_PRIORITY_MEDIUM = 2;
+    Logger LOG = LogFactory.getLogger();
+
     /*
      * Test Rail Template:
-     * 1 - Test Case (Text)
-     * 2 - Test Case (Steps)
-     * 3 - Exploratory Session
+     * 1 - Test Case 
      */
     private static final int TEMPLATE_ID = new Integer(1);
+    private static final int TEST_PRIORITY_MEDIUM = 2;
 
-    Logger LOG = LogFactory.getLogger();
+    Properties testRailProperties = new Properties();
+
     private String username;
     private String password;
     private String endPointApiPath;
     private int currentProjectID;
+    private String currentRun;
+    private boolean configurationError = true;
 
     private TestCase tmpTestCase = null;
 
@@ -56,9 +61,38 @@ public class TestRailApi
      */
     public TestRailApi()
     {
-        this.username = "work.paul.brodner@gmail.com";
-        this.password = "vqcR/bWdRucRkpy3SUA1";
-        this.endPointApiPath = "https://pauly.testrail.net/" + "index.php?/api/v2/";
+        InputStream defaultPropsInputStream = getClass().getClassLoader().getResourceAsStream("default.properties");
+        if (defaultPropsInputStream != null)
+        {
+            try
+            {
+                testRailProperties.load(defaultPropsInputStream);
+                this.username = testRailProperties.getProperty("testManagement.username");
+                Utility.checkObjectIsInitialized(username, "username");
+                
+                this.password = testRailProperties.getProperty("testManagement.apiKey");
+                Utility.checkObjectIsInitialized(password, "password");
+                
+                this.endPointApiPath = testRailProperties.getProperty("testManagement.endPoint") + "index.php?/api/v2/";
+                Utility.checkObjectIsInitialized(endPointApiPath, "endPointApiPath");
+                
+                this.currentProjectID = Integer.parseInt(testRailProperties.getProperty("testManagement.project"));
+                Utility.checkObjectIsInitialized(currentProjectID, "currentProjectID");
+                
+                this.currentRun = testRailProperties.getProperty("testManagement.testRun");
+                Utility.checkObjectIsInitialized(currentRun, "currentRun");
+                configurationError = false;
+            }
+            catch (Exception e)
+            {
+              LOG.error("Cannot initialize Test Management Setting from default.properties file");
+            }
+        }
+    }
+    
+    public boolean hasConfigurationErrors()
+    {
+        return configurationError;
     }
 
     protected <T> T toClass(Object response, Class<T> classz)
@@ -215,14 +249,14 @@ public class TestRailApi
 
     public List<Section> getSectionsOfCurrentProject()
     {
-        return getSections(1);
+        return getSections(currentProjectID);
     }
+
     /*
      * 
      */
     public List<Section> getSections(int projectID)
-    {
-        currentProjectID = projectID;
+    {        
         LOG.info("Get all sections from Test Rail Project with id: {}", projectID);
         Object response;
         try
@@ -296,7 +330,8 @@ public class TestRailApi
             // step1.put("expected", "desc2");
             // steps.add(step1);
             // data.put("custom_steps_separated", steps);
-            data.put("custom_steps", annotation.description());
+            //data.put("custom_steps", annotation.description());            
+            data.put("custom_expected", annotation.description());
             data.put("priority_id", new Integer(TEST_PRIORITY_MEDIUM));
 
             Object response = postRequest("add_case/" + section.getId(), data);
@@ -399,6 +434,6 @@ public class TestRailApi
 
     public Run getRunOfCurrentProject()
     {
-        return getRun("automation", 1);
+        return getRun(currentRun, currentProjectID);
     }
 }

@@ -14,31 +14,24 @@ public class TestRailSampleTest extends AbstractTestNGSpringContextTests
     @TestRail(type = TestType.FUNCTIONAL, section = { "rest-api", "comments" })
     public void myRestTestOnCommentsThatIsFailing()
     {
-        Assert.assertEquals("TEST", "TEST1");
+        Assert.assertEquals("TEST", "TEST");
     }
 
     @Test
-    @TestRail(type = TestType.AUTOMATED, section = { "rest-api", "files" })
-    public void myRestTestOnFiles()
+    @TestRail(section = { "rest-api", "files" }, description = "checking creation of files")
+    public void myRestTestOnFiles2()
     {
     }
 
     @Test
     @TestRail(section = { "cmis", "files" })
     public void myCMISTestOnFiles()
-    {
+    {     
     }
 
     @Test
-    @TestRail(section = { "cmis", "folders" })
-    public void myCMISTestOnFolders()
+    @TestRail(section ={ "cmis", "files" })
+    public void myCMISTestOnFolders2()
     {
     }
-
-    //
-    // @Override
-    // @BeforeMethod
-    // protected void springTestContextPrepareTestInstance() throws Exception {
-    // super.springTestContextPrepareTestInstance();
-    // }
 }

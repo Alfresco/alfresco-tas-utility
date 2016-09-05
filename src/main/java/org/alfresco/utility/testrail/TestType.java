@@ -2,7 +2,7 @@ package org.alfresco.utility.testrail;
 
 public enum TestType
 {
-    AUTOMATED(3), FUNCTIONAL(6), OTHER(7), REGRESSION(9);
+    FUNCTIONAL(6), OTHER(7);
 
     private int value;
 

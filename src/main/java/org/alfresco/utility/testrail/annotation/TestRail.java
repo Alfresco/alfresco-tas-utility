@@ -24,5 +24,5 @@ public @interface TestRail
    /**
     * Define the test type as it exist in Test Rails 
     */
-    TestType type() default TestType.AUTOMATED;  
+    TestType type() default TestType.FUNCTIONAL;  
 }

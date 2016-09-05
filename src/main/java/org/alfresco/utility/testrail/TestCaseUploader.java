@@ -34,13 +34,16 @@ public class TestCaseUploader
     private Run currentTestRun = null;
 
     public void oneTimeUpdateFromTestRail()
-    {                   
+    {                 
+        if(testRail.hasConfigurationErrors()) return;
+        
         allSections = testRail.getSectionsOfCurrentProject();
         currentTestRun = testRail.getRunOfCurrentProject();
     }
 
     public void addTestRailIfNotExist(ITestResult result)
     {
+        if(testRail.hasConfigurationErrors()) return;
         annotation = result.getMethod().getConstructorOrMethod().getMethod().getAnnotation(TestRail.class);
 
         if (annotation != null)
@@ -109,6 +112,7 @@ public class TestCaseUploader
 
     public void updateTestRailTestCase(ITestResult result)
     {
+        if(testRail.hasConfigurationErrors()) return;
         testRail.updateTestCaseResult(result, currentTestRun);
     }
 
