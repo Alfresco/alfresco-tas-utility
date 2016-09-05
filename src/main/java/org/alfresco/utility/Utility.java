@@ -11,104 +11,137 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 
-public class Utility {
-	static Logger LOG = LogFactory.getLogger();
+public class Utility
+{
+    static Logger LOG = LogFactory.getLogger();
 
-	public static void checkObjectIsInitialized(Object model, String message) throws Exception {
-		if (model == null)
-			throw new TestObjectNotDefinedException(message);
-	}
+    public static void checkObjectIsInitialized(Object model, String message) throws Exception
+    {
+        if (model == null)
+            throw new TestObjectNotDefinedException(message);
+    }
 
-	@SuppressWarnings("unused")
-	public static File getResourceTestDataFile(String fileName) throws Exception {
-		LOG.info("Get resource test/resources/testdata/{}", fileName);
-		File resource = new File(Utility.class.getClassLoader().getResource("testdata/" + fileName).getFile());
-		if (resource == null) {
-			throw new TestConfigurationException(
-					String.format("Your file %s was not found in test/resources/testdata folder", fileName));
-		}
+    @SuppressWarnings("unused")
+    public static File getTestResourceFile(String fileName) throws Exception
+    {
+        LOG.info("Get resource file test/resource/{}", fileName);
+        File resource = new File(Utility.class.getClassLoader().getResource(fileName).getFile());
+        if (resource == null)
+        {
+            throw new TestConfigurationException(String.format("[test/resource/%s] file was not found.", fileName));
+        }
+        return resource;
 
-		return resource;
-	}
+    }
 
-	/**
-	 * @param fileName
-	 * @return the content of filename found in test/resources/testdata/
-	 *         <filename>
-	 * @throws Exception
-	 */
-	public static String getResourceTestDataContent(String fileName) throws Exception {
-		StringBuilder result = new StringBuilder("");
-		File file = getResourceTestDataFile(fileName);
+    public static File getResourceTestDataFile(String fileName) throws Exception
+    {
+        return getTestResourceFile("testdata/" + fileName);
+    }
 
-		try (Scanner scanner = new Scanner(file)) {
-			while (scanner.hasNextLine()) {
-				String line = scanner.nextLine();
-				result.append(line).append("\n");
-			}
-			scanner.close();
-		} catch (IOException e) {
-			throw new TestConfigurationException(
-					String.format("Cannot read from file %s. Error thrown: %s", fileName, e.getMessage()));
-		}
-		return result.toString();
-	}
+    /**
+     * @param fileName
+     * @return the content of filename found in test/resources/testdata/
+     *         <filename>
+     * @throws Exception
+     */
+    public static String getResourceTestDataContent(String fileName) throws Exception
+    {
+        StringBuilder result = new StringBuilder("");
+        File file = getResourceTestDataFile(fileName);
 
-	public static String convertBackslashToSlash(String value) {
-		if (SystemUtils.IS_OS_WINDOWS) {
-			value = value.replace("\\", "/");
-		}
+        try (Scanner scanner = new Scanner(file))
+        {
+            while (scanner.hasNextLine())
+            {
+                String line = scanner.nextLine();
+                result.append(line).append("\n");
+            }
+            scanner.close();
+        }
+        catch (IOException e)
+        {
+            throw new TestConfigurationException(String.format("Cannot read from file %s. Error thrown: %s", fileName, e.getMessage()));
+        }
+        return result.toString();
+    }
 
-		return value;
-	}
+    public static String convertBackslashToSlash(String value)
+    {
+        if (SystemUtils.IS_OS_WINDOWS)
+        {
+            value = value.replace("\\", "/");
+        }
 
-	public static String cmisDocTypeToExtentions(DocumentType cmisDocumentType) {
-		switch (cmisDocumentType) {
-		case TEXT_PLAIN:
-			return "txt";
-		case HTML:
-			return "html";
-		case MSEXCEL:
-			return "xls";
-		case MSPOWERPOINT:
-			return "ppt";
-		case MSWORD:
-			return "doc";
-		case PDF:
-			return "pdf";
-		case XML:
-			return "xml";
-		default:
-			break;
-		}
-		return "txt";
-	}
-	
-	/**
-	 * Helper for building strings of the resource passed as parameter
-	 * 
-	 * @param parent
-	 * @param paths
-	 * @return concatenated paths of <parent> + each <paths>
-	 */
-	public static String buildPath(String parent, String... paths) {
-		StringBuilder concatenatedPaths = new StringBuilder(parent);
-		int lenPaths = paths.length;
-		if (lenPaths == 0)
-			return concatenatedPaths.toString();
+        return value;
+    }
 
-		if (!parent.endsWith("/"))
-			concatenatedPaths.append("/");
+    public static String cmisDocTypeToExtentions(DocumentType cmisDocumentType)
+    {
+        switch (cmisDocumentType)
+        {
+            case TEXT_PLAIN:
+                return "txt";
+            case HTML:
+                return "html";
+            case MSEXCEL:
+                return "xls";
+            case MSPOWERPOINT:
+                return "ppt";
+            case MSWORD:
+                return "doc";
+            case PDF:
+                return "pdf";
+            case XML:
+                return "xml";
+            default:
+                break;
+        }
+        return "txt";
+    }
 
-		for (String path : paths) {
-			if (!path.isEmpty()) {
-				concatenatedPaths.append(path);
-				concatenatedPaths.append("/");
-			}
-		}
-		String concatenated = concatenatedPaths.toString();
-		if (lenPaths > 0 && paths[lenPaths - 1].contains("."))
-			concatenated = StringUtils.removeEnd(concatenated, "/");
-		return concatenated;
-	}
+    /**
+     * Helper for building strings of the resource passed as parameter
+     * 
+     * @param parent
+     * @param paths
+     * @return concatenated paths of <parent> + each <paths>
+     */
+    public static String buildPath(String parent, String... paths)
+    {
+        StringBuilder concatenatedPaths = new StringBuilder(parent);
+        int lenPaths = paths.length;
+        if (lenPaths == 0)
+            return concatenatedPaths.toString();
+
+        if (!parent.endsWith("/"))
+            concatenatedPaths.append("/");
+
+        for (String path : paths)
+        {
+            if (!path.isEmpty())
+            {
+                concatenatedPaths.append(path);
+                concatenatedPaths.append("/");
+            }
+        }
+        String concatenated = concatenatedPaths.toString();
+        if (lenPaths > 0 && paths[lenPaths - 1].contains("."))
+            concatenated = StringUtils.removeEnd(concatenated, "/");
+        return concatenated;
+    }
+
+    /**
+     * If we have
+     * \test\something\now
+     * this method will return \test\something\
+     * 
+     * @param fullPath
+     */
+    public static String getParentPath(String fullPath)
+    {
+        String[] path = fullPath.split(File.separator);
+        String fileName = path[path.length - 1];
+        return fullPath.replace(fileName, "");
+    }
 }
