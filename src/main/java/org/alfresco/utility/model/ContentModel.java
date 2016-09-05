@@ -21,6 +21,7 @@ public class ContentModel extends TestModel
     {
         setName(name);
         setLocation(Paths.get(name).toFile());
+        setTitle(Files.getNameWithoutExtension(location.getName()));
     }
     
     public ContentModel(File location)
