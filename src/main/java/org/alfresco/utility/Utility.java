@@ -133,14 +133,15 @@ public class Utility
 
     /**
      * If we have
-     * \test\something\now
-     * this method will return \test\something\
+     *"/test/something/now"
+     * this method will return "/test/something"
+     * @note the split char is set to "/" 
      * 
      * @param fullPath
      */
     public static String getParentPath(String fullPath)
     {
-        String[] path = fullPath.split(File.separator);
+        String[] path = fullPath.split("/");
         String fileName = path[path.length - 1];
         return fullPath.replace(fileName, "");
     }
