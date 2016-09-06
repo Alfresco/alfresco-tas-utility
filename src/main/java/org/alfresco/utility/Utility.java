@@ -145,4 +145,19 @@ public class Utility
         String fileName = path[path.length - 1];
         return fullPath.replace(fileName, "");
     }
+
+    /**
+     * If the path ends with /, methods return the path without last /
+     * 
+     * @param sourcePath
+     * @return sourcePath without last slash
+     */
+    public static String removeLastSlash(String sourcePath)
+    {
+        if (StringUtils.endsWith(sourcePath, "/"))
+        {
+            return StringUtils.removeEnd(sourcePath, "/");
+        }
+        return sourcePath;
+    }
 }
