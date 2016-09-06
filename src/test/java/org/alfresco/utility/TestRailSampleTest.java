@@ -11,7 +11,7 @@ import org.testng.annotations.Test;
 public class TestRailSampleTest extends AbstractTestNGSpringContextTests
 {
     @Test
-    @TestRail(type = TestType.FUNCTIONAL, section = { "rest-api", "comments" })
+    @TestRail(testType = TestType.FUNCTIONAL, section = { "rest-api", "comments" })
     public void myRestTestOnCommentsThatIsFailing()
     {
         Assert.assertEquals("TEST", "TEST");
