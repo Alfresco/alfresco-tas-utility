@@ -11,9 +11,8 @@ public enum TestType
         this.value = value;
     }
 
-   
-    public Object value()
-    {       
+    public int value()
+    {
         return new Integer(this.value);
     }
 }

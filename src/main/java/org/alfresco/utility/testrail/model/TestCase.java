@@ -1,5 +1,7 @@
 package org.alfresco.utility.testrail.model;
 
+import java.util.List;
+
 /**
  * Represents one Test Case object from Test Rail
  * {
@@ -238,6 +240,38 @@ public class TestCase
         this.custom_goals = custom_goals;
     }
 
+    public List<Integer> getCustom_exce_type()
+    {
+        return custom_exce_type;
+    }
+
+    public void setCustom_exce_type(List<Integer> custom_exce_type)
+    {
+        this.custom_exce_type = custom_exce_type;
+    }
+
+    public boolean isCustom_executiontype()
+    {
+        return custom_executiontype;
+    }
+
+    public void setCustom_executiontype(boolean custom_executiontype)
+    {
+        this.custom_executiontype = custom_executiontype;
+    }
+
+    
+
+    public String getCustom_auto_ref()
+    {
+        return custom_auto_ref;
+    }
+
+    public void setCustom_auto_ref(String custom_auto_ref)
+    {
+        this.custom_auto_ref = custom_auto_ref;
+    }
+
     private int id;
     private String title;
     private int section_id;
@@ -259,4 +293,7 @@ public class TestCase
     private String custom_steps_separated;
     private String custom_mission;
     private String custom_goals;
+    private List<Integer> custom_exce_type;
+    private boolean custom_executiontype;
+    private String custom_auto_ref;
 }

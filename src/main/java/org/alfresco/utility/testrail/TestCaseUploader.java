@@ -34,16 +34,18 @@ public class TestCaseUploader
     private Run currentTestRun = null;
 
     public void oneTimeUpdateFromTestRail()
-    {                 
-        if(testRail.hasConfigurationErrors()) return;
-        
+    {
+        if (testRail.hasConfigurationErrors())
+            return;
+
         allSections = testRail.getSectionsOfCurrentProject();
         currentTestRun = testRail.getRunOfCurrentProject();
     }
 
     public void addTestRailIfNotExist(ITestResult result)
     {
-        if(testRail.hasConfigurationErrors()) return;
+        if (testRail.hasConfigurationErrors())
+            return;
         annotation = result.getMethod().getConstructorOrMethod().getMethod().getAnnotation(TestRail.class);
 
         if (annotation != null)
@@ -81,38 +83,34 @@ public class TestCaseUploader
                     }
                     else
                     {
-                        testRail.addTestCase(result.getName(), lastChildSection, annotation);
-                        LOG.info("Test Case [{}] marked as [{}] Test Type is uploaded under Section(s) {}.", getFullTestCaseName(result),
-                                annotation.type().toString(), ArrayUtils.toString(annotation.section()));
+                        testRail.addTestCase(result, lastChildSection, annotation);
+                        LOG.info("Test Case [{}] marked as [{}] Test Type is uploaded under Section(s) {}.", testRail.getFullTestCaseName(result),
+                                annotation.testType().toString(), ArrayUtils.toString(annotation.section()));
                     }
                 }
                 else
                 {
-                    testCasesNotUploaded.put(getFullTestCaseName(result), "Cannot find Section:" + sectionUtil.getRootChildSections().toString()
+                    testCasesNotUploaded.put(testRail.getFullTestCaseName(result), "Cannot find Section:" + sectionUtil.getRootChildSections().toString()
                             + " having as root, section: " + sectionUtil.getRootSectionName());
                 }
             }
             else
             {
-                testCasesNotUploaded.put(getFullTestCaseName(result), "Cannot find root Section in Test Rail named : " + sectionUtil.getRootSectionName());
+                testCasesNotUploaded.put(testRail.getFullTestCaseName(result),
+                        "Cannot find root Section in Test Rail named : " + sectionUtil.getRootSectionName());
             }
 
         }
         else
         {
-            testCasesNotUploaded.put(getFullTestCaseName(result), "Test Case is NOT marked for Test Rail. Use @TestRail annotation.");
+            testCasesNotUploaded.put(testRail.getFullTestCaseName(result), "Test Case is NOT marked for Test Rail. Use @TestRail annotation.");
         }
-
-    }
-
-    private String getFullTestCaseName(ITestResult result)
-    {
-        return String.format("%s#%s", result.getInstanceName(), result.getName());
     }
 
     public void updateTestRailTestCase(ITestResult result)
     {
-        if(testRail.hasConfigurationErrors()) return;
+        if (testRail.hasConfigurationErrors())
+            return;
         testRail.updateTestCaseResult(result, currentTestRun);
     }
 
