@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.alfresco.utility.LogFactory;
-import org.alfresco.utility.TestRailSampleTest;
 import org.alfresco.utility.testrail.annotation.SectionUtil;
 import org.alfresco.utility.testrail.annotation.TestRail;
 import org.alfresco.utility.testrail.model.Run;
