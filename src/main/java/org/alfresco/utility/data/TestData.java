@@ -89,7 +89,7 @@ public abstract class TestData<Data> implements DSL<Data> {
 	@SuppressWarnings("unchecked")
 	@Override
 	public Data usingRoot() throws Exception {
-		setCurrentSpace("/");
+		setCurrentSpace("");
 		return (Data) this;
 	}
 
