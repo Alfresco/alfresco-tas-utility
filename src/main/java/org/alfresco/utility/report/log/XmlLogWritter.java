@@ -80,7 +80,7 @@ public class XmlLogWritter
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
             DOMSource source = new DOMSource(doc);
-            fullPath = logPath + File.separator + context.getName() + "-" + new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(context.getStartDate()) + ".xml";
+            fullPath = logPath + File.separator + context.getCurrentXmlTest().getClasses().get(0).getName() + "-" + new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(context.getStartDate()) + ".xml";
             
             StreamResult result = new StreamResult(new File(fullPath));
             transformer.transform(source, result);
