@@ -98,29 +98,32 @@ In your maven project, in your pom.xml file add the following dependency
 ```
 (where ${tas.utility.version} is the latest verion released on [Nexus](https://nexus.alfresco.com/nexus/).)
 
+**_NOTE_:** _you can also browse the [samples](samples) folder for simple maven projects that is consumming this library_
+
 ### Configure your maven project to use tas.utility
 * if you have one [simple maven project](https://maven.apache.org/plugins-archives/maven-archetype-plugin-1.0-alpha-7/examples/simple.html) created, you must add Spring bean capabilities to interact with tas.utility project
 	* add dependency to your pom.xml (as indicated above) - _no need for spring bean dependencies, this are downloaded automatically from tas.utilit_	
 	* import resources in src/test/resources/<your-test-context.xml>
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:mongo="http://www.springframework.org/schema/data/mongo"
-	xsi:schemaLocation="http://www.springframework.org/schema/context
-          http://www.springframework.org/schema/context/spring-context-3.0.xsd
-          http://www.springframework.org/schema/data/mongo
-          http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd
-          http://www.springframework.org/schema/beans
-          http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
-
-	<context:annotation-config />
-	<context:component-scan base-package="org.alfresco" />
-
-	<import resource="classpath:dataprep-context.xml" />
-	<import resource="classpath*:alfresco-tester-context.xml" />
-</beans>
-```
+	
+    ```xml
+    <?xml version="1.0" encoding="UTF-8"?>
+    <beans xmlns="http://www.springframework.org/schema/beans"
+    	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+    	xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+    	xsi:schemaLocation="http://www.springframework.org/schema/context
+              http://www.springframework.org/schema/context/spring-context-3.0.xsd
+              http://www.springframework.org/schema/data/mongo
+              http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd
+              http://www.springframework.org/schema/beans
+              http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+    
+    	<context:annotation-config />
+    	<context:component-scan base-package="org.alfresco" />
+    
+    	<import resource="classpath:dataprep-context.xml" />
+    	<import resource="classpath*:alfresco-tester-context.xml" />
+    </beans>
+    ```
 
 * copy [default.properties](src/test/resources/default.properties) to your src/test/resources folder, updating the settings as you want.
 * create a simple TestNG test for testing the autowired bean capabilities
