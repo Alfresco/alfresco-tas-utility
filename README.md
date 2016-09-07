@@ -39,7 +39,7 @@ Using a centralized location (Nexus), everyone will be able to reuse this indivi
 
 * Install and check if all dependencies are downloaded
 
-```ruby
+```bash
 > cd alfresco-tas-tester
 > mvn clean install -DskipTests
 # you should see one [INFO] BUILD SUCCESS message displayed
@@ -48,7 +48,7 @@ Using a centralized location (Nexus), everyone will be able to reuse this indivi
 ## Package Presentation
 
 This project uses a simple maven project [archetype](https://maven.apache.org/plugins-archives/maven-archetype-plugin-1.0-alpha-7/examples/simple.html):
-```python
+```java
 ├── src
 │   ├── main
 │   │   ├── java
