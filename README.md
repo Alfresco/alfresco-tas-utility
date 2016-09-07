@@ -1,6 +1,6 @@
 ## Synopsis
 
-This is the home of the **TAS(**T**est **A**utomation **S**ystem)-Utility** project.
+This is the home of the **TAS**( **T**est **A**utomation **S**ystem)- **Utility** project.
 It is based on Apache Maven, compatible with major IDEs and is using also Spring capabilities for dependency injection.
 
 As a high level overview, this project contains a couple of functionalities usefull for automation testing as: 
@@ -32,20 +32,23 @@ Using a centralized location (Nexus), everyone will be able to reuse this indivi
 
 * Open your Gitlab client and clone the repository of this project.
 * You can do this also from command line (or in your terminal) adding
-```java
+
+```bash
 > git clone https://gitlab.alfresco.com/tas/alfresco-tas-tester.git
 ```
+
 * Install and check if all dependencies are downloaded
+
 ```ruby
 > cd alfresco-tas-tester
 > mvn clean install -DskipTests
 # you should see one [INFO] BUILD SUCCESS message displayed
 ```
+
 ## Package Presentation
 
 This project uses a simple maven project [archetype](https://maven.apache.org/plugins-archives/maven-archetype-plugin-1.0-alpha-7/examples/simple.html):
-```ruby
-
+```python
 ├── src
 │   ├── main
 │   │   ├── java
