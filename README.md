@@ -144,6 +144,8 @@ In your maven project, in your pom.xml file add the following dependency
 
 **_NOTE_:** _we initialized our utility using the [@Autowired](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/factory/annotation/Autowired.html) spring annotation. This utility will know automatically to read and interpret the settings defind in your project._
 
+### How to write a test
+
 ### How to create new data (files/folder)
 * configure your project to use spring (as highlighted above)
 * in your test file add:
@@ -218,10 +220,21 @@ In your maven project, in your pom.xml file add the following dependency
   }
   ```
 
+## How to run tests
+
+### using TestNG Suite
+
+### from command line
+
+## Test Results
+
+## Test Rail Integration
+
+### s
+
 ## Reference
 
 TBD
-
 
 ## Contributors
 
