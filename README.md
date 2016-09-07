@@ -98,7 +98,7 @@ In your maven project, in your pom.xml file add the following dependency
 ```
 (where ${tas.utility.version} is the latest verion released on [Nexus](https://nexus.alfresco.com/nexus/).)
 
-:zap: _you can also browse the [samples](samples) folder for simple maven projects that is consumming this library_
+**_NOTE_:** _you can also browse the [samples](samples) folder for simple maven projects that is consumming this library_
 
 ### Configure your maven project to use tas.utility
 * if you have one [simple maven project](https://maven.apache.org/plugins-archives/maven-archetype-plugin-1.0-alpha-7/examples/simple.html) created, you must add Spring bean capabilities to interact with tas.utility project
