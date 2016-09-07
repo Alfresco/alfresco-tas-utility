@@ -48,7 +48,7 @@ Using a centralized location (Nexus), everyone will be able to reuse this indivi
 ## Package Presentation
 
 This project uses a simple maven project [archetype](https://maven.apache.org/plugins-archives/maven-archetype-plugin-1.0-alpha-7/examples/simple.html):
-```java
+```ruby
 ├── src
 │   ├── main
 │   │   ├── java
