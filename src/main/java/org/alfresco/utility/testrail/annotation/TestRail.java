@@ -29,5 +29,5 @@ public @interface TestRail
     /**
      * Define the Execution Type as it exist in Test Rails
      */
-    ExecutionType[] executionType() default { ExecutionType.SANITY };       
+    ExecutionType[] executionType() default { ExecutionType.REGRESSION };       
 }
