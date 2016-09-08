@@ -13,7 +13,7 @@
 								<xs:complexType>
 									<xs:sequence>
 										<xs:element type="xs:string" name="description" />
-										<xs:element type="xs:byte" name="duration" />
+										<xs:element type="xs:int" name="duration" />
 										<xs:element type="xs:string" name="actualValue" />
 										<xs:element type="xs:string" name="expectedValue" />
 										<xs:element type="xs:string" name="stackTrace" />

@@ -12,7 +12,6 @@ import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -47,8 +46,9 @@ public class XmlLogWritter
             try
             {
                 logProperties.load(defaultProp);
-                this.logPath = logProperties.getProperty("log.path");
-                Utility.checkObjectIsInitialized(logPath, "logPath");
+                logPath = logProperties.getProperty("log.path");
+                if (logPath == null)
+                    logPath = ".";
                 configurationError = false;
             }
             catch (Exception e)
@@ -97,7 +97,7 @@ public class XmlLogWritter
 
             Element end = doc.createElement("end");
             rootElement.appendChild(end);
-            
+
             Element duration = doc.createElement("duration");
             rootElement.appendChild(duration);
 
@@ -143,7 +143,7 @@ public class XmlLogWritter
 
         Node duration = doc.getElementsByTagName("duration").item(0);
         duration.setTextContent(getDuration(context.getEndDate().getTime(), context.getStartDate().getTime()));
-        
+
         int passed = context.getPassedTests().size();
         int failed = context.getFailedTests().size();
         int skipped = context.getSkippedTests().size();
@@ -200,7 +200,7 @@ public class XmlLogWritter
             stepNode.appendChild(doc.createTextNode(step));
             steps.appendChild(stepNode);
         }
-        if(!result.isSuccess())
+        if (!result.isSuccess())
         {
             if (result.getThrowable() != null)
             {
@@ -272,7 +272,7 @@ public class XmlLogWritter
         }
         return doc;
     }
-    
+
     private String getDuration(long endTime, long startTime)
     {
         return new SimpleDateFormat("mm:ss:SSS").format(new Date(endTime - startTime));
