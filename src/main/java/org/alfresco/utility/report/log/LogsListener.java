@@ -14,18 +14,11 @@ public class LogsListener implements ITestListener
     public void onTestStart(ITestResult result)
     {
         XmlLogWritter.testSteps = new ArrayList<String>();
-        System.out.println("Test started running:" + result.getMethod().getMethodName() + " at:" + result.getStartMillis());
     }
 
     @Override
     public void onTestSuccess(ITestResult result)
     {
-        System.out.println(result.getName() + " ----> success");
-        
-        for(String step : XmlLogWritter.testSteps)
-        {
-            System.out.println(step);
-        }
         logWritter.addTestExecution(result, XmlLogWritter.testSteps);
     }
 
@@ -33,14 +26,12 @@ public class LogsListener implements ITestListener
     public void onTestFailure(ITestResult result)
     {
         System.out.println(result.getName() + " ----> fail");
-        //System.out.println(testSteps.get(testSteps.size()-1) + " is fails");
     }
 
     @Override
     public void onTestSkipped(ITestResult result)
     {
         System.out.println(result.getName() + " ----> fail");
-
     }
 
     @Override
@@ -53,7 +44,6 @@ public class LogsListener implements ITestListener
     @Override
     public void onStart(ITestContext context)
     {
-        System.out.println("<<<<<< On Start context name:" + context.getName());
         logWritter.generateXmlFile(context);
     }
 

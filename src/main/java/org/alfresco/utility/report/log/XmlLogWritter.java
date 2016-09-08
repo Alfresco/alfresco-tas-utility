@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -32,7 +33,7 @@ public class XmlLogWritter
     private String logPath;
     private String fullPath;
     private final String dateFormat = "yyyy-MM-dd HH:mm:ss";
-    
+
     public static List<String> testSteps = new ArrayList<String>();
 
     public XmlLogWritter()
@@ -91,7 +92,7 @@ public class XmlLogWritter
             Element start = doc.createElement("start");
             start.appendChild(doc.createTextNode(new SimpleDateFormat(dateFormat).format(context.getStartDate())));
             rootElement.appendChild(start);
-            
+
             Element end = doc.createElement("end");
             end.appendChild(doc.createTextNode("0"));
             rootElement.appendChild(end);
@@ -133,71 +134,94 @@ public class XmlLogWritter
 
     public void setFinish(ITestContext context)
     {
-        try
-        {
-            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder db = docFactory.newDocumentBuilder();
-            Document doc = db.parse(fullPath);
+        Document doc = getLogFile(fullPath);
+        Node endTime = doc.getElementsByTagName("end").item(0);
+        endTime.setTextContent(new SimpleDateFormat(dateFormat).format(context.getEndDate()));
 
-            Node endTime = doc.getElementsByTagName("end").item(0);
-            endTime.setTextContent(new SimpleDateFormat(dateFormat).format(context.getEndDate()));
+        Node passed = doc.getElementsByTagName("passed").item(0);
+        passed.setTextContent(Integer.toString(context.getPassedTests().size()));
 
-            Node passed = doc.getElementsByTagName("passed").item(0);
-            passed.setTextContent(Integer.toString(context.getPassedTests().size()));
+        Node failed = doc.getElementsByTagName("failed").item(0);
+        failed.setTextContent(Integer.toString(context.getFailedTests().size()));
 
-            Node failed = doc.getElementsByTagName("failed").item(0);
-            failed.setTextContent(Integer.toString(context.getFailedTests().size()));
-
-            Node skipped = doc.getElementsByTagName("skipped").item(0);
-            skipped.setTextContent(Integer.toString(context.getSkippedTests().size()));
-
-            // write the content into xml file
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            Transformer transformer = transformerFactory.newTransformer();
-            DOMSource source = new DOMSource(doc);
-            StreamResult result = new StreamResult(fullPath);
-            transformer.transform(source, result);
-        }
-        catch (Exception e)
-        {
-            LOG.error("Cannot update the xml file log. Error: {}", e.getMessage());
-        }
+        Node skipped = doc.getElementsByTagName("skipped").item(0);
+        skipped.setTextContent(Integer.toString(context.getSkippedTests().size()));
+        updateLog(doc);
     }
 
     public void addTestExecution(ITestResult result, List<String> testSteps)
     {
+        Document doc = getLogFile(fullPath);
+        Node tests = doc.getElementsByTagName("tests").item(0);
+        Node test = doc.createElement("test");
+        tests.appendChild(test);
+
+        Node name = doc.createElement("name");
+        name.appendChild(doc.createTextNode(result.getMethod().getMethodName()));
+        test.appendChild(name);
+
+        Node nodeStatus = doc.createElement("status");
+        nodeStatus.appendChild(doc.createTextNode(setStatus(result)));
+        test.appendChild(nodeStatus);
+
+        Node start = doc.createElement("start");
+        long startTime = result.getStartMillis();
+        start.appendChild(doc.createTextNode(new SimpleDateFormat(dateFormat).format(startTime)));
+        test.appendChild(start);
+
+        Node end = doc.createElement("end");
+        long endTime = result.getEndMillis();
+        end.appendChild(doc.createTextNode(new SimpleDateFormat(dateFormat).format(endTime)));
+        test.appendChild(end);
+
+        Node duration = doc.createElement("duration");
+        String execTime = new SimpleDateFormat("mm:ss:SS").format(new Date(endTime - startTime));
+        duration.appendChild(doc.createTextNode(execTime));
+        test.appendChild(duration);
+
+        Node steps = doc.createElement("steps");
+        test.appendChild(steps);
+
+        for (String step : testSteps)
+        {
+            Node stepNode = doc.createElement("step");
+            stepNode.appendChild(doc.createTextNode(step));
+            steps.appendChild(stepNode);
+        }
+        updateLog(doc);
+    }
+
+    private String setStatus(ITestResult result)
+    {
+        String status = "";
+        switch (result.getStatus())
+        {
+            case ITestResult.SUCCESS:
+                status = "PASSED";
+                break;
+            case ITestResult.FAILURE:
+                status = "FAILED";
+                break;
+            case ITestResult.SKIP:
+                status = "SKIPPED";
+                break;
+            case ITestResult.SUCCESS_PERCENTAGE_FAILURE:
+                status = "PASSED";
+                break;
+            default:
+                break;
+        }
+        return status;
+    }
+
+    private void updateLog(Document document)
+    {
         try
         {
-            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder db = docFactory.newDocumentBuilder();
-            Document doc = db.parse(fullPath);
-            Node tests = doc.getElementsByTagName("tests").item(0);
-            
-            Node test = doc.createElement("test");
-            tests.appendChild(test);
-            
-            Node name = doc.createElement("name");
-            name.appendChild(doc.createTextNode(result.getMethod().getMethodName()));
-            test.appendChild(name);
-            
-            Node start = doc.createElement("start");
-            start.appendChild(doc.createTextNode(new SimpleDateFormat(dateFormat).format(result.getStartMillis())));
-            test.appendChild(start);
-            
-            Node steps = doc.createElement("steps");
-            test.appendChild(steps);
-            
-            for(String step : testSteps)
-            {
-                Node stepNode = doc.createElement("step");
-                stepNode.appendChild(doc.createTextNode(step));
-                steps.appendChild(stepNode);
-            }
-           
             // write the content into xml file
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
-            DOMSource source = new DOMSource(doc);
+            DOMSource source = new DOMSource(document);
             StreamResult streamResult = new StreamResult(fullPath);
             transformer.transform(source, streamResult);
         }
@@ -205,5 +229,21 @@ public class XmlLogWritter
         {
             LOG.error("Cannot update the xml file log. Error: {}", e.getMessage());
         }
+    }
+
+    private Document getLogFile(String path)
+    {
+        Document doc = null;
+        try
+        {
+            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = docFactory.newDocumentBuilder();
+            doc = db.parse(fullPath);
+        }
+        catch (Exception e)
+        {
+            LOG.error("Unable to parse xml file. Error: {}", e.getMessage());
+        }
+        return doc;
     }
 }
