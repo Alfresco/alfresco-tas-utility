@@ -20,11 +20,11 @@ Using a centralized location (Nexus), everyone will be able to reuse this indivi
 (tested on unix/non-unix destribution)
 * [Java SE 1.8](http://www.oracle.com/technetwork/java/javase/downloads/index.html).
 * [Maven 3.3](https://maven.apache.org/download.cgi) installed and configure according to [Windows OS](https://maven.apache.org/guides/getting-started/windows-prerequisites.html) or [Mac OS](https://maven.apache.org/install.html).
-* Configure Maven to use Alfresco alfresco-internal repository following this [Guide](https://ts.alfresco.com/share/page/site/eng/wiki-page?title=Maven_Setup)
+* Configure Maven to use Alfresco alfresco-internal repository following this [Guide](https://ts.alfresco.com/share/page/site/eng/wiki-page?title=Maven_Setup).
 * Your favorite IDE as [Eclipse](https://eclipse.org/downloads/) or [InteliJ](https://www.jetbrains.com/idea).
 * Access to [Nexus](https://nexus.alfresco.com/nexus/) repository.
 * Access to Gitlab [TAS](https://gitlab.alfresco.com/tas/) repository.
-* GitLab client for your operating system. (we reommend [SourceTree](https://www.sourcetreeapp.com)).
+* GitLab client for your operating system. (we recommend [SourceTree](https://www.sourcetreeapp.com) use your google account for initial setup).
 * Getting familiar with [Basic Git Commands](http://docs.gitlab.com/ee/gitlab-basics/basic-git-commands.html).
 * Getting familiar with [Maven](https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html).
 * Getting familiar with [Spring](http://docs.spring.io).
@@ -94,16 +94,16 @@ In your maven project, in your pom.xml file add the following dependency
 <dependency>
 			<groupId>org.alfresco.tas</groupId>
 			<artifactId>utility</artifactId>
-			<version></version>
+			<version>${tas.utility.version}</version>
 </dependency>
 ```
-(where ${tas.utility.version} is the latest verion released on [Nexus](https://nexus.alfresco.com/nexus/).)
+(where ${tas.utility.version} is the latest verion released on [Nexus](https://artifacts.alfresco.com/nexus/content/groups/internal) internal.)
 
-**_NOTE_:** _you can also browse the [samples](samples) folder for simple maven projects that is consumming this library_
+**_NOTE_:** _you can also browse the [samples](samples) folder for simple maven projects that is consumming this library. Just import this sample project as a Maven Project in your IDE_
 
 ### Configure your maven project to use tas.utility
 * if you have one [simple maven project](https://maven.apache.org/plugins-archives/maven-archetype-plugin-1.0-alpha-7/examples/simple.html) created, you must add Spring bean capabilities to interact with tas.utility project
-	* add dependency to your pom.xml (as indicated above) - _no need for spring bean dependencies, this are downloaded automatically from tas.utilit_	
+	* add dependency to your pom.xml (as indicated above) - _no need for spring bean dependencies, this are downloaded automatically from tas.utility_	
 	* import resources in src/test/resources/<your-test-context.xml>
 	
     ```xml
@@ -141,11 +141,54 @@ In your maven project, in your pom.xml file add the following dependency
     	}
     }
 	```
-* running testNG test your test should pass if settings from default.properties are properly set.
+* [running](### How to run tests) this test if settings from default.properties are properly set, your test should pass.
 
 **_NOTE_:** _we initialized our utility using the [@Autowired](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/factory/annotation/Autowired.html) spring annotation. This utility will know automatically to read and interpret the settings defind in your project._
 
 ### How to write a test
+
+* we are using TestNG framework to drive our test, so please feel free to take a look on [official documentation](http://testng.org/doc/index.html) if you are not yet familiarized with this.
+* to view a simple class that is using this utility, just browse on [samples/consuming-tas-utility](samples/consuming-tas-utility/src/test/java/org/alfresco/sample/SampleTest.java)
+    * notice the class definition and inheritance value:
+    
+    ```java
+        @ContextConfiguration("classpath:alfresco-test-context.xml")
+        public class SampleTest extends AbstractTestNGSpringContextTests 
+    ```
+    * each utility (from package presentation above) can be annotated with @Autowired keyword in your test in order to initialize it.
+    * as a convention, before running your test, check if the test environment is reachable and your alfresco test server is online.
+    (this will stop the test if the server defined in your property file is not healthy)
+
+    ```java
+        @BeforeClass(alwaysRun = true)
+	    public void environmentCheck() throws Exception {
+		    serverHealth.assertServerIsOnline();
+        }
+    ```
+    * each test name should express cleary what will do:
+    ```java
+        @Test
+	    public void adminShouldCreateFolderInSite()
+        {
+            (...)
+        }
+        
+        @Test
+	    public void adminCannotCreateSameFolderTwice()
+        {
+            (...)
+        }
+    ```
+     * Use the assertions provided by this utility (see the "data" package)
+     
+    ```java
+        //here we create a new content in the root location of alfresco
+        FolderModel myFolder =dataContent.usingRoot().createFolder("MyTestFolder");
+        
+        // here we assert that folder exist 
+		dataContent.assertContentExist(myFolder);
+    ```
+    
 
 ### How to create new data (files/folder)
 * configure your project to use spring (as highlighted above)
