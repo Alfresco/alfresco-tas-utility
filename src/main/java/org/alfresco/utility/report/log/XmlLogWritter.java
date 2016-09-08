@@ -90,27 +90,24 @@ public class XmlLogWritter
 
             // start time
             Element start = doc.createElement("start");
-            start.appendChild(doc.createTextNode(new SimpleDateFormat(dateFormat).format(context.getStartDate())));
             rootElement.appendChild(start);
 
             Element end = doc.createElement("end");
-            end.appendChild(doc.createTextNode("0"));
             rootElement.appendChild(end);
+            
+            Element duration = doc.createElement("duration");
+            rootElement.appendChild(duration);
 
             Element total = doc.createElement("total");
-            total.appendChild(doc.createTextNode("0"));
             rootElement.appendChild(total);
 
             Element passed = doc.createElement("passed");
-            passed.appendChild(doc.createTextNode("0"));
             rootElement.appendChild(passed);
 
             Element failed = doc.createElement("failed");
-            failed.appendChild(doc.createTextNode("0"));
             rootElement.appendChild(failed);
 
             Element skipped = doc.createElement("skipped");
-            skipped.appendChild(doc.createTextNode("0"));
             rootElement.appendChild(skipped);
 
             Element tests = doc.createElement("tests");
@@ -135,16 +132,22 @@ public class XmlLogWritter
     public void setFinish(ITestContext context)
     {
         Document doc = getLogFile(fullPath);
+
+        Node startTime = doc.getElementsByTagName("start").item(0);
+        startTime.setTextContent(new SimpleDateFormat(dateFormat).format(context.getStartDate()));
         Node endTime = doc.getElementsByTagName("end").item(0);
         endTime.setTextContent(new SimpleDateFormat(dateFormat).format(context.getEndDate()));
+
+        Node duration = doc.getElementsByTagName("duration").item(0);
+        duration.setTextContent(getDuration(context.getEndDate().getTime(), context.getStartDate().getTime()));
         
         int passed = context.getPassedTests().size();
         int failed = context.getFailedTests().size();
         int skipped = context.getSkippedTests().size();
-        
+
         Node totalTests = doc.getElementsByTagName("total").item(0);
         totalTests.setTextContent(Integer.toString(passed + failed + skipped));
-        
+
         Node passedNode = doc.getElementsByTagName("passed").item(0);
         passedNode.setTextContent(Integer.toString(passed));
 
@@ -182,8 +185,7 @@ public class XmlLogWritter
         test.appendChild(end);
 
         Node duration = doc.createElement("duration");
-        String execTime = new SimpleDateFormat("mm:ss:SS").format(new Date(endTime - startTime));
-        duration.appendChild(doc.createTextNode(execTime));
+        duration.appendChild(doc.createTextNode(getDuration(endTime, startTime)));
         test.appendChild(duration);
 
         Node steps = doc.createElement("steps");
@@ -252,5 +254,10 @@ public class XmlLogWritter
             LOG.error("Unable to parse xml file. Error: {}", e.getMessage());
         }
         return doc;
+    }
+    
+    private String getDuration(long endTime, long startTime)
+    {
+        return new SimpleDateFormat("mm:ss:SSS").format(new Date(endTime - startTime));
     }
 }
