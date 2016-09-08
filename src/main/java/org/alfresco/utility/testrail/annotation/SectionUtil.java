@@ -27,7 +27,7 @@ public class SectionUtil
         return remaining;
     }
 
-    public SectionUtil(String[] section, List<Section> allSections)
+    public SectionUtil(String[] section)
     {
         this.section = section;
     }

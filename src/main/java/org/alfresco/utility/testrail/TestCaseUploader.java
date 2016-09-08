@@ -50,7 +50,7 @@ public class TestCaseUploader
         if (annotation != null)
         {
 
-            SectionUtil sectionUtil = new SectionUtil(annotation.section(), allSections);
+            SectionUtil sectionUtil = new SectionUtil(annotation.section());
 
             for (Section tmpSection : allSections)
             {
