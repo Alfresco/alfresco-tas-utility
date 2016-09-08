@@ -20,6 +20,7 @@ Using a centralized location (Nexus), everyone will be able to reuse this indivi
 (tested on unix/non-unix destribution)
 * [Java SE 1.8](http://www.oracle.com/technetwork/java/javase/downloads/index.html).
 * [Maven 3.3](https://maven.apache.org/download.cgi) installed and configure according to [Windows OS](https://maven.apache.org/guides/getting-started/windows-prerequisites.html) or [Mac OS](https://maven.apache.org/install.html).
+* Configure Maven to use Alfresco alfresco-internal repository following this [Guide](https://ts.alfresco.com/share/page/site/eng/wiki-page?title=Maven_Setup)
 * Your favorite IDE as [Eclipse](https://eclipse.org/downloads/) or [InteliJ](https://www.jetbrains.com/idea).
 * Access to [Nexus](https://nexus.alfresco.com/nexus/) repository.
 * Access to Gitlab [TAS](https://gitlab.alfresco.com/tas/) repository.
