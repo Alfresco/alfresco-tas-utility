@@ -6,7 +6,7 @@ import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 
-public class LogsTestNGListner implements ITestListener
+public class LogsListener implements ITestListener
 {
     private static XmlLogWritter logWritter = new XmlLogWritter();
     
