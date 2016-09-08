@@ -14,12 +14,8 @@ public class Step
         this.value = value;
     }
     
-    private static void addStep(String stepValue)
+    public static void add(String stepValue)
     {
         XmlLogWritter.testSteps.add(stepValue);
-    }
-    
-    public static void STEP(String name){
-        addStep(name);
     }
 }

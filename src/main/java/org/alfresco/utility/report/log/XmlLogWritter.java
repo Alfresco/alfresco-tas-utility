@@ -1,7 +1,6 @@
 package org.alfresco.utility.report.log;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -10,10 +9,7 @@ import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -27,7 +23,6 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
 
 public class XmlLogWritter
 {
@@ -36,6 +31,7 @@ public class XmlLogWritter
     Properties logProperties = new Properties();
     private String logPath;
     private String fullPath;
+    private final String dateFormat = "yyyy-MM-dd HH:mm:ss";
     
     public static List<String> testSteps = new ArrayList<String>();
 
@@ -93,7 +89,7 @@ public class XmlLogWritter
 
             // start time
             Element start = doc.createElement("start");
-            start.appendChild(doc.createTextNode(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(context.getStartDate())));
+            start.appendChild(doc.createTextNode(new SimpleDateFormat(dateFormat).format(context.getStartDate())));
             rootElement.appendChild(start);
             
             Element end = doc.createElement("end");
@@ -128,15 +124,10 @@ public class XmlLogWritter
 
             StreamResult result = new StreamResult(new File(fullPath));
             transformer.transform(source, result);
-            System.out.println("File saved!");
         }
-        catch (ParserConfigurationException pce)
+        catch (Exception e)
         {
-            pce.printStackTrace();
-        }
-        catch (TransformerException tfe)
-        {
-            tfe.printStackTrace();
+            LOG.error("Cannot create the xml file log. Error: {}", e.getMessage());
         }
     }
 
@@ -149,7 +140,7 @@ public class XmlLogWritter
             Document doc = db.parse(fullPath);
 
             Node endTime = doc.getElementsByTagName("end").item(0);
-            endTime.setTextContent(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(context.getEndDate()));
+            endTime.setTextContent(new SimpleDateFormat(dateFormat).format(context.getEndDate()));
 
             Node passed = doc.getElementsByTagName("passed").item(0);
             passed.setTextContent(Integer.toString(context.getPassedTests().size()));
@@ -167,21 +158,9 @@ public class XmlLogWritter
             StreamResult result = new StreamResult(fullPath);
             transformer.transform(source, result);
         }
-        catch (ParserConfigurationException pce)
+        catch (Exception e)
         {
-            pce.printStackTrace();
-        }
-        catch (TransformerException tfe)
-        {
-            tfe.printStackTrace();
-        }
-        catch (IOException ioe)
-        {
-            ioe.printStackTrace();
-        }
-        catch (SAXException sae)
-        {
-            sae.printStackTrace();
+            LOG.error("Cannot update the xml file log. Error: {}", e.getMessage());
         }
     }
 
@@ -202,7 +181,7 @@ public class XmlLogWritter
             test.appendChild(name);
             
             Node start = doc.createElement("start");
-            start.appendChild(doc.createTextNode(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(result.getStartMillis())));
+            start.appendChild(doc.createTextNode(new SimpleDateFormat(dateFormat).format(result.getStartMillis())));
             test.appendChild(start);
             
             Node steps = doc.createElement("steps");
@@ -222,25 +201,9 @@ public class XmlLogWritter
             StreamResult streamResult = new StreamResult(fullPath);
             transformer.transform(source, streamResult);
         }
-        catch (ParserConfigurationException pce)
+        catch (Exception e)
         {
-            pce.printStackTrace();
-        }
-        catch (IOException ioe)
-        {
-            ioe.printStackTrace();
-        }
-        catch (SAXException sae)
-        {
-            sae.printStackTrace();
-        }
-        catch (TransformerConfigurationException e)
-        {
-            e.printStackTrace();
-        }
-        catch (TransformerException e)
-        {
-            e.printStackTrace();
+            LOG.error("Cannot update the xml file log. Error: {}", e.getMessage());
         }
     }
 }
