@@ -1,5 +1,6 @@
 package org.alfresco.utility.dsl;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.alfresco.utility.Utility;
@@ -9,6 +10,7 @@ import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.model.ContentModel;
 import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.UserModel;
+import org.alfresco.utility.report.log.Step;
 import org.testng.Assert;
 
 /**
@@ -275,6 +277,7 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
     @SuppressWarnings("unchecked")
     public Client assertExistsInRepo()
     {
+        Step.add("Verify that '" + new File(getLastResourceWithoutPrefix()).getName() + "' exists in repository");
         dataContent.usingUser(getTestUser()).assertContentExist(getLastResourceWithoutPrefix());
         return (Client) this;
     }
@@ -282,6 +285,7 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
     @SuppressWarnings("unchecked")
     public Client assertDoesNotExistInRepo()
     {
+        Step.add("Verify that '" + new File(getLastResourceWithoutPrefix()).getName() + "' doesn't exist in repository");
         dataContent.usingUser(getTestUser()).assertContentDoesNotExist(getLastResourceWithoutPrefix());
         return (Client) this;
     }
