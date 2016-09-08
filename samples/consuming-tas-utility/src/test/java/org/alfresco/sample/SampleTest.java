@@ -49,6 +49,7 @@ public class SampleTest extends AbstractTestNGSpringContextTests {
 		 * this call will create folder 'myTest2' under '/' root folder using
 		 * default admin user specified in default.properties file
 		 */
-		dataContent.usingRoot().createFolder("myTest2");
+		FolderModel myFolder =dataContent.usingRoot().createFolder("myTest2");
+		dataContent.assertContentExist(myFolder);
 	}
 }
