@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ExtensionPointTestSuit>
+	<name>extension point suite name</name>
+	<description>optional description</description>
+	<TestCases>
+		<testcase name="test case name">
+			<description>test string</description>
+			<duration>2</duration>
+			<actualValue>true</actualValue>
+			<expectedValue>true</expectedValue>
+			<stackTrace>test string</stackTrace>
+		</testcase>
+		<testcase name="test case name">
+			<description>test string</description>
+			<duration>2</duration>
+			<actualValue>true</actualValue>
+			<expectedValue>true</expectedValue>
+			<stackTrace>test string</stackTrace>
+		</testcase>
+		<testcase name="test case name">
+			<description>test string</description>
+			<duration>2</duration>
+			<actualValue>true</actualValue>
+			<expectedValue>true</expectedValue>
+			<stackTrace>test string</stackTrace>
+		</testcase>
+	</TestCases>
+</ExtensionPointTestSuit>
+
+	
+  
