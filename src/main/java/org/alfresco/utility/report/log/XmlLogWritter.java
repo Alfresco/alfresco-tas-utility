@@ -48,6 +48,8 @@ public class XmlLogWritter
             {
                 logProperties.load(defaultProp);
                 this.logPath = logProperties.getProperty("log.path");
+                if(this.logPath == null)
+                    this.logPath = ".";
                 Utility.checkObjectIsInitialized(logPath, "logPath");
                 configurationError = false;
             }
