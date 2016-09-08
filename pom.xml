@@ -21,6 +21,7 @@
 		<extentreports.version>2.41.1</extentreports.version>
 		<google.guava.version>19.0</google.guava.version>
 		<jackson-databind.version>2.4.4</jackson-databind.version>
+		<org.jvnet.version>0.6.5</org.jvnet.version>
 	</properties>
 
 	<build>
@@ -57,7 +58,6 @@
 			<artifactId>guava</artifactId>
 			<version>${google.guava.version}</version>
 		</dependency>
-
 
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -113,6 +113,13 @@
 			<version>${jackson-databind.version}</version>
 		</dependency>
 
+		<!-- JAXB -->
+		<dependency>
+			<groupId>org.jvnet.jaxb2_commons</groupId>
+			<artifactId>jaxb2-basics</artifactId>
+			<version>${org.jvnet.version}</version>
+		</dependency>
+
 	</dependencies>
 
 	<distributionManagement>
@@ -120,5 +127,28 @@
 			<id>alfresco-internal</id>
 			<url>https://nexus.alfresco.com/nexus/content/repositories/internal-snapshots/</url>
 		</snapshotRepository>
-	</distributionManagement>	 
+	</distributionManagement>
+
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.17</version>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>checkstyle</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>3.6</version>
+			</plugin>
+		</plugins>
+	</reporting>
 </project>
