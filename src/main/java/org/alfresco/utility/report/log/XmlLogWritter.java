@@ -12,14 +12,12 @@ import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.alfresco.utility.LogFactory;
-import org.alfresco.utility.Utility;
 import org.slf4j.Logger;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
@@ -31,7 +29,6 @@ import org.w3c.dom.Node;
 public class XmlLogWritter
 {
     Logger LOG = LogFactory.getLogger();
-    private boolean configurationError = true;
     Properties logProperties = new Properties();
     private String logPath;
     private String fullPath;
@@ -50,8 +47,6 @@ public class XmlLogWritter
                 this.logPath = logProperties.getProperty("log.path");
                 if(this.logPath == null)
                     this.logPath = ".";
-                Utility.checkObjectIsInitialized(logPath, "logPath");
-                configurationError = false;
             }
             catch (Exception e)
             {
@@ -60,15 +55,8 @@ public class XmlLogWritter
         }
     }
 
-    public boolean hasConfigurationErrors()
-    {
-        return configurationError;
-    }
-
     public void generateXmlFile(ITestContext context)
     {
-        if (hasConfigurationErrors())
-            return;
         try
         {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
