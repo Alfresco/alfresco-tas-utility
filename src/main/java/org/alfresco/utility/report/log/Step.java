@@ -1,5 +1,7 @@
 package org.alfresco.utility.report.log;
 
+import org.alfresco.utility.LogFactory;
+
 public class Step
 {
     private String value;
@@ -13,9 +15,10 @@ public class Step
     {
         this.value = value;
     }
-    
-    public static void add(String stepValue)
+
+    public static void STEP(String stepValue)
     {
+        LogFactory.getLogger().info(stepValue);
         XmlLogWritter.testSteps.add(stepValue);
     }
 }
