@@ -137,15 +137,22 @@ public class XmlLogWritter
         Document doc = getLogFile(fullPath);
         Node endTime = doc.getElementsByTagName("end").item(0);
         endTime.setTextContent(new SimpleDateFormat(dateFormat).format(context.getEndDate()));
+        
+        int passed = context.getPassedTests().size();
+        int failed = context.getFailedTests().size();
+        int skipped = context.getSkippedTests().size();
+        
+        Node totalTests = doc.getElementsByTagName("total").item(0);
+        totalTests.setTextContent(Integer.toString(passed + failed + skipped));
+        
+        Node passedNode = doc.getElementsByTagName("passed").item(0);
+        passedNode.setTextContent(Integer.toString(passed));
 
-        Node passed = doc.getElementsByTagName("passed").item(0);
-        passed.setTextContent(Integer.toString(context.getPassedTests().size()));
+        Node failedNode = doc.getElementsByTagName("failed").item(0);
+        failedNode.setTextContent(Integer.toString(failed));
 
-        Node failed = doc.getElementsByTagName("failed").item(0);
-        failed.setTextContent(Integer.toString(context.getFailedTests().size()));
-
-        Node skipped = doc.getElementsByTagName("skipped").item(0);
-        skipped.setTextContent(Integer.toString(context.getSkippedTests().size()));
+        Node skippedNode = doc.getElementsByTagName("skipped").item(0);
+        skippedNode.setTextContent(Integer.toString(skipped));
         updateLog(doc);
     }
 

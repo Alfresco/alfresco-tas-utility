@@ -9,7 +9,7 @@ import org.testng.ITestResult;
 public class LogsListener implements ITestListener
 {
     private static XmlLogWritter logWritter = new XmlLogWritter();
-    
+
     @Override
     public void onTestStart(ITestResult result)
     {
@@ -25,20 +25,19 @@ public class LogsListener implements ITestListener
     @Override
     public void onTestFailure(ITestResult result)
     {
-        System.out.println(result.getName() + " ----> fail");
+        logWritter.addTestExecution(result, XmlLogWritter.testSteps);
     }
 
     @Override
     public void onTestSkipped(ITestResult result)
     {
-        System.out.println(result.getName() + " ----> fail");
+        logWritter.addTestExecution(result, XmlLogWritter.testSteps);
     }
 
     @Override
     public void onTestFailedButWithinSuccessPercentage(ITestResult result)
     {
-        // TODO Auto-generated method stub
-
+        logWritter.addTestExecution(result, XmlLogWritter.testSteps);
     }
 
     @Override
