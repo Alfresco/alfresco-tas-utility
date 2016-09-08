@@ -2,6 +2,8 @@ package org.alfresco.utility.report.log;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,6 +12,7 @@ import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -190,12 +193,26 @@ public class XmlLogWritter
 
         Node steps = doc.createElement("steps");
         test.appendChild(steps);
-
+        Node stepNode = null;
         for (String step : testSteps)
         {
-            Node stepNode = doc.createElement("step");
+            stepNode = doc.createElement("step");
             stepNode.appendChild(doc.createTextNode(step));
             steps.appendChild(stepNode);
+        }
+        if(!result.isSuccess())
+        {
+            if (result.getThrowable() != null)
+            {
+                if (result.getThrowable().getStackTrace() != null)
+                {
+                    StringWriter sw = new StringWriter();
+                    result.getThrowable().printStackTrace(new PrintWriter(sw));
+                    Node error = doc.createElement("error");
+                    error.appendChild(doc.createTextNode(sw.toString()));
+                    test.appendChild(error);
+                }
+            }
         }
         updateLog(doc);
     }
