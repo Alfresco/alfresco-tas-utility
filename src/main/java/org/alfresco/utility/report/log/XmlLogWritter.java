@@ -52,8 +52,8 @@ public class XmlLogWritter
                 if (logPath == null)
                     logPath = ".";
                 
-                URL inputUrl = getClass().getClassLoader().getResource("TransformLogFile.xsl");
-                File dest = Paths.get(logPath, "TransformLogFile.xsl").toFile();
+                URL inputUrl = getClass().getClassLoader().getResource("TransformLog.xsl");
+                File dest = Paths.get(logPath, "TransformLog.xsl").toFile();
                 FileUtils.copyURLToFile(inputUrl, dest);
                 
                 inputUrl = getClass().getClassLoader().getResource("logo.png");
@@ -79,7 +79,7 @@ public class XmlLogWritter
             // suite element
             Document doc = docBuilder.newDocument();
             doc.setXmlStandalone(true);
-            ProcessingInstruction pi = doc.createProcessingInstruction("xml-stylesheet", "type=\"text/xsl\" href=\"TransformLogFile.xsl\"");
+            ProcessingInstruction pi = doc.createProcessingInstruction("xml-stylesheet", "type=\"text/xsl\" href=\"TransformLog.xsl\"");
      
             
             
