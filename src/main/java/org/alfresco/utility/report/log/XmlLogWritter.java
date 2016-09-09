@@ -160,9 +160,10 @@ public class XmlLogWritter
         int passed = context.getPassedTests().size();
         int failed = context.getFailedTests().size();
         int skipped = context.getSkippedTests().size();
+        int total = passed + failed + skipped;
         
         Node totalTests = doc.getElementsByTagName("total").item(0);
-        totalTests.setTextContent(Integer.toString(passed + failed + skipped));
+        totalTests.setTextContent(Integer.toString(total));
 
         Node passedNode = doc.getElementsByTagName("passed").item(0);
         passedNode.setTextContent(Integer.toString(passed));
@@ -174,10 +175,8 @@ public class XmlLogWritter
         skippedNode.setTextContent(Integer.toString(skipped));
         
         Node rateNode = doc.getElementsByTagName("rate").item(0);
-        String rateValue = String.format( "%.2f", (double) (passed * 100/(passed + failed + skipped)));
+        String rateValue = String.format( "%.2f", ((double) passed * 100/((double)total)));
         rateNode.setTextContent(rateValue + "%");
-        
-        
         updateLog(doc);
     }
 
