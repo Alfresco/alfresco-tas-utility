@@ -1,10 +1,21 @@
 package org.alfresco.utility.report;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+import java.util.stream.Collectors;
 
+import org.alfresco.utility.LogFactory;
+import org.alfresco.utility.exception.ReportConfigurationException;
+import org.slf4j.Logger;
 import org.testng.IReporter;
 import org.testng.IResultMap;
 import org.testng.ISuite;
@@ -22,19 +33,22 @@ import com.relevantcodes.extentreports.LogStatus;
  * How to use it
  * a) one approach is to add this listener to your test class
  * Example:
- *      @Listeners(value = ReportListenerAdapter.class)
- *        public class MyTestClass
- *       {
- *          ...   
- *       }
- * b) in your testNG suite file
- *       <listeners>
- *                <listener class-name="org.alfresco.tester.report.ReportListenerAdapter"></listener>
- *       </listeners>       
+ * 
+ * @Listeners(value = ReportListenerAdapter.class)
+ *                  public class MyTestClass
+ *                  {
+ *                  ...
+ *                  }
+ *                  b) in your testNG suite file
+ *                  <listeners>
+ *                  <listener class-name="org.alfresco.tester.report.ReportListenerAdapter"></listener>
+ *                  </listeners>
  * @author Paul Brodner
  */
 public class ReportListenerAdapter implements IReporter
 {
+    static Logger LOG = LogFactory.getLogger();
+
     private ExtentReports extent;
 
     @Override
@@ -57,6 +71,17 @@ public class ReportListenerAdapter implements IReporter
             }
         }
 
+        String content = "";
+        try
+        {
+            content = getLogsContent(getLogsLocation());
+        }
+        catch (ReportConfigurationException e)
+        {
+            LOG.error(e.getMessage());
+        }
+
+        extent.setTestRunnerOutput(String.format("<pre>%s </pre>", content));
         extent.flush();
         extent.close();
     }
@@ -85,7 +110,6 @@ public class ReportListenerAdapter implements IReporter
                 {
                     test.log(status, "Test " + status.toString().toLowerCase() + "ed");
                 }
-
                 extent.endTest(test);
             }
         }
@@ -96,5 +120,48 @@ public class ReportListenerAdapter implements IReporter
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(millis);
         return calendar.getTime();
+    }
+
+    private String getLogsContent(String filePath) throws ReportConfigurationException
+    {
+        String content = "";
+        List<String> lines = new ArrayList<String>();
+
+        try
+        {
+            BufferedReader reader = Files.newBufferedReader(Paths.get(filePath));
+            lines = reader.lines().collect(Collectors.toList());
+        }
+        catch (IOException e)
+        {
+            throw new ReportConfigurationException(String.format("Cannot read log file due tos: %s", e.getMessage()));
+        }
+
+        for (String line : lines)
+        {
+            content = content.concat(line + "\n");
+        }
+
+        return content;
+    }
+
+    private String getLogsLocation()
+    {
+        String log4jPath = ".";
+        Properties log4jProperties = new Properties();
+        InputStream defaultProp = getClass().getClassLoader().getResourceAsStream("log4j.properties");
+        if (defaultProp != null)
+        {
+            try
+            {
+                log4jProperties.load(defaultProp);
+                log4jPath = log4jProperties.getProperty("log4j.appender.R.File");
+            }
+            catch (Exception e)
+            {
+                LOG.error("Cannot read properties from log4j.properties file");
+            }
+        }
+        return log4jPath;
     }
 }
