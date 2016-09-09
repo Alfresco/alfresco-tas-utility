@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,6 +20,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.alfresco.utility.LogFactory;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
@@ -48,6 +51,15 @@ public class XmlLogWritter
                 logPath = logProperties.getProperty("log.path");
                 if (logPath == null)
                     logPath = ".";
+                
+                URL inputUrl = getClass().getClassLoader().getResource("TransformLogFile.xsl");
+                File dest = Paths.get(logPath, "TransformLogFile.xsl").toFile();
+                FileUtils.copyURLToFile(inputUrl, dest);
+                
+                inputUrl = getClass().getClassLoader().getResource("logo.png");
+                dest = Paths.get(logPath, "logo.png").toFile();
+                FileUtils.copyURLToFile(inputUrl, dest);
+                
             }
             catch (Exception e)
             {
