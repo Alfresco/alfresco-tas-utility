@@ -25,6 +25,7 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.ProcessingInstruction;
 
 public class XmlLogWritter
 {
@@ -62,11 +63,18 @@ public class XmlLogWritter
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
+         
             // suite element
             Document doc = docBuilder.newDocument();
+            doc.setXmlStandalone(true);
+            ProcessingInstruction pi = doc.createProcessingInstruction("xml-stylesheet", "type=\"text/xsl\" href=\"TransformLogFile.xsl\"");
+     
+            
+            
             Element rootElement = doc.createElement("suite");
             doc.appendChild(rootElement);
-
+            doc.insertBefore(pi, rootElement);
+            
             // set attribute to suite element
             Attr suiteName = doc.createAttribute("name");
             suiteName.setValue(context.getCurrentXmlTest().getSuite().getName());
@@ -83,28 +91,31 @@ public class XmlLogWritter
 
             // start time
             Element start = doc.createElement("start");
-            rootElement.appendChild(start);
+            className.appendChild(start);
 
             Element end = doc.createElement("end");
-            rootElement.appendChild(end);
+            className.appendChild(end);
 
             Element duration = doc.createElement("duration");
-            rootElement.appendChild(duration);
+            className.appendChild(duration);
 
             Element total = doc.createElement("total");
-            rootElement.appendChild(total);
+            className.appendChild(total);
 
             Element passed = doc.createElement("passed");
-            rootElement.appendChild(passed);
+            className.appendChild(passed);
 
             Element failed = doc.createElement("failed");
-            rootElement.appendChild(failed);
+            className.appendChild(failed);
 
             Element skipped = doc.createElement("skipped");
-            rootElement.appendChild(skipped);
+            className.appendChild(skipped);
+
+            Element rate = doc.createElement("rate");
+            className.appendChild(rate);
 
             Element tests = doc.createElement("tests");
-            rootElement.appendChild(tests);
+            className.appendChild(tests);
 
             // write the content into xml file
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -137,7 +148,7 @@ public class XmlLogWritter
         int passed = context.getPassedTests().size();
         int failed = context.getFailedTests().size();
         int skipped = context.getSkippedTests().size();
-
+        
         Node totalTests = doc.getElementsByTagName("total").item(0);
         totalTests.setTextContent(Integer.toString(passed + failed + skipped));
 
@@ -149,6 +160,12 @@ public class XmlLogWritter
 
         Node skippedNode = doc.getElementsByTagName("skipped").item(0);
         skippedNode.setTextContent(Integer.toString(skipped));
+        
+        Node rateNode = doc.getElementsByTagName("rate").item(0);
+        String rateValue = String.format( "%.2f", (double) (passed * 100/(passed + failed + skipped)));
+        rateNode.setTextContent(rateValue + "%");
+        
+        
         updateLog(doc);
     }
 
