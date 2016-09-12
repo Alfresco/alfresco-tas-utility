@@ -48,7 +48,7 @@ public class DataUser extends TestData<DataUser>
 
     public UserModel createRandomTestUser() throws DataPreparationException
     {
-        return createRandomTestUser("");
+        return createRandomTestUser("User");
     }
 
     public UserModel createRandomTestUser(String prefix) throws DataPreparationException

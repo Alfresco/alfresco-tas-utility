@@ -3,10 +3,11 @@
 <suite name="Suite" parallel="classes">
 	<listeners>
 		<listener class-name="org.alfresco.utility.testrail.TestRailTestNGListener"></listener>
+		<listener class-name="org.alfresco.utility.report.ReportListenerAdapter"></listener>
 	</listeners>
 	<test name="Test">
 		<classes>
-			<class name="org.alfresco.utility.TestRailSampleTest"></class>
+			<class name="org.alfresco.imap.ImapDemoTest"></class>
 		
 		</classes>
 	</test> <!-- Test -->
