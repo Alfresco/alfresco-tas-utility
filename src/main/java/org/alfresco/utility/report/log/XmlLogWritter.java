@@ -21,6 +21,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.alfresco.utility.LogFactory;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
@@ -49,7 +50,7 @@ public class XmlLogWritter
             {
                 logProperties.load(defaultProp);
                 logPath = logProperties.getProperty("log.path");
-                if (logPath == null)
+                if (StringUtils.isEmpty(logPath))
                     logPath = ".";
                 
                 URL inputUrl = getClass().getClassLoader().getResource("TransformLog.xsl");

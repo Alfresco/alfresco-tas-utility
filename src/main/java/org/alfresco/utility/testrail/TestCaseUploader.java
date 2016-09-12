@@ -49,9 +49,7 @@ public class TestCaseUploader
 
         if (annotation != null)
         {
-
             SectionUtil sectionUtil = new SectionUtil(annotation.section());
-
             for (Section tmpSection : allSections)
             {
                 if (tmpSection.getDepth() == 0 && tmpSection.getName().equals(sectionUtil.getRootSectionName()))
@@ -63,17 +61,25 @@ public class TestCaseUploader
             if (sectionUtil.hasRoot())
             {
                 Section lastChildSection = null;
-                for (Section tmpSection : allSections)
+                if(!sectionUtil.getRootChildSections().isEmpty() && annotation.section().length == 1)
                 {
-                    for (String sectionChild : sectionUtil.getRootChildSections())
+                    for (Section tmpSection : allSections)
                     {
-                        if (tmpSection.getName().equals(sectionChild) && tmpSection.getParent_id() == sectionUtil.getRootSection().getId()
-                                && tmpSection.getDepth() > 0)
+                        for (String sectionChild : sectionUtil.getRootChildSections())
                         {
-                            lastChildSection = tmpSection;
+                            if (tmpSection.getName().equals(sectionChild) && tmpSection.getParent_id() == sectionUtil.getRootSection().getId()
+                                    && tmpSection.getDepth() > 0)
+                            {
+                                lastChildSection = tmpSection;
+                            }
                         }
                     }
                 }
+                else
+                {
+                    lastChildSection = sectionUtil.getRootSection();
+                }
+                
                 if (lastChildSection != null)
                 {
                     if (testRail.isAutomatedTestCaseInSection(result.getName(), lastChildSection, annotation))
