@@ -52,7 +52,7 @@ import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
  *                         &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *                           &lt;sequence&gt;
  *                             &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
- *                             &lt;element name="duration" type="{http://www.w3.org/2001/XMLSchema}byte"/&gt;
+ *                             &lt;element name="duration" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
  *                             &lt;element name="actualValue" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
  *                             &lt;element name="expectedValue" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
  *                             &lt;element name="stackTrace" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
@@ -283,7 +283,7 @@ public class ExtensionPointTestSuit
      *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
      *                 &lt;sequence&gt;
      *                   &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
-     *                   &lt;element name="duration" type="{http://www.w3.org/2001/XMLSchema}byte"/&gt;
+     *                   &lt;element name="duration" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
      *                   &lt;element name="actualValue" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
      *                   &lt;element name="expectedValue" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
      *                   &lt;element name="stackTrace" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
@@ -415,7 +415,7 @@ public class ExtensionPointTestSuit
          *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
          *       &lt;sequence&gt;
          *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
-         *         &lt;element name="duration" type="{http://www.w3.org/2001/XMLSchema}byte"/&gt;
+         *         &lt;element name="duration" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
          *         &lt;element name="actualValue" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
          *         &lt;element name="expectedValue" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
          *         &lt;element name="stackTrace" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
@@ -442,7 +442,7 @@ public class ExtensionPointTestSuit
 
             @XmlElement(required = true)
             protected String description;
-            protected byte duration;
+            protected int duration;
             @XmlElement(required = true)
             protected String actualValue;
             @XmlElement(required = true)
@@ -480,7 +480,7 @@ public class ExtensionPointTestSuit
              * Gets the value of the duration property.
              * 
              */
-            public byte getDuration() {
+            public int getDuration() {
                 return duration;
             }
 
@@ -488,7 +488,7 @@ public class ExtensionPointTestSuit
              * Sets the value of the duration property.
              * 
              */
-            public void setDuration(byte value) {
+            public void setDuration(int value) {
                 this.duration = value;
             }
 
@@ -606,9 +606,9 @@ public class ExtensionPointTestSuit
                     }
                 }
                 {
-                    byte lhsDuration;
+                    int lhsDuration;
                     lhsDuration = this.getDuration();
-                    byte rhsDuration;
+                    int rhsDuration;
                     rhsDuration = that.getDuration();
                     if (!strategy.equals(LocatorUtils.property(thisLocator, "duration", lhsDuration), LocatorUtils.property(thatLocator, "duration", rhsDuration), lhsDuration, rhsDuration)) {
                         return false;
@@ -666,7 +666,7 @@ public class ExtensionPointTestSuit
                     currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "description", theDescription), currentHashCode, theDescription);
                 }
                 {
-                    byte theDuration;
+                    int theDuration;
                     theDuration = this.getDuration();
                     currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "duration", theDuration), currentHashCode, theDuration);
                 }
@@ -719,7 +719,7 @@ public class ExtensionPointTestSuit
                     strategy.appendField(locator, this, "description", buffer, theDescription);
                 }
                 {
-                    byte theDuration;
+                    int theDuration;
                     theDuration = this.getDuration();
                     strategy.appendField(locator, this, "duration", buffer, theDuration);
                 }
