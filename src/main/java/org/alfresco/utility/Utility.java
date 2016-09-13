@@ -2,6 +2,8 @@ package org.alfresco.utility;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 import java.util.Scanner;
 
 import org.alfresco.dataprep.CMISUtil.DocumentType;
@@ -133,10 +135,10 @@ public class Utility
 
     /**
      * If we have
-     *"/test/something/now"
+     * "/test/something/now"
      * this method will return "/test/something"
-     * @note the split char is set to "/" 
      * 
+     * @note the split char is set to "/"
      * @param fullPath
      */
     public static String getParentPath(String fullPath)
@@ -159,5 +161,28 @@ public class Utility
             return StringUtils.removeEnd(sourcePath, "/");
         }
         return sourcePath;
+    }
+
+    public static Properties getProperties(Class<?> classz, String propertieFileName) throws TestConfigurationException
+    {
+        InputStream propsStream = classz.getClassLoader().getResourceAsStream(propertieFileName);
+        Properties props = new Properties();
+        if (propsStream != null)
+        {
+            try
+            {
+                props.load(propsStream);                
+            }
+            catch (Exception e)
+            {             
+                throw new TestConfigurationException(String.format("Cannot load properties from %s file", propertieFileName));
+            }
+        }
+        else
+        {
+            throw new TestConfigurationException(String.format("Cannot initialize properties from %s file", propertieFileName));
+        }
+         
+        return props;
     }
 }
