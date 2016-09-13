@@ -273,7 +273,7 @@ public class TestRailApi
         try
         {
             Map data = new HashMap();
-            data.put("title", result.getName());
+            data.put("title", result.getMethod().getMethodName());
             data.put("template_id", TEMPLATE_ID);
             data.put("type_id", annotation.testType().value());
 
