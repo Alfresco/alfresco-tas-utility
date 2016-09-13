@@ -52,7 +52,7 @@ import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
  *                         &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *                           &lt;sequence&gt;
  *                             &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
- *                             &lt;element name="duration" type="{http://www.w3.org/2001/XMLSchema}byte"/&gt;
+ *                             &lt;element name="duration" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
  *                             &lt;element name="actualValue" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
  *                             &lt;element name="expectedValue" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
  *                             &lt;element name="stackTrace" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
@@ -283,7 +283,7 @@ public class ExtensionPointTestSuit
      *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
      *                 &lt;sequence&gt;
      *                   &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
-     *                   &lt;element name="duration" type="{http://www.w3.org/2001/XMLSchema}byte"/&gt;
+     *                   &lt;element name="duration" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
      *                   &lt;element name="actualValue" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
      *                   &lt;element name="expectedValue" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
      *                   &lt;element name="stackTrace" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
@@ -415,7 +415,7 @@ public class ExtensionPointTestSuit
          *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
          *       &lt;sequence&gt;
          *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
-         *         &lt;element name="duration" type="{http://www.w3.org/2001/XMLSchema}byte"/&gt;
+         *         &lt;element name="duration" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
          *         &lt;element name="actualValue" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
          *         &lt;element name="expectedValue" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
          *         &lt;element name="stackTrace" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;

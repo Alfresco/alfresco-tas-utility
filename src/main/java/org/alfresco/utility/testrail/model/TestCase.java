@@ -272,6 +272,26 @@ public class TestCase
         this.custom_auto_ref = custom_auto_ref;
     }
 
+    public String getCustom_description()
+    {
+        return custom_description;
+    }
+
+    public void setCustom_description(String custom_description)
+    {
+        this.custom_description = custom_description;
+    }
+
+    public String getCustom_test_notes()
+    {
+        return custom_test_notes;
+    }
+
+    public void setCustom_test_notes(String custom_test_notes)
+    {
+        this.custom_test_notes = custom_test_notes;
+    }
+
     private int id;
     private String title;
     private int section_id;
@@ -296,4 +316,6 @@ public class TestCase
     private List<Integer> custom_exce_type;
     private boolean custom_executiontype;
     private String custom_auto_ref;
+    private String custom_description;
+    private String custom_test_notes;
 }
