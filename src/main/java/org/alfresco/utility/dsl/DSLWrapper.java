@@ -1,5 +1,6 @@
 package org.alfresco.utility.dsl;
 
+import org.alfresco.dataprep.ContentService;
 import org.alfresco.utility.JmxClient;
 import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.data.DataContent;
@@ -17,6 +18,9 @@ public abstract class DSLWrapper<Client>
 {
     @Autowired
     DataContent dataContent;
+    
+    @Autowired
+    protected ContentService contentService;
 
     @Autowired
     protected JmxClient jmxClient;

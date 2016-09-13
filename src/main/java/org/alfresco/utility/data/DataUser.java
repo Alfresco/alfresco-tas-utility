@@ -63,6 +63,12 @@ public class DataUser extends TestData<DataUser>
         userService.createSiteMember(tasProperties.getAdminUser(), tasProperties.getAdminPassword(), 
                 userModel.getUsername(), siteModel.getId(), role.toString());
     }
+    
+    public void addUserToSite(UserModel invitingUser, UserModel userToInvite, SiteModel siteModel, Role role)
+    {
+        userService.createSiteMember(invitingUser.getUsername(), invitingUser.getPassword(), 
+                userToInvite.getUsername(), siteModel.getId(), role.toString());
+    }
 
     public void assertUserExist(UserModel user)
     {
