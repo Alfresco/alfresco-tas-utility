@@ -61,7 +61,7 @@ public class TestCaseUploader
             if (sectionUtil.hasRoot())
             {
                 Section lastChildSection = null;
-                if(!sectionUtil.getRootChildSections().isEmpty() && annotation.section().length == 1)
+                if(!sectionUtil.getRootChildSections().isEmpty() && annotation.section().length > 0)
                 {
                     for (Section tmpSection : allSections)
                     {
