@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.exception.ReportConfigurationException;
+import org.alfresco.utility.exception.TestConfigurationException;
 import org.slf4j.Logger;
 import org.testng.IReporter;
 import org.testng.IResultMap;
@@ -54,7 +55,14 @@ public class ReportListenerAdapter implements IReporter
     @Override
     public void generateReport(List<XmlSuite> xmlSuites, List<ISuite> suites, String outputDirectory)
     {
-        extent = ReportManager.getReporter();
+        try
+        {
+            extent = ReportManager.getReporter();
+        }
+        catch (TestConfigurationException e1)
+        {
+           LOG.error(e1.getMessage());
+        }
 
         for (ISuite suite : suites)
         {
