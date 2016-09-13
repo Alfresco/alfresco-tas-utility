@@ -6,7 +6,6 @@ import org.alfresco.utility.exception.DataPreparationException;
 import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.social.alfresco.api.entities.Role;
 import org.springframework.stereotype.Service;
 import org.testng.Assert;
 
@@ -55,18 +54,16 @@ public class DataUser extends TestData<DataUser>
     {
         return createUser(RandomData.getRandomName(prefix));
     }
-
     
-    
-    public void addUserToSite(UserModel userModel, SiteModel siteModel, Role role)
+    public void addUserToSite(UserModel userModel, SiteModel siteModel, UserRole role)
     {
-        userService.createSiteMember(tasProperties.getAdminUser(), tasProperties.getAdminPassword(), 
+        userService.createSiteMember(getCurrentUser().getUsername(), getCurrentUser().getPassword(),
                 userModel.getUsername(), siteModel.getId(), role.toString());
     }
-
+    
     public void assertUserExist(UserModel user)
     {
-        assertUserExist(user.getUsername());        
+        assertUserExist(user.getUsername());
     }
     
     public void assertUserExist(String username)
