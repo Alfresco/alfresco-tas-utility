@@ -1,5 +1,6 @@
 package org.alfresco.utility;
 
+import static org.alfresco.utility.report.log.Step.STEP;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -24,6 +25,7 @@ public class ServerHealth
 
     public boolean isServerReachable() throws Exception
     {
+        STEP(String.format("Check the server %s is reachable", properties.getFullServerUrl()));
         boolean reachable = false; 
         try {
             try (Socket soc = new Socket()) {
