@@ -39,8 +39,6 @@ public class XmlLogWritter
     private String fullPath;
     private final String dateFormat = "yyyy-MM-dd HH:mm:ss";
 
-    public static List<String> testSteps = new ArrayList<String>();
-
     public XmlLogWritter()
     {
         InputStream defaultProp = getClass().getClassLoader().getResourceAsStream("default.properties");
