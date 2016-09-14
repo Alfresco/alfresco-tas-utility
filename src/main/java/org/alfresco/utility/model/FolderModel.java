@@ -4,11 +4,21 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
+
 import org.alfresco.utility.data.RandomData;
 
+@XmlType(name = "folder")
 public class FolderModel extends ContentModel
 {
-    List<FileModel> files = new ArrayList<FileModel>();
+
+    protected List<FileModel> files = new ArrayList<FileModel>();
+
+    public FolderModel()
+    {
+
+    }
 
     public FolderModel(String name)
     {
@@ -48,9 +58,20 @@ public class FolderModel extends ContentModel
         return this;
     }
 
+    @XmlElement(name = "file")
     public List<FileModel> getFiles()
     {
+        if (files == null)
+        {
+            files = new ArrayList<FileModel>();
+        }
+
         return files;
+    }
+
+    public void setFiles(List<FileModel> files)
+    {
+        this.files = files;
     }
 
     public FileModel lastFile()
