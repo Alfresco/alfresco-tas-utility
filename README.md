@@ -32,7 +32,7 @@ Using a centralized location (Nexus), everyone will be able to reuse this indivi
 ## Installation (if you want to contribute)
 
 * Open your Gitlab client and clone the repository of this project.
-* You can do this also from command line (or in your terminal) adding
+* You can do this also from command line (or in your terminal) adding:
 
 ```bash
 > git clone https://gitlab.alfresco.com/tas/alfresco-tas-tester.git
