@@ -24,7 +24,7 @@ Using a centralized location (Nexus), everyone will be able to reuse this indivi
 * Your favorite IDE as [Eclipse](https://eclipse.org/downloads/) or [InteliJ](https://www.jetbrains.com/idea).
 * Access to [Nexus](https://nexus.alfresco.com/nexus/) repository.
 * Access to Gitlab [TAS](https://gitlab.alfresco.com/tas/) repository.
-* GitLab client for your operating system. (we recommend [SourceTree](https://www.sourcetreeapp.com) use your google account for initial setup).
+* GitLab client for your operating system. (we recommend [SourceTree](https://www.sourcetreeapp.com) - use your google account for initial setup).
 * Getting familiar with [Basic Git Commands](http://docs.gitlab.com/ee/gitlab-basics/basic-git-commands.html).
 * Getting familiar with [Maven](https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html).
 * Getting familiar with [Spring](http://docs.spring.io).
@@ -82,13 +82,14 @@ This project uses a simple maven project [archetype](https://maven.apache.org/pl
 │       │           └── utility #testing classes/sample code
 │       │               ├── (...)
 │       └── resources
-│           ├── default.properties #one place where you defined all settings
+│           ├── default.properties #one place where you defined all settings like what alfresco server to use, credentials, etc.
 │           ├── log4j.properties
 │           ├── testdata #placeholder for holding test data
 │           │   └── (...)
 ```
 
 ## Sample Usage
+
 In your maven project, in your pom.xml file add the following dependency
 ```
 <dependency>
@@ -97,15 +98,17 @@ In your maven project, in your pom.xml file add the following dependency
 			<version>${tas.utility.version}</version>
 </dependency>
 ```
-(where ${tas.utility.version} is the latest verion released on [Nexus](https://artifacts.alfresco.com/nexus/content/groups/internal) internal.)
+(where ${tas.utility.version} is the latest verion released on [Nexus](https://artifacts.alfresco.com/nexus/content/groups/internal) internal)
 
-**_NOTE_:** _you can also browse the [samples](samples) folder for simple maven projects that is consumming this library. Just import this sample project as a Maven Project in your IDE_
+**_NOTE_:** _you can also browse the [samples](samples) folder for simple maven projects that is consumming this library. Just import this existing Maven project in your IDE (if you are using Eclipse follow [this](http://help.eclipse.org/kepler/index.jsp?topic=%2Forg.eclipse.platform.doc.user%2Ftasks%2Ftasks-importproject.htm) guide)_
 
 ### Configure your maven project to use tas.utility
+
+**_NOTE_:** _you can also browse the [samples](samples) folder for simple maven projects that is consumming this library. Just import this existing Maven project in your IDE (if you are using Eclipse follow [this](http://help.eclipse.org/kepler/index.jsp?topic=%2Forg.eclipse.platform.doc.user%2Ftasks%2Ftasks-importproject.htm) guide)_
+
 * if you have one [simple maven project](https://maven.apache.org/plugins-archives/maven-archetype-plugin-1.0-alpha-7/examples/simple.html) created, you must add Spring bean capabilities to interact with tas.utility project
-	* add dependency to your pom.xml (as indicated above) - _no need for spring bean dependencies, this are downloaded automatically from tas.utility_	
-	* import resources in src/test/resources/<your-test-context.xml>
-	
+	* add dependency to your pom.xml (as indicated [above](#sample-usage)) - _no need for spring bean dependencies, this are downloaded automatically from tas.utility_	
+	* import resources in src/test/resources/<your-test-context.xml> (see one example [here](samples/consuming-tas-utility/src/test/resources/alfresco-test-context.xml))
     ```xml
     <?xml version="1.0" encoding="UTF-8"?>
     <beans xmlns="http://www.springframework.org/schema/beans"
@@ -126,8 +129,17 @@ In your maven project, in your pom.xml file add the following dependency
     </beans>
     ```
 
-* copy [default.properties](src/test/resources/default.properties) to your src/test/resources folder, updating the settings as you want.
-* create a simple TestNG test for testing the autowired bean capabilities
+* copy [default.properties](src/test/resources/default.properties) to your src/test/resources folder, updating the settings as you want (see one example [here](samples/consuming-tas-utility/src/test/resources/default.properties)).
+    * notice that we have properties for server configuration. These are pointing to localhost as default, but feel free to point to any alfresco server that you have already installed (version >=5.1)
+    
+    ```java
+    # Alfresco HTTP Server Settings
+    alfresco.scheme=http
+    alfresco.server=127.0.0.1
+    alfresco.port=8080
+    ```
+    
+* create a simple TestNG test for testing the autowired bean capabilities. (see one example [here](samples/consuming-tas-utility/src/test/java/org/alfresco/sample/SampleTest.java))
 	```java
     @ContextConfiguration("classpath:alfresco-smtp-context.xml")
     public abstract class MyTestIsAwesome extends AbstractTestNGSpringContextTests{
@@ -141,9 +153,14 @@ In your maven project, in your pom.xml file add the following dependency
     	}
     }
 	```
-* [running](### How to run tests) this test if settings from default.properties are properly set, your test should pass.
-
-**_NOTE_:** _we initialized our utility using the [@Autowired](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/factory/annotation/Autowired.html) spring annotation. This utility will know automatically to read and interpret the settings defind in your project._
+	
+* optional add your default [log4j](http://logging.apache.org/log4j/2.x/) file. You can use [this](src/test/resources/log4j.properties) example.	
+* if settings from default.properties are properly set, after [running](#how-to-run-tests) this test you should see Build Success message. 
+* in case you are using the default settings that points to localhost (127.0.0.1) and you don't have Alfresco installed on your machine, you will see one exception thrown by the tests as:
+ 
+    ```java
+    org.alfresco.utility.exception.ServerUnreachableException: Server {127.0.0.1} is unreachable.
+    ```
 
 ### How to write a test
 
@@ -266,12 +283,42 @@ In your maven project, in your pom.xml file add the following dependency
 
 ## How to run tests
 
+
+
+  
 ### using TestNG Suite
+* If you are using Eclipse, and you already configured Eclipse to use [TestNG pluging](http://testng.org/doc/eclipse.html), just right click on the testNG class that you created (something similar to [SampleTest.java](samples/consuming-tas-utility/src/test/java/org/alfresco/sample/SampleTest.java)) select Run As - TestNG Test
+  You should see your test passed:
+
+  ![](docs/pics/success-report-eclipse.png)
 
 ### from command line
 
-## Test Results
+* In terminal or CMD, navigate (with CD) to root folder of your project (you can use the sample project):
 
+  Based on pom.xml setting, the default suite that is executed is pointing to <suiteXmlFile>src/test/resources/sanity-suite.xml</suiteXmlFile>
+  Please analyse this xml file! 
+  Notice that only tests that are marked with "sanity" within package "org.alfresco.sample" are executed.
+  
+  In terminal now type:
+  ```bash
+  mvn test    
+  ```
+  
+## Test Results
+  We already executed a couple of tests using command line as indicated above. Sweet! Please take a look at [sanity-suite.xml](samples/consuming-tas-utility/src/test/resources/sanity-suite.xml) one more time.
+  You will see there that we have one listener added:
+  
+  ```java
+  <listener class-name="org.alfresco.utility.report.ReportListenerAdapter"></listener>
+  ```
+  This will tell our framework, after we run all tests, to generate one HTML report file with graphs and metrics.
+  
+  Take a look at the targe/reports folder (creted after running the tests, path that is also configured in default.properties).
+  Open the report.html file.
+  
+  ![](docs/pics/html-report-sample.png)
+  
 ## Test Rail Integration
 
 ### s
