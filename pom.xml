@@ -18,6 +18,7 @@
 		<dataPrep.version>1.10</dataPrep.version>
 		<slf4j.version>1.7.2</slf4j.version>
 		<maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
+		<maven-remote-resources.version>1.5</maven-remote-resources.version>
 		<extentreports.version>2.41.1</extentreports.version>
 		<google.guava.version>19.0</google.guava.version>
 		<jackson-databind.version>2.4.4</jackson-databind.version>
@@ -47,6 +48,22 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-remote-resources-plugin</artifactId>
+				<version>${maven-remote-resources.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>bundle</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<includes>
+						<include>report/*.*</include>
+					</includes>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
@@ -133,5 +150,5 @@
 			<id>alfresco-internal</id>
 			<url>https://nexus.alfresco.com/nexus/content/repositories/internal-snapshots/</url>
 		</snapshotRepository>
-	</distributionManagement>	
+	</distributionManagement>
 </project>
