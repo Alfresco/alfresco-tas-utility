@@ -120,6 +120,7 @@ public class ContentModel extends TestModel
     public void setPath(String path)
     {
         this.path = path;
+        setLocation(Paths.get(path).toFile());
     }
 
 }

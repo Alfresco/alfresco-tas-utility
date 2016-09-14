@@ -9,12 +9,12 @@ import javax.xml.bind.Unmarshaller;
 public class DataProviderReader
 {
 
-    public static Data xmlDataProviderToJava(InputStream inputStream) throws JAXBException
+    public static InputTestData fromXMLFile(InputStream inputStream) throws JAXBException
     {
 
-        JAXBContext context = JAXBContext.newInstance(Data.class);
+        JAXBContext context = JAXBContext.newInstance(InputTestData.class);
         Unmarshaller um = context.createUnmarshaller();
-        Data dataProvider = (Data) um.unmarshal(inputStream);
+        InputTestData dataProvider = (InputTestData) um.unmarshal(inputStream);
 
         return dataProvider;
 

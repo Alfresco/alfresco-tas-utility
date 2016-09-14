@@ -5,8 +5,8 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 
 import org.alfresco.utility.model.FileModel;
 import org.alfresco.utility.model.FolderModel;
@@ -14,8 +14,8 @@ import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.UserModel;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement
-public class Data
+@XmlRootElement(name="inputtestdata")
+public class InputTestData
 {
 
     private Folders folders;
@@ -23,7 +23,7 @@ public class Data
     private Files files;
 
     private Sites sites;
-    
+
     private Users users;
 
     public Users getUsers()
@@ -66,104 +66,98 @@ public class Data
         this.files = files;
     }
 
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = { "folder" })
     public static class Folders
     {
 
-        protected List<FolderModel> folder;
+        protected List<FolderModel> folders;
 
-        public List<FolderModel> getFolder()
+        @XmlElement(name = "folder")
+        public List<FolderModel> getFolders()
         {
 
-            if (folder == null)
+            if (folders == null)
             {
-                folder = new ArrayList<FolderModel>();
+                folders = new ArrayList<FolderModel>();
             }
 
-            return folder;
+            return folders;
         }
 
-        public void setFolder(List<FolderModel> folder)
+        public void setFolders(List<FolderModel> folders)
         {
-            this.folder = folder;
+            this.folders = folders;
         }
 
     }
 
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = { "file" })
     public static class Files
     {
 
-        protected List<FileModel> file;
+        protected List<FileModel> files;
 
-        public List<FileModel> getFile()
+        @XmlElement(name = "file")
+        public List<FileModel> getFiles()
         {
-            if (file == null)
+            if (files == null)
             {
-                file = new ArrayList<FileModel>();
+                files = new ArrayList<FileModel>();
             }
 
-            return file;
+            return files;
         }
 
-        public void setFile(List<FileModel> file)
+        public void setFiles(List<FileModel> files)
         {
-            this.file = file;
+            this.files = files;
         }
 
     }
 
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = { "site" })
     public static class Sites
     {
 
-        protected List<SiteModel> site;
+        protected List<SiteModel> sites;
 
-        public List<SiteModel> getSite()
+        @XmlElement(name = "site")
+        public List<SiteModel> getSites()
         {
-            if (site == null)
+            if (sites == null)
             {
-                site = new ArrayList<SiteModel>();
+                sites = new ArrayList<SiteModel>();
             }
 
-            return site;
+            return sites;
         }
 
-        public void setSite(List<SiteModel> site)
+        public void setSites(List<SiteModel> sites)
         {
-            this.site = site;
+            this.sites = sites;
         }
 
     }
-    
-    
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = { "user" })
+
     public static class Users
     {
 
-        protected List<UserModel> user;
+        protected List<UserModel> users;
 
-        public List<UserModel> getUser()
+        @XmlElement(name = "user")
+        public List<UserModel> getUsers()
         {
 
-            if (user == null)
+            if (users == null)
             {
-                user = new ArrayList<UserModel>();
+                users = new ArrayList<UserModel>();
             }
 
-            return user;
+            return users;
         }
 
-        public void setUser(List<UserModel> user)
+        public void setUsers(List<UserModel> users)
         {
-            this.user = user;
+            this.users = users;
         }
 
     }
-
 
 }
