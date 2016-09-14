@@ -31,14 +31,14 @@ public class SampleTest extends AbstractTestNGSpringContextTests
     protected FolderModel folderModel;
 
     @BeforeClass(alwaysRun = true)
-    public void setupCifsTest() throws Exception
+    public void setupEnvironment() throws Exception
     {
         serverHealth.assertServerIsOnline();
         testSite = dataSite.createPublicRandomSite();
         folderModel = FolderModel.getRandomFolderModel();
     }
 
-    @Test
+    @Test(groups = "sanity")
     public void creatingFolderInRepoLocation() throws Exception
     {
         /*
@@ -52,7 +52,7 @@ public class SampleTest extends AbstractTestNGSpringContextTests
          * this call will create folder 'myTest2' under '/' root folder using
          * default admin user specified in default.properties file
          */
-        FolderModel myFolder = dataContent.usingRoot().createFolder("MyTestFolder");
+        FolderModel myFolder = dataContent.usingRoot().createFolder("MyTestFolderInRep");
         dataContent.assertContentExist(myFolder);
     }
 }

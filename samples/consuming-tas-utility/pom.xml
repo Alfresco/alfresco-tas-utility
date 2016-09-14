@@ -12,7 +12,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<tas.tester.version>1.0-SNAPSHOT</tas.tester.version>
 		<maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
-		<maven-jar-plugin.version>2.6</maven-jar-plugin.version>		
+		<maven-jar-plugin.version>2.6</maven-jar-plugin.version>
 		<suiteXmlFile>src/test/resources/sanity-suite.xml</suiteXmlFile>
 	</properties>
 	<build>
@@ -37,26 +37,25 @@
 				</configuration>
 			</plugin>
 
-			<!-- attach tests-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>${maven-jar-plugin.version}</version>
+				<artifactId>maven-remote-resources-plugin</artifactId>
+				<version>1.5</version>
+				<configuration>
+					<resourceBundles>
+						<resourceBundle>org.alfresco.tas:utility:${tas.tester.version}</resourceBundle>
+					</resourceBundles>
+				</configuration>
 				<executions>
 					<execution>
 						<goals>
-							<goal>test-jar</goal>
+							<goal>process</goal>
 						</goals>
 					</execution>
 				</executions>
 			</plugin>
-
 		</plugins>
-		<resources>
-			<resource>
-				<directory>src/unit-test/java</directory>
-			</resource>
-		</resources>
+
 	</build>
 	<dependencies>
 		<!-- alfresco utility settings -->
@@ -65,7 +64,7 @@
 			<artifactId>utility</artifactId>
 			<version>${tas.tester.version}</version>
 		</dependency>
-		
+
 	</dependencies>
 
 </project>
