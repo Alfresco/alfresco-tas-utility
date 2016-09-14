@@ -132,12 +132,12 @@ In your maven project, in your pom.xml file add the following dependency
 * copy [default.properties](src/test/resources/default.properties) to your src/test/resources folder, updating the settings as you want (see one example [here](samples/consuming-tas-utility/src/test/resources/default.properties)).
     * notice that we have properties for server configuration. These are pointing to localhost as default, but feel free to point to any alfresco server that you have already installed (version >=5.1)
     
-    ```java
-    # Alfresco HTTP Server Settings
-    alfresco.scheme=http
-    alfresco.server=127.0.0.1
-    alfresco.port=8080
-    ```
+        ```java
+        # Alfresco HTTP Server Settings
+        alfresco.scheme=http
+        alfresco.server=127.0.0.1
+        alfresco.port=8080
+        ```
     
 * create a simple TestNG test for testing the autowired bean capabilities. (see one example [here](samples/consuming-tas-utility/src/test/java/org/alfresco/sample/SampleTest.java))
 	```java
@@ -183,15 +183,16 @@ In your maven project, in your pom.xml file add the following dependency
         }
     ```
     * each test name should express cleary what will do:
+    
     ```java
         @Test
-	    public void adminShouldCreateFolderInSite()
+        public void adminShouldCreateFolderInSite()
         {
             (...)
         }
         
         @Test
-	    public void adminCannotCreateSameFolderTwice()
+        public void adminCannotCreateSameFolderTwice()
         {
             (...)
         }
@@ -283,16 +284,13 @@ In your maven project, in your pom.xml file add the following dependency
 
 ## How to run tests
 
-
-
-  
-### using TestNG Suite
+### -using TestNG Suite
 * If you are using Eclipse, and you already configured Eclipse to use [TestNG pluging](http://testng.org/doc/eclipse.html), just right click on the testNG class that you created (something similar to [SampleTest.java](samples/consuming-tas-utility/src/test/java/org/alfresco/sample/SampleTest.java)) select Run As - TestNG Test
   You should see your test passed:
 
   ![](docs/pics/success-report-eclipse.png)
 
-### from command line
+### -from command line
 
 * In terminal or CMD, navigate (with CD) to root folder of your project (you can use the sample project):
 
@@ -314,14 +312,19 @@ In your maven project, in your pom.xml file add the following dependency
   ```
   This will tell our framework, after we run all tests, to generate one HTML report file with graphs and metrics.
   
-  Take a look at the targe/reports folder (creted after running the tests, path that is also configured in default.properties).
+  Take a look at the targe/reports folder (created after running the tests, path that is also configured in default.properties).
   Open the report.html file.
   
   ![](docs/pics/html-report-sample.png)
   
+  Playing with this report, you will notice that you will be able to:
+    * search tests cases by name
+    * filter test cases by errors, labels, groups, test types, date when it was executed, protocol used, etc.
+    * view overall pass/fail metrics of current test suite, history of tests execution, etc.
+  
 ## Test Rail Integration
 
-### s
+TBD
 
 ## Reference
 
