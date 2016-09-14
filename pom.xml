@@ -50,20 +50,32 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<artifactId>maven-remote-resources-plugin</artifactId>
-				<version>${maven-remote-resources.version}</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>bundle</goal>
-						</goals>
-					</execution>
-				</executions>
+				<groupId>org.eclipse.m2e</groupId>
+				<artifactId>lifecycle-mapping</artifactId>
+				<version>1.0.0</version>
 				<configuration>
-					<includes>
-						<include>shared-resources/*.*</include>
-					</includes>
+					<lifecycleMappingMetadata>
+						<pluginExecutions>
+							<pluginExecution>
+								<pluginExecutionFilter>
+
+									<artifactId>maven-remote-resources-plugin</artifactId>
+									<version>${maven-remote-resources.version}</version>
+									<goals>
+										<goal>bundle</goal>
+									</goals>
+									<includes>
+										<include>shared-resources/*.*</include>
+									</includes>
+								</pluginExecutionFilter>
+								<action>
+									<execute />
+								</action>
+							</pluginExecution>
+						</pluginExecutions>
+					</lifecycleMappingMetadata>
 				</configuration>
+
 			</plugin>
 
 			<plugin>
