@@ -1,5 +1,6 @@
 package org.alfresco.utility.testrail;
 
+import org.alfresco.utility.report.log.Step;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
@@ -14,6 +15,7 @@ public class TestRailExecutorListener implements ITestListener
     @Override
     public void onTestStart(ITestResult result)
     {
+        Step.testSteps.clear();
         testCaseUploader.addTestRailIfNotExist(result);
     }
 
@@ -21,6 +23,7 @@ public class TestRailExecutorListener implements ITestListener
     public void onTestSuccess(ITestResult result)
     {
         testCaseUploader.updateTestRailTestCase(result);
+        testCaseUploader.updateTestRailTestSteps(result, String.join(System.lineSeparator(), Step.testSteps));
     }
 
     @Override

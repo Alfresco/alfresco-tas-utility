@@ -302,10 +302,26 @@ public class TestRailApi
             }
 
             data.put("custom_exce_type", executionTypeList);
-            data.put("custom_expected", annotation.description());
+            data.put("custom_description", annotation.description());
             data.put("priority_id", new Integer(TEST_PRIORITY_MEDIUM));
 
             Object response = postRequest("add_case/" + section.getId(), data);
+            tmpTestCase = toClass(response, TestCase.class);
+        }
+        catch (Exception e)
+        {
+            LOG.error(e.getMessage());
+        }
+    }
+
+    public void addTestSteps(ITestResult result, String steps)
+    {
+        try
+        {
+            Map<String, String> data = new HashMap<String, String>();
+            data.put("custom_test_notes", steps);
+            
+            Object response = postRequest("update_case/" + tmpTestCase.getId(), data);
             tmpTestCase = toClass(response, TestCase.class);
         }
         catch (Exception e)

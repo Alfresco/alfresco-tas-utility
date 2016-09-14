@@ -112,6 +112,11 @@ public class TestCaseUploader
         }
     }
 
+    public void updateTestRailTestSteps(ITestResult result, String steps)
+    {
+        testRail.addTestSteps(result, steps);
+    }
+    
     public void updateTestRailTestCase(ITestResult result)
     {
         if (testRail.hasConfigurationErrors())
