@@ -1,5 +1,7 @@
 package org.alfresco.utility.model;
 
+import javax.xml.bind.annotation.XmlAttribute;
+
 import org.alfresco.utility.LogFactory;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -9,7 +11,9 @@ public abstract class TestModel implements Model
 {
     private String nodeRef;
     static Logger LOG = LogFactory.getLogger();
-    
+
+    private int identifier;
+
     public String toInfo()
     {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
@@ -29,4 +33,16 @@ public abstract class TestModel implements Model
     {
         this.nodeRef = nodeRef;
     }
+
+    @XmlAttribute(name = "id", required = true)
+    public int getIdentifier()
+    {
+        return identifier;
+    }
+
+    public void setIdentifier(int identifier)
+    {
+        this.identifier = identifier;
+    }
+
 }

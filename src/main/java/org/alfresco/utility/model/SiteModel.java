@@ -1,5 +1,7 @@
 package org.alfresco.utility.model;
 
+import javax.xml.bind.annotation.XmlAttribute;
+
 import org.alfresco.utility.data.RandomData;
 import org.springframework.social.alfresco.api.entities.Site.Visibility;
 
@@ -9,16 +11,16 @@ public class SiteModel extends TestModel
 {
     @JsonProperty(required = true)
     protected Visibility visibility;
-    
+
     @JsonProperty(required = true)
     protected String guid;
-    
+
     @JsonProperty(required = true)
     protected String id;
-    
+
     @JsonProperty(required = true)
     protected String title;
-    
+
     protected String description;
 
     public SiteModel()
@@ -52,6 +54,7 @@ public class SiteModel extends TestModel
         this.description = description;
     }
 
+    @XmlAttribute
     public Visibility getVisibility()
     {
         return visibility;

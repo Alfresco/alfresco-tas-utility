@@ -1,11 +1,17 @@
 package org.alfresco.utility.model;
 
+import javax.xml.bind.annotation.XmlAttribute;
+
 public class UserModel extends TestModel
 {
     private String username;
     private String password;
     private String domain;
 
+    public UserModel(){
+        
+    }
+    
     public UserModel(String username, String password)
     {
         this.setUsername(username);
@@ -22,6 +28,7 @@ public class UserModel extends TestModel
         this.password = password;
     }
 
+    @XmlAttribute(name="name")
     public String getUsername()
     {
         return username;

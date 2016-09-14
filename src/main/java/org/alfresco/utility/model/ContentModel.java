@@ -3,27 +3,38 @@ package org.alfresco.utility.model;
 import java.io.File;
 import java.nio.file.Paths;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+
 import org.alfresco.utility.Utility;
 
 import com.google.common.io.Files;
 
 public class ContentModel extends TestModel
 {
+
     private String title;
     private String name;
-    
+
     private String description;
 
     private File location;
-    private  String protocolLocation;
+    private String protocolLocation;
 
-    public ContentModel (String name)
+    private String path;
+
+    public ContentModel()
+    {
+
+    }
+
+    public ContentModel(String name)
     {
         setName(name);
         setLocation(Paths.get(name).toFile());
         setTitle(Files.getNameWithoutExtension(location.getName()));
     }
-    
+
     public ContentModel(File location)
     {
         setName(location.getName());
@@ -63,8 +74,9 @@ public class ContentModel extends TestModel
         this.description = description;
     }
 
+    @XmlElement(name = "location")
     public String getLocation()
-    {    	 
+    {
         return Utility.convertBackslashToSlash(location.getPath());
     }
 
@@ -79,6 +91,7 @@ public class ContentModel extends TestModel
         this.name = location.getName();
     }
 
+    @XmlAttribute(name = "name")
     public String getName()
     {
         return this.name;
@@ -97,6 +110,17 @@ public class ContentModel extends TestModel
     public void setProtocolLocation(String protocolLocation)
     {
         this.protocolLocation = protocolLocation;
+    }
+
+    public String getPath()
+    {
+        return path;
+    }
+
+    public void setPath(String path)
+    {
+        this.path = path;
+        setLocation(Paths.get(path).toFile());
     }
 
 }
