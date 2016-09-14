@@ -3,6 +3,7 @@ package org.alfresco.utility.report;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -59,9 +60,9 @@ public class ReportListenerAdapter implements IReporter
         {
             extent = ReportManager.getReporter();
         }
-        catch (TestConfigurationException e1)
+        catch (TestConfigurationException | URISyntaxException e1)
         {
-           LOG.error(e1.getMessage());
+            LOG.error(e1.getMessage());
         }
 
         for (ISuite suite : suites)

@@ -1,11 +1,14 @@
 package org.alfresco.utility.report;
 
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.Utility;
 import org.alfresco.utility.exception.TestConfigurationException;
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -22,17 +25,25 @@ public class ReportManager
     static Logger LOG = LogFactory.getLogger();
 
     static ExtentReports extent;
-    final static String REPORT_PATH = "report.html";
+    
 
-    public synchronized static ExtentReports getReporter() throws TestConfigurationException
+    public synchronized static ExtentReports getReporter() throws TestConfigurationException, URISyntaxException
     {
         if (extent == null)
         {
             Properties properties = Utility.getProperties(ReportManager.class, "default.properties");
-
-            LOG.info("Using ReportManager to generate HTML report on {}", REPORT_PATH);
-            extent = new ExtentReports(REPORT_PATH, true);
-            extent.loadConfig(FileUtils.getFile("src", "test", "resources", "alfresco-report-config.xml"));
+            String reportHtmlPath = properties.getProperty("reports.path");
+            if (StringUtils.isEmpty(reportHtmlPath))
+                reportHtmlPath = "./target/reports";
+            reportHtmlPath = Paths.get(reportHtmlPath, "report.html").toFile().getPath();
+            
+            LOG.info("Using ReportManager to generate HTML report on {}", reportHtmlPath);
+            extent = new ExtentReports(reportHtmlPath, true);
+            
+            URL reportConfigUrl =ReportManager.class.getClassLoader().getResource("shared-resources/report/alfresco-report-config.xml");
+            
+            extent.loadConfig(Paths.get(reportConfigUrl.toURI()).toFile());
+            
             extent.addSystemInfo("Alfresco Server", String.format("%s://%s:%s", 
                     properties.getProperty("alfresco.scheme"), 
                     properties.getProperty("alfresco.server"),
