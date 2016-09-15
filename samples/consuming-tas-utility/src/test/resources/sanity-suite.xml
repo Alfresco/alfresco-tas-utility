@@ -5,12 +5,6 @@
 		<listener class-name="org.alfresco.utility.report.ReportListenerAdapter"></listener>		
 	</listeners>
 	<test name="Sanity Demo Test">
-		<groups>
-			<run>
-				<include name="sanity" />				 
-			</run>
-		</groups>
-
 		<packages>
 			<package name="org.alfresco.sample"></package>
 		</packages>
