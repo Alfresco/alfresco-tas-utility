@@ -8,7 +8,7 @@
     * [Models](#models)
     * [Protocol(s)](#protocol-s)
 * [Sample Usage](#sample-usage)
-* [Configure your maven project to use tas.utility](##configure-your-maven-project-to-use-tas-utility)
+* [Configure your maven project to use tas.utility](#configure-your-maven-project-to-use-tas-utility)
 * [How to write a test](#how-to-write-a-test)
 * [How to create new data (files/folder)?](#how-to-create-new-data-files-folder)
 * [How to create a new site?](#how-to-create-a-new-site)
