@@ -62,6 +62,9 @@ This project uses a simple maven project [archetype](https://maven.apache.org/pl
 │   │   │               │   ├──(...)
 │   │   │               ├── exception # custom exception
 │   │   │               │   (...)
+│   │   │               ├── extention # utilities that will handle testing of Extention Points
+│   │   │               │   ├── ExtensionPointTestSuite.java
+│   │   │               │   ├── ExtentionPointTestUtility.java
 │   │   │               ├── model #modeling generic objects that will be reused in test
 │   │   │               │   ├── FileModel.java
 │   │   │               │   ├── FileType.java
@@ -70,11 +73,12 @@ This project uses a simple maven project [archetype](https://maven.apache.org/pl
 │   │   │               │   └── (...)
 │   │   │               ├── network # network based helpers
 │   │   │               │   └── (...)
-│   │   │               ├── report #handling reporting (i.e. listeners for generating html reports)
+│   │   │               ├── report #handling reporting (i.e. listeners for generating html reports, steps)
 │   │   │               │   └── (...)
 │   │   │               └── testrail # TestRail integration utils
 │   │   │               │   └── (...)
 │   │   └── resources
+│   |     └── shared-resources  #here you can add any files/configuration files that you want to be avaiable in projects that will consume tas.utility
 │   └── test
 │       ├── java
 │       │   └── org
@@ -209,6 +213,7 @@ In your maven project, in your pom.xml file add the following dependency
     
 
 ### How to create new data (files/folder)
+
 * configure your project to use spring (as highlighted above)
 * in your test file add:
   ```java
@@ -266,6 +271,7 @@ In your maven project, in your pom.xml file add the following dependency
   UserModel testUser = dataUser.createRandomTestUser();
   ```
 ### How to create a new site
+
 * configure your project to use spring (as highlighted above)
 * in your test file add:
   ```java
@@ -294,7 +300,7 @@ In your maven project, in your pom.xml file add the following dependency
 
 * In terminal or CMD, navigate (with CD) to root folder of your project (you can use the sample project):
 
-  Based on pom.xml setting, the default suite that is executed is pointing to <suiteXmlFile>src/test/resources/sanity-suite.xml</suiteXmlFile>
+  Based on pom.xml setting, the default suite that is executed is pointing to ```xml <suiteXmlFile>src/test/resources/sanity-suite.xml</suiteXmlFile>```
   Please analyse this xml file! 
   Notice that only tests that are marked with "sanity" within package "org.alfresco.sample" are executed.
   
@@ -330,6 +336,7 @@ We are not stopping here, the execution status, the stack trace of error, steps 
 
 In order to use Test Rail Integration you will need to add a couple of information in [default.properties](samples/consuming-tas-utility/src/test/resources/default.properties) file:
 (the document is pretty self exmplanatory)
+
 ```java
 # Example of configuration:
 # ------------------------------------------------------
@@ -350,7 +357,7 @@ For generating a new API Key take a look at the official documentation, TestRail
 
 ### How to enable Test Rail Integration?
 
-We wanted to simplify the test rail integration, so we used listeners in order to enable/disable the integration of Test Rail.
+We wanted to simplify the Test Rail integration, so we used listeners in order to enable/disable the integration of Test Rail.
 * first configure your default.properties as indicated above
 
 * now on your TestNG test, add the @TestRail annotation, so let's say you will have this test:
@@ -361,7 +368,7 @@ We wanted to simplify the test rail integration, so we used listeners in order t
    {
    }
   ```
-  add now @TestRail integration with manadatory field <section>. This means that this tests annotated, will be uploaded in TestRail:
+  add now @TestRail integration with manadatory field ```section```. This means that this tests annotated, will be uploaded in TestRail:
   
    ```java
    @Test(groups="sample-tests")
@@ -386,8 +393,8 @@ We wanted to simplify the test rail integration, so we used listeners in order t
   </listeners>
   ```
   
-  Let's also add a group under "<test name="Sanity Demo Test">" so the sanity-suite.xml will look like:
-  This will go through "org.alfresco.sample" package and run ALL the tests that are marked with "groups="sample-tests" - so we want to run only the sample above.
+  Let's also add a group under ```<test name="Sanity Demo Test">``` so the sanity-suite.xml will look like:
+  This will go through "org.alfresco.sample" package and run ALL the tests that are marked with ```java groups="sample-tests"``` - so we want to run only the sample above.
   
   ```xml
     <?xml version="1.0" encoding="UTF-8"?>
