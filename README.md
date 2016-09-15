@@ -93,6 +93,7 @@ This project uses a simple maven project [archetype](https://maven.apache.org/pl
 ```
 ## High Level Concepts
 
+### DSL
 The tas.utility has built-in one internal Domain Specific Language ([DSL](https://en.wikipedia.org/wiki/Domain-specific_language)) for handling data creation, for oferring a common way of using protocols, api's.
 This DSL is made available in src/main/java/org/alfresco/utility under "dsl" package.
 
@@ -135,13 +136,25 @@ As you see above there are available a couple of methods for:
   This will tell us, that we will use resource file "myFile", with admin user from ("/Sites/mySite/documentLibrary").
   This is a general overview of the DSL, so each protocol that will implement this DSL will have the same method signature.
   
-
+### Models
 I assume you already notice a couple of *Model variables, like UserModel or SiteModel, ContentModel, etc. This is another concept that we will use in the tas framework.
 All methods of the DSL will accept this generic methods that are available in src/main/java/org/alfresco/utility under "models" package. 
 
 ![](docs/pics/models.png)
 
 Having this implementation, we can all use the same approach, the same models when we define and create new tests.
+
+### Protocol(s)
+
+If we are talking about protocols like (CIFS, WebDav, FTP, etc.) for them we have another DSL
+![](docs/pics/protocols.png)
+
+Thiw will add the implementation of generic DSL, plus new utilities that will ease our life (like building paths to a particular location, assertions, JMX configuration, etc)
+
+See bellow as example, the implementation of WebDavWrapper (we call it wrapper, because is a class around a standard library: in this case [jackrabbit.apache](https://jackrabbit.apache.org/jcr/index.html) for testing WebDav)
+![](docs/pics/webdav.png)
+
+(This is a project that is consuming tas.utility found also on http://gitlab.alfresco.com)
 
 ## Sample Usage
 
