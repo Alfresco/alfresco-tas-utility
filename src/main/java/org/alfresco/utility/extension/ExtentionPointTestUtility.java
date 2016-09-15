@@ -13,7 +13,6 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import org.alfresco.utility.dsl.DSLWrapper;
 import org.alfresco.utility.exception.XMLToModelUnmarshalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,24 +22,24 @@ import org.xml.sax.SAXException;
 
 @Service
 @Scope(value = "prototype")
-public class WebscriptWrapper extends DSLWrapper<WebscriptWrapper>
+public class ExtentionPointTestUtility
 {
 
-    static Logger LOGGER = LoggerFactory.getLogger(WebscriptWrapper.class);
+    static Logger LOGGER = LoggerFactory.getLogger(ExtentionPointTestUtility.class);
 
     /**
-     * convert xml data to a java content tree
+     * convert XML data to a java content tree
      * 
      * @param importFileXML
      * @return
      * @throws JAXBException
      */
-    public ExtensionPointTestSuit xmlToClass(InputStream importFileXML) throws JAXBException
+    public ExtensionPointTestSuite xmlToClass(InputStream importFileXML) throws JAXBException
     {
 
-        JAXBContext context = JAXBContext.newInstance(ExtensionPointTestSuit.class);
+        JAXBContext context = JAXBContext.newInstance(ExtensionPointTestSuite.class);
         Unmarshaller um = context.createUnmarshaller();
-        ExtensionPointTestSuit webScriptController = (ExtensionPointTestSuit) um.unmarshal(importFileXML);
+        ExtensionPointTestSuite webScriptController = (ExtensionPointTestSuite) um.unmarshal(importFileXML);
 
         return webScriptController;
     }
@@ -63,7 +62,7 @@ public class WebscriptWrapper extends DSLWrapper<WebscriptWrapper>
         }
         catch (SAXException ex)
         {
-            throw new XMLToModelUnmarshalException(WebscriptWrapper.class, ex);
+            throw new XMLToModelUnmarshalException(ExtentionPointTestUtility.class, ex);
         }
     }
 
@@ -76,7 +75,7 @@ public class WebscriptWrapper extends DSLWrapper<WebscriptWrapper>
     {
         // Get file from resources folder
         ClassLoader classLoader = getClass().getClassLoader();
-        File schemaFile = new File(classLoader.getResource("extension/webscript/webscriptTemplate.xsd").getFile());
+        File schemaFile = new File(classLoader.getResource("extension/webscript/extentionPointTestSuiteTemplate.xsd").getFile());
         return schemaFile;
     }
 

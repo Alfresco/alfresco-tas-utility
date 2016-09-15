@@ -73,7 +73,7 @@ import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
  * &lt;/complexType&gt;
  * </pre>
  * 
- * 
+ * Take a look at the example {@link extentionPointTestSuiteTemplate.xml}
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
@@ -82,7 +82,7 @@ import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
     "testCases"
 })
 @XmlRootElement(name = "ExtensionPointTestSuit")
-public class ExtensionPointTestSuit
+public class ExtensionPointTestSuite
     implements Equals, HashCode, ToString
 {
 
@@ -91,7 +91,7 @@ public class ExtensionPointTestSuit
     @XmlElement(required = true)
     protected String description;
     @XmlElement(name = "TestCases", required = true)
-    protected ExtensionPointTestSuit.TestCases testCases;
+    protected ExtensionPointTestSuite.TestCases testCases;
 
     /**
      * Gets the value of the name property.
@@ -146,10 +146,10 @@ public class ExtensionPointTestSuit
      * 
      * @return
      *     possible object is
-     *     {@link ExtensionPointTestSuit.TestCases }
+     *     {@link ExtensionPointTestSuite.TestCases }
      *     
      */
-    public ExtensionPointTestSuit.TestCases getTestCases() {
+    public ExtensionPointTestSuite.TestCases getTestCases() {
         return testCases;
     }
 
@@ -158,21 +158,21 @@ public class ExtensionPointTestSuit
      * 
      * @param value
      *     allowed object is
-     *     {@link ExtensionPointTestSuit.TestCases }
+     *     {@link ExtensionPointTestSuite.TestCases }
      *     
      */
-    public void setTestCases(ExtensionPointTestSuit.TestCases value) {
+    public void setTestCases(ExtensionPointTestSuite.TestCases value) {
         this.testCases = value;
     }
 
     public boolean equals(ObjectLocator thisLocator, ObjectLocator thatLocator, Object object, EqualsStrategy strategy) {
-        if (!(object instanceof ExtensionPointTestSuit)) {
+        if (!(object instanceof ExtensionPointTestSuite)) {
             return false;
         }
         if (this == object) {
             return true;
         }
-        final ExtensionPointTestSuit that = ((ExtensionPointTestSuit) object);
+        final ExtensionPointTestSuite that = ((ExtensionPointTestSuite) object);
         {
             String lhsName;
             lhsName = this.getName();
@@ -192,9 +192,9 @@ public class ExtensionPointTestSuit
             }
         }
         {
-            ExtensionPointTestSuit.TestCases lhsTestCases;
+            ExtensionPointTestSuite.TestCases lhsTestCases;
             lhsTestCases = this.getTestCases();
-            ExtensionPointTestSuit.TestCases rhsTestCases;
+            ExtensionPointTestSuite.TestCases rhsTestCases;
             rhsTestCases = that.getTestCases();
             if (!strategy.equals(LocatorUtils.property(thisLocator, "testCases", lhsTestCases), LocatorUtils.property(thatLocator, "testCases", rhsTestCases), lhsTestCases, rhsTestCases)) {
                 return false;
@@ -221,7 +221,7 @@ public class ExtensionPointTestSuit
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "description", theDescription), currentHashCode, theDescription);
         }
         {
-            ExtensionPointTestSuit.TestCases theTestCases;
+            ExtensionPointTestSuite.TestCases theTestCases;
             theTestCases = this.getTestCases();
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "testCases", theTestCases), currentHashCode, theTestCases);
         }
@@ -259,7 +259,7 @@ public class ExtensionPointTestSuit
             strategy.appendField(locator, this, "description", buffer, theDescription);
         }
         {
-            ExtensionPointTestSuit.TestCases theTestCases;
+            ExtensionPointTestSuite.TestCases theTestCases;
             theTestCases = this.getTestCases();
             strategy.appendField(locator, this, "testCases", buffer, theTestCases);
         }
@@ -309,7 +309,7 @@ public class ExtensionPointTestSuit
         implements Equals, HashCode, ToString
     {
 
-        protected List<ExtensionPointTestSuit.TestCases.Testcase> testcase;
+        protected List<ExtensionPointTestSuite.TestCases.Testcase> testcase;
 
         /**
          * Gets the value of the testcase property.
@@ -329,29 +329,29 @@ public class ExtensionPointTestSuit
          * 
          * <p>
          * Objects of the following type(s) are allowed in the list
-         * {@link ExtensionPointTestSuit.TestCases.Testcase }
+         * {@link ExtensionPointTestSuite.TestCases.Testcase }
          * 
          * 
          */
-        public List<ExtensionPointTestSuit.TestCases.Testcase> getTestcase() {
+        public List<ExtensionPointTestSuite.TestCases.Testcase> getTestcase() {
             if (testcase == null) {
-                testcase = new ArrayList<ExtensionPointTestSuit.TestCases.Testcase>();
+                testcase = new ArrayList<ExtensionPointTestSuite.TestCases.Testcase>();
             }
             return this.testcase;
         }
 
         public boolean equals(ObjectLocator thisLocator, ObjectLocator thatLocator, Object object, EqualsStrategy strategy) {
-            if (!(object instanceof ExtensionPointTestSuit.TestCases)) {
+            if (!(object instanceof ExtensionPointTestSuite.TestCases)) {
                 return false;
             }
             if (this == object) {
                 return true;
             }
-            final ExtensionPointTestSuit.TestCases that = ((ExtensionPointTestSuit.TestCases) object);
+            final ExtensionPointTestSuite.TestCases that = ((ExtensionPointTestSuite.TestCases) object);
             {
-                List<ExtensionPointTestSuit.TestCases.Testcase> lhsTestcase;
+                List<ExtensionPointTestSuite.TestCases.Testcase> lhsTestcase;
                 lhsTestcase = (((this.testcase!= null)&&(!this.testcase.isEmpty()))?this.getTestcase():null);
-                List<ExtensionPointTestSuit.TestCases.Testcase> rhsTestcase;
+                List<ExtensionPointTestSuite.TestCases.Testcase> rhsTestcase;
                 rhsTestcase = (((that.testcase!= null)&&(!that.testcase.isEmpty()))?that.getTestcase():null);
                 if (!strategy.equals(LocatorUtils.property(thisLocator, "testcase", lhsTestcase), LocatorUtils.property(thatLocator, "testcase", rhsTestcase), lhsTestcase, rhsTestcase)) {
                     return false;
@@ -368,7 +368,7 @@ public class ExtensionPointTestSuit
         public int hashCode(ObjectLocator locator, HashCodeStrategy strategy) {
             int currentHashCode = 1;
             {
-                List<ExtensionPointTestSuit.TestCases.Testcase> theTestcase;
+                List<ExtensionPointTestSuite.TestCases.Testcase> theTestcase;
                 theTestcase = (((this.testcase!= null)&&(!this.testcase.isEmpty()))?this.getTestcase():null);
                 currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "testcase", theTestcase), currentHashCode, theTestcase);
             }
@@ -396,7 +396,7 @@ public class ExtensionPointTestSuit
 
         public StringBuilder appendFields(ObjectLocator locator, StringBuilder buffer, ToStringStrategy strategy) {
             {
-                List<ExtensionPointTestSuit.TestCases.Testcase> theTestcase;
+                List<ExtensionPointTestSuite.TestCases.Testcase> theTestcase;
                 theTestcase = (((this.testcase!= null)&&(!this.testcase.isEmpty()))?this.getTestcase():null);
                 strategy.appendField(locator, this, "testcase", buffer, theTestcase);
             }
@@ -589,13 +589,13 @@ public class ExtensionPointTestSuit
             }
 
             public boolean equals(ObjectLocator thisLocator, ObjectLocator thatLocator, Object object, EqualsStrategy strategy) {
-                if (!(object instanceof ExtensionPointTestSuit.TestCases.Testcase)) {
+                if (!(object instanceof ExtensionPointTestSuite.TestCases.Testcase)) {
                     return false;
                 }
                 if (this == object) {
                     return true;
                 }
-                final ExtensionPointTestSuit.TestCases.Testcase that = ((ExtensionPointTestSuit.TestCases.Testcase) object);
+                final ExtensionPointTestSuite.TestCases.Testcase that = ((ExtensionPointTestSuite.TestCases.Testcase) object);
                 {
                     String lhsDescription;
                     lhsDescription = this.getDescription();

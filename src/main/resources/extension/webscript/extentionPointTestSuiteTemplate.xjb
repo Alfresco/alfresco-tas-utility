@@ -3,7 +3,7 @@
                             xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc">
                              
  
-    <jxb:bindings schemaLocation="webscriptTemplate.xsd">
+    <jxb:bindings schemaLocation="extentionPointTestSuiteTemplate.xsd">
         <jxb:globalBindings>
         </jxb:globalBindings> 
     </jxb:bindings>
