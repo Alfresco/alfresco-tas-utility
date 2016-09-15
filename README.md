@@ -1,3 +1,28 @@
+## Table of Contents
+* [Synopsis](#synopsis)
+* [Prerequisite](#prerequisite)
+* [Installation](#installation-if-you-want-to-contribute)
+* [Package Presentation](#package-presentation)
+* [High Level Concepts](#high-level-concepts)
+    * [DSL](#dsl)
+    * [Models](#models)
+    * [Protocol(s)](#protocol-s)
+* [Sample Usage](#sample-usage)
+* [Configure your maven project to use tas.utility](##configure-your-maven-project-to-use-tas-utility)
+* [How to write a test](#how-to-write-a-test)
+* [How to create new data (files/folder)?](#how-to-create-new-data-files-folder)
+* [How to create a new site?](#how-to-create-a-new-site)
+* [How to run tests?](#how-to-run-tests)
+    * [using-testng-suite](#using-testng-suite)
+    * [from command line](#from-command-line)
+* [Test Results](#test-results)
+* [Test Rail Integration](#test-rail-integration)
+    * [Configuration](#configuration)  
+    * [How to enable Test Rail Integration?](#how-to-enable-test-rail-integration)
+* [Reference](#reference)
+* [Contributors](#contributors)
+* [License](#license)
+
 ## Synopsis
 
 This is the home of the **TAS**( **T**est **A**utomation **S**ystem)- **Utility** project.
@@ -15,6 +40,7 @@ As a high level overview, this project contains a couple of functionalities usef
 
 Using a centralized location (Nexus), everyone will be able to reuse this individual interfaces in their own projects, adding new functionalities, extending also the automation core functionalities - that will be shared across teams. 
 
+**[Back to Top ^](#table-of-contents)**
 
 ## Prerequisite 
 (tested on unix/non-unix destribution)
@@ -28,6 +54,8 @@ Using a centralized location (Nexus), everyone will be able to reuse this indivi
 * Getting familiar with [Basic Git Commands](http://docs.gitlab.com/ee/gitlab-basics/basic-git-commands.html).
 * Getting familiar with [Maven](https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html).
 * Getting familiar with [Spring](http://docs.spring.io).
+
+**[Back to Top ^](#table-of-contents)**
 
 ## Installation (if you want to contribute)
 
@@ -45,6 +73,7 @@ Using a centralized location (Nexus), everyone will be able to reuse this indivi
 > mvn clean install -DskipTests
 # you should see one [INFO] BUILD SUCCESS message displayed
 ```
+**[Back to Top ^](#table-of-contents)**
 
 ## Package Presentation
 
@@ -91,6 +120,9 @@ This project uses a simple maven project [archetype](https://maven.apache.org/pl
 │           ├── testdata #placeholder for holding test data
 │           │   └── (...)
 ```
+
+**[Back to Top ^](#table-of-contents)**
+
 ## High Level Concepts
 
 ### DSL
@@ -155,6 +187,9 @@ See bellow as example, the implementation of WebDavWrapper (we call it wrapper, 
 ![](docs/pics/webdav.png)
 
 (This is a project that is consuming tas.utility found also on http://gitlab.alfresco.com)
+
+**[Back to Top ^](#table-of-contents)**
+
 
 ## Sample Usage
 
@@ -352,6 +387,8 @@ In your maven project, in your pom.xml file add the following dependency
   }
   ```
 
+**[Back to Top ^](#table-of-contents)**
+
 ## How to run tests
 
 ### -using TestNG Suite
@@ -373,6 +410,8 @@ In your maven project, in your pom.xml file add the following dependency
   mvn test    
   ```
   
+**[Back to Top ^](#table-of-contents)**  
+
 ## Test Results
   We already executed a couple of tests using command line as indicated above. Sweet! Please take a look at [sanity-suite.xml](samples/consuming-tas-utility/src/test/resources/sanity-suite.xml) one more time.
   You will see there that we have one listener added:
@@ -391,13 +430,16 @@ In your maven project, in your pom.xml file add the following dependency
     * search tests cases by name
     * filter test cases by errors, labels, groups, test types, date when it was executed, protocol used, etc.
     * view overall pass/fail metrics of current test suite, history of tests execution, etc.
-  
+
+**[Back to Top ^](#table-of-contents)**
+
 ## Test Rail Integration
 
 Alfresco is using now https://alfresco.testrail.net (v5.3.0.3601).
 We wanted to minimize the manual interaction as much as we can, so if we will have one automated test that is executed, that test (if test rail integration is enabled) should be automatically uploaded in Test Rail under a specific section that you defined.
 We are not stopping here, the execution status, the stack trace of error, steps that executed at runtime, all this information are automatically published to this Test Case Management tool.
 
+### Configuration
 In order to use Test Rail Integration you will need to add a couple of information in [default.properties](samples/consuming-tas-utility/src/test/resources/default.properties) file:
 (the document is pretty self exmplanatory)
 
@@ -492,6 +534,8 @@ We wanted to simplify the Test Rail integration, so we used listeners in order t
   - "executionType", default value is set to ExecutionType.REGRESSION, but you can also use ExecutionType.SMOKE, ExecutionType.SANITY, etc
  
   Take a look at [TestRailIntegrationTest.java](samples/consuming-tas-utility/src/test/java/org/alfresco/sample/TestRailIntegrationTest.java) file
+
+**[Back to Top ^](#table-of-contents)**
 
 ## Reference
 
