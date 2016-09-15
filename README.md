@@ -96,7 +96,7 @@ This project uses a simple maven project [archetype](https://maven.apache.org/pl
 The tas.utility has built-in one internal Domain Specific Language ([DSL](https://en.wikipedia.org/wiki/Domain-specific_language)) for handling data creation, for oferring a common way of using protocols, api's.
 This DSL is made available in src/main/java/org/alfresco/utility under "dsl" package.
 
-![](docs/dsl.png)
+![](docs/pics/dsl.png)
 
 As you see above there are available a couple of methods for:
 * defining current test user or getting current user used in test:
@@ -139,7 +139,7 @@ As you see above there are available a couple of methods for:
 I assume you already notice a couple of *Model variables, like UserModel or SiteModel, ContentModel, etc. This is another concept that we will use in the tas framework.
 All methods of the DSL will accept this generic methods that are available in src/main/java/org/alfresco/utility under "models" package. 
 
-![](docs/dsl.png)
+![](docs/pics/models.png)
 
 Having this implementation, we can all use the same approach, the same models when we define and create new tests.
 
