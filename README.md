@@ -352,7 +352,31 @@ For generating a new API Key take a look at the official documentation, TestRail
 
 We wanted to simplify the test rail integration, so we used listeners in order to enable/disable the integration of Test Rail.
 * first configure your default.properties as indicated above
-* second, you need to add the TestRailExecutorListener. This can be added at the class level or suite level (approach that we embrace)
+
+* now on your TestNG test, add the @TestRail annotation, so let's say you will have this test:
+
+  ```java
+   @Test(groups="sample-tests")  
+   public void thisAutomatedTestWillBePublishedInTestRail() 
+   {
+   }
+  ```
+  add now @TestRail integration with manadatory field <section>. This means that this tests annotated, will be uploaded in TestRail:
+  
+   ```java
+   @Test(groups="sample-tests")
+   @TestRail(section = { "demo", "sample-section" })
+   public void thisAutomatedTestWillBePublishedInTestRail() 
+   {
+   }
+  ```
+  The section field, represents an array of strings, the hierarcy of sections that SHOULD be found on TestRail under the project you've selected in default.properties. Follow the TestRail [user-guide](http://docs.gurock.com/testrail-userguide/start) for more information regarding sections.
+  In our example we created in Test Rail one root section "demo" with a child section: "sample-section" (you can go further and add multiple section as you wish)
+  
+  ![](docs/pics/test-rail-section.png)
+  
+* now, lets add the listener, the TestRailExecutorListener that will handle this TC Management interation. 
+  This listener can be added at the class level or suite level (approach that we embrace)
   So edit your [sanity-suite.xml](samples/consuming-tas-utility/src/test/resources/sanity-suite.xml) file and add the following under <listeners> tag
 
   ```xml
@@ -360,27 +384,35 @@ We wanted to simplify the test rail integration, so we used listeners in order t
   	<listener class-name="org.alfresco.utility.testrail.TestRailExecutorListener"></listener>     
    (...)
   </listeners>
-  ```    
-* now on your TestNG test, add the @TestRail annotation, so let's say you will have this test:
-
-  ```java
-   @Test    
-   public void thisAutomatedTestWillBePublishedInTestRail() 
-   {
-   }
   ```
-  add now @TestRail integration with manadatory field <section>:
   
-   ```java
-   @Test
-   @TestRail(section = { "demo", "sample-section" })
-   public void thisAutomatedTestWillBePublishedInTestRail() 
-   {
-   }
+  Let's also add a group under "<test name="Sanity Demo Test">" so the sanity-suite.xml will look like:
+  This will go through "org.alfresco.sample" package and run ALL the tests that are marked with "groups="sample-tests" - so we want to run only the sample above.
+  
+  ```xml
+    <?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+    <suite name="Suite" parallel="classes">
+    	<listeners>
+    		<listener class-name="org.alfresco.utility.report.ReportListenerAdapter"></listener>
+    		<listener class-name="org.alfresco.utility.testrail.TestRailExecutorListener"></listener>
+    	</listeners>
+    	<test name="Sanity Demo Test">
+    		<groups>
+    			<run>
+    				<include name="sample-tests"></include>
+    			</run>
+    		</groups>
+    		<packages>
+    			<package name="org.alfresco.sample"></package>
+    		</packages>
+    	</test>
+    </suite> <!-- Suite -->
   ```
-  The section, represents an array of strings, one hierarcy of sections that SHOULD be found on TestRail under the project that you've selected in default.properties. Follow the TestRail [user-guide](http://docs.gurock.com/testrail-userguide/start) for more information.
-  In our example above we created in Test Rail one root section "demo" with a child section: "sample-section" (you can go further and add multiple section as you wish)
-  If you will run this automated test case, in Test Rail, under demo/sample-section, you will see "thisAutomatedTestWillBePublishedInTestRail" test case.
+  
+  Righ click on sanity-suite.xml file and run it, or just "mvn test" from root if this sample project.
+  After everithing passes, go in Test Rail, open your project and navigate to "Test Cases" section. Notice that under demo/sample-section, you will see "thisAutomatedTestWillBePublishedInTestRail" test case published.
+  ![](docs/pics/test-rail-testcase.png)
   If you defined also the "testManagement.testRun" correctly, you will see under Test Runs, the status of this case marked as passed. 
   
   The @TestRail annotation offers also other options like:
@@ -388,11 +420,11 @@ We wanted to simplify the test rail integration, so we used listeners in order t
   - "testType", the default value is set to Functional test
   - "executionType", default value is set to ExecutionType.REGRESSION, but you can also use ExecutionType.SMOKE, ExecutionType.SANITY, etc
  
-  Take a look at TestRailIntegrationTest.java file
+  Take a look at [TestRailIntegrationTest.java](samples/consuming-tas-utility/src/test/java/org/alfresco/sample/TestRailIntegrationTest.java) file
 
 ## Reference
 
-TBD
+* For any improvements, bugs, please use Jira - [TAS](https://issues.alfresco.com/jira/browse/TAS) project.
 
 ## Contributors
 
