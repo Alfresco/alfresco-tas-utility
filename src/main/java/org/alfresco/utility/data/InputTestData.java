@@ -11,10 +11,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.alfresco.utility.model.FileModel;
 import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.SiteModel;
+import org.alfresco.utility.model.TestModel;
 import org.alfresco.utility.model.UserModel;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name="inputtestdata")
+@XmlRootElement(name = "inputtestdata")
 public class InputTestData
 {
 
@@ -64,6 +65,46 @@ public class InputTestData
     public void setFiles(Files files)
     {
         this.files = files;
+    }
+
+    public TestModel getModelByIndentifier(int id)
+    {
+        if (folders != null && folders.folders != null)
+        {
+            for (FolderModel folderModel : folders.folders)
+            {
+                if (folderModel.getIdentifier() == id)
+                {
+                    return folderModel;
+                }
+            }
+        }
+        
+        if(files != null && files.files != null){
+            for(FileModel fileModel: files.files){
+                 if(fileModel.getIdentifier() == id){
+                     return fileModel;
+                 }
+            }
+        }
+        
+        if(sites != null && sites.sites != null){
+            for(SiteModel siteModel: sites.sites){
+                if(siteModel.getIdentifier() == id){
+                    return siteModel;
+                }
+            }
+        }
+        
+        if(users != null && users.users != null){
+            for(UserModel userModel:users.users){
+                if(userModel.getIdentifier() == id){
+                    return userModel;
+                }
+            }
+        }
+
+        return null;
     }
 
     public static class Folders
