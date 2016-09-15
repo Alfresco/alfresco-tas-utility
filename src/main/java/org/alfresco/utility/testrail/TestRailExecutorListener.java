@@ -30,6 +30,7 @@ public class TestRailExecutorListener implements ITestListener
     public void onTestFailure(ITestResult result)
     {
         testCaseUploader.updateTestRailTestCase(result);
+        testCaseUploader.updateTestRailTestSteps(result, String.join(System.lineSeparator(), Step.testSteps));
     }
 
     @Override
@@ -42,6 +43,7 @@ public class TestRailExecutorListener implements ITestListener
     public void onTestFailedButWithinSuccessPercentage(ITestResult result)
     {
         testCaseUploader.updateTestRailTestCase(result);
+        testCaseUploader.updateTestRailTestSteps(result, String.join(System.lineSeparator(), Step.testSteps));
     }
 
     @Override

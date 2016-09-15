@@ -27,6 +27,7 @@ public class TestCaseUploader
     TestRailApi testRail = new TestRailApi();
     private static Map<String, String> testCasesNotUploaded = new HashMap<String, String>();
 
+    private Section testSection;
     private TestRail annotation = null;
 
     List<Section> allSections = new ArrayList<Section>();
@@ -82,9 +83,10 @@ public class TestCaseUploader
                 
                 if (lastChildSection != null)
                 {
-                    if (testRail.isAutomatedTestCaseInSection(result.getName(), lastChildSection, annotation))
+                    testSection = lastChildSection;
+                    if (testRail.isAutomatedTestCaseInSection(result.getMethod().getMethodName(), lastChildSection, annotation))
                     {
-                        LOG.info("Test Case [{}] is already uploaded under Section(s) {}.", result.getName(), ArrayUtils.toString(annotation.section()));
+                        LOG.info("Test Case [{}] is already uploaded under Section(s) {}.", result.getMethod().getMethodName(), ArrayUtils.toString(annotation.section()));
                     }
                     else
                     {
@@ -110,11 +112,16 @@ public class TestCaseUploader
         {
             testCasesNotUploaded.put(testRail.getFullTestCaseName(result), "Test Case is NOT marked for Test Rail. Use @TestRail annotation.");
         }
+        
     }
 
     public void updateTestRailTestSteps(ITestResult result, String steps)
     {
-        testRail.addTestSteps(result, steps);
+        if (testRail.hasConfigurationErrors())
+            return;
+        annotation = result.getMethod().getConstructorOrMethod().getMethod().getAnnotation(TestRail.class);
+        if(annotation != null && testSection != null)
+            testRail.addTestSteps(result, steps, testSection, annotation);
     }
     
     public void updateTestRailTestCase(ITestResult result)

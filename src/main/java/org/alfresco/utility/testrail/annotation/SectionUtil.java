@@ -10,7 +10,7 @@ public class SectionUtil
     /*
      * retain all the section annotated in tests
      */
-    String[] section;
+    public String[] section;
     private Section rootSection = null;
 
     /*

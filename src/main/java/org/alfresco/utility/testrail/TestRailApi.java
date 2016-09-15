@@ -314,15 +314,18 @@ public class TestRailApi
         }
     }
 
-    public void addTestSteps(ITestResult result, String steps)
+    public void addTestSteps(ITestResult result, String steps, Section section, TestRail annotation)
     {
         try
         {
             Map<String, String> data = new HashMap<String, String>();
             data.put("custom_test_notes", steps);
-            
-            Object response = postRequest("update_case/" + tmpTestCase.getId(), data);
-            tmpTestCase = toClass(response, TestCase.class);
+
+            if (isAutomatedTestCaseInSection(result.getMethod().getMethodName(), section, annotation))
+            {
+                Object response = postRequest("update_case/" + tmpTestCase.getId(), data);
+                tmpTestCase = toClass(response, TestCase.class);
+            }
         }
         catch (Exception e)
         {
