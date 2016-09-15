@@ -324,7 +324,71 @@ In your maven project, in your pom.xml file add the following dependency
   
 ## Test Rail Integration
 
-TBD
+Alfresco is using now https://alfresco.testrail.net (v5.3.0.3601).
+We wanted to minimize the manual interaction as much as we can, so if we will have one automated test that is executed, that test (if test rail integration is enabled) should be automatically uploaded in Test Rail under a specific section that you defined.
+We are not stopping here, the execution status, the stack trace of error, steps that executed at runtime, all this information are automatically published to this Test Case Management tool.
+
+In order to use Test Rail Integration you will need to add a couple of information in [default.properties](samples/consuming-tas-utility/src/test/resources/default.properties) file:
+(the document is pretty self exmplanatory)
+```java
+# Example of configuration:
+# ------------------------------------------------------
+# testManagement.endPoint=https://alfresco.testrail.com/
+# testManagement.username=<yourusername-that-you-connect-to-testrail>
+# testManagement.apiKey=<api-key>
+# testManagement.project=<id-of-your-project 
+# testManagement.testRun=<test-run-name>
+```
+
+For generating a new API Key take a look at the official documentation, TestRail [APIv2](http://docs.gurock.com/testrail-api2)
+* _testManagement.project= **<id-of-your-project**_ this is the ID of the project where you want to store your test cases. 
+ If you want to use [Alfresco ONE](https://alfresco.testrail.net/index.php?/projects/overview/1) project in TestRail, open that project and notice the URL, after "/overview/**1**" link you will see the ID of the project (1 in this case)
+ If you want to use [TAS Project](https://alfresco.testrail.net/index.php?/projects/overview/7) you will notice the ID 7, so _"testManagement.project=7"_
+* "_testManagement.testRun=<test-run-name>_" this represents the name of the Test Run from your project.
+* In Test Rail, navigating to Test Runs & Results, create a new Test Run and include all/particular test cases. If this test run name is "Automation", update _testManagement.testRun= **Automation**_.
+  All test results will be updated only on this test run at runtime as each test is executed by TAS framework. 
+
+### How to enable Test Rail Integration?
+
+We wanted to simplify the test rail integration, so we used listeners in order to enable/disable the integration of Test Rail.
+* first configure your default.properties as indicated above
+* second, you need to add the TestRailExecutorListener. This can be added at the class level or suite level (approach that we embrace)
+  So edit your [sanity-suite.xml](samples/consuming-tas-utility/src/test/resources/sanity-suite.xml) file and add the following under <listeners> tag
+
+  ```xml
+  <listeners>
+  	<listener class-name="org.alfresco.utility.testrail.TestRailExecutorListener"></listener>     
+   (...)
+  </listeners>
+  ```    
+* now on your TestNG test, add the @TestRail annotation, so let's say you will have this test:
+
+  ```java
+   @Test    
+   public void thisAutomatedTestWillBePublishedInTestRail() 
+   {
+   }
+  ```
+  add now @TestRail integration with manadatory field <section>:
+  
+   ```java
+   @Test
+   @TestRail(section = { "demo", "sample-section" })
+   public void thisAutomatedTestWillBePublishedInTestRail() 
+   {
+   }
+  ```
+  The section, represents an array of strings, one hierarcy of sections that SHOULD be found on TestRail under the project that you've selected in default.properties. Follow the TestRail [user-guide](http://docs.gurock.com/testrail-userguide/start) for more information.
+  In our example above we created in Test Rail one root section "demo" with a child section: "sample-section" (you can go further and add multiple section as you wish)
+  If you will run this automated test case, in Test Rail, under demo/sample-section, you will see "thisAutomatedTestWillBePublishedInTestRail" test case.
+  If you defined also the "testManagement.testRun" correctly, you will see under Test Runs, the status of this case marked as passed. 
+  
+  The @TestRail annotation offers also other options like:
+  - "description" this is the description that will be updated in Test Rail for your test case
+  - "testType", the default value is set to Functional test
+  - "executionType", default value is set to ExecutionType.REGRESSION, but you can also use ExecutionType.SMOKE, ExecutionType.SANITY, etc
+ 
+  Take a look at TestRailIntegrationTest.java file
 
 ## Reference
 
