@@ -540,6 +540,7 @@ We wanted to simplify the Test Rail integration, so we used listeners in order t
 ## Reference
 
 * For any improvements, bugs, please use Jira - [TAS](https://issues.alfresco.com/jira/browse/TAS) project.
+* Setup the environment using [docker](https://gitlab.alfresco.com/tas/alfresco-docker-provisioning/blob/master/Readme.md)
 
 ## Contributors
 
