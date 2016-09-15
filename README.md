@@ -58,7 +58,7 @@ This project uses a simple maven project [archetype](https://maven.apache.org/pl
 │   │   │           └── utility
 │   │   │               ├── data # helpers for creating Sites/Files, Users, etc)
 │   │   │               │   (...)
-│   │   │               ├── dsl
+│   │   │               ├── dsl  #contains all the interfaces, abstract classes that will be available for all protocols, apis
 │   │   │               │   ├──(...)
 │   │   │               ├── exception # custom exception
 │   │   │               │   (...)
@@ -91,6 +91,57 @@ This project uses a simple maven project [archetype](https://maven.apache.org/pl
 │           ├── testdata #placeholder for holding test data
 │           │   └── (...)
 ```
+## High Level Concepts
+
+The tas.utility has built-in one internal Domain Specific Language ([DSL](https://en.wikipedia.org/wiki/Domain-specific_language)) for handling data creation, for oferring a common way of using protocols, api's.
+This DSL is made available in src/main/java/org/alfresco/utility under "dsl" package.
+
+![](docs/dsl.png)
+
+As you see above there are available a couple of methods for:
+* defining current test user or getting current user used in test:
+
+  ```java
+    .usingUser(UserModel testUser)
+    .getCurrentUser()
+  ```
+* or even admin (as defined in default.properties):
+
+  ```java
+    .usingAdminUser()
+  ```
+  
+* specifying current space (like root folder, data dictionary, or a particular site:
+
+  ```java
+    .usingRoot()
+    .usingSite(String siteId)
+    .usingSite(SiteModel testSite)
+    (...)
+  ```
+* or specifying a particular resource (like file/folder):
+
+  ```java
+    .usingResource(String fileNameOrFolderName)
+    .usingResource(ContentModel content)
+    (...)
+  ``` 
+  The advantage of this approach is that you can combine this DSL in a logical order as the steps of a test like:
+
+  ```java
+    .usingAdminUser().usingSite("mySite").usingResource("myFile")
+    (...)
+  ``` 
+  This will tell us, that we will use resource file "myFile", with admin user from ("/Sites/mySite/documentLibrary").
+  This is a general overview of the DSL, so each protocol that will implement this DSL will have the same method signature.
+  
+
+I assume you already notice a couple of *Model variables, like UserModel or SiteModel, ContentModel, etc. This is another concept that we will use in the tas framework.
+All methods of the DSL will accept this generic methods that are available in src/main/java/org/alfresco/utility under "models" package. 
+
+![](docs/dsl.png)
+
+Having this implementation, we can all use the same approach, the same models when we define and create new tests.
 
 ## Sample Usage
 
