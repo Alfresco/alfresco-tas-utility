@@ -28,14 +28,14 @@
 This is the home of the **TAS**( **T**est **A**utomation **S**ystem)- **Utility** project.
 It is based on Apache Maven, compatible with major IDEs and is using also Spring capabilities for dependency injection.
 
-As a high level overview, this project contains a couple of functionalities usefull for automation testing as: 
+As a high level overview, this project contains a couple of functionalities useful for automation testing as: 
 * reading/defining test environment settings (e.g. alfresco server details, authentication, etc.)
 * utilities (creating files,folders)
 * test data generators (for site, users, content, etc)
 * helpers (i.e. randomizers, test environment information)
 * test reporting capabilities
 * test management integration (at this point we support integration with [Test Rail](https://alfresco.testrail.net) (v5.2.1)
-* Healthchecks (check if server is reachable, if server is online)
+* Health checks (verify if server is reachable, if server is online)
 * Generic Internal-DSL (Domain Specific Language)
 
 Using a centralized location (Nexus), everyone will be able to reuse this individual interfaces in their own projects, adding new functionalities, extending also the automation core functionalities - that will be shared across teams. 
@@ -203,11 +203,11 @@ In your maven project, in your pom.xml file add the following dependency
 ```
 (where ${tas.utility.version} is the latest verion released on [Nexus](https://artifacts.alfresco.com/nexus/content/groups/internal) internal)
 
-**_NOTE_:** _you can also browse the [samples](samples) folder for simple maven projects that is consumming this library. Just import this existing Maven project in your IDE (if you are using Eclipse follow [this](http://help.eclipse.org/kepler/index.jsp?topic=%2Forg.eclipse.platform.doc.user%2Ftasks%2Ftasks-importproject.htm) guide)_
+**_NOTE_:** _you can also browse the [samples](samples) folder for simple maven projects that is consuming this library. Just import this existing Maven project in your IDE (if you are using Eclipse follow [this](http://help.eclipse.org/kepler/index.jsp?topic=%2Forg.eclipse.platform.doc.user%2Ftasks%2Ftasks-importproject.htm) guide)_
 
 ### Configure your maven project to use tas.utility
 
-**_NOTE_:** _you can also browse the [samples](samples) folder for simple maven projects that is consumming this library. Just import this existing Maven project in your IDE (if you are using Eclipse follow [this](http://help.eclipse.org/kepler/index.jsp?topic=%2Forg.eclipse.platform.doc.user%2Ftasks%2Ftasks-importproject.htm) guide)_
+**_NOTE_:** _you can also browse the [samples](samples) folder for simple maven projects that is consuming this library. Just import this existing Maven project in your IDE (if you are using Eclipse follow [this](http://help.eclipse.org/kepler/index.jsp?topic=%2Forg.eclipse.platform.doc.user%2Ftasks%2Ftasks-importproject.htm) guide)_
 
 * if you have one [simple maven project](https://maven.apache.org/plugins-archives/maven-archetype-plugin-1.0-alpha-7/examples/simple.html) created, you must add Spring bean capabilities to interact with tas.utility project
 	* add dependency to your pom.xml (as indicated [above](#sample-usage)) - _no need for spring bean dependencies, this are downloaded automatically from tas.utility_	
