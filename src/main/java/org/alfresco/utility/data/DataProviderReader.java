@@ -33,7 +33,7 @@ public class DataProviderReader
      * @throws Exception
      */
     @DataProvider
-    public static Iterator<Object[]> getFolder() throws Exception
+    public static Iterator<Object[]> getFolders() throws Exception
     {
         List<Object[]> dataToBeReturned = new ArrayList<Object[]>();
 
