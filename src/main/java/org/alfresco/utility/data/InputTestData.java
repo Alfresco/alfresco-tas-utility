@@ -47,15 +47,32 @@ public class InputTestData
         this.sites = sites;
     }
 
-    public Folders getFolders()
+    public List<FolderModel> getFolders()
     {
-        return folders;
+        return folders.getFolders();
+    }
+    
+    public List<FolderModel> getFoldersById(int id) 
+    {
+        List<FolderModel> folders = getFolders();
+        List<FolderModel> foldersById = new ArrayList<FolderModel>();
+        for(FolderModel folder:folders)
+        {
+            if(folder.getIdentifier()==id)
+            {
+                foldersById.add(folder);
+            }
+                
+        }
+        
+        return foldersById;
     }
 
     public void setFolders(Folders folders)
     {
         this.folders = folders;
     }
+    
 
     public Files getFiles()
     {
