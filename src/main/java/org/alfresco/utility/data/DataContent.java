@@ -116,6 +116,7 @@ public class DataContent extends TestData<DataContent>
         String deletedObject = contentService.getNodeRefByPath(getCurrentUser().getUsername(), getCurrentUser().getPassword(), fullPath);
         while (!StringUtils.isEmpty(deletedObject) && retry < Utility.retryCountSeconds)
         {
+            Utility.waitToLoopTime(1);
             deletedObject = contentService.getNodeRefByPath(getCurrentUser().getUsername(), getCurrentUser().getPassword(), fullPath);
             retry++;
         }
