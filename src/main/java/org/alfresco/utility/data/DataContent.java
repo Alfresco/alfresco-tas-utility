@@ -9,6 +9,9 @@ import org.alfresco.utility.model.FileModel;
 import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.UserModel;
+
+import static org.alfresco.utility.report.log.Step.STEP;
+
 import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.commons.lang3.StringUtils;
@@ -30,7 +33,7 @@ public class DataContent extends TestData<DataContent>
 
     public FolderModel createFolder(String folderName)
     {
-        LOG.info("Creating a new folder content {} in {} ", folderName, getCurrentSpace());
+        STEP(String.format("DATAPREP: Creating a new folder content %s in %s ", folderName, getCurrentSpace()));
 
         String location = Utility.buildPath(getCurrentSpace(), folderName);
         setLastResource(location);
@@ -46,12 +49,15 @@ public class DataContent extends TestData<DataContent>
      */
     public FolderModel createFolder()
     {
-        FolderModel folderModel = new FolderModel(RandomData.getRandomName("Folder"));
+        String folderName = RandomData.getRandomName("Folder");
+        STEP(String.format("DATAPREP: Create folder '%s'", folderName));
+        FolderModel folderModel = new FolderModel(folderName);
         return createFolder(folderModel.getLocation());
     }
 
     public void addEmailAlias(SiteModel site, String folderName, String alias)
     {
+        STEP(String.format("DATAPREP: Add Email Alias aspect to folder %s", folderName));
         contentAspect.addEmailAlias(getCurrentUser().getUsername(), getCurrentUser().getPassword(), site.getId(), folderName, alias);
     }
 
@@ -66,7 +72,7 @@ public class DataContent extends TestData<DataContent>
     {
         String newContent = String.format("%s.%s", RandomData.getRandomName("file"), Utility.cmisDocTypeToExtentions(documentType));
         String location = getLastResource();
-        LOG.info("Creating a new non-empty content {} in {} ", newContent, location);
+        STEP(String.format("DATAPREP: Creating a new non-empty content %s in %s ", newContent, location));
 
         if (getLastResource().isEmpty())
             setLastResource(RandomData.getRandomName("Folder"));
@@ -84,7 +90,7 @@ public class DataContent extends TestData<DataContent>
      */
     public void assertContentExist(String fullPath)
     {
-        LOG.info("Using User {}, asserting that content Exist in Repository: {}", getCurrentUser().toString(), fullPath);
+        STEP(String.format("DATAPREP: Using User %s, asserting that content Exist in Repository %s", getCurrentUser().toString(), fullPath));
         boolean contentExist = !checkContent(fullPath, getCurrentUser());
         Assert.assertTrue(contentExist, String.format("Content {%s} was found in repository", fullPath));
     }
@@ -100,7 +106,7 @@ public class DataContent extends TestData<DataContent>
 
     public void assertContentDoesNotExist(String fullPath)
     {
-        LOG.info("Using User {}, asserting that content Does NOT Exist in Repository {}", getCurrentUser().toString(), fullPath);
+        STEP(String.format("DATAPREP: Using User %s, asserting that content Does NOT Exist in Repository %s", getCurrentUser().toString(), fullPath));
         boolean contentDoesNotExist = !checkContent(fullPath, getCurrentUser());
         Assert.assertFalse(contentDoesNotExist, String.format("Content {%s} was NOT found in repository", fullPath));
     }
