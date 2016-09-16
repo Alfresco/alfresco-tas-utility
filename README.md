@@ -1,3 +1,6 @@
+> :octocat: **living document** - it will be updated as we add more functionalities to the project
+
+---
 ## Table of Contents
 * [Synopsis](#synopsis)
 * [Prerequisite](#prerequisite)
