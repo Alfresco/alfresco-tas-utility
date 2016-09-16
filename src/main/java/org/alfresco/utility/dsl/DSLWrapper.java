@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class DSLWrapper<Client>
 {
     @Autowired
-    DataContent dataContent;
+    protected DataContent dataContent;
     
     @Autowired
     protected ContentService contentService;
