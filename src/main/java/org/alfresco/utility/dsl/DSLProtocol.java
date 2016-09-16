@@ -289,6 +289,14 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
         dataContent.usingUser(getTestUser()).assertContentDoesNotExist(getLastResourceWithoutPrefix());
         return (Client) this;
     }
+    
+    @SuppressWarnings("unchecked")
+    public Client waitSeconds(int seconds)
+    {
+        STEP(String.format("UTILITY: Waiting for %s seconds", seconds));        
+        Utility.waitToLoopTime(seconds);
+        return (Client) this;
+    }
 
     /**
      * Just verify using JMX calls if the protocol is enabled on server or not

@@ -84,7 +84,7 @@ public class DataContent extends TestData<DataContent>
      */
     public void assertContentExist(String fullPath)
     {
-        LOG.info("Using User {}, asserting that content Exist in Repository {}", getCurrentUser().toString(), fullPath);
+        LOG.info("Using User {}, asserting that content Exist in Repository: {}", getCurrentUser().toString(), fullPath);
         boolean contentExist = !checkContent(fullPath, getCurrentUser());
         Assert.assertTrue(contentExist, String.format("Content {%s} was found in repository", fullPath));
     }
