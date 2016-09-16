@@ -140,7 +140,7 @@ public abstract class NetworkDrive
 
     public File renameContent(String originalRelativePath, String renamedRelativePath) throws IOException
     {
-        File originalFile = Paths.get(getLocalVolumePath().toString(), originalRelativePath).toFile();
+        File originalFile = Paths.get(originalRelativePath).toFile();
         File renamedFile = Paths.get(getLocalVolumePath().toString(), renamedRelativePath).toFile();
         LOG.info("Rename content {} as {}, in mapped network drive", originalFile.getPath(), renamedFile.getPath());
         originalFile.renameTo(renamedFile);
