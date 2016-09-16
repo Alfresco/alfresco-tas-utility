@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 public class Utility
 {
     static Logger LOG = LogFactory.getLogger();
+    public static int retryCountSeconds = 10;
 
     public static void checkObjectIsInitialized(Object model, String message) throws Exception
     {
@@ -171,10 +172,10 @@ public class Utility
         {
             try
             {
-                props.load(propsStream);                
+                props.load(propsStream);
             }
             catch (Exception e)
-            {             
+            {
                 throw new TestConfigurationException(String.format("Cannot load properties from %s file", propertieFileName));
             }
         }
@@ -182,7 +183,25 @@ public class Utility
         {
             throw new TestConfigurationException(String.format("Cannot initialize properties from %s file", propertieFileName));
         }
-         
+
         return props;
+    }
+
+    /**
+     * We will wait until the <seconds> are passed from current run
+     * 
+     * @param seconds
+     */
+    public static void waitToLoopTime(int seconds)
+    {
+        LOG.info("Waiting (in loops) for: {} second(s).", seconds);
+        long currentTime;
+        long endTime;
+        currentTime = System.currentTimeMillis();
+        do
+        {
+            endTime = System.currentTimeMillis();
+        }
+        while (endTime - currentTime < (seconds * 1000));
     }
 }
