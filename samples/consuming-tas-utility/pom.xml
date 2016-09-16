@@ -10,7 +10,7 @@
 	<description>My Sample Project Consuming TAS.Utility</description>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<tas.tester.version>1.0-SNAPSHOT</tas.tester.version>
+		<tas.utility.version>1.0-SNAPSHOT</tas.utility.version>
 		<maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
 		<maven-jar-plugin.version>2.6</maven-jar-plugin.version>
 		<suiteXmlFile>src/test/resources/sanity-suite.xml</suiteXmlFile>
@@ -43,7 +43,7 @@
 				<version>1.5</version>
 				<configuration>
 					<resourceBundles>
-						<resourceBundle>org.alfresco.tas:utility:${tas.tester.version}</resourceBundle>
+						<resourceBundle>org.alfresco.tas:utility:${tas.utility.version}</resourceBundle>
 					</resourceBundles>
 				</configuration>
 				<executions>
@@ -62,7 +62,7 @@
 		<dependency>
 			<groupId>org.alfresco.tas</groupId>
 			<artifactId>utility</artifactId>
-			<version>${tas.tester.version}</version>
+			<version>${tas.utility.version}</version>
 		</dependency>
 
 	</dependencies>
