@@ -2,7 +2,6 @@ package org.alfresco.utility.report;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -15,6 +14,7 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 
 import org.alfresco.utility.LogFactory;
+import org.alfresco.utility.Utility;
 import org.alfresco.utility.exception.ReportConfigurationException;
 import org.alfresco.utility.exception.TestConfigurationException;
 import org.slf4j.Logger;
@@ -51,7 +51,7 @@ public class ReportListenerAdapter implements IReporter
 {
     static Logger LOG = LogFactory.getLogger();
 
-    private ExtentReports extent;
+    private ExtentReports extent = null;
 
     @Override
     public void generateReport(List<XmlSuite> xmlSuites, List<ISuite> suites, String outputDirectory)
@@ -62,7 +62,8 @@ public class ReportListenerAdapter implements IReporter
         }
         catch (TestConfigurationException | URISyntaxException e1)
         {
-            LOG.error("Could not generate Report: " + e1.getMessage());
+            LOG.error("Could not initialize HTML Report: " + e1.getMessage());
+            return;
         }
 
         for (ISuite suite : suites)
@@ -97,6 +98,9 @@ public class ReportListenerAdapter implements IReporter
 
     private void buildTestNodes(IResultMap tests, LogStatus status)
     {
+        if (extent == null)
+            return;
+
         ExtentTest test;
 
         if (tests.size() > 0)
@@ -158,19 +162,15 @@ public class ReportListenerAdapter implements IReporter
     {
         String log4jPath = ".";
         Properties log4jProperties = new Properties();
-        InputStream defaultProp = getClass().getClassLoader().getResourceAsStream("log4j.properties");
-        if (defaultProp != null)
+        try
         {
-            try
-            {
-                log4jProperties.load(defaultProp);
-                log4jPath = log4jProperties.getProperty("log4j.appender.R.File");
-            }
-            catch (Exception e)
-            {
-                LOG.error("Cannot read properties from log4j.properties file");
-            }
+            log4jProperties =Utility.getProperties(getClass(), "log4j.properties");
+            log4jPath = log4jProperties.getProperty("log4j.appender.R.File");
         }
+        catch (TestConfigurationException e1)
+        {
+            LOG.error("Cannot read properties from log4j.properties file. Error: {}", e1.getMessage());
+        }       
         return log4jPath;
     }
 }

@@ -25,7 +25,6 @@ public class ReportManager
     static Logger LOG = LogFactory.getLogger();
 
     static ExtentReports extent;
-    
 
     public synchronized static ExtentReports getReporter() throws TestConfigurationException, URISyntaxException
     {
@@ -36,18 +35,28 @@ public class ReportManager
             if (StringUtils.isEmpty(reportHtmlPath))
                 reportHtmlPath = "./target/reports";
             reportHtmlPath = Paths.get(reportHtmlPath, "report.html").toFile().getPath();
+
             
-            LOG.info("Using ReportManager to generate HTML report on {}", reportHtmlPath);
             extent = new ExtentReports(reportHtmlPath, true);
+            LOG.info("Initializing ReportManager to generate HTML report at:{}", reportHtmlPath);
             
-            URL reportConfigUrl =ReportManager.class.getClassLoader().getResource("shared-resources/report/alfresco-report-config.xml");
-            
-            extent.loadConfig(Paths.get(reportConfigUrl.toURI()).toFile());
-            
-            extent.addSystemInfo("Alfresco Server", String.format("%s://%s:%s", 
-                    properties.getProperty("alfresco.scheme"), 
-                    properties.getProperty("alfresco.server"),
-                    properties.getProperty("alfresco.port")));
+            URL reportConfigUrl = ReportManager.class.getClassLoader().getResource("shared-resources/report/alfresco-report-config.xml");
+
+            try
+            {
+                extent.loadConfig(Paths.get(reportConfigUrl.toURI()).toFile());
+                LOG.info("Loaded ReportManager configuration file :{}", reportHtmlPath);
+            }
+            catch (Exception e)
+            {
+                LOG.error("Loaded ReportManager configuration file: {}. Error: {}",reportConfigUrl, e.getMessage());
+            }
+
+            extent.addSystemInfo("Alfresco Server", 
+                    String.format("%s://%s:%s", 
+                            properties.getProperty("alfresco.scheme"),
+                            properties.getProperty("alfresco.server"), 
+                            properties.getProperty("alfresco.port")));
         }
         return extent;
     }
