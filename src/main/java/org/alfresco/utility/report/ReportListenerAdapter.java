@@ -62,7 +62,7 @@ public class ReportListenerAdapter implements IReporter
         }
         catch (TestConfigurationException | URISyntaxException e1)
         {
-            LOG.error(e1.getMessage());
+            LOG.error("Could not generate Report: " + e1.getMessage());
         }
 
         for (ISuite suite : suites)
