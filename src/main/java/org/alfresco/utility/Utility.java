@@ -3,6 +3,8 @@ package org.alfresco.utility;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.Scanner;
 
@@ -23,23 +25,22 @@ public class Utility
         if (model == null)
             throw new TestObjectNotDefinedException(message);
     }
-
-    @SuppressWarnings("unused")
+    
     public static File getTestResourceFile(String fileName) throws Exception
     {
-        LOG.info("Get resource file test/resource/{}", fileName);
-        File resource = new File(Utility.class.getClassLoader().getResource(fileName).getFile());
+        LOG.info("Get resource file {}", fileName);
+        
+        URL resource = Utility.class.getClassLoader().getResource(fileName);
         if (resource == null)
         {
-            throw new TestConfigurationException(String.format("[test/resource/%s] file was not found.", fileName));
+            throw new TestConfigurationException(String.format("[%s] file was not found in your main resources folder.", fileName));
         }
-        return resource;
-
+        return Paths.get(resource.getFile()).toFile();
     }
 
     public static File getResourceTestDataFile(String fileName) throws Exception
     {
-        return getTestResourceFile("testdata/" + fileName);
+        return getTestResourceFile("shared-resources/testdata/" + fileName);
     }
 
     /**
