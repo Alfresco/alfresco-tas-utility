@@ -13,6 +13,7 @@ import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.exception.TestObjectNotDefinedException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 
 public class Utility
@@ -204,5 +205,16 @@ public class Utility
             endTime = System.currentTimeMillis();
         }
         while (endTime - currentTime < (seconds * 1000));
+    }
+    
+    /**
+     * Pretty prints unformatted JSON
+     * @param unformattetJson
+     * @return
+     */
+    public static String prettyPrintJsonString(String unformattetJson)
+    {
+        JSONObject prettyPrint = new JSONObject(unformattetJson);
+        return prettyPrint.toString(3);
     }
 }
