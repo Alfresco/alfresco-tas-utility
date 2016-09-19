@@ -10,7 +10,9 @@ import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.model.ContentModel;
 import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.UserModel;
+
 import static org.alfresco.utility.report.log.Step.STEP;
+
 import org.testng.Assert;
 
 /**
@@ -277,7 +279,6 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
     @SuppressWarnings("unchecked")
     public Client assertExistsInRepo()
     {
-        STEP("CMIS: Verify that '" + new File(getLastResourceWithoutPrefix()).getName() + "' exists in repository");
         dataContent.usingUser(getTestUser()).assertContentExist(getLastResourceWithoutPrefix());
         return (Client) this;
     }
@@ -285,7 +286,7 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
     @SuppressWarnings("unchecked")
     public Client assertDoesNotExistInRepo()
     {
-        STEP("CMIS: Verify that '" + new File(getLastResourceWithoutPrefix()).getName() + "' doesn't exist in repository");
+        STEP(String.format("CMIS: Verify that '%s' doesn't exist in repository %s", new File(getLastResourceWithoutPrefix()).getName(), getLastResourceWithoutPrefix()));
         dataContent.usingUser(getTestUser()).assertContentDoesNotExist(getLastResourceWithoutPrefix());
         return (Client) this;
     }
