@@ -6,11 +6,14 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Properties;
+import java.util.Random;
 import java.util.Scanner;
 
 import org.alfresco.dataprep.CMISUtil.DocumentType;
+import org.alfresco.utility.data.RandomData;
 import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.exception.TestObjectNotDefinedException;
+import org.alfresco.utility.model.FileType;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.json.JSONObject;
@@ -41,7 +44,12 @@ public class Utility
 
     public static File getResourceTestDataFile(String fileName) throws Exception
     {
-        return getTestResourceFile("shared-resources/testdata/" + fileName);
+        File tmpFile = RandomData.getRandomFile(FileType.TEXT_PLAIN);
+        tmpFile.createNewFile();        
+        tmpFile.deleteOnExit(); 
+        
+        //TODO: fix this problem
+        return  tmpFile; //getTestResourceFile("shared-resources/testdata/" + fileName);
     }
 
     /**
