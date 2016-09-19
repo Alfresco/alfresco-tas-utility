@@ -90,7 +90,6 @@ public class DataContent extends TestData<DataContent>
      */
     public void assertContentExist(String fullPath)
     {
-        STEP(String.format("DATAPREP: Using User %s, asserting that content Exist in Repository %s", getCurrentUser().toString(), fullPath));
         boolean contentExist = !checkContent(fullPath, getCurrentUser());
         Assert.assertTrue(contentExist, String.format("Content {%s} was found in repository", fullPath));
     }
@@ -106,7 +105,6 @@ public class DataContent extends TestData<DataContent>
 
     public void assertContentDoesNotExist(String fullPath)
     {
-        STEP(String.format("DATAPREP: Using User %s, asserting that content Does NOT Exist in Repository %s", getCurrentUser().toString(), fullPath));
         boolean contentDoesNotExist = !checkContent(fullPath, getCurrentUser());
         Assert.assertFalse(contentDoesNotExist, String.format("Content {%s} was NOT found in repository", fullPath));
     }
