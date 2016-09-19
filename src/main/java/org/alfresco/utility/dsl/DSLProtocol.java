@@ -279,6 +279,7 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
     @SuppressWarnings("unchecked")
     public Client assertExistsInRepo()
     {
+        STEP(String.format("CMIS: Assert that content '%s' exists in Repository %s", new File(getLastResourceWithoutPrefix()).getName(), getLastResourceWithoutPrefix()));
         dataContent.usingUser(getTestUser()).assertContentExist(getLastResourceWithoutPrefix());
         return (Client) this;
     }
@@ -286,7 +287,7 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
     @SuppressWarnings("unchecked")
     public Client assertDoesNotExistInRepo()
     {
-        STEP(String.format("CMIS: Verify that '%s' doesn't exist in repository %s", new File(getLastResourceWithoutPrefix()).getName(), getLastResourceWithoutPrefix()));
+        STEP(String.format("CMIS: VerAssertify that content '%s' doesn't exist in repository %s", new File(getLastResourceWithoutPrefix()).getName(), getLastResourceWithoutPrefix()));
         dataContent.usingUser(getTestUser()).assertContentDoesNotExist(getLastResourceWithoutPrefix());
         return (Client) this;
     }

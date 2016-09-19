@@ -90,7 +90,6 @@ public class DataContent extends TestData<DataContent>
      */
     public void assertContentExist(String fullPath)
     {
-        STEP(String.format("CMIS: Using User %s, asserting that content Exist in Repository %s", getCurrentUser().toString(), fullPath));
         boolean contentExist = !checkContent(fullPath, getCurrentUser());
         Assert.assertTrue(contentExist, String.format("Content {%s} was found in repository", fullPath));
     }
