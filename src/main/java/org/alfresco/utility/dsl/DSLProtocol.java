@@ -102,7 +102,6 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
     {
         if (currentSpace == null)
             currentSpace = getRootPath();
-
         return currentSpace;
     }
 
@@ -117,7 +116,6 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
     public Client closeJmxConnection() throws IOException
     {
         jmxClient.closeConnection();
-
         return (Client) this;
     }
 
@@ -139,9 +137,7 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
             throw new JmxException("JMX not enabled on server");
 
         LOG.info("Check [{}] protocol is enabled via JMX calls", getProtocolName());
-
         String status = getProtocolJMXConfigurationStatus();
-
         return status.equals("true");
     }
 
@@ -163,8 +159,7 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
      * smb://172.29.100.215/alfresco/Sites/qcAqgLSMO2OU5txtPMQG/documentLibrary/
      * folder-syKFUjMWgY we will return only
      * "/Sites/qcAqgLSMO2OU5txtPMQG/documentLibrary//folder-syKFUjMWgY" without
-     * "smb://172.29.100.215/alfresco" prefix defined in
-     * {@link #getPrefixSpace()} method
+     * "smb://172.29.100.215/alfresco" prefix defined in {@link #getPrefixSpace()} method
      */
     public String getLastResourceWithoutPrefix()
     {
@@ -215,16 +210,6 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
     public abstract Client authenticateUser(UserModel userModel) throws Exception;
 
     public abstract Client disconnect() throws Exception;
-
-    /**
-     * Operations on files or folders If you call this method you can use all
-     * assertion within this wrapper
-     * 
-     * @param contentName
-     * @return
-     * @throws Exception
-     */
-    public abstract Client usingResource(String contentName) throws Exception;
 
     /**
      * User for changing current site location This method will build the path
@@ -279,7 +264,8 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
     @SuppressWarnings("unchecked")
     public Client assertExistsInRepo()
     {
-        STEP(String.format("CMIS: Assert that content '%s' exists in Repository %s", new File(getLastResourceWithoutPrefix()).getName(), getLastResourceWithoutPrefix()));
+        STEP(String.format("CMIS: Assert that content '%s' exists in Repository %s", new File(getLastResourceWithoutPrefix()).getName(),
+                getLastResourceWithoutPrefix()));
         dataContent.usingUser(getTestUser()).assertContentExist(getLastResourceWithoutPrefix());
         return (Client) this;
     }
@@ -287,15 +273,16 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
     @SuppressWarnings("unchecked")
     public Client assertDoesNotExistInRepo()
     {
-        STEP(String.format("CMIS: VerAssertify that content '%s' doesn't exist in repository %s", new File(getLastResourceWithoutPrefix()).getName(), getLastResourceWithoutPrefix()));
+        STEP(String.format("CMIS: Assert that content '%s' doesn't exist in repository %s", new File(getLastResourceWithoutPrefix()).getName(),
+                getLastResourceWithoutPrefix()));
         dataContent.usingUser(getTestUser()).assertContentDoesNotExist(getLastResourceWithoutPrefix());
         return (Client) this;
     }
-    
+
     @SuppressWarnings("unchecked")
     public Client waitSeconds(int seconds)
     {
-        STEP(String.format("UTILITY: Waiting for %s seconds", seconds));        
+        STEP(String.format("UTILITY: Waiting for %s seconds", seconds));
         Utility.waitToLoopTime(seconds);
         return (Client) this;
     }
