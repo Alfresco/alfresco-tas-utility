@@ -1,5 +1,7 @@
 package org.alfresco.utility.extension;
 
+import static org.alfresco.utility.report.log.Step.STEP;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,10 +16,12 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
 import org.alfresco.utility.exception.XMLToModelUnmarshalException;
+import org.alfresco.utility.extension.ExtensionPointTestSuite.TestCases.Testcase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.testng.Assert;
 import org.xml.sax.SAXException;
 
 @Service
@@ -77,6 +81,29 @@ public class ExtentionPointTestUtility
         ClassLoader classLoader = getClass().getClassLoader();
         File schemaFile = new File(classLoader.getResource("extension/webscript/extentionPointTestSuiteTemplate.xsd").getFile());
         return schemaFile;
+    }
+
+    /**
+     * This will actual test and compare the actual value vs expected value of testcases passed as parameter
+     * 
+     * @param InputStream
+     */
+
+    public void assertTestCaseExecutionStatus(InputStream inputExtension) throws JAXBException
+    {
+
+        ExtensionPointTestSuite extensionPointTestSuite = xmlToClass(inputExtension);
+        if ((extensionPointTestSuite.getTestCases() != null) && (extensionPointTestSuite.getTestCases().getTestcase().size() > 0))
+        {
+            for (Testcase testcase : extensionPointTestSuite.getTestCases().getTestcase())
+            {
+                STEP("ExtensionPoint: Verify that '" + testcase.getClass() + "." + testcase.getName() + "' PASS");
+                Assert.assertEquals(testcase.getActualValue(), testcase.getExpectedValue(),
+                        String.format("Method [%s] was executed successfully. Stack trace: %s", testcase.getName(), testcase.getStackTrace()));
+
+            }
+        }
+
     }
 
 }

@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Properties;
-import java.util.Random;
 import java.util.Scanner;
 
 import org.alfresco.dataprep.CMISUtil.DocumentType;
@@ -29,11 +28,11 @@ public class Utility
         if (model == null)
             throw new TestObjectNotDefinedException(message);
     }
-    
+
     public static File getTestResourceFile(String fileName) throws Exception
     {
         LOG.info("Get resource file {}", fileName);
-        
+
         URL resource = Utility.class.getClassLoader().getResource(fileName);
         if (resource == null)
         {
@@ -45,11 +44,11 @@ public class Utility
     public static File getResourceTestDataFile(String fileName) throws Exception
     {
         File tmpFile = RandomData.getRandomFile(FileType.TEXT_PLAIN);
-        tmpFile.createNewFile();        
-        tmpFile.deleteOnExit(); 
-        
-        //TODO: fix this problem
-        return  tmpFile; //getTestResourceFile("shared-resources/testdata/" + fileName);
+        tmpFile.createNewFile();
+        tmpFile.deleteOnExit();
+
+        // TODO: fix this problem
+        return tmpFile; // getTestResourceFile("shared-resources/testdata/" + fileName);
     }
 
     /**
@@ -214,9 +213,10 @@ public class Utility
         }
         while (endTime - currentTime < (seconds * 1000));
     }
-    
+
     /**
      * Pretty prints unformatted JSON
+     * 
      * @param unformattetJson
      * @return
      */
@@ -224,5 +224,22 @@ public class Utility
     {
         JSONObject prettyPrint = new JSONObject(unformattetJson);
         return prettyPrint.toString(3);
+    }
+
+    /**
+     * 
+     * @param url
+     * @param key
+     * @param value
+     * @return
+     */
+    public static String addUrlParam(String url, String key, String value)
+    {
+        int quotePosition = url.indexOf('?');
+        int hpos = url.indexOf('#');
+        char separator = quotePosition == -1 ? '?' : '&';
+        String segment = separator + key + '=' + value;
+        return hpos == -1 ? url + segment : url.substring(0, hpos) + segment + url.substring(hpos);
+
     }
 }
