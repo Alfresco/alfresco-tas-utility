@@ -34,8 +34,6 @@ public abstract class DSLWrapper<Client>
     private UserModel testUser = new UserModel(DataValue.UNDEFINED.toString(), DataValue.UNDEFINED.toString());
 
     // HELPERS ----------------------------------------------------------
-   
-    
 
     /**
      * @return test user. This should be defined in {@link #authenticateUser(UserModel)} method
@@ -55,7 +53,4 @@ public abstract class DSLWrapper<Client>
     {
         this.testUser = testUser;
     }
-
-
-   
 }

@@ -114,26 +114,15 @@ public abstract class TestData<Data> implements DSL<Data>
     }
 
     /**
-     * Resource can be a site path, a folder, file where we want to create new
-     * content or make assertion. The resource is the current object tested in
-     * your test
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public Data usingResource(String resource) throws Exception
-    {
-        setLastResource(resource);
-        return (Data) this;
-    }
-
-    /**
      * Resource can be a folder, file where we want to create new content or
      * make assertion. The resource is the current object tested in your test
      */
     @Override
+    @SuppressWarnings("unchecked")
     public Data usingResource(ContentModel model) throws Exception
     {
-        return usingResource(model.getLocation());
+        setLastResource(model.getLocation());
+        return (Data) this;
     }
 
     @Override
