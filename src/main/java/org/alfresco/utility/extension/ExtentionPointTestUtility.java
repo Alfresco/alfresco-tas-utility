@@ -1,5 +1,7 @@
 package org.alfresco.utility.extension;
 
+import static org.alfresco.utility.report.log.Step.STEP;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,11 +15,14 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
+import org.alfresco.utility.exception.TestCaseNotFoundException;
 import org.alfresco.utility.exception.XMLToModelUnmarshalException;
+import org.alfresco.utility.extension.ExtensionPointTestSuite.TestCases.Testcase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.testng.Assert;
 import org.xml.sax.SAXException;
 
 @Service
@@ -77,6 +82,38 @@ public class ExtentionPointTestUtility
         ClassLoader classLoader = getClass().getClassLoader();
         File schemaFile = new File(classLoader.getResource("extension/webscript/extentionPointTestSuiteTemplate.xsd").getFile());
         return schemaFile;
+    }
+
+    /**
+     * Asserts that actualValue and expectedValue are equals of a given testCase name
+     * 
+     * @param inputExtension
+     * @param testCaseName
+     * @throws JAXBException
+     * @throws TestCaseNotFoundException
+     */
+
+    public void assertTestCaseExecutionStatus(InputStream inputExtension, String testCaseName) throws JAXBException, TestCaseNotFoundException
+    {
+        ExtensionPointTestSuite extensionPointTestSuite = xmlToClass(inputExtension);
+        if ((extensionPointTestSuite.getTestCases() != null) && (extensionPointTestSuite.getTestCases().getTestcase().size() > 0))
+        {
+            for (Testcase testcase : extensionPointTestSuite.getTestCases().getTestcase())
+            {
+                if ((testcase.getName() != null) && (testcase.getName().equals(testCaseName)))
+                {
+
+                    STEP("ExtensionPoint: Verify that '" + testcase.getClass() + "." + testcase.getName() + "' PASS");
+                    Assert.assertEquals(testcase.getActualValue(), testcase.getExpectedValue(),
+                            String.format("Method [%s] was executed successfully. Stack trace: %s", testcase.getName(), testcase.getStackTrace()));
+                    return;
+                }
+
+            }
+
+            throw new TestCaseNotFoundException(testCaseName);
+        }
+
     }
 
 }
