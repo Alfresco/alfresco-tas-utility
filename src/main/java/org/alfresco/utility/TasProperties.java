@@ -40,7 +40,7 @@ public class TasProperties
     @Value("${alfresco.port}")
     private int port;
 
-    @Value("${jmx.user:controlRole}")   
+    @Value("${jmx.user:controlRole}")
     private String jmxUser;
 
     @Value("${jmx.password:change_asap}")
@@ -48,7 +48,19 @@ public class TasProperties
 
     @Value("${jmx.port:50500}")
     private String jmxPort;
-   
+
+    @Value("${jmx.useJolokiaAgent:true}")
+    private Boolean useJolokiaJmxAgent;
+
+    /**
+     * # in containers we cannot access directly JMX, so we will use {@link http://jolokia.org} agent
+     * # disabling this we will use direct JMX calls to server
+     */
+    public boolean useJolokiaJmxAgent()
+    {
+        return useJolokiaJmxAgent;
+    }
+
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer()
     {
@@ -142,11 +154,9 @@ public class TasProperties
 
     public String getJmxUrl()
     {
-        return String.format("service:jmx:rmi:///jndi/rmi://%s:%s/alfresco/jmxrmi", getServer(),getJmxPort());
+        return String.format("service:jmx:rmi:///jndi/rmi://%s:%s/alfresco/jmxrmi", getServer(), getJmxPort());
     }
 
-     
-    
     /**
      * @return host: <schema>://<server>:<port>
      */

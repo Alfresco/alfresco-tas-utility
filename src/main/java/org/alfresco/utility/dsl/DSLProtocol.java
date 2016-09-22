@@ -1,18 +1,17 @@
 package org.alfresco.utility.dsl;
 
+import static org.alfresco.utility.report.log.Step.STEP;
+
 import java.io.File;
 import java.io.IOException;
 
 import org.alfresco.utility.Utility;
 import org.alfresco.utility.data.ResourceContent;
-import org.alfresco.utility.exception.JmxException;
 import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.model.ContentModel;
 import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.UserModel;
-
-import static org.alfresco.utility.report.log.Step.STEP;
-
+import org.alfresco.utility.network.JmxClient;
 import org.testng.Assert;
 
 /**
@@ -115,7 +114,11 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
     @SuppressWarnings("unchecked")
     public Client closeJmxConnection() throws IOException
     {
-        jmxClient.closeConnection();
+        if (jmxBuilder.getJmxClient() instanceof JmxClient)
+        {
+            JmxClient jmx = (JmxClient) jmxBuilder.getJmxClient();
+            jmx.closeConnection();
+        }
         return (Client) this;
     }
 
@@ -133,11 +136,8 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
      */
     public boolean isProtocolEnabled() throws Exception
     {
-        if (!jmxClient.isJMXEnabled())
-            throw new JmxException("JMX not enabled on server");
-
-        LOG.info("Check [{}] protocol is enabled via JMX calls", getProtocolName());
-        String status = getProtocolJMXConfigurationStatus();
+        LOG.info("Check [{}] protocol is enabled via JMX", getProtocolName());
+        String status = getProtocolJMXConfigurationStatus();        
         return status.equals("true");
     }
 

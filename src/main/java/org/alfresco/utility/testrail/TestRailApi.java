@@ -66,7 +66,7 @@ public class TestRailApi
      */
     public TestRailApi()
     {
-        InputStream defaultPropsInputStream = getClass().getClassLoader().getResourceAsStream("default.properties");
+        InputStream defaultPropsInputStream = getClass().getClassLoader().getResourceAsStream(Utility.getEnvironmentPropertyFile());
         if (defaultPropsInputStream != null)
         {
             try
@@ -92,6 +92,10 @@ public class TestRailApi
             {
                 LOG.error("Cannot initialize Test Management Setting from default.properties file");
             }
+        }
+        else
+        {
+            LOG.error("Cannot initialize Test Management Setting from {} file", Utility.getEnvironmentPropertyFile());
         }
     }
 
@@ -419,7 +423,7 @@ public class TestRailApi
 
     public String getFullTestCaseName(ITestResult result)
     {
-        return String.format("%s#%s", result.getInstanceName(), result.getName());
+        return String.format("%s#%s", result.getInstanceName(), result.getMethod().getMethodName());
     }
 
     public List<Section> getSections(int projectID)
