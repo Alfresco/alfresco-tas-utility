@@ -1,4 +1,4 @@
-package org.alfresco.utility;
+package org.alfresco.utility.network;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -17,13 +17,19 @@ import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 
+import org.alfresco.utility.LogFactory;
+import org.alfresco.utility.TasProperties;
 import org.alfresco.utility.exception.JmxException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * Handles JMX calls to server
+ * use {@link JmxBuilder} to define this service
+ */
 @Service
-public class JmxClient
+public class JmxClient implements Jmx
 {
     @Autowired
     protected TasProperties properties;
@@ -47,7 +53,8 @@ public class JmxClient
      * @param attributeName
      * @return
      */
-    public Object getServerProperty(String objectName, String attributeName) throws Exception
+    @Override
+    public Object readProperty(String objectName, String attributeName) throws Exception
     {
         JMXConnector connector = createJmxConnection();
         MBeanServerConnection mBSC = connector.getMBeanServerConnection();
@@ -74,7 +81,8 @@ public class JmxClient
      * @param attributeValue
      * @return
      */
-    public Object setServerProperty(String objectName, String attributeName, Object attributeValue) throws Exception
+    @Override
+    public Object writeProperty(String objectName, String attributeName, String attributeValue) throws Exception
     {
         JMXConnector connector = createJmxConnection();
         MBeanServerConnection mBSC = connector.getMBeanServerConnection();
@@ -155,6 +163,7 @@ public class JmxClient
         mBSC.invoke(objectJmx, operation.toString(), new Object[] {}, new String[] {});
     }
 
+    @Override
     public boolean isJMXEnabled()
     {
         boolean isAlive = false;

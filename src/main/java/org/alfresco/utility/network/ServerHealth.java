@@ -1,10 +1,12 @@
-package org.alfresco.utility;
+package org.alfresco.utility.network;
 
 import static org.alfresco.utility.report.log.Step.STEP;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
+import org.alfresco.utility.LogFactory;
+import org.alfresco.utility.TasProperties;
 import org.alfresco.utility.exception.ServerReachableAlfrescoIsNotRunningException;
 import org.alfresco.utility.exception.ServerUnreachableException;
 import org.apache.commons.httpclient.HttpClient;
