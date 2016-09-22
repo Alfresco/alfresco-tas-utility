@@ -1,5 +1,7 @@
 package org.alfresco.utility.network;
 
+import javax.annotation.PostConstruct;
+
 import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.TasProperties;
 import org.slf4j.Logger;
@@ -20,18 +22,29 @@ public class JmxBuilder
     @Autowired
     private JmxJolokiaProxyClient jmxJolokiaProxyClient;
 
-    public Jmx getJmxClient()
+    private Jmx jmxClientInstance = null;
+
+    @PostConstruct
+    private void defineJmxClient()
     {
         if (tasProperties.useJolokiaJmxAgent())
         {
-            LOG.info("Using Jolokia Agent for interacting with JMX on test server. Update your *.properties in order to disable this service.");
-            return jmxJolokiaProxyClient;
+            LOG.info(
+                    "Using Jolokia Agent for interacting with JMX on test server {}. Update your *.properties in order to disable this service (i.e. jmx.useJolokiaAgent=false).",
+                    jmxJolokiaProxyClient.getJolokiaAgentServerUrlPath());
+            jmxClientInstance = jmxJolokiaProxyClient;
         }
         else
         {
-            LOG.info("Using JMX Client for interacting with JMX on test server. Update your *.properties in order to use Jolokia agent this service.");
-            return jmxClient;
+            LOG.info(
+                    "Using JMX Client for interacting with JMX on test server. Update your *.properties in order to use Jolokia agent as service (i.e. jmx.useJolokiaAgent=true).");
+            jmxClientInstance = jmxClient;
         }
+    }
+
+    public Jmx getJmxClient()
+    {
+        return jmxClientInstance;
     }
 
 }

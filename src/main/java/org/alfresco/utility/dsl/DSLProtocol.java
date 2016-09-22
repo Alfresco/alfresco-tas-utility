@@ -136,12 +136,8 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
      */
     public boolean isProtocolEnabled() throws Exception
     {
-        // if (!jmxClient.isJMXEnabled())
-        // throw new JmxException("JMX not enabled on server");
-
-        LOG.info("Check [{}] protocol is enabled via JMX calls", getProtocolName());
-        String status = getProtocolJMXConfigurationStatus();
-        LOG.info("AAA {}", status);
+        LOG.info("Check [{}] protocol is enabled via JMX", getProtocolName());
+        String status = getProtocolJMXConfigurationStatus();        
         return status.equals("true");
     }
 
