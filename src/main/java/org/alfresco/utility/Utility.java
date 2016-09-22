@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -262,4 +261,20 @@ public class Utility
 
         return url;
     }
+
+    /**
+     * @return the environment property file
+     *         if nothing specified, default.properties is used
+     *         if -Denvironment=local then local.properties is used.
+     */
+    public static String getEnvironmentPropertyFile()
+    {
+        String envPropName = System.getProperty("environment");
+        if (envPropName == null)
+            envPropName = "default.properties";
+        else
+            envPropName = String.format("%s.properties", envPropName);
+        return envPropName;
+    }
+
 }

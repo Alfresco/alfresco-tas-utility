@@ -29,8 +29,8 @@ public class ReportManager
     public synchronized static ExtentReports getReporter() throws TestConfigurationException, URISyntaxException
     {
         if (extent == null)
-        {
-            Properties properties = Utility.getProperties(ReportManager.class, "default.properties");
+        {                       
+            Properties properties = Utility.getProperties(ReportManager.class, Utility.getEnvironmentPropertyFile());
             String reportHtmlPath = properties.getProperty("reports.path");
             if (StringUtils.isEmpty(reportHtmlPath))
                 reportHtmlPath = "./target/reports";
