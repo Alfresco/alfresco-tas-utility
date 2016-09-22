@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +49,7 @@ public class Utility
     {
         String randomFile = RandomData.getRandomFile(FileType.TEXT_PLAIN);
         File tmpFile = new File(randomFile);
-        tmpFile.createNewFile();        
+        tmpFile.createNewFile();
         tmpFile.deleteOnExit(); 
         
         //TODO: fix this problem

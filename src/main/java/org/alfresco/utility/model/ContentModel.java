@@ -4,7 +4,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 
 import org.alfresco.utility.Utility;
 
-public abstract class ContentModel extends TestModel
+public class ContentModel extends TestModel
 {
     private String name;
     private String title;
