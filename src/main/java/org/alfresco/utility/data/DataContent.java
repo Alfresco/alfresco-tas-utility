@@ -31,7 +31,7 @@ public class DataContent extends TestData<DataContent>
     @Autowired
     private ContentAspects contentAspect;
 
-    public FolderModel createFolder(String folderName)
+    private FolderModel createFolder(String folderName)
     {
         STEP(String.format("DATAPREP: Creating a new folder content %s in %s ", folderName, getCurrentSpace()));
 
@@ -50,9 +50,16 @@ public class DataContent extends TestData<DataContent>
     public FolderModel createFolder()
     {
         String folderName = RandomData.getRandomName("Folder");
-        STEP(String.format("DATAPREP: Create folder '%s'", folderName));
+        STEP(String.format("DATAPREP: Create folder '%s' in %s", folderName, getCurrentSpace()));
         FolderModel folderModel = new FolderModel(folderName);
-        return createFolder(folderModel.getLocation());
+        
+        String location = Utility.buildPath(getCurrentSpace(), folderName);
+        setLastResource(location);
+        Folder cmisFolder = contentService.createFolderInRepository(getCurrentUser().getUsername(), getCurrentUser().getPassword(), folderName,
+                getCurrentSpace());
+        folderModel.setCmisLocation(cmisFolder.getPath());
+        folderModel.setNodeRef(cmisFolder.getId());
+        return folderModel;
     }
 
     public void addEmailAlias(SiteModel site, String folderName, String alias)
@@ -100,7 +107,7 @@ public class DataContent extends TestData<DataContent>
      */
     public void assertContentExist(ContentModel contentModel)
     {
-        assertContentExist(contentModel.getLocation());
+        assertContentExist(contentModel.getCmisLocation());
     }
 
     public void assertContentDoesNotExist(String fullPath)

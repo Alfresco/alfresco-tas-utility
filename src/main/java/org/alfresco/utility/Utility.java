@@ -48,12 +48,13 @@ public class Utility
 
     public static File getResourceTestDataFile(String fileName) throws Exception
     {
-        File tmpFile = RandomData.getRandomFile(FileType.TEXT_PLAIN);
-        tmpFile.createNewFile();
-        tmpFile.deleteOnExit();
-
-        // TODO: fix this problem
-        return tmpFile; // getTestResourceFile("shared-resources/testdata/" + fileName);
+        String randomFile = RandomData.getRandomFile(FileType.TEXT_PLAIN);
+        File tmpFile = new File(randomFile);
+        tmpFile.createNewFile();        
+        tmpFile.deleteOnExit(); 
+        
+        //TODO: fix this problem
+        return  tmpFile; //getTestResourceFile("shared-resources/testdata/" + fileName);
     }
 
     /**

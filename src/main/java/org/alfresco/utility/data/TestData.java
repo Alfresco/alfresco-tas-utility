@@ -121,7 +121,7 @@ public abstract class TestData<Data> implements DSL<Data>
     @SuppressWarnings("unchecked")
     public Data usingResource(ContentModel model) throws Exception
     {
-        setLastResource(model.getLocation());
+        setLastResource(model.getName());
         return (Data) this;
     }
 
@@ -195,7 +195,11 @@ public abstract class TestData<Data> implements DSL<Data>
     {
         return lastResource;
     }
-
+    /**
+     * Set last resource with content protocol location 
+     * 
+     * @param lastResource
+     */
     public void setLastResource(String lastResource)
     {
         this.lastResource = lastResource;
