@@ -1,11 +1,11 @@
 package org.alfresco.utility.dsl;
 
 import org.alfresco.dataprep.ContentService;
-import org.alfresco.utility.JmxClient;
 import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.DataValue;
 import org.alfresco.utility.model.UserModel;
+import org.alfresco.utility.network.JmxBuilder;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -23,8 +23,8 @@ public abstract class DSLWrapper<Client>
     protected ContentService contentService;
 
     @Autowired
-    protected JmxClient jmxClient;
-
+    protected JmxBuilder jmxBuilder;
+    
     protected Logger LOG = LogFactory.getLogger();
 
     /**

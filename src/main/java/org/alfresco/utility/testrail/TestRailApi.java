@@ -419,7 +419,7 @@ public class TestRailApi
 
     public String getFullTestCaseName(ITestResult result)
     {
-        return String.format("%s#%s", result.getInstanceName(), result.getName());
+        return String.format("%s#%s", result.getInstanceName(), result.getMethod().getMethodName());
     }
 
     public List<Section> getSections(int projectID)
