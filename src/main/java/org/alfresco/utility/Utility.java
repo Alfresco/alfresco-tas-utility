@@ -3,8 +3,13 @@ package org.alfresco.utility;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Scanner;
 
@@ -227,19 +232,34 @@ public class Utility
     }
 
     /**
+     * Generate URL query string from key value parameters
      * 
      * @param url
-     * @param key
-     * @param value
+     * @param params
      * @return
+     * @throws UnsupportedEncodingException
      */
-    public static String addUrlParam(String url, String key, String value)
+    public static String toUrlParams(String url, Map<String, String> params) throws UnsupportedEncodingException
     {
-        int quotePosition = url.indexOf('?');
-        int hpos = url.indexOf('#');
-        char separator = quotePosition == -1 ? '?' : '&';
-        String segment = separator + key + '=' + value;
-        return hpos == -1 ? url + segment : url.substring(0, hpos) + segment + url.substring(hpos);
 
+        List<String> listOfParams = new ArrayList<String>();
+        for (String param : params.keySet())
+        {
+            listOfParams.add(param + "=" + params.get(param));
+        }
+
+        if (!listOfParams.isEmpty())
+        {
+            String queryParam = StringUtils.join(listOfParams, "&");
+
+            int quotePosition = url.indexOf("?");
+            int hpos = url.indexOf("#");
+            char separator = quotePosition == -1 ? '?' : '&';
+
+            String segment = separator + queryParam;
+            return (hpos == -1) ? url + segment : url.substring(0, hpos) + segment + url.substring(hpos);
+        }
+
+        return url;
     }
 }

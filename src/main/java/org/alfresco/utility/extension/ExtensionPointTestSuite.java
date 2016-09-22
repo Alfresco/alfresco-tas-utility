@@ -81,7 +81,7 @@ import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
     "description",
     "testCases"
 })
-@XmlRootElement(name = "ExtensionPointTestSuit")
+@XmlRootElement(name = "ExtensionPointTestSuite")
 public class ExtensionPointTestSuite
     implements Equals, HashCode, ToString
 {
