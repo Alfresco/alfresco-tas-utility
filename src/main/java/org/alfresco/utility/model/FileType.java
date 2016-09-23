@@ -25,9 +25,9 @@ public enum FileType
         this.extention = extention;
     }
 
-    public static FileType fromPath(String path)
+    public static FileType fromName(String fileName)
     {
-        String extention = Files.getFileExtension(path);
+        String extention = Files.getFileExtension(fileName);
 
         for (FileType ft : FileType.values())
         {

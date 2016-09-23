@@ -26,9 +26,9 @@ public class RandomData
     /**
      * @return random folder
      */
-    public static File getRandomFolder()
+    public static String getRandomFolder()
     {
-        return new File(getRandomName("folder"));
+        return getRandomName("folder");
     }
 
     /**
@@ -47,10 +47,9 @@ public class RandomData
      *            - as "txt", "pdf", "doc"
      * @return random file with <extention>
      */
-    public static File getRandomFile(FileType fileType)
+    public static String getRandomFile(FileType fileType)
     {
-        String fileName = String.format("%s.%s", getRandomName("file"), fileType.extention);
-        return new File(fileName);
+        return String.format("%s.%s", getRandomName("file"), fileType.extention);
     }
 
 }

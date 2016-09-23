@@ -1,54 +1,39 @@
 package org.alfresco.utility.model;
 
-import java.io.File;
-import java.nio.file.Paths;
-
 import org.alfresco.utility.data.RandomData;
-import org.apache.commons.lang3.RandomStringUtils;
 
 public class FileModel extends ContentModel
 {
     private String content;
     private FileType fileType;
 
-    public FileModel()
+    public FileModel(String name)
     {
-
+        super(name);
+        setFileType(FileType.fromName(name));
     }
 
-    public FileModel(String location)
+    public FileModel(String name, FileType fileType)
     {
-        super(location);
-        setFileType(FileType.fromPath(getLocation()));
-    }
-
-    public FileModel(File location)
-    {
-        super(location);
-        setFileType(FileType.fromPath(location.getPath()));
-    }
-
-    public FileModel(FileType fileType, File location)
-    {
-        super(location);
+        super(name);
         setFileType(fileType);
     }
 
-    public FileModel(FileType fileType, File location, String title)
+    public FileModel(String name, String title, String description, FileType fileType)
     {
-        super(location, title);
+        super(name, title, description);
         setFileType(fileType);
     }
 
-    public FileModel(FileType fileType, File location, String title, String description)
+    public FileModel(String name, FileType fileType, String content)
     {
-        super(location, title, description);
-        setFileType(fileType);
+        this(name, fileType);
+        setContent(content);
     }
 
-    public FileModel(FileType fileType, File location, String title, String description, String content)
+    public FileModel(String name, String title, String description, FileType fileType, String content)
     {
-        this(fileType, location, title, description);
+        this(name, title, description, fileType);
         setContent(content);
     }
 
@@ -70,17 +55,6 @@ public class FileModel extends ContentModel
     public void setFileType(FileType fileType)
     {
         this.fileType = fileType;
-    }
-
-    /**
-     * Generates a new random {@link FileModel} object
-     */
-    public static FileModel getRandomFileModel(FileType fileType, String parent)
-    {
-        File location = Paths.get(parent, String.format("file-%s.%s", RandomStringUtils.randomAlphanumeric(10), fileType.extention)).toFile();
-        FileModel newFileModel = new FileModel(location);
-        LOG.info("Generating new FileModel: {}", newFileModel.toString());
-        return newFileModel;
     }
 
     /**
