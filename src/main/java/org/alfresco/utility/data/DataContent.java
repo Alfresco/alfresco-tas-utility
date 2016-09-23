@@ -31,28 +31,30 @@ public class DataContent extends TestData<DataContent>
     @Autowired
     private ContentAspects contentAspect;
 
-    private FolderModel createFolder(String folderName)
+    /**
+     * It will create a new folder in current resource
+     */
+    public FolderModel createFolder(FolderModel folderModel)
     {
-        STEP(String.format("DATAPREP: Creating a new folder content %s in %s ", folderName, getCurrentSpace()));
-
-        String location = Utility.buildPath(getCurrentSpace(), folderName);
+        STEP(String.format("DATAPREP: Creating a new folder content %s in %s ", folderModel.getName(), getCurrentSpace()));
+        String location = Utility.buildPath(getCurrentSpace(), folderModel.getName());
         setLastResource(location);
-        Folder cmisFolder = contentService.createFolderInRepository(getCurrentUser().getUsername(), getCurrentUser().getPassword(), folderName,
+        Folder cmisFolder = contentService.createFolderInRepository(getCurrentUser().getUsername(), getCurrentUser().getPassword(), folderModel.getName(),
                 getCurrentSpace());
-        FolderModel folderModel = new FolderModel(cmisFolder.getPath());
         folderModel.setNodeRef(cmisFolder.getId());
+        folderModel.setCmisLocation(location);
         return folderModel;
     }
 
     /**
-     * It will create a folder in current resource
+     * It will create a random folder in current resource
      */
     public FolderModel createFolder()
     {
         String folderName = RandomData.getRandomName("Folder");
         STEP(String.format("DATAPREP: Create folder '%s' in %s", folderName, getCurrentSpace()));
         FolderModel folderModel = new FolderModel(folderName);
-        
+
         String location = Utility.buildPath(getCurrentSpace(), folderName);
         setLastResource(location);
         Folder cmisFolder = contentService.createFolderInRepository(getCurrentUser().getUsername(), getCurrentUser().getPassword(), folderName,

@@ -1,7 +1,5 @@
 package org.alfresco.utility.data;
 
-import java.io.File;
-
 import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.model.FileType;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -51,5 +49,4 @@ public class RandomData
     {
         return String.format("%s.%s", getRandomName("file"), fileType.extention);
     }
-
 }

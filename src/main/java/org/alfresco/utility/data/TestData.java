@@ -131,6 +131,7 @@ public abstract class TestData<Data> implements DSL<Data>
     {
         setCurrentSpace(String.format(getSitesPath(), siteId));
         setCurrentSite(siteId);
+        setLastResource(getCurrentSpace());
         return (Data) this;
     }
 
