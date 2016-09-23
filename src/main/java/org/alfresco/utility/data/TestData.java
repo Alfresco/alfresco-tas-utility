@@ -121,7 +121,7 @@ public abstract class TestData<Data> implements DSL<Data>
     @SuppressWarnings("unchecked")
     public Data usingResource(ContentModel model) throws Exception
     {
-        setLastResource(model.getName());
+        setLastResource(model.getCmisLocation());
         return (Data) this;
     }
 

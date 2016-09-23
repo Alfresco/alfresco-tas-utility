@@ -12,6 +12,10 @@ public class ContentModel extends TestModel
     private String cmisLocation;
     private String protocolLocation;
 
+    public ContentModel()
+    {
+        
+    }
     public ContentModel(String name)
     {
         setName(name);
