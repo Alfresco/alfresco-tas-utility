@@ -13,6 +13,10 @@ public class FolderModel extends ContentModel
 {
     protected List<FileModel> files = new ArrayList<FileModel>();
 
+    public FolderModel()
+    {
+        
+    }
     public FolderModel(String name)
     {
         super(name);

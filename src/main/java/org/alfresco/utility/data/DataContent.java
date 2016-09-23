@@ -41,6 +41,7 @@ public class DataContent extends TestData<DataContent>
         setLastResource(location);
         Folder cmisFolder = contentService.createFolderInRepository(getCurrentUser().getUsername(), getCurrentUser().getPassword(), folderModel.getName(),
                 getCurrentSpace());
+        folderModel.setProtocolLocation(location);
         folderModel.setNodeRef(cmisFolder.getId());
         folderModel.setCmisLocation(location);
         return folderModel;
@@ -59,6 +60,7 @@ public class DataContent extends TestData<DataContent>
         setLastResource(location);
         Folder cmisFolder = contentService.createFolderInRepository(getCurrentUser().getUsername(), getCurrentUser().getPassword(), folderName,
                 getCurrentSpace());
+        folderModel.setProtocolLocation(cmisFolder.getPath());
         folderModel.setCmisLocation(cmisFolder.getPath());
         folderModel.setNodeRef(cmisFolder.getId());
         return folderModel;
@@ -80,15 +82,17 @@ public class DataContent extends TestData<DataContent>
     public FileModel createContent(DocumentType documentType)
     {
         String newContent = String.format("%s.%s", RandomData.getRandomName("file"), Utility.cmisDocTypeToExtentions(documentType));
-        String location = getLastResource();
-        STEP(String.format("DATAPREP: Creating a new non-empty content %s in %s ", newContent, location));
+        String newLocation = Utility.buildPath(getLastResource(), newContent);
+        STEP(String.format("DATAPREP: Creating a new non-empty content %s in %s ", newContent, getLastResource()));
 
         if (getLastResource().isEmpty())
             setLastResource(RandomData.getRandomName("Folder"));
 
-        Document cmisDocument = contentService.createDocumentInRepository(getCurrentUser().getUsername(), getCurrentUser().getPassword(), location,
+        Document cmisDocument = contentService.createDocumentInRepository(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getLastResource(),
                 documentType, newContent, "This is a file file");
-        FileModel newFile = new FileModel(cmisDocument.getPaths().get(0).toString());
+        FileModel newFile = new FileModel(cmisDocument.getName());
+        newFile.setCmisLocation(newLocation);
+        newFile.setProtocolLocation(newLocation);
         newFile.setNodeRef(cmisDocument.getId());
         return newFile;
     }
