@@ -96,6 +96,26 @@ public class DataContent extends TestData<DataContent>
         newFile.setNodeRef(cmisDocument.getId());
         return newFile;
     }
+    
+    /**
+     * Creates a random document based on {@link DocumentType} passed
+     * Return the {@link Document} object on success creation
+     * 
+     * @param documentType
+     * @param siteName
+     * @return
+     */
+    public FileModel createContent(DocumentType documentType, String siteName)
+    {
+        String newContent = String.format("%s.%s", RandomData.getRandomName("file"), Utility.cmisDocTypeToExtentions(documentType));
+        STEP(String.format("DATAPREP: Creating a new non-empty content %s in %s site", newContent, siteName));
+
+        Document cmisDocument = contentService.createDocument(getCurrentUser().getUsername(), getCurrentUser().getPassword(), siteName,
+                documentType, newContent, "This is a file file");
+        FileModel newFile = new FileModel(cmisDocument.getPaths().get(0).toString());
+        newFile.setNodeRef(cmisDocument.getId());
+        return newFile;
+    }
 
     /**
      * @param fullPath - the full path to CMIS object

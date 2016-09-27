@@ -1,5 +1,8 @@
 package org.alfresco.utility.data;
 
+import java.util.HashMap;
+import java.util.List;
+
 import org.alfresco.dataprep.UserService;
 import org.alfresco.utility.TasProperties;
 import org.alfresco.utility.exception.DataPreparationException;
@@ -59,6 +62,19 @@ public class DataUser extends TestData<DataUser>
     {
         userService.createSiteMember(getCurrentUser().getUsername(), getCurrentUser().getPassword(),
                 userModel.getUsername(), siteModel.getId(), role.toString());
+    }
+    
+    public HashMap<UserRole, UserModel> addUsersWithRolesToSite(SiteModel siteModel, List<UserRole> roles) throws DataPreparationException
+    {
+    	HashMap<UserRole, UserModel> usersWithRoles = new HashMap<UserRole, UserModel>();
+    	for(UserRole role: roles)
+    	{
+        	UserModel userModel = createRandomTestUser();
+        	addUserToSite(userModel, siteModel, role);
+        	usersWithRoles.put(role, userModel);
+    	}
+    	
+    	return usersWithRoles;
     }
     
     public void assertUserExist(UserModel user)
