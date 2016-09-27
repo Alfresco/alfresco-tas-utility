@@ -66,4 +66,15 @@ public class FileModel extends ContentModel
         LOG.info("Generating new FileModel: {}", newFileModel.toString());
         return newFileModel;
     }
+    
+    /**
+     * Generates a new random {@link FileModel} object with content
+     */
+    public static FileModel getRandomFileModel(FileType fileType, String content)
+    {
+        FileModel newFileModel = new FileModel(RandomData.getRandomFile(fileType));
+        newFileModel.setContent(content);
+        LOG.info("Generating new FileModel: {}", newFileModel.toString());
+        return newFileModel;
+    }
 }
