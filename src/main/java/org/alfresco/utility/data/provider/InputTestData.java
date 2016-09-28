@@ -1,4 +1,4 @@
-package org.alfresco.utility.data;
+package org.alfresco.utility.data.provider;
 
 import java.util.ArrayList;
 import java.util.List;

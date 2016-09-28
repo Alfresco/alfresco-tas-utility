@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.alfresco.dataprep.UserService;
 import org.alfresco.utility.TasProperties;
+import org.alfresco.utility.data.standard.UserRole;
 import org.alfresco.utility.exception.DataPreparationException;
 import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.UserModel;
