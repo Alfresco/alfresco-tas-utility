@@ -2,7 +2,7 @@ package org.alfresco.utility.dsl;
 
 import org.alfresco.utility.model.ContentModel;
 
-public interface DSLCrud<Protocol> extends DSLFile<Protocol>, DSLFolder<Protocol>
+public interface DSLContentModelAction<Protocol>
 {
     public Protocol rename(String newName) throws Exception;
 

@@ -35,6 +35,8 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
      */
     private ResourceContent lastResource = new ResourceContent(this);
 
+    private String fileContent ="";
+
     @Override
     @SuppressWarnings("unchecked")
     public Client usingUser(UserModel user) throws Exception
@@ -298,5 +300,12 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
     public String buildPath(String parent, String... paths)
     {
         return Utility.convertBackslashToSlash(Utility.buildPath(parent, paths)).replace("//", "/");
+    }
+    
+    @SuppressWarnings("unchecked")
+    public Client usingFileContent(String content)
+    {
+        this.fileContent = content;
+        return (Client) this;
     }
 }
