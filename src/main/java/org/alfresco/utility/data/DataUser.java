@@ -38,14 +38,15 @@ public class DataUser extends TestData<DataUser>
         UserModel newUser = new UserModel(userName, PASSWORD);
         LOG.info("Create user {}", newUser.toString());
         
-        Boolean created = userService.create(getAdminUser().getUsername(), 
-                                            getAdminUser().getPassword(), 
+        Boolean created = userService.create(getCurrentUser().getUsername(), 
+                                            getCurrentUser().getPassword(), 
                                             userName, PASSWORD, String.format(EMAIL, userName),
                                             String.format("%s FirstName", userName), 
                                             String.format("LN-%s", userName));
         if (!created)
             throw new DataPreparationException(String.format(USER_NOT_CREATED, newUser.toString()));
 
+        newUser.setDomain(getCurrentUser().getDomain());
         return newUser;
     }
 

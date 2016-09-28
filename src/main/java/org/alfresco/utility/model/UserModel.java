@@ -4,6 +4,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 
 import org.alfresco.utility.data.RandomData;
 import org.alfresco.utility.data.TestData;
+import org.apache.commons.lang3.RandomStringUtils;
 
 public class UserModel extends TestModel
 {
@@ -35,7 +36,7 @@ public class UserModel extends TestModel
     @XmlAttribute(name = "name")
     public String getUsername()
     {
-        if (getDomain() != null)
+        if (getDomain() == null)
             return username;
         else
         {
@@ -60,19 +61,31 @@ public class UserModel extends TestModel
 
     public String getTenantUsername()
     {
-        return String.format("%s@%s", getUsername(), getDomain());
+        return String.format("%s@%s", username, getDomain());
     }
 
-    public static UserModel getRandomTenandUser()
+    public static UserModel getRandomTenantUser()
     {
-        UserModel tenant = new UserModel(RandomData.getRandomName("tenant"), TestData.PASSWORD);
-        tenant.setDomain("tenant.com");
-        return tenant;
+        UserModel tenantUser = new UserModel(RandomData.getRandomName("tenant"), TestData.PASSWORD);
+        tenantUser.setDomain(getRandomTenant("tenant"));
+        return tenantUser;
+    }
+
+    public static UserModel getAdminTenantUser()
+    {
+        UserModel tenantAdmin = new UserModel("admin", TestData.PASSWORD);
+        tenantAdmin.setDomain(getRandomTenant("tenant"));
+        return tenantAdmin;
     }
 
     public static UserModel getRandomUserModel()
     {
         UserModel tenant = new UserModel(RandomData.getRandomName("user"), TestData.PASSWORD);
         return tenant;
+    }
+
+    private static String getRandomTenant(String prefix)
+    {
+        return String.format("%s%s", prefix, RandomStringUtils.randomAlphabetic(2));
     }
 }
