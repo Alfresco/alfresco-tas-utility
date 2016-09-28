@@ -1,4 +1,4 @@
-package org.alfresco.utility.data;
+package org.alfresco.utility.constants;
 
 /**
  * @author Cristina Axinte
