@@ -46,13 +46,8 @@ public class SampleTest extends AbstractTestNGSpringContextTests
          * '/Sites/<randomPublicSiteName>/documentLibrary' location using default admin user
          * specified in default.properties file
          */
-        dataContent.usingSite(testSite).createFolder(folderModel.getName());
+        FolderModel myFolder = dataContent.usingSite(testSite).createFolder(folderModel);
 
-        /*
-         * this call will create folder 'myTest2' under '/' root folder using
-         * default admin user specified in default.properties file
-         */
-        FolderModel myFolder = dataContent.usingRoot().createFolder("MyTestFolderInRep");
         dataContent.assertContentExist(myFolder);
     }
 }
