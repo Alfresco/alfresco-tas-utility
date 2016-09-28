@@ -13,10 +13,8 @@ import java.util.Properties;
 import java.util.Scanner;
 
 import org.alfresco.dataprep.CMISUtil.DocumentType;
-import org.alfresco.utility.data.RandomData;
 import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.exception.TestObjectNotDefinedException;
-import org.alfresco.utility.model.FileType;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.json.JSONObject;
@@ -42,18 +40,13 @@ public class Utility
         {
             throw new TestConfigurationException(String.format("[%s] file was not found in your main resources folder.", fileName));
         }
-        return Paths.get(resource.getFile()).toFile();
+        
+        return Paths.get(resource.getFile().substring(1)).toFile();
     }
 
     public static File getResourceTestDataFile(String fileName) throws Exception
     {
-        String randomFile = RandomData.getRandomFile(FileType.TEXT_PLAIN);
-        File tmpFile = new File(randomFile);
-        tmpFile.createNewFile();
-        tmpFile.deleteOnExit(); 
-        
-        //TODO: fix this problem
-        return  tmpFile; //getTestResourceFile("shared-resources/testdata/" + fileName);
+        return getTestResourceFile("shared-resources/testdata/" + fileName);
     }
 
     /**
