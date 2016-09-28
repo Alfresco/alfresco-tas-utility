@@ -9,6 +9,7 @@ import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.TasProperties;
 import org.alfresco.utility.exception.ServerReachableAlfrescoIsNotRunningException;
 import org.alfresco.utility.exception.ServerUnreachableException;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.IOUtils;
@@ -28,17 +29,21 @@ public class ServerHealth
     public boolean isServerReachable() throws Exception
     {
         STEP(String.format("Check the server %s is reachable", properties.getFullServerUrl()));
-        boolean reachable = false; 
-        try {
-            try (Socket soc = new Socket()) {
+        boolean reachable = false;
+        try
+        {
+            try (Socket soc = new Socket())
+            {
                 soc.connect(new InetSocketAddress(properties.getServer(), properties.getPort()), 5000);
             }
             reachable = true;
-        } catch (IOException ex) {
+        }
+        catch (IOException ex)
+        {
             LOG.info("Check Alfresco Test Server: {} is Reachable, found: {}", properties.getServer(), ex.getMessage());
             return false;
         }
-        
+
         LOG.info("Check Alfresco Test Server: {} is Reachable, found: {}", properties.getServer(), reachable);
         return reachable;
     }
@@ -56,8 +61,11 @@ public class ServerHealth
         try
         {
             HttpClient client = new HttpClient();
+            
             get = new GetMethod(alfrescoSummaryPage);
-            get.setDoAuthentication(false);
+            String unhashedString = String.format("%s:%s", properties.getAdminUser(), properties.getAdminPassword());
+            get.setRequestHeader("Authorization", "Basic " + Base64.encodeBase64String(unhashedString.getBytes()));
+
             get.getParams().setSoTimeout(5000);
             client.executeMethod(get);
             response = IOUtils.toString(get.getResponseBodyAsStream());
