@@ -12,6 +12,7 @@
     * [Protocol(s)](#protocol-s)
 * [Sample Usage](#sample-usage)
 * [Configure your maven project to use tas.utility](#configure-your-maven-project-to-use-tas-utility)
+* [Naming Conventions](#naming-conventions)
 * [How to write a test](#how-to-write-a-test)
 * [How to create new data (files/folder)?](#how-to-create-new-data-files-folder)
 * [How to create a new site?](#how-to-create-a-new-site)
@@ -268,6 +269,10 @@ In your maven project, in your pom.xml file add the following dependency
     org.alfresco.utility.exception.ServerUnreachableException: Server {127.0.0.1} is unreachable.
     ```
 
+### Naming Conventions
+
+Please read the following [Wiki](https://gitlab.alfresco.com/tas/alfresco-tas-tester/wikis/Naming-Convention) page
+
 ### How to write a test
 
 * we are using TestNG framework to drive our test, so please feel free to take a look on [official documentation](http://testng.org/doc/index.html) if you are not yet familiarized with this.
@@ -306,8 +311,9 @@ In your maven project, in your pom.xml file add the following dependency
      * Use the assertions provided by this utility (see the "data" package)
      
     ```java
+        FolderModel myFolder = FolderModel.getRandomFolderModel();
         //here we create a new content in the root location of alfresco
-        FolderModel myFolder =dataContent.usingRoot().createFolder("MyTestFolder");
+        dataContent.usingRoot().createFolder(myFolder);
         
         // here we assert that folder exist 
 		dataContent.assertContentExist(myFolder);
@@ -345,13 +351,16 @@ In your maven project, in your pom.xml file add the following dependency
   *this call will create folder  'myTest' under '/Sites/mySite/documentLibrary' location
   * using default user'testUser'
   */
-  dataContent.usingUser(testUser).usingSite("mySite").createFolder("myFolderWithUser")
+  
+  FolderModel myFolder = FolderModel.getRandomFolderModel();
+  dataContent.usingUser(testUser).usingSite("mySite").createFolder(myFolder)
 
   /*
   *this call will create folder 'myTest2' under '/' root folder
   * using user testUser
   */
-  dataContent.usingUser(testUser).usingRoot().createFolder("myFolderWithUser")
+  FolderModel myFolder = FolderModel.getRandomFolderModel();
+  dataContent.usingUser(testUser).usingRoot().createFolder(myFolder)
   }
   ```
 
