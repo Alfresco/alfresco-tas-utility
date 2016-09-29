@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Target({ ElementType.METHOD })
 public @interface Bug
 {
-    String ID();
+    String id();
 
     String description() default "";
 }

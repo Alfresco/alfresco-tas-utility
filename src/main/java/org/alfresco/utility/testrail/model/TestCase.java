@@ -292,6 +292,16 @@ public class TestCase
         this.custom_test_notes = custom_test_notes;
     }
 
+    public String getCustom_min_vers()
+    {
+        return custom_min_vers;
+    }
+
+    public void setCustom_min_vers(String custom_min_vers)
+    {
+        this.custom_min_vers = custom_min_vers;
+    }
+
     private int id;
     private String title;
     private int section_id;
@@ -318,4 +328,5 @@ public class TestCase
     private String custom_auto_ref;
     private String custom_description;
     private String custom_test_notes;
+    private String custom_min_vers;
 }

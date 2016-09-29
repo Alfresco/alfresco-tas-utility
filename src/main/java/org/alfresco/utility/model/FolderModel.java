@@ -54,6 +54,24 @@ public class FolderModel extends ContentModel
         return model;
     }
 
+    /**
+     * @return the last {@link FileModel} object child
+     */
+    public FileModel lastFile()
+    {
+        return getFiles().get(getFiles().size() - 1);
+    }
+
+    /**
+     * This will generate and add to {@link #getFiles()} array the children files
+     */
+    public FileModel generateRandomFileChild(FileType fileType)
+    {
+        FileModel model = FileModel.getRandomFileModel(fileType);
+        getFiles().add(model);
+        return model;
+    }
+
     public static FolderModel getSharedFolderModel()
     {
         return new FolderModel("/Shared");
