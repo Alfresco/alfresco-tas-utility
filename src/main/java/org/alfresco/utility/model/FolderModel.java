@@ -15,8 +15,9 @@ public class FolderModel extends ContentModel
 
     public FolderModel()
     {
-        
+
     }
+
     public FolderModel(String name)
     {
         super(name);
@@ -51,5 +52,40 @@ public class FolderModel extends ContentModel
         FolderModel model = new FolderModel(RandomData.getRandomFolder());
         LOG.info("Generating new FolderModel: {}", model.toString());
         return model;
+    }
+
+    public static FolderModel getSharedFolderModel()
+    {
+        return new FolderModel("/Shared");
+    }
+
+    public static FolderModel getImapAttachmentsFolderModel()
+    {
+        return new FolderModel("/Imap Attachments");
+    }
+
+    public static FolderModel getGuestHomeFolderModel()
+    {
+        return new FolderModel("/Guest Home");
+    }
+
+    public static FolderModel getUserHomesFolderModel()
+    {
+        return new FolderModel("/User Homes");
+    }
+
+    public static FolderModel getSitesFolderModel()
+    {
+        return new FolderModel("/Sites");
+    }
+
+    public static FolderModel getDataDictionaryFolderModel()
+    {
+        return new FolderModel("/Data Dictionary");
+    }
+
+    public static FolderModel getIMAPHomeFolderModel()
+    {
+        return new FolderModel("/IMAP Home");
     }
 }
