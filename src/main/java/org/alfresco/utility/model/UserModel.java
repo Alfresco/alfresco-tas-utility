@@ -2,6 +2,7 @@ package org.alfresco.utility.model;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
+import org.alfresco.utility.constants.UserRole;
 import org.alfresco.utility.data.RandomData;
 import org.alfresco.utility.data.TestData;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -11,6 +12,10 @@ public class UserModel extends TestModel
     private String username;
     private String password;
     private String domain;
+    /*
+     * the role of the user;
+     */
+    private UserRole userRole = UserRole.SiteContributor;
 
     public UserModel()
     {
@@ -87,5 +92,15 @@ public class UserModel extends TestModel
     private static String getRandomTenant(String prefix)
     {
         return String.format("%s%s", prefix, RandomStringUtils.randomAlphabetic(2));
+    }
+
+    public UserRole getUserRole()
+    {
+        return userRole;
+    }
+
+    public void setUserRole(UserRole userRole)
+    {
+        this.userRole = userRole;
     }
 }

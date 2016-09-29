@@ -1,6 +1,6 @@
 package org.alfresco.utility.data;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.alfresco.dataprep.UserService;
@@ -64,16 +64,18 @@ public class DataUser extends TestData<DataUser>
     {
         userService.createSiteMember(getCurrentUser().getUsername(), getCurrentUser().getPassword(),
                 userModel.getUsername(), siteModel.getId(), role.toString());
+        
+        userModel.setUserRole(role);
     }
     
-    public HashMap<UserRole, UserModel> addUsersWithRolesToSite(SiteModel siteModel, List<UserRole> roles) throws DataPreparationException
+    public ListUserWithRoles addUsersWithRolesToSite(SiteModel siteModel, UserRole... roles) throws DataPreparationException
     {
-    	HashMap<UserRole, UserModel> usersWithRoles = new HashMap<UserRole, UserModel>();
+        ListUserWithRoles usersWithRoles = new ListUserWithRoles();
     	for(UserRole role: roles)
     	{
-        	UserModel userModel = createRandomTestUser();
+        	UserModel userModel = createRandomTestUser();        
         	addUserToSite(userModel, siteModel, role);
-        	usersWithRoles.put(role, userModel);
+        	usersWithRoles.add(userModel);
     	}
     	
     	return usersWithRoles;
@@ -103,4 +105,41 @@ public class DataUser extends TestData<DataUser>
                               user.getUsername()),
                 String.format("User {} exist in repository", user.toString()));
     }
+    
+    /**
+     * 
+     * Handle list of user with particular roles
+     *
+     */
+    public class ListUserWithRoles
+    {
+        private List<UserModel> usersWithRoles;
+        
+        public ListUserWithRoles()
+        {
+            usersWithRoles = new ArrayList<UserModel>();
+        }
+        
+        public void add(UserModel userModel)
+        {
+            this.usersWithRoles.add(userModel);
+        }
+        
+        /**
+         * Return one user that has the role specified 
+         * @param userRole
+         * @return
+         */
+        public UserModel getOneUserWithRole(UserRole userRole)
+        {
+           UserModel userModel = null; 
+           for(UserModel user :  this.usersWithRoles)
+           {
+               if(user.getUserRole().equals(userRole))
+                   return user;
+           }
+           return userModel;
+        }
+    }
+            
 }

@@ -19,6 +19,8 @@ public class ContentModel extends TestModel
     public ContentModel(String name)
     {
         setName(name);
+        
+        setCmisLocation(name);
     }
 
     public ContentModel(String name, String title, String description)
