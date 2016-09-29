@@ -80,7 +80,7 @@ public class ExtentionPointTestUtility
     {
         // Get file from resources folder
         ClassLoader classLoader = getClass().getClassLoader();
-        File schemaFile = new File(classLoader.getResource("extension/webscript/extentionPointTestSuiteTemplate.xsd").getFile());
+        File schemaFile = new File(classLoader.getResource("shared-resources/testdata/extentionPointTestSuiteTemplate.xsd").getFile());
         return schemaFile;
     }
 
