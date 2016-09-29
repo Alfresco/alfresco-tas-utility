@@ -98,7 +98,7 @@ public class SiteModel extends TestModel
     public static SiteModel getRandomSiteModel()
     {
         String siteName = RandomData.getRandomName("site");
-        LOG.info("Generating new FileModel: {}", siteName);
+        LOG.info("Generating new random Site Model: {}", siteName);
         return new SiteModel(siteName);
     }
 
