@@ -111,18 +111,17 @@
 				</executions>
 				<configuration>
 					<includes>
-						<include>shared-resources/testdata/*</include>
+						<include>shared-resources/**/*</include>
 					</includes>
 				</configuration>
-			</plugin>
-			
+			</plugin>			
 		</plugins>
 		
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
 				<includes>
-					<include>**/*</include>
+					<include>shared-resources/**/*</include>
 				</includes>
 			</resource>
 		</resources>

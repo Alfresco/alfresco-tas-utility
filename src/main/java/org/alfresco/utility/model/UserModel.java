@@ -91,7 +91,7 @@ public class UserModel extends TestModel
 
     private static String getRandomTenant(String prefix)
     {
-        return String.format("%s%s", prefix, RandomStringUtils.randomAlphabetic(2));
+        return String.format("%s%s", prefix, RandomStringUtils.randomAlphabetic(6));
     }
 
     public UserRole getUserRole()

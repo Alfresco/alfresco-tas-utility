@@ -34,7 +34,7 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
      * file/folders created via each protocols
      */
     private ResourceContent lastResource = new ResourceContent(this);
-
+    
     private String fileContent ="";
 
     @Override
@@ -307,5 +307,10 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
     {
         this.fileContent = content;
         return (Client) this;
+    }
+    
+    protected String getFileContent()
+    {
+        return fileContent;
     }
 }
