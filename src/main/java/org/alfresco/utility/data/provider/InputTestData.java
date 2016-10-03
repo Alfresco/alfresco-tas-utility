@@ -15,25 +15,19 @@ import org.alfresco.utility.model.UserModel;
 @XmlRootElement(name = "inputtestdata")
 public class InputTestData
 {
-
     protected List<UserModel> users;
-
     protected List<FolderModel> folders;
-
     protected List<FileModel> files;
-
     protected List<SiteModel> sites;
 
     @XmlElementWrapper
     @XmlElement(name = "user")
     public List<UserModel> getUsers()
     {
-
         if (users == null)
         {
             users = new ArrayList<UserModel>();
         }
-
         return users;
     }
 
@@ -46,12 +40,10 @@ public class InputTestData
     @XmlElement(name = "folder")
     public List<FolderModel> getFolders()
     {
-
         if (folders == null)
         {
             folders = new ArrayList<FolderModel>();
         }
-
         return folders;
     }
 
@@ -85,7 +77,6 @@ public class InputTestData
         {
             sites = new ArrayList<SiteModel>();
         }
-
         return sites;
     }
 
@@ -93,5 +84,4 @@ public class InputTestData
     {
         this.sites = sites;
     }
-
 }

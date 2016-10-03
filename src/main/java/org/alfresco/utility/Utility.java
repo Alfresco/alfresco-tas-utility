@@ -31,14 +31,20 @@ public class Utility
             throw new TestObjectNotDefinedException(message);
     }
 
-    public static File getTestResourceFile(String fileName) throws Exception
+    /**
+     * Return a file from the filePath location
+     * @param filePath
+     * @return
+     * @throws Exception
+     */
+    public static File getTestResourceFile(String filePath) throws Exception
     {
-        LOG.info("Get resource file {}", fileName);
+        LOG.info("Get resource file {}", filePath);
 
-        URL resource = Utility.class.getClassLoader().getResource(fileName);
+        URL resource = Utility.class.getClassLoader().getResource(filePath);
         if (resource == null)
         {
-            throw new TestConfigurationException(String.format("[%s] file was not found in your main resources folder.", fileName));
+            throw new TestConfigurationException(String.format("[%s] file was not found in your main resources folder.", filePath));
         }
         
         return Paths.get(resource.getFile().substring(1)).toFile();
