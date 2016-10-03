@@ -26,8 +26,9 @@ public class DataUser extends TestData<DataUser>
     static String USER_NOT_CREATED = "User %s  not created";
 
     /**
-     * Creates a new random user on test server defined in {@link TasProperties}
+     * Creates a new random user with a specific user name on test server defined in {@link TasProperties}
      * file.
+     * If no user is specified with {@link #usingUser(UserModel)} then the random user is created with admin
      * 
      * @param userName
      * @return
@@ -50,11 +51,25 @@ public class DataUser extends TestData<DataUser>
         return newUser;
     }
 
+    /**
+     * Creates a new random user.
+     * If no user is specified with {@link #usingUser(UserModel)} then the random user is created with admin
+     * 
+     * @return
+     * @throws DataPreparationException
+     */
     public UserModel createRandomTestUser() throws DataPreparationException
     {
         return createRandomTestUser("User");
     }
 
+    /**
+     * Creates a new random user using a prefix for user name.
+     * If no user is specified with {@link #usingUser(UserModel)} then the random user is created with admin
+     * 
+     * @return
+     * @throws DataPreparationException
+     */
     public UserModel createRandomTestUser(String prefix) throws DataPreparationException
     {
         return createUser(RandomData.getRandomName(prefix));
