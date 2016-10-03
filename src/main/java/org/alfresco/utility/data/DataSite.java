@@ -1,5 +1,7 @@
 package org.alfresco.utility.data;
 
+import static org.alfresco.utility.report.log.Step.STEP;
+
 import org.alfresco.dataprep.SiteService;
 import org.alfresco.utility.TasProperties;
 import org.alfresco.utility.exception.DataPreparationException;
@@ -94,6 +96,17 @@ public class DataSite extends TestData<DataSite>
         siteService.setIMAPFavorite(getCurrentUser().getUsername(), getCurrentUser().getPassword(), imapSite);
         return siteModel;
     }
-
-   
+    
+    /**
+     * Add current site to favorites
+     * 
+     * @return current site model
+     * @throws DataPreparationException 
+     */
+    public SiteModel addSiteToFavorites() throws DataPreparationException
+    {
+        STEP(String.format("DATAPREP: Add site %s to Favorites", getCurrentSite()));
+        siteService.setFavorite(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getCurrentSite());
+        return new SiteModel(getCurrentSite());
+    }   
 }
