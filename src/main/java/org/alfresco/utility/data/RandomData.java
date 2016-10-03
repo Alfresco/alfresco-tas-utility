@@ -16,7 +16,7 @@ public class RandomData
      */
     public static String getRandomAlphanumeric()
     {
-        String value = RandomStringUtils.randomAlphabetic(10);
+        String value = RandomStringUtils.randomAlphabetic(15);
         LOG.debug("Generating alphanumeric string: {}", value);
         return value;
     }

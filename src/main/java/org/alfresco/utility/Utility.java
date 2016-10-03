@@ -47,7 +47,7 @@ public class Utility
             throw new TestConfigurationException(String.format("[%s] file was not found in your main resources folder.", filePath));
         }
         
-        return Paths.get(resource.getFile().substring(1)).toFile();
+        return Paths.get(resource.getFile()).toFile();
     }
 
     public static File getResourceTestDataFile(String fileName) throws Exception
