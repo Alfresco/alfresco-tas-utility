@@ -2,7 +2,6 @@ package org.alfresco.utility.dsl;
 
 import static org.alfresco.utility.report.log.Step.STEP;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.alfresco.utility.Utility;
@@ -263,24 +262,12 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
      * ASSERTIONS ----------------------------------------------------------
      */
 
-    @SuppressWarnings("unchecked")
-    public Client assertExistsInRepo()
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public DSLAssertion assertThat()
     {
-        STEP(String.format("CMIS: Assert that content '%s' exists in Repository %s", new File(getLastResourceWithoutPrefix()).getName(),
-                getLastResourceWithoutPrefix()));
-        dataContent.usingUser(getTestUser()).assertContentExist(getLastResourceWithoutPrefix());
-        return (Client) this;
+        return new DSLAssertion(this);
     }
-
-    @SuppressWarnings("unchecked")
-    public Client assertDoesNotExistInRepo()
-    {
-        STEP(String.format("CMIS: Assert that content '%s' doesn't exist in repository %s", new File(getLastResourceWithoutPrefix()).getName(),
-                getLastResourceWithoutPrefix()));
-        dataContent.usingUser(getTestUser()).assertContentDoesNotExist(getLastResourceWithoutPrefix());
-        return (Client) this;
-    }
-
+   
     @SuppressWarnings("unchecked")
     public Client waitSeconds(int seconds)
     {
