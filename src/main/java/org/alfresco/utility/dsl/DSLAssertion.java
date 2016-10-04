@@ -4,6 +4,8 @@ import static org.alfresco.utility.report.log.Step.STEP;
 
 import java.io.File;
 
+import org.testng.Assert;
+
 public class DSLAssertion<Protocol>
 {
     protected DSLProtocol<?> dslProtocol;
@@ -36,5 +38,15 @@ public class DSLAssertion<Protocol>
         dslProtocol.dataContent.usingUser(dslProtocol.getTestUser()).assertContentDoesNotExist(dslProtocol.getLastResourceWithoutPrefix());
         return (Protocol) dslProtocol;
     }
+    
+    /**
+     * Just verify using JMX calls if the protocol is enabled on server or not
+     */
+    public Protocol protocolIsEnabled() throws Exception
+    {
+        Assert.assertTrue(dslProtocol.isProtocolEnabled(), String.format("%s protocol is enabled", dslProtocol.getProtocolName()));
+        return getProtocol();
+    }
+    
 
 }

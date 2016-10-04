@@ -6,7 +6,7 @@ public class ProtocolRuntimeException extends Exception
 
     public ProtocolRuntimeException(String message)
     {
-        super(String.format("Exception thrown when creating content: P%s}", message));
+        super(String.format("Exception thrown when creating content: %s}", message));
     }
 
 }

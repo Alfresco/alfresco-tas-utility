@@ -1,5 +1,7 @@
 package org.alfresco.utility.model;
 
+import java.io.File;
+
 import org.alfresco.utility.data.RandomData;
 
 public class FileModel extends ContentModel
@@ -81,5 +83,10 @@ public class FileModel extends ContentModel
         newFileModel.setContent(content);
         LOG.info("Generating new FileModel: {}", newFileModel.toString());
         return newFileModel;
+    }
+    
+    public File toFile()
+    {
+        return new File(getName());
     }
 }
