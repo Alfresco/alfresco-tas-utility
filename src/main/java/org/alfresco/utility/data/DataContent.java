@@ -4,7 +4,6 @@ import org.alfresco.dataprep.CMISUtil.DocumentType;
 import org.alfresco.dataprep.ContentAspects;
 import org.alfresco.dataprep.ContentService;
 import org.alfresco.utility.Utility;
-import org.alfresco.utility.exception.DataPreparationException;
 import org.alfresco.utility.model.ContentModel;
 import org.alfresco.utility.model.FileModel;
 import org.alfresco.utility.model.FolderModel;
@@ -15,7 +14,6 @@ import static org.alfresco.utility.report.log.Step.STEP;
 
 import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
-import org.apache.chemistry.opencmis.commons.exceptions.CmisStorageException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -80,9 +78,8 @@ public class DataContent extends TestData<DataContent>
      * 
      * @param documentType
      * @return
-     * @throws DataPreparationException 
      */
-    public FileModel createContent(DocumentType documentType) throws DataPreparationException
+    public FileModel createContent(DocumentType documentType)
     {
         String newContent = String.format("%s.%s", RandomData.getRandomName("file"), Utility.cmisDocTypeToExtentions(documentType));
         String newLocation = Utility.buildPath(getLastResource(), newContent);
@@ -91,19 +88,8 @@ public class DataContent extends TestData<DataContent>
         if (getLastResource().isEmpty())
             setLastResource(RandomData.getRandomName("Folder"));
 
-        Document cmisDocument = null; 
-        
-        try
-        {
-            cmisDocument = contentService.createDocumentInRepository(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getLastResource(),
-                    documentType, newContent, "This is a file file");
-        }
-        catch (CmisStorageException cse)
-        {
-            LOG.error(cse.getMessage());
-            throw new DataPreparationException(cse.getMessage());
-        }
-        
+        Document cmisDocument = contentService.createDocumentInRepository(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getLastResource(),
+                documentType, newContent, "This is a file file");
         FileModel newFile = new FileModel(cmisDocument.getName());
         newFile.setCmisLocation(newLocation);
         newFile.setProtocolLocation(newLocation);
