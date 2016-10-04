@@ -14,6 +14,12 @@ public class DSLAssertion<Protocol>
     }
 
     @SuppressWarnings("unchecked")
+    public Protocol getProtocol()
+    {
+        return (Protocol) dslProtocol;
+    }
+
+    @SuppressWarnings("unchecked")
     public Protocol existsInRepo()
     {
         STEP(String.format("CMIS: Assert that content '%s' exists in Repository %s", new File(dslProtocol.getLastResourceWithoutPrefix()).getName(),

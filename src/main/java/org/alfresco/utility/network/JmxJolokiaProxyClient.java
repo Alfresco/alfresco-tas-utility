@@ -4,12 +4,13 @@ import java.io.IOException;
 
 import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.TasProperties;
+import org.alfresco.utility.exception.EnvironmentConfigurationException;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.IOUtils;
 import org.jolokia.client.J4pClient;
-import org.jolokia.client.exception.J4pException;
+import org.jolokia.client.exception.J4pRemoteException;
 import org.jolokia.client.request.J4pReadRequest;
 import org.jolokia.client.request.J4pReadResponse;
 import org.jolokia.client.request.J4pRequest;
@@ -53,9 +54,19 @@ public class JmxJolokiaProxyClient implements Jmx
         return response.getValue();
     }
 
-    private J4pResponse<?> executeRequest(J4pRequest request) throws J4pException
+    private J4pResponse<?> executeRequest(J4pRequest request) throws Exception
     {
-        return getClient().execute(request);
+        J4pResponse<?> response;
+        try
+        {
+            response = getClient().execute(request);
+        }
+        catch (J4pRemoteException e)
+        {
+            throw new EnvironmentConfigurationException("It seems Jolokia agent was not installed on test environment or missconfigured. Error thrown: " + e.getMessage());
+        }
+
+        return response;
     }
 
     public J4pClient getClient()
