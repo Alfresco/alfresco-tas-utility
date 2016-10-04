@@ -14,6 +14,7 @@ import static org.alfresco.utility.report.log.Step.STEP;
 
 import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisStorageException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -88,8 +89,18 @@ public class DataContent extends TestData<DataContent>
         if (getLastResource().isEmpty())
             setLastResource(RandomData.getRandomName("Folder"));
 
-        Document cmisDocument = contentService.createDocumentInRepository(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getLastResource(),
-                documentType, newContent, "This is a file file");
+        Document cmisDocument = null; 
+        
+        try
+        {
+            cmisDocument = contentService.createDocumentInRepository(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getLastResource(),
+                    documentType, newContent, "This is a file file");
+        }
+        catch (CmisStorageException cse)
+        {
+            cse.printStackTrace();
+        }
+        
         FileModel newFile = new FileModel(cmisDocument.getName());
         newFile.setCmisLocation(newLocation);
         newFile.setProtocolLocation(newLocation);
