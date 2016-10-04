@@ -89,7 +89,10 @@ public class JmxClient implements Jmx
         ObjectName objectJmx = new ObjectName(objectName);
 
         mBSC.setAttribute(ObjectName.getInstance(objectName), new Attribute(attributeName, attributeValue));
-
+        LOG.info("Updating objectName {}.{} with value {} via JmxClient", objectName, attributeName, attributeValue);
+        
+        refreshServerProperty(objectName, JmxPropertyOperation.stop);
+        refreshServerProperty(objectName, JmxPropertyOperation.start);
         return mBSC.getAttribute(objectJmx, attributeName);
     }
 

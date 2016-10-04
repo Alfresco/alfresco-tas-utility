@@ -2,6 +2,7 @@ package org.alfresco.utility.network;
 
 import java.io.IOException;
 
+import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.TasProperties;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
@@ -14,6 +15,7 @@ import org.jolokia.client.request.J4pReadResponse;
 import org.jolokia.client.request.J4pRequest;
 import org.jolokia.client.request.J4pResponse;
 import org.jolokia.client.request.J4pWriteRequest;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +30,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class JmxJolokiaProxyClient implements Jmx
 {
+    private static Logger LOG = LogFactory.getLogger();
     @Autowired
     protected TasProperties properties;
     private J4pClient client;
@@ -45,7 +48,8 @@ public class JmxJolokiaProxyClient implements Jmx
     public Object writeProperty(String objectName, String attributeName, String attributeValue) throws Exception
     {
         J4pWriteRequest requestW = new J4pWriteRequest(objectName, attributeName, attributeValue, "");
-        J4pResponse<J4pWriteRequest> response = client.execute(requestW);
+        J4pResponse<J4pWriteRequest> response = getClient().execute(requestW);
+        LOG.info("Updating objectName {}.{} with value {} via JmxJolokia", objectName, attributeName, attributeValue);
         return response.getValue();
     }
 
