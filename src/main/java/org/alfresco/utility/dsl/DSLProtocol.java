@@ -11,7 +11,6 @@ import org.alfresco.utility.model.ContentModel;
 import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.network.JmxClient;
-import org.testng.Assert;
 
 /**
  * Extend this class if you want add implementation for a new protocol.
@@ -276,14 +275,6 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
         return (Client) this;
     }
 
-    /**
-     * Just verify using JMX calls if the protocol is enabled on server or not
-     */
-    public void assertProtocolIsEnabled() throws Exception
-    {
-        Assert.assertTrue(isProtocolEnabled(), String.format("%s protocol is enabled", getProtocolName()));
-    }
-
     public String buildPath(String parent, String... paths)
     {
         return Utility.convertBackslashToSlash(Utility.buildPath(parent, paths)).replace("//", "/");
@@ -299,5 +290,5 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
     protected String getFileContent()
     {
         return fileContent;
-    }
+    }    
 }

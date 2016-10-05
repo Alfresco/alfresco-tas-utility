@@ -50,6 +50,32 @@ public class DataUser extends TestData<DataUser>
         newUser.setDomain(getCurrentUser().getDomain());
         return newUser;
     }
+    
+    /**
+     * Creates a new random user with a specific user name on test server defined in {@link TasProperties}
+     * file.
+     * The user is created with user specified with {@link #usingUser(UserModel)}
+     * 
+     * @param userName
+     * @return
+     * @throws DataPreparationException
+     */
+    public UserModel createUserWithTenant(String userName) throws DataPreparationException
+    {
+        UserModel newUser = new UserModel(userName, PASSWORD);
+        LOG.info("Create user {}", newUser.toString());
+        
+        Boolean created = userService.create(getCurrentUser().getUsername(), 
+                                            getCurrentUser().getPassword(), 
+                                            userName, PASSWORD, String.format(EMAIL, userName),
+                                            String.format("%s FirstName", userName), 
+                                            String.format("LN-%s", userName));
+        if (!created)
+            throw new DataPreparationException(String.format(USER_NOT_CREATED, newUser.toString()));
+
+        newUser.setDomain(getCurrentUser().getDomain());
+        return newUser;
+    }
 
     /**
      * Creates a new random user.
