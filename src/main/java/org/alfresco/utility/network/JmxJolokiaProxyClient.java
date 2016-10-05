@@ -41,7 +41,7 @@ public class JmxJolokiaProxyClient implements Jmx
     {
         J4pReadRequest request = new J4pReadRequest(objectName, attributeName);
         J4pReadResponse response = (J4pReadResponse) executeRequest(request);
-
+        LOG.info("JMX Object [{}] with attribute [{}]", objectName, attributeName);
         return response.getValue().toString();
     }
 
