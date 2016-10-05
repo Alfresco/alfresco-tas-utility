@@ -7,7 +7,22 @@ import java.util.Random;
  */
 public enum UserRole
 {
-    SiteManager, SiteContributor, SiteCollaborator, SiteConsumer;
+    SiteManager("{http://www.alfresco.org/model/site/1.0}site.SiteManager"),
+    SiteContributor("{http://www.alfresco.org/model/site/1.0}site.SiteContributor"),
+    SiteCollaborator("{http://www.alfresco.org/model/site/1.0}site.SiteCollaborator"),
+    SiteConsumer("{http://www.alfresco.org/model/site/1.0}site.SiteConsumer");
+    
+    private final String roleId;
+    private UserRole(String roleId)
+    {
+        this.roleId = roleId;
+    }
+
+    public String getRoleId()
+    {
+        return this.roleId;
+    }
+
     private static Random random = new Random();
 
     public static UserRole randomRole()
