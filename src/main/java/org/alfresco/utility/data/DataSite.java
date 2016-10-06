@@ -37,29 +37,12 @@ public class DataSite extends TestData<DataSite>
      * @throws DataPreparationException
      */
     public SiteModel createSite(SiteModel siteModel) throws DataPreparationException
-    {    	    	
-        return createSite(siteModel.getTitle());
-    }
-    
-    /**
-     * Creates a new random site on test server defined in {@link TasProperties} file.
-     * 
-     * You can also use the {@link #usingUser(org.alfresco.utility.model.UserModel)}
-     * 
-     * method for defining a new user rather than admin
-     * @param siteModel
-     * @param userModel
-     * @return
-     * @throws DataPreparationException
-     */
-    public SiteModel createSite(String siteName) throws DataPreparationException
-    {
-    	SiteModel siteModel = new SiteModel(siteName);
-    	LOG.info("Creating site {} with user {}", siteModel.toString(), getCurrentUser().toString());
-    	
+    {    
+        LOG.info("Creating site {} with user {}", siteModel.toString(), getCurrentUser().toString());
+        
         siteService.create(
-        		getCurrentUser().getUsername(), 
-        		getCurrentUser().getPassword(), 
+                getCurrentUser().getUsername(), 
+                getCurrentUser().getPassword(), 
                 String.format(RandomStringUtils.randomAlphanumeric(10), EMAIL),
                 siteModel.getId(), 
                 siteModel.getTitle(), 
@@ -67,9 +50,7 @@ public class DataSite extends TestData<DataSite>
                 siteModel.getVisibility());
 
         return siteModel;
-    }
-    
-    
+    }    
 
     /**
      * Create public site immediately
@@ -80,7 +61,7 @@ public class DataSite extends TestData<DataSite>
     public SiteModel createPublicRandomSite() throws DataPreparationException
     {
         String randomSite = RandomData.getRandomName("site");       
-        return createSite(randomSite);
+        return createSite(new SiteModel(randomSite));
     }
     
     /**
@@ -92,7 +73,7 @@ public class DataSite extends TestData<DataSite>
     public SiteModel createIMAPSite() throws DataPreparationException
     {
         String imapSite = RandomData.getRandomName("IMAPsite");       
-        SiteModel siteModel = createSite(imapSite);
+        SiteModel siteModel = createSite(new SiteModel(imapSite));
         siteService.setIMAPFavorite(getCurrentUser().getUsername(), getCurrentUser().getPassword(), imapSite);
         return siteModel;
     }
