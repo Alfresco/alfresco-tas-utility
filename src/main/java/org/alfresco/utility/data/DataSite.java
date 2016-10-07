@@ -36,7 +36,7 @@ public class DataSite extends TestData<DataSite>
      * @return
      * @throws DataPreparationException
      */
-    public SiteModel createSite(SiteModel siteModel) throws DataPreparationException
+    public synchronized SiteModel createSite(SiteModel siteModel) throws DataPreparationException
     {    
         LOG.info("Creating site {} with user {}", siteModel.toString(), getCurrentUser().toString());
         
@@ -60,7 +60,7 @@ public class DataSite extends TestData<DataSite>
      */
     public SiteModel createPublicRandomSite() throws DataPreparationException
     {
-        String randomSite = RandomData.getRandomName("site");       
+        String randomSite = RandomData.getRandomName("site");
         return createSite(new SiteModel(randomSite));
     }
     
