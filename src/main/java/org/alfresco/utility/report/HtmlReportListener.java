@@ -52,10 +52,11 @@ public class HtmlReportListener implements IReporter
     static Logger LOG = LogFactory.getLogger();
 
     private ExtentReports extent = null;
-
+    
     @Override
     public void generateReport(List<XmlSuite> xmlSuites, List<ISuite> suites, String outputDirectory)
     {
+        
         try
         {
             extent = ReportManager.getReporter();
@@ -96,6 +97,10 @@ public class HtmlReportListener implements IReporter
         extent.close();
     }
 
+    private String trackerUrl(String issueID)
+    {
+        return String.format("<a href=\"https://issues.alfresco.com/jira/browse/%s\" target=\"_blank\">%s</a>", issueID, issueID);
+    }
     private void buildTestNodes(IResultMap tests, LogStatus status)
     {
         if (extent == null)
@@ -107,7 +112,21 @@ public class HtmlReportListener implements IReporter
         {
             for (ITestResult result : tests.getAllResults())
             {
-                test = extent.startTest(String.format("%s # %s", result.getInstance().getClass().getSimpleName(), result.getMethod().getMethodName()));
+                /**
+                 * BUG sections
+                 */
+                Bug bugAnnotated = result.getMethod().getConstructorOrMethod().getMethod().getAnnotation(Bug.class);
+
+                if (bugAnnotated != null)
+                {
+                    test = extent.startTest(String.format("%s # %s (BUG: %s)", result.getInstance().getClass().getSimpleName(), result.getMethod().getMethodName(), trackerUrl(bugAnnotated.id())));
+                    test.assignCategory("BUGS");
+                    test.log(status, String.format("This test is failing due to this issue %s ", trackerUrl(bugAnnotated.id())));
+                }
+                else
+                {
+                    test = extent.startTest(String.format("%s # %s", result.getInstance().getClass().getSimpleName(), result.getMethod().getMethodName()));
+                }
 
                 test.setStartedTime(getTime(result.getStartMillis()));
                 test.setEndedTime(getTime(result.getEndMillis()));
@@ -164,13 +183,13 @@ public class HtmlReportListener implements IReporter
         Properties log4jProperties = new Properties();
         try
         {
-            log4jProperties =Utility.getProperties(getClass(), "log4j.properties");
+            log4jProperties = Utility.getProperties(getClass(), "log4j.properties");
             log4jPath = log4jProperties.getProperty("log4j.appender.R.File");
         }
         catch (TestConfigurationException e1)
         {
             LOG.error("Cannot read properties from log4j.properties file. Error: {}", e1.getMessage());
-        }       
+        }
         return log4jPath;
     }
 }
