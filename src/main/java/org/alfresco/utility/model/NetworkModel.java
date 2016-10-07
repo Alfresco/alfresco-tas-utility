@@ -20,7 +20,7 @@ public class NetworkModel
     @JsonProperty(required = true)
     private boolean isEnabled;
 
-    private DateTime createdAt;
+    private String createdAt;
     private boolean paidNetwork;
     private NetworkSubscriptionLevel subscriptionLevel;
 
@@ -66,12 +66,12 @@ public class NetworkModel
         this.isEnabled = isEnabled;
     }
 
-    public DateTime getCreatedAt()
+    public String getCreatedAt()
     {
         return createdAt;
     }
 
-    public void setCreatedAt(DateTime createdAt)
+    public void setCreatedAt(String createdAt)
     {
         this.createdAt = createdAt;
     }
