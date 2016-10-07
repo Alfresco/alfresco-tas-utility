@@ -10,7 +10,7 @@ import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.network.ServerHealth;
-import org.alfresco.utility.report.ReportListenerAdapter;
+import org.alfresco.utility.report.HtmlReportListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -25,7 +25,7 @@ import org.testng.annotations.Test;
  * @author Paul Brodner
  */
 @ContextConfiguration("classpath:alfresco-tester-context.xml")
-@Listeners(value = ReportListenerAdapter.class)
+@Listeners(value = HtmlReportListener.class)
 public class BeansTest extends AbstractTestNGSpringContextTests
 {
     @Autowired

@@ -47,7 +47,7 @@ import com.relevantcodes.extentreports.LogStatus;
  *                  </listeners>
  * @author Paul Brodner
  */
-public class ReportListenerAdapter implements IReporter
+public class HtmlReportListener implements IReporter
 {
     static Logger LOG = LogFactory.getLogger();
 

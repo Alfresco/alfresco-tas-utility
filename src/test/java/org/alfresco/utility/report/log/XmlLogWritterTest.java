@@ -2,7 +2,7 @@ package org.alfresco.utility.report.log;
 
 import java.nio.file.Paths;
 
-import org.alfresco.utility.report.ReportListenerAdapter;
+import org.alfresco.utility.report.HtmlReportListener;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
@@ -10,7 +10,7 @@ import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 @ContextConfiguration("classpath:alfresco-tester-context.xml")
-@Listeners(value = ReportListenerAdapter.class)
+@Listeners(value = HtmlReportListener.class)
 public class XmlLogWritterTest extends AbstractTestNGSpringContextTests
 {
     @Test

@@ -3,7 +3,7 @@
 <suite name="Suite" parallel="classes">
 	<listeners>
 		<listener class-name="org.alfresco.utility.testrail.TestRailTestNGListener"></listener>
-		<listener class-name="org.alfresco.utility.report.ReportListenerAdapter"></listener>
+		<listener class-name="org.alfresco.utility.report.HtmlReportListener"></listener>
 	</listeners>
 	<test name="Test">
 		<classes>

@@ -3,7 +3,6 @@ package org.alfresco.utility.model;
 import java.util.List;
 
 import org.alfresco.utility.constants.NetworkSubscriptionLevel;
-import org.joda.time.DateTime;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
