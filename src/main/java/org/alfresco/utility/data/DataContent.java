@@ -18,6 +18,7 @@ import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisStorageException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.testng.Assert;
 
@@ -25,6 +26,7 @@ import org.testng.Assert;
  * Utility for creating files and folders, asserting they exist in repository
  */
 @Service
+@Scope(value = "prototype")
 public class DataContent extends TestData<DataContent>
 {
     @Autowired

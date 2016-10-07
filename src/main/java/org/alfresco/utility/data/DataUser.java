@@ -10,6 +10,7 @@ import org.alfresco.utility.exception.DataPreparationException;
 import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.testng.Assert;
 
@@ -18,6 +19,7 @@ import org.testng.Assert;
  * 
  */
 @Service
+@Scope(value = "prototype")
 public class DataUser extends TestData<DataUser>
 {
     @Autowired

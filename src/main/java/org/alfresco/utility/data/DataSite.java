@@ -8,6 +8,7 @@ import org.alfresco.utility.exception.DataPreparationException;
 import org.alfresco.utility.model.SiteModel;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
  * In the future we will remove this dataprep dependencies if there will be another solution of creating sites.
  */
 @Service
+@Scope(value = "prototype")
 public class DataSite extends TestData<DataSite>
 {
     @Autowired
