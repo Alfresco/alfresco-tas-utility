@@ -402,7 +402,7 @@ public class TestRailApi
                 data.put("comment", sw.toString());
             }
         }
-        Object response = null;
+        Object response = "";
         try
         {
             response = postRequest("add_result_for_case/" + run.getId() + "/" + tmpTestCase.getId(), data);
