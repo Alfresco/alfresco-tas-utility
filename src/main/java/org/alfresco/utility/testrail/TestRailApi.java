@@ -20,6 +20,7 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.Utility;
+import org.alfresco.utility.report.Bug;
 import org.alfresco.utility.testrail.annotation.TestRail;
 import org.alfresco.utility.testrail.model.Run;
 import org.alfresco.utility.testrail.model.Section;
@@ -178,8 +179,7 @@ public class TestRailApi
         conn.addRequestProperty("Authorization", "Basic " + DatatypeConverter.printBase64Binary(String.format("%s:%s", username, password).getBytes()));
         if (data != null)
         {
-            byte[] block = JSONValue.toJSONString(data).getBytes("UTF-8");
-
+            byte[] block = JSONValue.toJSONString(data).getBytes("UTF-8");            
             conn.setDoOutput(true);
             OutputStream ostream = conn.getOutputStream();
             ostream.write(block);
@@ -402,6 +402,17 @@ public class TestRailApi
                 data.put("comment", sw.toString());
             }
         }
+        
+        /*
+         * BUG section, taking in consideration TestNG tests that are marked with @Bug annotation          
+         */
+        Bug bugAnnotated = result.getMethod().getConstructorOrMethod().getMethod().getAnnotation(Bug.class);
+
+        if (bugAnnotated != null)
+        {
+            data.put("defects", bugAnnotated.id());
+        }
+
         Object response = "";
         try
         {

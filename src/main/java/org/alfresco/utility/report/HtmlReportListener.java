@@ -113,7 +113,7 @@ public class HtmlReportListener implements IReporter
             for (ITestResult result : tests.getAllResults())
             {
                 /**
-                 * BUG sections
+                 * BUG section, taking in consideration TestNG tests that are marked with @Bug annotation
                  */
                 Bug bugAnnotated = result.getMethod().getConstructorOrMethod().getMethod().getAnnotation(Bug.class);
 
