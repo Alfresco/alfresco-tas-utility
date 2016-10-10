@@ -42,6 +42,8 @@ As a high level overview, this project contains a couple of functionalities usef
 * Health checks (verify if server is reachable, if server is online)
 * Generic Internal-DSL (Domain Specific Language)
 
+(take a look also on [this](https://gitlab.alfresco.com/tas/alfresco-tas-tester/wikis/Features) page: we will try to keep it up to date with the latest features based on each release)
+
 Using a centralized location (Nexus), everyone will be able to reuse this individual interfaces in their own projects, adding new functionalities, extending also the automation core functionalities - that will be shared across teams. 
 
 **[Back to Top ^](#table-of-contents)**
