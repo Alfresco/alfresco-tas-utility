@@ -67,6 +67,7 @@ public class DataUser extends TestData<DataUser>
         UserModel newUser = new UserModel(userName, PASSWORD);
         LOG.info("Create user {}", newUser.toString());
         
+        newUser.setDomain(getCurrentUser().getDomain());
         Boolean created = userService.create(getCurrentUser().getUsername(), 
                                             getCurrentUser().getPassword(), 
                                             userName, PASSWORD, String.format(EMAIL, userName),
@@ -74,8 +75,7 @@ public class DataUser extends TestData<DataUser>
                                             String.format("LN-%s", userName));
         if (!created)
             throw new DataPreparationException(String.format(USER_NOT_CREATED, newUser.toString()));
-
-        newUser.setDomain(getCurrentUser().getDomain());
+        
         return newUser;
     }
 

@@ -15,7 +15,7 @@ public class UserModel extends TestModel
     /*
      * the role of the user;
      */
-    private UserRole userRole = UserRole.SiteContributor;
+    private UserRole userRole;
 
     public UserModel()
     {
