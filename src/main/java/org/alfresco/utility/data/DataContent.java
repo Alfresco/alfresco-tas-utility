@@ -1,5 +1,7 @@
 package org.alfresco.utility.data;
 
+import static org.alfresco.utility.report.log.Step.STEP;
+
 import org.alfresco.dataprep.CMISUtil.DocumentType;
 import org.alfresco.dataprep.ContentAspects;
 import org.alfresco.dataprep.ContentService;
@@ -8,11 +10,7 @@ import org.alfresco.utility.exception.DataPreparationException;
 import org.alfresco.utility.model.ContentModel;
 import org.alfresco.utility.model.FileModel;
 import org.alfresco.utility.model.FolderModel;
-import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.UserModel;
-
-import static org.alfresco.utility.report.log.Step.STEP;
-
 import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisStorageException;
@@ -70,10 +68,19 @@ public class DataContent extends TestData<DataContent>
         return folderModel;
     }
 
-    public void addEmailAlias(SiteModel site, String folderName, String alias)
-    {
-        STEP(String.format("DATAPREP: Add Email Alias aspect to folder %s", folderName));
-        contentAspect.addEmailAlias(getCurrentUser().getUsername(), getCurrentUser().getPassword(), site.getId(), folderName, alias);
+    /**
+     * Add Email Alias aspect (emailserver:aliasable)
+     * 
+     * @param alias
+     * @return
+     * @throws Exception
+     */
+    public String addEmailAlias(String alias) throws Exception
+    {        
+        Utility.checkObjectIsInitialized(getLastResource(), "getLastResource()");
+        STEP(String.format("DATAPREP: Add 'Email Alias' aspect to folder '%s'", getLastResource()));
+        contentAspect.addEmailAlias(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getCurrentSite(), getLastResource(), alias);
+        return alias;
     }
 
     /**
