@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +46,7 @@ public class Utility
             throw new TestConfigurationException(String.format("[%s] file was not found in your main resources folder.", filePath));
         }
         
-        return Paths.get(resource.getFile()).toFile();
+        return new File(resource.getFile());
     }
 
     public static File getResourceTestDataFile(String fileName) throws Exception
