@@ -1,4 +1,4 @@
-> :octocat: **living document** - it will be updated as we add more functionalities to the project
+![in progress](https://img.shields.io/badge/Document_Level-In_Progress-yellow.svg?style=flat-square)
 
 ---
 ## Table of Contents
