@@ -84,8 +84,8 @@ public class UserModel extends TestModel
 
     public static UserModel getRandomUserModel()
     {
-        UserModel tenant = new UserModel(RandomData.getRandomName("user"), TestData.PASSWORD);
-        return tenant;
+        UserModel user = new UserModel(RandomData.getRandomName("user"), TestData.PASSWORD);
+        return user;
     }
 
     private static String getRandomTenant(String prefix)
