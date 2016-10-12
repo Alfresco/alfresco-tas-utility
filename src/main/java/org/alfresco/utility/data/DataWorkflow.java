@@ -21,7 +21,7 @@ public class DataWorkflow extends TestData<DataWorkflow>
     @Autowired
     WorkflowService workflowService;
 
-    public TaskModel createNewRandomTaskTo(UserModel userModel) throws Exception
+    public TaskModel createNewTaskAndAssignTo(UserModel userModel) throws Exception
     {
         return createNewTask(new TaskModel(userModel.getUsername()));
     }
