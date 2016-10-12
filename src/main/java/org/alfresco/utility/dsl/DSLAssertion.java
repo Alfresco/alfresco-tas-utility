@@ -22,7 +22,7 @@ public class DSLAssertion<Protocol>
     @SuppressWarnings("unchecked")
     public Protocol existsInRepo()
     {
-        STEP(String.format("CMIS: Assert that content '%s' exists in Repository", dslProtocol.getLastResourceWithoutPrefix()));
+        STEP(String.format("CMIS: Assert that content '%s' exists in repository", dslProtocol.getLastResourceWithoutPrefix()));
         dslProtocol.dataContent.usingUser(dslProtocol.getTestUser()).assertContentExist(dslProtocol.getLastResourceWithoutPrefix());
         return (Protocol) dslProtocol;
     }
