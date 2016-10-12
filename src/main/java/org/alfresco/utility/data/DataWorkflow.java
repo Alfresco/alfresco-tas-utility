@@ -21,7 +21,14 @@ public class DataWorkflow extends TestData<DataWorkflow>
     @Autowired
     WorkflowService workflowService;
 
-    public TaskModel createNewRandomTaskTo(UserModel userModel) throws Exception
+    /**
+     * Example of usage:
+     * dataWorkflow.usingUser(userWhoStartsTask).usingSite(siteModel).usingResource(document).createNewTaskAndAssignTo(assignee);
+     * @param userModel
+     * @return
+     * @throws Exception
+     */
+    public TaskModel createNewTaskAndAssignTo(UserModel userModel) throws Exception
     {
         return createNewTask(new TaskModel(userModel.getUsername()));
     }
