@@ -19,7 +19,6 @@ public class UserModel extends TestModel
 
     public UserModel()
     {
-
     }
 
     public UserModel(String username, String password)
@@ -45,7 +44,7 @@ public class UserModel extends TestModel
             return username;
         else
         {
-            return getTenantUsername();
+            return getEmailAddress();
         }
     }
 
@@ -64,7 +63,7 @@ public class UserModel extends TestModel
         this.domain = domain;
     }
 
-    public String getTenantUsername()
+    public String getEmailAddress()
     {
         return String.format("%s@%s", username, getDomain());
     }
