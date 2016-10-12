@@ -22,7 +22,7 @@ public class DSLAssertion<Protocol>
     @SuppressWarnings("unchecked")
     public Protocol existsInRepo()
     {
-        STEP(String.format("CMIS: Assert that content '%s' exists in Repository", dslProtocol.getLastResourceWithoutPrefix()));
+        STEP(String.format("CMIS: Assert that content '%s' exists in repository", dslProtocol.getLastResourceWithoutPrefix()));
         dslProtocol.dataContent.usingUser(dslProtocol.getTestUser()).assertContentExist(dslProtocol.getLastResourceWithoutPrefix());
         return (Protocol) dslProtocol;
     }
@@ -30,7 +30,7 @@ public class DSLAssertion<Protocol>
     @SuppressWarnings("unchecked")
     public Protocol doesNotExistInRepo()
     {
-        STEP(String.format("CMIS: Assert that content '%s' doesn't exist in repository %s", dslProtocol.getLastResourceWithoutPrefix()));
+        STEP(String.format("CMIS: Assert that content '%s' doesn't exist in repository", dslProtocol.getLastResourceWithoutPrefix()));
         dslProtocol.dataContent.usingUser(dslProtocol.getTestUser()).assertContentDoesNotExist(dslProtocol.getLastResourceWithoutPrefix());
         return (Protocol) dslProtocol;
     }
