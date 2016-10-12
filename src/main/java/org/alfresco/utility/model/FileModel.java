@@ -2,6 +2,7 @@ package org.alfresco.utility.model;
 
 import java.io.File;
 
+import org.alfresco.utility.Utility;
 import org.alfresco.utility.data.RandomData;
 
 public class FileModel extends ContentModel
@@ -88,5 +89,16 @@ public class FileModel extends ContentModel
     public File toFile()
     {
         return new File(getName());
+    }
+    
+    /**
+     * This will generate a new FileModel having one existing file from src/main/resources/shared-data location
+     * @param resourceDataFile
+     * @return
+     * @throws Exception
+     */
+    public static FileModel getFileModelBasedOnTestDataFile(String resourceDataFile) throws Exception
+    {
+        return new FileModel(Utility.getResourceTestDataFile(resourceDataFile).toString());
     }
 }

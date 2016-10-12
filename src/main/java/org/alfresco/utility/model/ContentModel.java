@@ -1,5 +1,8 @@
 package org.alfresco.utility.model;
 
+import java.io.File;
+import java.nio.file.Paths;
+
 import javax.xml.bind.annotation.XmlAttribute;
 
 import org.alfresco.utility.Utility;
@@ -14,13 +17,21 @@ public class ContentModel extends TestModel
 
     public ContentModel()
     {
-        
     }
+
     public ContentModel(String name)
     {
         setName(name);
-        
         setCmisLocation(name);
+    }
+
+    public ContentModel rename(String newName) throws Exception
+    {
+        setName(newName);       
+        setCmisLocation(Paths.get(Paths.get(getCmisLocation()).getParent().toString(), newName).toString());
+        Utility.checkObjectIsInitialized(getProtocolLocation(), "getProtocolLocation");
+        setProtocolLocation(Paths.get(Paths.get(getProtocolLocation()).getParent().toString(), newName).toString());
+        return this;
     }
 
     public ContentModel(String name, String title, String description)
@@ -92,5 +103,15 @@ public class ContentModel extends TestModel
     public void setProtocolLocation(String protocolLocation)
     {
         this.protocolLocation = protocolLocation;
+    }
+
+    public String getParentFolder()
+    {
+        return new File(getCmisLocation()).getParent();
+    }
+    
+    public String getProtocolParentFolder()
+    {
+        return new File(getProtocolLocation()).getParent();
     }
 }

@@ -2,8 +2,6 @@ package org.alfresco.utility.dsl;
 
 import static org.alfresco.utility.report.log.Step.STEP;
 
-import java.io.File;
-
 import org.testng.Assert;
 
 public class DSLAssertion<Protocol>
@@ -24,8 +22,7 @@ public class DSLAssertion<Protocol>
     @SuppressWarnings("unchecked")
     public Protocol existsInRepo()
     {
-        STEP(String.format("CMIS: Assert that content '%s' exists in Repository %s", new File(dslProtocol.getLastResourceWithoutPrefix()).getName(),
-                dslProtocol.getLastResourceWithoutPrefix()));
+        STEP(String.format("CMIS: Assert that content '%s' exists in Repository", dslProtocol.getLastResourceWithoutPrefix()));
         dslProtocol.dataContent.usingUser(dslProtocol.getTestUser()).assertContentExist(dslProtocol.getLastResourceWithoutPrefix());
         return (Protocol) dslProtocol;
     }
@@ -33,8 +30,7 @@ public class DSLAssertion<Protocol>
     @SuppressWarnings("unchecked")
     public Protocol doesNotExistInRepo()
     {
-        STEP(String.format("CMIS: Assert that content '%s' doesn't exist in repository %s", new File(dslProtocol.getLastResourceWithoutPrefix()).getName(),
-                dslProtocol.getLastResourceWithoutPrefix()));
+        STEP(String.format("CMIS: Assert that content '%s' doesn't exist in repository %s", dslProtocol.getLastResourceWithoutPrefix()));
         dslProtocol.dataContent.usingUser(dslProtocol.getTestUser()).assertContentDoesNotExist(dslProtocol.getLastResourceWithoutPrefix());
         return (Protocol) dslProtocol;
     }
