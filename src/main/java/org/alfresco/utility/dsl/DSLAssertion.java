@@ -30,7 +30,7 @@ public class DSLAssertion<Protocol>
     @SuppressWarnings("unchecked")
     public Protocol doesNotExistInRepo()
     {
-        STEP(String.format("CMIS: Assert that content '%s' doesn't exist in repository %s", dslProtocol.getLastResourceWithoutPrefix()));
+        STEP(String.format("CMIS: Assert that content '%s' doesn't exist in repository", dslProtocol.getLastResourceWithoutPrefix()));
         dslProtocol.dataContent.usingUser(dslProtocol.getTestUser()).assertContentDoesNotExist(dslProtocol.getLastResourceWithoutPrefix());
         return (Protocol) dslProtocol;
     }
@@ -44,5 +44,13 @@ public class DSLAssertion<Protocol>
         return getProtocol();
     }
     
+    /**
+     * Just verify using JMX calls if the protocol is enabled on server or not
+     */
+    public Protocol protocolIsDisabled() throws Exception
+    {
+        Assert.assertFalse(dslProtocol.isProtocolEnabled(), String.format("%s protocol is disabled", dslProtocol.getProtocolName()));
+        return getProtocol();
+    }
 
 }
