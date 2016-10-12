@@ -3,6 +3,10 @@ package org.alfresco.utility.model;
 import org.alfresco.dataprep.CMISUtil.Priority;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.alfresco.utility.data.RandomData;
+import org.joda.time.DateTime;
+
+import java.util.Date;
 
 public class TaskModel extends TestModel
 {
@@ -10,12 +14,23 @@ public class TaskModel extends TestModel
     private String message;
 
     @JsonProperty(value = "dueAt")
-    private String dueDate;
+    private Date dueDate;
     private String assignee;
     private Priority priority;
+    private boolean sendEmail;
 
     public TaskModel()
     {
+    }
+
+    public TaskModel(String assignee)
+    {
+        setAssignee(assignee);
+        setMessage(RandomData.getRandomAlphanumeric());
+        DateTime today = new DateTime();
+        setDueDate(today.plusDays(2).toDate());
+        setPriority(Priority.High);
+        setSendEmail(true);
     }
 
     public String getMessage()
@@ -28,12 +43,12 @@ public class TaskModel extends TestModel
         this.message = message;
     }
 
-    public String getDueDate()
+    public Date getDueDate()
     {
         return dueDate;
     }
 
-    public void setDueDate(String dueDate)
+    public void setDueDate(Date dueDate)
     {
         this.dueDate = dueDate;
     }
@@ -48,13 +63,24 @@ public class TaskModel extends TestModel
         this.assignee = assignee;
     }
 
-    public int getPriority()
+    public Priority getPriority()
     {
-        return priority.getLevel();
+        return priority;
     }
 
     public void setPriority(Priority priority)
     {
         this.priority = priority;
     }
+
+    public boolean getSendEmail()
+    {
+        return sendEmail;
+    }
+
+    public void setSendEmail(boolean sendEmail)
+    {
+        this.sendEmail = sendEmail;
+    }
+
 }
