@@ -51,6 +51,7 @@ public class DataWorkflow extends TestData<DataWorkflow>
                 taskModel.getSendEmail()
                 );
         taskModel.setNodeRef(workflowId);
+        taskModel.setId(workflowService.getTaskId(taskModel.getAssignee(), getCurrentUser().getPassword() , workflowId));
         return taskModel;
     }
     
@@ -80,6 +81,7 @@ public class DataWorkflow extends TestData<DataWorkflow>
                 taskModel.getSendEmail()
                 );
         taskModel.setNodeRef(workflowId);
+        taskModel.setId(workflowService.getTaskId(getCurrentUser().getUsername(), getCurrentUser().getPassword() , workflowId));
         return taskModel;
     }
     

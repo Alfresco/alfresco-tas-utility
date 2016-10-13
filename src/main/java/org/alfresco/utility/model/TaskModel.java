@@ -3,6 +3,7 @@ package org.alfresco.utility.model;
 import org.alfresco.dataprep.CMISUtil.Priority;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.alfresco.utility.data.RandomData;
 import org.joda.time.DateTime;
 
@@ -10,6 +11,9 @@ import java.util.Date;
 
 public class TaskModel extends TestModel
 {
+    @JsonProperty(required = true)
+    private String id;
+
     @JsonProperty(value = "description")
     private String message;
 
@@ -31,6 +35,16 @@ public class TaskModel extends TestModel
         setDueDate(today.plusDays(2).toDate());
         setPriority(Priority.High);
         setSendEmail(true);
+    }
+    
+    public String getId()
+    {
+        return id;
+    }
+
+    public void setId(String id)
+    {
+        this.id = id;
     }
 
     public String getMessage()
