@@ -37,5 +37,18 @@ public class ProcessModel extends TestModel
         this.id = id;
     }
     
+    public TaskModel getTaskOfUser(UserModel user)
+    {
+        for(TaskModel task : tasks)
+        {
+            if(task.getAssignee().equals(user.getUsername()))
+            {
+                return task;
+            }
+        }
+        
+        return null;
+    }
+    
     
 }

@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.alfresco.dataprep.CMISUtil.Priority;
+import org.alfresco.dataprep.WorkflowService.TaskStatus;
 import org.alfresco.dataprep.WorkflowService;
 import org.alfresco.utility.model.GroupModel;
 import org.alfresco.utility.model.ProcessModel;
@@ -31,6 +32,7 @@ public class DataWorkflow extends TestData<DataWorkflow>
     /**
      * Example of usage:
      * dataWorkflow.usingUser(userWhoStartsTask).usingSite(siteModel).usingResource(document).createNewTaskAndAssignTo(assignee);
+     * 
      * @param userModel
      * @return
      * @throws Exception
@@ -42,28 +44,22 @@ public class DataWorkflow extends TestData<DataWorkflow>
 
     public TaskModel createNewTask(TaskModel taskModel) throws Exception
     {
-        STEP(String.format("DATAPREP: User %s creates new task %s and assigns it to user %s", getCurrentUser().getUsername(), taskModel.getMessage(), taskModel.getAssignee()));
+        STEP(String.format("DATAPREP: User %s creates new task %s and assigns it to user %s", getCurrentUser().getUsername(), taskModel.getMessage(),
+                taskModel.getAssignee()));
 
-        String workflowId = workflowService.startNewTask(
-                getCurrentUser().getUsername(),
-                getCurrentUser().getPassword(),
-                taskModel.getMessage(),
-                taskModel.getDueDate(),
-                taskModel.getAssignee(),
-                taskModel.getPriority(),
-                getCurrentSite(),
-                Arrays.asList(new File(getLastResource()).getName()),
-                taskModel.getSendEmail()
-                );
+        String workflowId = workflowService.startNewTask(getCurrentUser().getUsername(), getCurrentUser().getPassword(), taskModel.getMessage(),
+                taskModel.getDueDate(), taskModel.getAssignee(), taskModel.getPriority(), getCurrentSite(),
+                Arrays.asList(new File(getLastResource()).getName()), taskModel.getSendEmail());
         taskModel.setNodeRef(workflowId);
-        taskModel.setId(workflowService.getTaskId(taskModel.getAssignee(), getCurrentUser().getPassword() , workflowId));
+        taskModel.setId(workflowService.getTaskId(taskModel.getAssignee(), getCurrentUser().getPassword(), workflowId));
         return taskModel;
     }
-    
+
     /**
      * Starts a Review and Approve(pooled review) workflow with items added from a site
      * Example of usage:
      * dataWorkflow.usingUser(userWhoStartsTask).usingSite(siteModel).usingResource(document).createNewTaskAndAssignTo(assignee);
+     * 
      * @param userModel
      * @return
      * @throws Exception
@@ -71,58 +67,66 @@ public class DataWorkflow extends TestData<DataWorkflow>
     public TaskModel createPooledReviewTaskAndAssignTo(GroupModel groupModel) throws Exception
     {
         TaskModel taskModel = new TaskModel(groupModel.getDisplayName());
-        STEP(String.format("DATAPREP: User %s creates new task %s and assigns it to group %s", getCurrentUser().getUsername(), 
-                taskModel.getMessage(), taskModel.getAssignee()));
+        STEP(String.format("DATAPREP: User %s creates new task %s and assigns it to group %s", getCurrentUser().getUsername(), taskModel.getMessage(),
+                taskModel.getAssignee()));
 
-        String workflowId = workflowService.startPooledReview(
-                getCurrentUser().getUsername(),
-                getCurrentUser().getPassword(),
-                taskModel.getMessage(),
-                taskModel.getDueDate(),
-                taskModel.getAssignee(),
-                taskModel.getPriority(),
-                getCurrentSite(),
-                Arrays.asList(new File(getLastResource()).getName()),
-                taskModel.getSendEmail()
-                );
+        String workflowId = workflowService.startPooledReview(getCurrentUser().getUsername(), getCurrentUser().getPassword(), taskModel.getMessage(),
+                taskModel.getDueDate(), taskModel.getAssignee(), taskModel.getPriority(), getCurrentSite(),
+                Arrays.asList(new File(getLastResource()).getName()), taskModel.getSendEmail());
         taskModel.setNodeRef(workflowId);
-        taskModel.setId(workflowService.getTaskId(getCurrentUser().getUsername(), getCurrentUser().getPassword() , workflowId));
+        taskModel.setId(workflowService.getTaskId(getCurrentUser().getUsername(), getCurrentUser().getPassword(), workflowId));
         return taskModel;
     }
-    
+
     public TaskModel claimTask(TaskModel taskModel)
     {
         STEP(String.format("DATAPREP: User %s claims task %s", getCurrentUser().getUsername(), taskModel.getMessage()));
-        
+
         workflowService.claimTask(getCurrentUser().getUsername(), getCurrentUser().getPassword(), taskModel.getNodeRef());
         return taskModel;
     }
-    
+
     /**
      * Starts a Review and Approve(one or more reviewers) workflow with items added from a site
      * Example of usage:
      * dataWorkflow.usingUser(userWhoStartsTask).usingSite(siteModel).usingResource(document).createMoreReviewersWorkflowAndAssignTo(assignees);
+     * 
      * @param userModel
      * @return
      * @throws Exception
      */
-    public ProcessModel createMoreReviewersWorkflowAndAssignTo(UserModel...users) throws Exception
+    public ProcessModel createMoreReviewersWorkflowAndAssignTo(UserModel... users) throws Exception
     {
         STEP(String.format("DATAPREP: User %s creates 'One or More Reviewers' workflow/process", getCurrentUser().getUsername()));
-        ProcessModel process=new ProcessModel();
-        
-        List<String> reviewers=new ArrayList<String>();       
-        for (UserModel user:users)
+        ProcessModel process = new ProcessModel();
+
+        List<String> reviewers = new ArrayList<String>();
+        for (UserModel user : users)
         {
             reviewers.add(user.getUsername());
         }
 
         DateTime today = new DateTime();
-        String workflowId = workflowService.startMultipleReviewers(getCurrentUser().getUsername(), getCurrentUser().getPassword(), 
-                RandomData.getRandomAlphanumeric(), today.plusDays(2).toDate(), reviewers, Priority.High, getCurrentSite(), 
+        String workflowId = workflowService.startMultipleReviewers(getCurrentUser().getUsername(), getCurrentUser().getPassword(),
+                RandomData.getRandomAlphanumeric(), today.plusDays(2).toDate(), reviewers, Priority.High, getCurrentSite(),
                 Arrays.asList(new File(getLastResource()).getName()), 0, true);
-        
+
         process.setId(workflowId);
+        for (UserModel user : users)
+        {
+            TaskModel task = new TaskModel();
+            task.setId(workflowService.getTaskId(user.getUsername(), user.getPassword(), workflowId));
+            task.setAssignee(user.getUsername());
+            process.addTaskToList(task);
+        }
         return process;
+    }
+
+    public ProcessModel approveTask(ProcessModel processModel)
+    {
+        STEP(String.format("DATAPREP: User %s approves task %s", getCurrentUser().getUsername(), processModel.getId()));
+
+        workflowService.approveTask(getCurrentUser().getUsername(), getCurrentUser().getPassword(), processModel.getId(), true, TaskStatus.COMPLETED, "");
+        return processModel;
     }
 }
