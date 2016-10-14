@@ -3,12 +3,17 @@ package org.alfresco.utility.data;
 import static org.alfresco.utility.report.log.Step.STEP;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
+import org.alfresco.dataprep.CMISUtil.Priority;
 import org.alfresco.dataprep.WorkflowService;
 import org.alfresco.utility.model.GroupModel;
+import org.alfresco.utility.model.ProcessModel;
 import org.alfresco.utility.model.TaskModel;
 import org.alfresco.utility.model.UserModel;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -91,5 +96,33 @@ public class DataWorkflow extends TestData<DataWorkflow>
         
         workflowService.claimTask(getCurrentUser().getUsername(), getCurrentUser().getPassword(), taskModel.getNodeRef());
         return taskModel;
+    }
+    
+    /**
+     * Starts a Review and Approve(one or more reviewers) workflow with items added from a site
+     * Example of usage:
+     * dataWorkflow.usingUser(userWhoStartsTask).usingSite(siteModel).usingResource(document).createMoreReviewersWorkflowAndAssignTo(assignees);
+     * @param userModel
+     * @return
+     * @throws Exception
+     */
+    public ProcessModel createMoreReviewersWorkflowAndAssignTo(UserModel...users) throws Exception
+    {
+        STEP(String.format("DATAPREP: User %s creates 'One or More Reviewers' workflow/process", getCurrentUser().getUsername()));
+        ProcessModel process=new ProcessModel();
+        
+        List<String> reviewers=new ArrayList<String>();       
+        for (UserModel user:users)
+        {
+            reviewers.add(user.getUsername());
+        }
+
+        DateTime today = new DateTime();
+        String workflowId = workflowService.startMultipleReviewers(getCurrentUser().getUsername(), getCurrentUser().getPassword(), 
+                RandomData.getRandomAlphanumeric(), today.plusDays(2).toDate(), reviewers, Priority.High, getCurrentSite(), 
+                Arrays.asList(new File(getLastResource()).getName()), 0, true);
+        
+        process.setId(workflowId);
+        return process;
     }
 }
