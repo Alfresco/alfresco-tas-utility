@@ -2,6 +2,8 @@ package org.alfresco.utility.data;
 
 import static org.alfresco.utility.report.log.Step.STEP;
 
+import java.io.File;
+
 import org.alfresco.dataprep.CMISUtil.DocumentType;
 import org.alfresco.dataprep.ContentAspects;
 import org.alfresco.dataprep.ContentService;
@@ -77,9 +79,10 @@ public class DataContent extends TestData<DataContent>
      */
     public String addEmailAlias(String alias) throws Exception
     {        
-        Utility.checkObjectIsInitialized(getLastResource(), "getLastResource()");
-        STEP(String.format("DATAPREP: Add 'Email Alias' aspect to folder '%s'", getLastResource()));
-        contentAspect.addEmailAlias(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getCurrentSite(), getLastResource(), alias);
+        String folderName = new File(getLastResource()).getName();
+        Utility.checkObjectIsInitialized(folderName, "getLastResource()");
+        STEP(String.format("DATAPREP: Add 'Email Alias' aspect to folder '%s'", folderName));
+        contentAspect.addEmailAlias(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getCurrentSite(), folderName, alias);
         return alias;
     }
 
