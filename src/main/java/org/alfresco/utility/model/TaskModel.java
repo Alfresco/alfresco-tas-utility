@@ -8,7 +8,7 @@ import org.joda.time.DateTime;
 
 import java.util.Date;
 
-public class TaskModel extends TestModel
+public class TaskModel extends RepoTestModel
 {
     @JsonProperty(value = "description")
     private String message;
