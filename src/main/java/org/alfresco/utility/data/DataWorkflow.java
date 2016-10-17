@@ -42,14 +42,26 @@ public class DataWorkflow extends TestData<DataWorkflow>
         return createNewTask(new TaskModel(userModel.getUsername()));
     }
 
+    /**
+     * Creates a new {@link TaskModel}
+     * 
+     * @param taskModel
+     * @return
+     * @throws Exception
+     */
     public TaskModel createNewTask(TaskModel taskModel) throws Exception
     {
         STEP(String.format("DATAPREP: User %s creates new task %s and assigns it to user %s", getCurrentUser().getUsername(), taskModel.getMessage(),
                 taskModel.getAssignee()));
 
-        String workflowId = workflowService.startNewTask(getCurrentUser().getUsername(), getCurrentUser().getPassword(), taskModel.getMessage(),
-                taskModel.getDueDate(), taskModel.getAssignee(), taskModel.getPriority(), getCurrentSite(),
-                Arrays.asList(new File(getLastResource()).getName()), taskModel.getSendEmail());
+        String workflowId = workflowService.startNewTask(getCurrentUser().getUsername(), 
+                                                         getCurrentUser().getPassword(), 
+                                                         taskModel.getMessage(),
+                                                         taskModel.getDueDate(), 
+                                                         taskModel.getAssignee(), 
+                                                         taskModel.getPriority(), 
+                                                         getCurrentSite(),
+                                                         Arrays.asList(new File(getLastResource()).getName()), taskModel.getSendEmail());
         taskModel.setNodeRef(workflowId);
         taskModel.setId(workflowService.getTaskId(taskModel.getAssignee(), getCurrentUser().getPassword(), workflowId));
         return taskModel;
@@ -70,9 +82,14 @@ public class DataWorkflow extends TestData<DataWorkflow>
         STEP(String.format("DATAPREP: User %s creates new task %s and assigns it to group %s", getCurrentUser().getUsername(), taskModel.getMessage(),
                 taskModel.getAssignee()));
 
-        String workflowId = workflowService.startPooledReview(getCurrentUser().getUsername(), getCurrentUser().getPassword(), taskModel.getMessage(),
-                taskModel.getDueDate(), taskModel.getAssignee(), taskModel.getPriority(), getCurrentSite(),
-                Arrays.asList(new File(getLastResource()).getName()), taskModel.getSendEmail());
+        String workflowId = workflowService.startPooledReview(getCurrentUser().getUsername(), 
+                                                              getCurrentUser().getPassword(), 
+                                                              taskModel.getMessage(),
+                                                              taskModel.getDueDate(), 
+                                                              taskModel.getAssignee(), 
+                                                              taskModel.getPriority(), 
+                                                              getCurrentSite(),
+                                                              Arrays.asList(new File(getLastResource()).getName()), taskModel.getSendEmail());
         taskModel.setNodeRef(workflowId);
         taskModel.setId(workflowService.getTaskId(getCurrentUser().getUsername(), getCurrentUser().getPassword(), workflowId));
         return taskModel;
@@ -81,7 +98,6 @@ public class DataWorkflow extends TestData<DataWorkflow>
     public TaskModel claimTask(TaskModel taskModel)
     {
         STEP(String.format("DATAPREP: User %s claims task %s", getCurrentUser().getUsername(), taskModel.getMessage()));
-
         workflowService.claimTask(getCurrentUser().getUsername(), getCurrentUser().getPassword(), taskModel.getNodeRef());
         return taskModel;
     }
@@ -107,9 +123,14 @@ public class DataWorkflow extends TestData<DataWorkflow>
         }
 
         DateTime today = new DateTime();
-        String workflowId = workflowService.startMultipleReviewers(getCurrentUser().getUsername(), getCurrentUser().getPassword(),
-                RandomData.getRandomAlphanumeric(), today.plusDays(2).toDate(), reviewers, Priority.High, getCurrentSite(),
-                Arrays.asList(new File(getLastResource()).getName()), 0, true);
+        String workflowId = workflowService.startMultipleReviewers(getCurrentUser().getUsername(), 
+                                                                   getCurrentUser().getPassword(),
+                                                                   RandomData.getRandomAlphanumeric(), 
+                                                                   today.plusDays(2).toDate(), 
+                                                                   reviewers, 
+                                                                   Priority.High, 
+                                                                   getCurrentSite(),
+                                                                   Arrays.asList(new File(getLastResource()).getName()), 0, true);
 
         process.setId(workflowId);
         for (UserModel user : users)
