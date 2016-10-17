@@ -10,6 +10,7 @@ import java.lang.annotation.Target;
 public @interface TestGroup
 {
     public static String SANITY = "sanity";
+    public static String PROTOCOLS = "protocols";    
     
     /*
      * Used in Rest api mostly
@@ -28,4 +29,9 @@ public @interface TestGroup
     public static String TAGS = "tags";
     public static String TASKS = "tasks";
     public static String PROCESS_DEFINITION = "process-definitions";
+    
+    public static String IMAP = "imap";
+    
+    public static String SMTP = "smtp";
+    
 }
