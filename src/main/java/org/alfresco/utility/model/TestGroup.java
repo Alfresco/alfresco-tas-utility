@@ -16,8 +16,10 @@ public @interface TestGroup
      */
     public static String REST_API = "rest-api";
     public static String COMMENTS = "comments";
+    public static String DEPLOYMENTS = "deployments";
     public static String FAVORITES = "favorites";    
     public static String NETWORKS = "networks";
+    public static String PROCESSES = "processes";
     public static String WORKFLOW = "workflow";
     public static String PEOPLE = "people";
     public static String RATINGS = "ratings";
