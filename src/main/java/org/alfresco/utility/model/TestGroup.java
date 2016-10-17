@@ -19,6 +19,7 @@ public @interface TestGroup
     public static String DEPLOYMENTS = "deployments";
     public static String FAVORITES = "favorites";    
     public static String NETWORKS = "networks";
+    public static String PREFERENCES = "preferences";
     public static String PROCESSES = "processes";
     public static String WORKFLOW = "workflow";
     public static String PEOPLE = "people";
