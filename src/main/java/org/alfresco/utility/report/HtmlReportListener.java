@@ -52,11 +52,11 @@ public class HtmlReportListener implements IReporter
     static Logger LOG = LogFactory.getLogger();
 
     private ExtentReports extent = null;
-    
+
     @Override
     public void generateReport(List<XmlSuite> xmlSuites, List<ISuite> suites, String outputDirectory)
     {
-        
+
         try
         {
             extent = ReportManager.getReporter();
@@ -93,14 +93,23 @@ public class HtmlReportListener implements IReporter
         }
 
         extent.setTestRunnerOutput(String.format("<pre>%s </pre>", content));
-        extent.flush();
-        extent.close();
+
+        try
+        {
+            extent.flush();
+            extent.close();
+        }
+        catch (Exception e)
+        {
+            LOG.error("Something happened on closing the report: {}", e.getMessage());
+        }
     }
 
     private String trackerUrl(String issueID)
     {
         return String.format("<a href=\"https://issues.alfresco.com/jira/browse/%s\" target=\"_blank\">%s</a>", issueID, issueID);
     }
+
     private void buildTestNodes(IResultMap tests, LogStatus status)
     {
         if (extent == null)
@@ -119,7 +128,8 @@ public class HtmlReportListener implements IReporter
 
                 if (bugAnnotated != null)
                 {
-                    test = extent.startTest(String.format("%s # %s (BUG: %s)", result.getInstance().getClass().getSimpleName(), result.getMethod().getMethodName(), trackerUrl(bugAnnotated.id())));
+                    test = extent.startTest(String.format("%s # %s (BUG: %s)", result.getInstance().getClass().getSimpleName(),
+                            result.getMethod().getMethodName(), trackerUrl(bugAnnotated.id())));
                     test.assignCategory("BUGS");
                     test.log(status, String.format("This test is failing due to this issue %s ", trackerUrl(bugAnnotated.id())));
                 }
