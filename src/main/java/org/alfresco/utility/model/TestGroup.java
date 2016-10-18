@@ -29,6 +29,7 @@ public @interface TestGroup
     public static String TAGS = "tags";
     public static String TASKS = "tasks";
     public static String PROCESS_DEFINITION = "process-definitions";
+    public static String ACTIVITIES = "activities";
     
     public static String IMAP = "imap";
     
