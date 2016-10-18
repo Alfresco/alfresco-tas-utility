@@ -5,6 +5,7 @@ import static org.alfresco.utility.report.log.Step.STEP;
 import java.io.File;
 
 import org.alfresco.dataprep.CMISUtil.DocumentType;
+import org.alfresco.dataprep.ContentActions;
 import org.alfresco.dataprep.ContentAspects;
 import org.alfresco.dataprep.ContentService;
 import org.alfresco.utility.Utility;
@@ -35,6 +36,9 @@ public class DataContent extends TestData<DataContent>
     @Autowired
     private ContentAspects contentAspect;
 
+    @Autowired
+    private ContentActions contentActions;
+    
     /**
      * It will create a new folder in current resource
      */
@@ -68,6 +72,28 @@ public class DataContent extends TestData<DataContent>
         folderModel.setCmisLocation(cmisFolder.getPath());
         folderModel.setNodeRef(cmisFolder.getId());
         return folderModel;
+    }
+    
+    /**
+     * Use this to delete the last resource, either file or folder
+     */
+    public void deleteFolder()
+    {
+        File file = new File(getLastResource());
+        STEP(String.format("DATAPREP: Delete folder '%s' in %s", file.getName(), getCurrentSpace()));
+        contentService.deleteFolder(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getCurrentSite(), file.getName());
+    }
+    
+    /**
+     * Use this to rename a file or a folder
+     * 
+     * @param newContent
+     */
+    public void renameContent(ContentModel newContent)
+    {
+        File file = new File(getLastResource());
+        STEP(String.format("DATAPREP: Rename content '%s' in %s", file.getName(), getCurrentSpace()));
+        contentActions.renameContent(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getCurrentSite(), file.getName(), newContent.getName());
     }
 
     /**
