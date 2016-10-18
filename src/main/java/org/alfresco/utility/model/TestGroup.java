@@ -34,4 +34,6 @@ public @interface TestGroup
     
     public static String SMTP = "smtp";
     
+    public static String CIFS = "cifs";
+    
 }
