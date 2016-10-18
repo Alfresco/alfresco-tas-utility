@@ -136,6 +136,14 @@ public class Utility
         {
             if (!path.isEmpty())
             {
+                if(path.substring(0,1).equals("/"))
+                {
+                    path = path.replaceFirst("/", "");
+                }
+                if(path.endsWith("/"))
+                {
+                    path = path.substring(0, path.length() - 1);
+                }
                 concatenatedPaths.append(path);
                 concatenatedPaths.append("/");
             }
