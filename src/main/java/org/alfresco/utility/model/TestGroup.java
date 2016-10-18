@@ -10,15 +10,15 @@ import java.lang.annotation.Target;
 public @interface TestGroup
 {
     public static String SANITY = "sanity";
-    public static String PROTOCOLS = "protocols";    
-    
+    public static String PROTOCOLS = "protocols";
+
     /*
      * Used in Rest api mostly
      */
     public static String REST_API = "rest-api";
     public static String COMMENTS = "comments";
     public static String DEPLOYMENTS = "deployments";
-    public static String FAVORITES = "favorites";    
+    public static String FAVORITES = "favorites";
     public static String NETWORKS = "networks";
     public static String PREFERENCES = "preferences";
     public static String PROCESSES = "processes";
@@ -29,9 +29,12 @@ public @interface TestGroup
     public static String TAGS = "tags";
     public static String TASKS = "tasks";
     public static String PROCESS_DEFINITION = "process-definitions";
-    
+    public static String ACTIVITIES = "activities";
+
     public static String IMAP = "imap";
-    
     public static String SMTP = "smtp";
-    
+    public static String CIFS = "cifs";
+    public static String CMIS = "cmis";
+    public static String WEBDAV = "webdav";
+    public static String FTP = "ftp";
 }
