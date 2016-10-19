@@ -77,7 +77,7 @@ public class DataContent extends TestData<DataContent>
     /**
      * Use this to delete the last resource, either file or folder
      */
-    public void deleteFolder()
+    public void deleteContent()
     {
         File file = new File(getLastResource());
         STEP(String.format("DATAPREP: Delete folder '%s' in %s", file.getName(), getCurrentSpace()));
