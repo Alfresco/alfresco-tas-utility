@@ -4,7 +4,6 @@ import java.io.File;
 
 import org.alfresco.utility.Utility;
 import org.alfresco.utility.data.RandomData;
-import org.testng.reporters.Files;
 
 public class FileModel extends ContentModel
 {
@@ -100,10 +99,6 @@ public class FileModel extends ContentModel
      */
     public static FileModel getFileModelBasedOnTestDataFile(String resourceDataFile) throws Exception
     {
-        FileModel testFile = new FileModel(Utility.getResourceTestDataFile(resourceDataFile).toString());
-        String content = Files.readFile(testFile.toFile()).replace("\n", "");
-        testFile.setContent(content);
-        
-        return testFile; 
+        return new FileModel(Utility.getResourceTestDataFile(resourceDataFile).toString());
     }
 }
