@@ -1,5 +1,7 @@
 package org.alfresco.utility.model;
 
+import org.testng.Assert;
+
 public class ErrorModel extends TestModel
 {
     private String errorKey = "";
@@ -57,6 +59,14 @@ public class ErrorModel extends TestModel
     public void setDescriptionURL(String descriptionURL)
     {
         this.descriptionURL = descriptionURL;
+    }
+    
+    public ErrorModel containsSummary(String summary)
+    {
+        if(!getBriefSummary().contains(summary))
+        Assert.fail(String.format("Expected [%s] error to be found in actual briefSummary returned by server: %s", summary, getBriefSummary()));
+        
+        return this;
     }
 
 }
