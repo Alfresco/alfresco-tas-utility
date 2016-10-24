@@ -38,7 +38,7 @@ public class DataContent extends TestData<DataContent>
 
     @Autowired
     private ContentActions contentActions;
-    
+
     /**
      * It will create a new folder in current resource
      */
@@ -73,7 +73,7 @@ public class DataContent extends TestData<DataContent>
         folderModel.setNodeRef(cmisFolder.getId());
         return folderModel;
     }
-    
+
     /**
      * Use this to delete the last resource, either file or folder
      */
@@ -83,7 +83,7 @@ public class DataContent extends TestData<DataContent>
         STEP(String.format("DATAPREP: Delete folder '%s' in %s", file.getName(), getCurrentSpace()));
         contentService.deleteFolder(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getCurrentSite(), file.getName());
     }
-    
+
     /**
      * Use this to rename a file or a folder
      * 
@@ -104,7 +104,7 @@ public class DataContent extends TestData<DataContent>
      * @throws Exception
      */
     public String addEmailAlias(String alias) throws Exception
-    {        
+    {
         String folderName = new File(getLastResource()).getName();
         Utility.checkObjectIsInitialized(folderName, "getLastResource()");
         STEP(String.format("DATAPREP: Add 'Email Alias' aspect to folder '%s'", folderName));
@@ -118,7 +118,7 @@ public class DataContent extends TestData<DataContent>
      * 
      * @param documentType
      * @return
-     * @throws DataPreparationException 
+     * @throws DataPreparationException
      */
     public FileModel createContent(DocumentType documentType) throws DataPreparationException
     {
@@ -129,8 +129,8 @@ public class DataContent extends TestData<DataContent>
         if (getLastResource().isEmpty())
             setLastResource(RandomData.getRandomName("Folder"));
 
-        Document cmisDocument = null; 
-        
+        Document cmisDocument = null;
+
         try
         {
             cmisDocument = contentService.createDocumentInRepository(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getLastResource(),
@@ -141,14 +141,14 @@ public class DataContent extends TestData<DataContent>
             LOG.error(cse.getMessage());
             throw new DataPreparationException(cse.getMessage());
         }
-        
+
         FileModel newFile = new FileModel(cmisDocument.getName());
         newFile.setCmisLocation(newLocation);
         newFile.setProtocolLocation(newLocation);
         newFile.setNodeRef(cmisDocument.getId());
         return newFile;
     }
-    
+
     /**
      * Creates a random document based on {@link DocumentType} passed
      * Return the {@link Document} object on success creation
@@ -162,11 +162,47 @@ public class DataContent extends TestData<DataContent>
         String newContent = String.format("%s.%s", RandomData.getRandomName("file"), Utility.cmisDocTypeToExtentions(documentType));
         STEP(String.format("DATAPREP: Creating a new non-empty content %s in %s site", newContent, siteName));
 
-        Document cmisDocument = contentService.createDocument(getCurrentUser().getUsername(), getCurrentUser().getPassword(), siteName,
-                documentType, newContent, "This is a file file");
+        Document cmisDocument = contentService.createDocument(getCurrentUser().getUsername(), getCurrentUser().getPassword(), siteName, documentType,
+                newContent, "This is a file file");
         FileModel newFile = new FileModel(cmisDocument.getPaths().get(0).toString());
         newFile.setNodeRef(cmisDocument.getId());
         return newFile;
+    }
+
+    /**
+     * Creates a random document based on {@link DocumentType} passed
+     * Return the {@link Document} object on success creation
+     * 
+     * @param documentType
+     * @return
+     * @throws DataPreparationException
+     */
+    public FileModel createContent(FileModel fileModel) throws DataPreparationException
+    {
+        String fileFullName = String.format("%s.%s", fileModel.getName(), fileModel.getFileType().extention);
+        STEP(String.format("DATAPREP: Creating a new non-empty content %s in %s ", fileModel.getName(), getLastResource()));
+
+        if (getLastResource().isEmpty())
+            setLastResource(RandomData.getRandomName("Folder"));
+
+        Document cmisDocument = null;
+
+        try
+        {
+            cmisDocument = contentService.createDocumentInRepository(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getLastResource(),
+                    DocumentType.valueOf(fileModel.getFileType().toString()), fileFullName, fileModel.getContent());
+        }
+        catch (CmisStorageException cse)
+        {
+            LOG.error(cse.getMessage());
+            throw new DataPreparationException(cse.getMessage());
+        }
+
+        String fileLocation = Utility.buildPath(getLastResource(), fileFullName);
+        fileModel.setCmisLocation(fileLocation);
+        fileModel.setProtocolLocation(fileLocation);
+        fileModel.setNodeRef(cmisDocument.getId());
+        return fileModel;
     }
 
     /**
