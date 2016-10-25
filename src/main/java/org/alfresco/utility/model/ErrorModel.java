@@ -12,6 +12,8 @@ public class ErrorModel extends TestModel
     private String briefSummary = "";
     private String stackTrace = "";
     private String descriptionURL = "";
+    public static String PERMISSION_WAS_DENIED = "Permission was denied";
+    public static String ENTITY_NOT_FOUND = "%s was not found";
 
     public String getErrorKey()
     {
