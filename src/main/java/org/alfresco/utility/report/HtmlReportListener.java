@@ -3,6 +3,9 @@ package org.alfresco.utility.report;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CodingErrorAction;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -170,8 +173,8 @@ public class HtmlReportListener implements IReporter
         List<String> lines = new ArrayList<String>();
 
         try
-        {
-            BufferedReader reader = Files.newBufferedReader(Paths.get(filePath));
+        {    
+            BufferedReader reader = Files.newBufferedReader(Paths.get(filePath), StandardCharsets.ISO_8859_1);
             lines = reader.lines().collect(Collectors.toList());
         }
         catch (IOException e)
