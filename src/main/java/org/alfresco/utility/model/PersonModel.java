@@ -60,6 +60,8 @@ public class PersonModel extends TestModel
     private String telephone;
     private String jobTitle;
     private String mobile;
+    private String statusUpdatedAt;
+    private String userStatus;
 
     public PersonModel()
     {
@@ -234,6 +236,26 @@ public class PersonModel extends TestModel
     public void setMobile(String mobile)
     {
         this.mobile = mobile;
+    }
+    
+    public String getStatusUpdatedAt()
+    {
+        return statusUpdatedAt;
+    }
+
+    public void setStatusUpdatedAt(String statusUpdatedAt)
+    {
+        this.statusUpdatedAt = statusUpdatedAt;
+    }
+
+    public String getUserStatus()
+    {
+        return userStatus;
+    }
+
+    public void setUserStatus(String userStatus)
+    {
+        this.userStatus = userStatus;
     }
 
 }
