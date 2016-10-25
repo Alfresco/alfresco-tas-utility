@@ -109,4 +109,11 @@ public class JmxJolokiaProxyClient implements Jmx
         return isEnabled;
     }
 
+    @Override
+    public Object executeJMXMethod(String methodName) throws Exception
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

@@ -184,4 +184,11 @@ public class JmxClient implements Jmx
         return isAlive;
     }
 
+    @Override
+    public Object executeJMXMethod(String methodName) throws Exception
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

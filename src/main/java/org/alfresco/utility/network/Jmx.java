@@ -7,4 +7,6 @@ public interface Jmx
     Object readProperty(String objectName, String attributeName) throws Exception;
 
     public boolean isJMXEnabled();
+    
+    Object executeJMXMethod(String methodName) throws Exception;
 }
