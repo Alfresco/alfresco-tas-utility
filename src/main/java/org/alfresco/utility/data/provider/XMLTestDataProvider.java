@@ -1,0 +1,86 @@
+package org.alfresco.utility.data.provider;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
+
+import org.alfresco.utility.exception.DataPreparationException;
+import org.alfresco.utility.model.FolderModel;
+import org.testng.annotations.DataProvider;
+
+public class XMLTestDataProvider
+{
+    @SuppressWarnings("unused")
+    private static String xmlImputPath;
+
+    private static XMLTestData getXMLTestDataFromFile() throws Exception
+    {
+        if (getXmlImputFile() == null)
+            throw new DataPreparationException(
+                    "You didn't defined the Input XML file path for this data provider. Please call setXmlImputFile(...) in a @BeforeClass method");
+
+        JAXBContext context = JAXBContext.newInstance(XMLTestData.class);
+        Unmarshaller um = context.createUnmarshaller();
+
+        XMLTestData dataProvider = (XMLTestData) um.unmarshal(getXmlImputFile());
+        return dataProvider;
+    }
+
+    /**
+     * Get all Folder Models from the input xml "*.xml" used as input data in tests
+     * 
+     * @return iterator over the list of folder model objects
+     * @throws Exception
+     */
+    @DataProvider
+    public static Iterator<Object[]> getFolders() throws Exception
+    {
+        List<Object[]> dataToBeReturned = new ArrayList<Object[]>();
+
+        XMLTestData dataReader = getXMLTestDataFromFile();
+        List<FolderModel> folders = dataReader.getFolders();
+
+        for (FolderModel folder : folders)
+        {
+            dataToBeReturned.add(new Object[] { folder });
+        }
+
+        return dataToBeReturned.iterator();
+    }
+
+    /**
+     * Get all Queries from the input xml "*.xml" used as input data in tests
+     * 
+     * @return iterator over the list of folder model objects
+     * @throws Exception
+     */
+    @DataProvider(parallel = false)
+    public static Iterator<Object[]> getQueries() throws Exception
+    {
+        List<Object[]> dataToBeReturned = new ArrayList<Object[]>();
+
+        XMLTestData dataReader = getXMLTestDataFromFile();
+        List<XMLQuery> queries = dataReader.getQueries();
+
+        for (XMLQuery query : queries)
+        {
+            dataToBeReturned.add(new Object[] { query });
+        }
+
+        return dataToBeReturned.iterator();
+    }
+
+    public static InputStream getXmlImputFile()
+    {
+        return XMLTestDataProvider.class.getResourceAsStream("/example-input-data.xml");
+    }
+
+    public static void setXmlImputFile(String xmlImputFile)
+    {
+        XMLTestDataProvider.xmlImputPath = xmlImputFile;
+    }
+}

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testData>
+
+	<users>
+		<user name="user1" password="passord" />
+	</users>
+
+	<sites>
+		<site name="site1" createdBy="admin">
+			<folders>
+				<folder name="f1">
+					<aspects>
+						<aspect name="aspect1" />
+						<aspect name="aspect2" />
+					</aspects>
+					<file name="a.txt">
+						<content>abce</content>
+					</file>
+				</folder>
+				<folder name="f2">
+					<aspect>do:asdad</aspect>
+					<file name="a.txt">
+						<content>abce</content>
+					</file>
+				</folder>
+			</folders>
+
+		</site>
+	</sites>
+
+	<!--CMIS Queries: passing the search query as first param and results expected-->
+	<queries>
+		<query search="SELECT * something 1" expectedResults="1" />
+		<query search="SELECT * something 2" expectedResults="2" />
+
+	</queries>
+
+</testData>

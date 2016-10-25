@@ -3,9 +3,7 @@ package org.alfresco.utility.model;
 import org.testng.Assert;
 
 public class ErrorModel extends TestModel
-{
-    public static String PERMISSION_WAS_DENIED = "Permission was denied";
-    public static String ENTITY_NOT_FOUND = "Entiry not entity";
+{    
     private String errorKey = "";
     private int statusCode = 0;
 
