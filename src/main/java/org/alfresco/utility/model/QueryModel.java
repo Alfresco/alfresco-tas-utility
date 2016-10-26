@@ -10,9 +10,9 @@ import javax.xml.bind.annotation.XmlType;
 public class QueryModel
 {
     private String value;
-    private int results;
+    private long results;
 
-    @XmlAttribute(name = "search")
+    @XmlAttribute(name = "value")
     public String getValue()
     {
         return value;
@@ -24,12 +24,12 @@ public class QueryModel
     }
 
     @XmlAttribute(name = "expectedResults")
-    public int getResults()
+    public long getResults()
     {
         return results;
     }
 
-    public void setResults(int results)
+    public void setResults(long results)
     {
         this.results = results;
     }
