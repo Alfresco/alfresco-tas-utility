@@ -1,6 +1,5 @@
 package org.alfresco.utility.data.provider;
 
-import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.QueryModel;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -13,13 +12,13 @@ public class XMLDataProviderTest
         XMLTestDataProvider.setXmlImputFile("src/test/resources/example-input-data.xml");
     }
 
-    @Test(dataProviderClass = XMLTestDataProvider.class, dataProvider = "getFolders")
-    public void getFolders(FolderModel folder)
+    @Test(dataProviderClass = XMLTestDataProvider.class, dataProvider = "getSitesData")
+    public void prepareEnvironment(XMLSiteData siteData)
     {
-        System.out.println(folder.getName());
+        System.out.println(siteData.getCreatedBy());
     }
 
-    @Test(dataProviderClass = XMLTestDataProvider.class, dataProvider = "getQueries")
+    @Test(dataProviderClass = XMLTestDataProvider.class, dataProvider = "getQueriesData")
     public void getQueries(QueryModel query)
     {
                 

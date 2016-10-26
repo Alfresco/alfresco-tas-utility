@@ -33,4 +33,16 @@ public class QueryModel
     {
         this.results = results;
     }
+    
+    @Override
+    public String toString()
+    {
+        StringBuilder info = new StringBuilder();
+        info.append("query[value='")
+            .append(getValue()).append("',")
+            .append("expectedResults='")
+            .append(getResults()).append("']");
+                
+        return info.toString(); 
+    }
 }

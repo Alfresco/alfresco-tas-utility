@@ -11,7 +11,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
 import org.alfresco.utility.exception.DataPreparationException;
-import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.QueryModel;
 import org.testng.annotations.DataProvider;
 
@@ -35,20 +34,20 @@ public class XMLTestDataProvider
     /**
      * Get all Folder Models from the input xml "*.xml" used as input data in tests
      * 
-     * @return iterator over the list of folder model objects
+     * @return iterator over the list of List<XMLSiteData> sites data
      * @throws Exception
      */
     @DataProvider
-    public static Iterator<Object[]> getFolders() throws Exception
+    public static Iterator<Object[]> getSitesData() throws Exception
     {
         List<Object[]> dataToBeReturned = new ArrayList<Object[]>();
 
         XMLTestData dataReader = getXMLTestDataFromFile();
-        List<FolderModel> folders = dataReader.getFolders();
+        List<XMLSiteData> sites = dataReader.getSites();
 
-        for (FolderModel folder : folders)
+        for (XMLSiteData site : sites)
         {
-            dataToBeReturned.add(new Object[] { folder });
+            dataToBeReturned.add(new Object[] { site });
         }
 
         return dataToBeReturned.iterator();
@@ -62,7 +61,7 @@ public class XMLTestDataProvider
      * @throws Exception
      */
     @DataProvider
-    public static Iterator<Object[]> getQueries() throws Exception
+    public static Iterator<Object[]> getQueriesData() throws Exception
     {
         List<Object[]> dataToBeReturned = new ArrayList<Object[]>();
 
