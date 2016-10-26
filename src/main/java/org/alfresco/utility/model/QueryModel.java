@@ -1,23 +1,26 @@
-package org.alfresco.utility.data.provider;
+package org.alfresco.utility.model;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
+/**
+ * Represents a simple query object that will contain the search text string and the expected results count returned by that query
+ */
 @XmlType(name = "query")
-public class XMLQuery
-{    
-    private String search;
+public class QueryModel
+{
+    private String value;
     private int results;
 
     @XmlAttribute(name = "search")
-    public String getSearch()
+    public String getValue()
     {
-        return search;
+        return value;
     }
 
-    public void setSearch(String search)
+    public void setValue(String value)
     {
-        this.search = search;
+        this.value = value;
     }
 
     @XmlAttribute(name = "expectedResults")

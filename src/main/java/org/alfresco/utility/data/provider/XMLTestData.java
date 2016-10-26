@@ -9,22 +9,23 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.alfresco.utility.model.FileModel;
 import org.alfresco.utility.model.FolderModel;
+import org.alfresco.utility.model.QueryModel;
 import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.UserModel;
 
 @XmlRootElement(name = "testData")
 public class XMLTestData
 {   
-    private List<XMLQuery> queries;
+    private List<QueryModel> queries;
 
     @XmlElementWrapper   
     @XmlElement(name = "query")
-    public List<XMLQuery> getQueries()
+    public List<QueryModel> getQueries()
     {
         return queries;
     }
 
-    public void setQueries(List<XMLQuery> queries)
+    public void setQueries(List<QueryModel> queries)
     {
         this.queries = queries;
     }

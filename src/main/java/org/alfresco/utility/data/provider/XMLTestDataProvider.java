@@ -1,5 +1,7 @@
 package org.alfresco.utility.data.provider;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -10,11 +12,11 @@ import javax.xml.bind.Unmarshaller;
 
 import org.alfresco.utility.exception.DataPreparationException;
 import org.alfresco.utility.model.FolderModel;
+import org.alfresco.utility.model.QueryModel;
 import org.testng.annotations.DataProvider;
 
 public class XMLTestDataProvider
-{
-    @SuppressWarnings("unused")
+{    
     private static String xmlImputPath;
 
     private static XMLTestData getXMLTestDataFromFile() throws Exception
@@ -51,6 +53,7 @@ public class XMLTestDataProvider
 
         return dataToBeReturned.iterator();
     }
+   
 
     /**
      * Get all Queries from the input xml "*.xml" used as input data in tests
@@ -58,15 +61,15 @@ public class XMLTestDataProvider
      * @return iterator over the list of folder model objects
      * @throws Exception
      */
-    @DataProvider(parallel = false)
+    @DataProvider
     public static Iterator<Object[]> getQueries() throws Exception
     {
         List<Object[]> dataToBeReturned = new ArrayList<Object[]>();
 
         XMLTestData dataReader = getXMLTestDataFromFile();
-        List<XMLQuery> queries = dataReader.getQueries();
+        List<QueryModel> queries = dataReader.getQueries();
 
-        for (XMLQuery query : queries)
+        for (QueryModel query : queries)
         {
             dataToBeReturned.add(new Object[] { query });
         }
@@ -74,9 +77,9 @@ public class XMLTestDataProvider
         return dataToBeReturned.iterator();
     }
 
-    public static InputStream getXmlImputFile()
+    public static InputStream getXmlImputFile() throws FileNotFoundException
     {
-        return XMLTestDataProvider.class.getResourceAsStream("/example-input-data.xml");
+        return new FileInputStream(xmlImputPath);
     }
 
     public static void setXmlImputFile(String xmlImputFile)

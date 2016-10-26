@@ -35,6 +35,7 @@ public @interface TestGroup
     public static String SMTP = "smtp";
     public static String CIFS = "cifs";
     public static String CMIS = "cmis";
+    public static String QUERIES = "queries";
     public static String WEBDAV = "webdav";
     public static String FTP = "ftp";
     public static String INTEGRATION = "integration";

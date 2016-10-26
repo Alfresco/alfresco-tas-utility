@@ -30,8 +30,8 @@
 
 	<!--CMIS Queries: passing the search query as first param and results expected-->
 	<queries>
-		<query search="SELECT * something 1" expectedResults="1" />
-		<query search="SELECT * something 2" expectedResults="2" />
+		<query value="SELECT * something 1" expectedResults="1" />
+		<query value="SELECT * something 2" expectedResults="2" />
 
 	</queries>
 

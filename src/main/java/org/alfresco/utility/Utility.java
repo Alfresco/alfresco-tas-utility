@@ -33,10 +33,10 @@ public class Utility
     /**
      * Return a file from the filePath location
      * @param filePath
-     * @return
+     * @return file object
      * @throws Exception
      */
-    public static File getTestResourceFile(String filePath) throws Exception
+    public static File getTestResourceFile(String filePath) throws TestConfigurationException
     {
         LOG.info("Get resource file {}", filePath);
 
@@ -49,7 +49,7 @@ public class Utility
         return new File(resource.getFile());
     }
 
-    public static File getResourceTestDataFile(String fileName) throws Exception
+    public static File getResourceTestDataFile(String fileName) throws TestConfigurationException
     {
         return getTestResourceFile("shared-resources/testdata/" + fileName);
     }
