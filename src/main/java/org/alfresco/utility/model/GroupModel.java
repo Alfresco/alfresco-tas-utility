@@ -34,4 +34,9 @@ public class GroupModel extends TestModel
     {
         this.displayName = displayName;
     }
+
+    public static GroupModel getEmailContributorsGroup()
+    {
+        return new GroupModel("EMAIL_CONTRIBUTORS");
+    }
 }
