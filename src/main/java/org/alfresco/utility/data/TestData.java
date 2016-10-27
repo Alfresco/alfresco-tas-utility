@@ -108,9 +108,11 @@ public abstract class TestData<Data> implements DSL<Data>
     }
 
     @Override
-    public void setCurrentSpace(String currentRepositorySpace)
+    @SuppressWarnings("unchecked")
+    public Data setCurrentSpace(String currentRepositorySpace)
     {
         this.currentSpace = currentRepositorySpace;
+        return (Data) this;
     }
 
     /**

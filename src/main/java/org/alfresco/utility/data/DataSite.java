@@ -92,4 +92,14 @@ public class DataSite extends TestData<DataSite>
         siteService.setFavorite(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getCurrentSite());
         return new SiteModel(getCurrentSite());
     }   
+    
+    /**
+     * Check if site is created
+     * @param siteModel
+     * @return boolean
+     */
+    public boolean isSiteCreated(SiteModel siteModel)
+    {
+        return !siteService.getSiteNodeRef(getCurrentUser().getUsername(), getCurrentUser().getPassword(), siteModel.getId()).isEmpty();
+    }
 }

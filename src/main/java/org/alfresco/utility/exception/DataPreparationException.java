@@ -6,6 +6,6 @@ public class DataPreparationException extends Exception
 
     public DataPreparationException(String message)
     {
-        super(String.format("Data Preparation Exception: %s", message));
+        super(String.format("Errors on your test data preparation: %s", message));
     }
 }

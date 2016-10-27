@@ -14,8 +14,15 @@ import org.alfresco.utility.exception.DataPreparationException;
 import org.alfresco.utility.model.QueryModel;
 import org.testng.annotations.DataProvider;
 
+/**
+ * 
+ * Provides test data providers based on XML input file
+ * 
+ * @author Paul Brodner
+ *
+ */
 public class XMLTestDataProvider
-{    
+{
     private static String xmlImputPath;
 
     private static XMLTestData getXMLTestDataFromFile() throws Exception
@@ -52,7 +59,22 @@ public class XMLTestDataProvider
 
         return dataToBeReturned.iterator();
     }
-   
+
+    @DataProvider
+    public static Iterator<Object[]> getUsersData() throws Exception
+    {
+        List<Object[]> dataToBeReturned = new ArrayList<Object[]>();
+
+        XMLTestData dataReader = getXMLTestDataFromFile();
+        List<XMLUserData> users = dataReader.getUsers();
+
+        for (XMLUserData user : users)
+        {
+            dataToBeReturned.add(new Object[] { user });
+        }
+
+        return dataToBeReturned.iterator();
+    }
 
     /**
      * Get all Queries from the input xml "*.xml" used as input data in tests
@@ -74,6 +96,20 @@ public class XMLTestDataProvider
         }
 
         return dataToBeReturned.iterator();
+    }
+
+    /**
+     * Return the data for your environment
+     * 
+     * Calling {@link XMLTestData#create()} will generate via CMIS entire structure in alfresco
+     * @return {@link XMLTestData}
+     * @throws Exception
+     */
+    @DataProvider
+    public static Object[][] prepareEnvironmentData() throws Exception
+    { 
+        XMLTestData dataFromXMLFile = getXMLTestDataFromFile();
+        return  new Object[][] { {dataFromXMLFile }};
     }
 
     public static InputStream getXmlImputFile() throws FileNotFoundException

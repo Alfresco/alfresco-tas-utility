@@ -43,7 +43,7 @@ public interface DSL<Data>
      * {@link #getSitesPath()}, {@linkplain #getUserHomesPath()}, {@link #getDataDictionaryPath()}, etc If nothing is
      * specified, the root folder is used
      */
-    public void setCurrentSpace(String currentRepositorySpace);
+    Data setCurrentSpace(String currentRepositorySpace);
 
     /**
      * Defines the current file/folder that is under test

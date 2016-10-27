@@ -1,8 +1,13 @@
-package org.alfresco.utility.data.provider;
+package org.alfresco.sample;
 
 import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.DataSite;
 import org.alfresco.utility.data.DataUser;
+import org.alfresco.utility.data.provider.XMLFolderData;
+import org.alfresco.utility.data.provider.XMLSiteData;
+import org.alfresco.utility.data.provider.XMLTestData;
+import org.alfresco.utility.data.provider.XMLTestDataProvider;
+import org.alfresco.utility.data.provider.XMLUserData;
 import org.alfresco.utility.model.QueryModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -11,13 +16,13 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-@ContextConfiguration("classpath:alfresco-tester-context.xml")
-public class XMLDataProviderTest extends AbstractTestNGSpringContextTests
+@ContextConfiguration("classpath:alfresco-test-context.xml")
+public class PrepareEnvironmentFromXMLFileTest extends AbstractTestNGSpringContextTests
 {
     @BeforeClass(alwaysRun = true)
     public void readTestDataFile()
     {
-        XMLTestDataProvider.setXmlImputFile("src/test/resources/example-input-data.xml");
+        XMLTestDataProvider.setXmlImputFile("src/test/resources/my-environment-data.xml");
     }
 
     @Autowired
@@ -34,7 +39,7 @@ public class XMLDataProviderTest extends AbstractTestNGSpringContextTests
     @AfterClass(alwaysRun = true)
     public void cleanupEnvironment() throws Exception
     {
-        testData.cleanup(dataContentService);
+        //testData.cleanup(dataContentService);
     }
 
     @Test(priority = 0, dataProviderClass = XMLTestDataProvider.class, dataProvider = "prepareEnvironmentData")

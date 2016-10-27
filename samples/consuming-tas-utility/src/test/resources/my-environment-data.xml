@@ -2,38 +2,38 @@
 <testData>
 
 	<users>
-		<user name="paul2" password="ppp56g66g" />
-		<user name="paul" password="password" />
+		<user name="user1" password="myComplicatedPassword" />
+		<user name="user2" password="secret" />
 	</users>
 
 	<sites>
-		<site name="haha" createdBy="admin" visibility="PUBLIC">
+		<site name="mySite2" createdBy="user2" visibility="PUBLIC">
 			<folders>
-				<folder name="f1" createdBy="admin">
+				<folder name="f1" createdBy="user2">
 					<files>
 						<file name="a.txt" createdBy="admin">
-							<content>abce</content>
+							<content>content of a.txt</content>
 						</file>
 						<file name="a2.txt" createdBy="admin">
-							<content>abce</content>
+							<content>content of a2.txt</content>
 						</file>
 					</files>
 					<folders>
-						<folder name="f2" createdBy="admin">
+						<folder name="f2" createdBy="user2">
 							<aspect>do:asdad</aspect>
 						</folder>					
 					</folders>
 				</folder>
-				<folder name="f2" createdBy="admin">
+				<folder name="f2" createdBy="user2">
 					<aspect>do:asdad</aspect>
 				</folder>
 			</folders>
 			<files>
 				<file name="a.txt" createdBy="admin">
-					<content>abce</content>
+					<content>myFile a.txt</content>
 				</file>
 				<file name="a2.txt" createdBy="admin">
-					<content>abce</content>
+					<content>content of file a2.txt</content>
 				</file>
 			</files>
 		</site>
@@ -43,7 +43,6 @@
 	<queries>
 		<query value="SELECT * something 1" expectedResults="1" />
 		<query value="SELECT * something 2" expectedResults="2" />
-
 	</queries>
 
 </testData>

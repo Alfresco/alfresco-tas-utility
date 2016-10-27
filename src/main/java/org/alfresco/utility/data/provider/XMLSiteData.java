@@ -1,24 +1,49 @@
 package org.alfresco.utility.data.provider;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
 
 import org.alfresco.utility.model.SiteModel;
+import org.springframework.social.alfresco.api.entities.Site.Visibility;
 
 /**
  * <site name="site1" createdBy="admin">
- *
  */
 @XmlType(name = "site")
-public class XMLSiteData
-{
+public class XMLSiteData implements XMLDataItem
+{    
     private String name;
     private String createdBy;
+    private String visibility;    
+    
+    private List<XMLFolderData> folders = new ArrayList<XMLFolderData>();
+    private List<XMLFileData> files = new ArrayList<XMLFileData>();
+
+    @XmlAttribute(name = "visibility")
+    public String getVisibility()
+    {
+        return visibility;
+    }
+
+    public void setVisibility(String visibility)
+    {
+        this.visibility = visibility;
+    }
     
     @XmlAttribute(name = "name")
     public String getName()
     {
         return name;
+    }
+    
+    public String getFullLocation()
+    {
+        return String.format("/Sites/%s/documentLibrary", getName());
     }
 
     public void setName(String name)
@@ -36,7 +61,23 @@ public class XMLSiteData
     {
         this.createdBy = createdBy;
     }
-    
+
+    @XmlElementWrapper
+    @XmlElement(name = "folder")
+    public List<XMLFolderData> getFolders()
+    {        
+        for(XMLFolderData f : folders)
+        {
+            f.setParent(getFullLocation());
+        }
+        return folders;
+    }
+
+    public void setFolders(List<XMLFolderData> folders)
+    {
+        this.folders = folders;
+    }
+
     @Override
     public String toString()
     {
@@ -45,12 +86,44 @@ public class XMLSiteData
             .append(getName()).append("',")
             .append("createdBy='")
             .append(getCreatedBy()).append("']");
-                
-        return info.toString(); 
+
+        return info.toString();
     }
-    
-    public SiteModel toSiteModel()
+
+    @Override
+    public SiteModel toModel()
     {
-        return new SiteModel(getName());
+        SiteModel s = new SiteModel(getName());
+        Visibility v = Visibility.PUBLIC;
+        switch (getVisibility())
+        {
+            case "public":
+                v =Visibility.PUBLIC;
+                break;
+
+            case "private":            
+                v =Visibility.PRIVATE;
+                break;                
+        }
+        
+        s.setVisibility(v);
+        return s;
     }
+
+    @XmlElementWrapper
+    @XmlElement(name = "file")
+    public List<XMLFileData> getFiles()
+    {
+        return files;
+    }
+
+    public void setFiles(List<XMLFileData> files)
+    {
+        for(XMLFileData f : files)
+        {
+            f.setParent(getFullLocation());
+        }
+        
+        this.files = files;
+    }    
 }

@@ -8,15 +8,18 @@ import org.alfresco.dataprep.CMISUtil.DocumentType;
 import org.alfresco.dataprep.ContentActions;
 import org.alfresco.dataprep.ContentAspects;
 import org.alfresco.dataprep.ContentService;
+import org.alfresco.dataprep.SiteService;
 import org.alfresco.utility.Utility;
 import org.alfresco.utility.exception.DataPreparationException;
 import org.alfresco.utility.model.ContentModel;
 import org.alfresco.utility.model.FileModel;
 import org.alfresco.utility.model.FolderModel;
+import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.UserModel;
 import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisStorageException;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -38,6 +41,9 @@ public class DataContent extends TestData<DataContent>
 
     @Autowired
     private ContentActions contentActions;
+
+    @Autowired
+    private SiteService siteService;
 
     /**
      * It will create a new folder in current resource
@@ -80,7 +86,7 @@ public class DataContent extends TestData<DataContent>
     public void deleteContent()
     {
         File file = new File(getLastResource());
-        STEP(String.format("DATAPREP: Delete folder '%s' in %s", file.getName(), getCurrentSpace()));
+        STEP(String.format("DATAPREP: Deleting '%s' from %s", file.getName(), getCurrentSpace()));
         contentService.deleteFolder(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getCurrentSite(), file.getName());
     }
 
@@ -179,7 +185,11 @@ public class DataContent extends TestData<DataContent>
      */
     public FileModel createContent(FileModel fileModel) throws DataPreparationException
     {
-        String fileFullName = String.format("%s.%s", fileModel.getName(), fileModel.getFileType().extention);
+        String fileFullName = fileModel.getName();
+        
+        if(FilenameUtils.getExtension(fileFullName).length()==0)
+             fileFullName = String.format("%s.%s", fileModel.getName(), fileModel.getFileType().extention);
+         
         STEP(String.format("DATAPREP: Creating a new non-empty content %s in %s ", fileModel.getName(), getLastResource()));
 
         if (getLastResource().isEmpty())
@@ -230,7 +240,7 @@ public class DataContent extends TestData<DataContent>
         Assert.assertFalse(contentDoesNotExist, String.format("Content {%s} was NOT found in repository", fullPath));
     }
 
-    private boolean checkContent(String fullPath, UserModel userModel)
+    public boolean checkContent(String fullPath, UserModel userModel)
     {
         return contentService.getNodeRefByPath(userModel.getUsername(), userModel.getPassword(), Utility.convertBackslashToSlash(fullPath)).isEmpty();
     }
@@ -245,5 +255,29 @@ public class DataContent extends TestData<DataContent>
             deletedObject = contentService.getNodeRefByPath(getCurrentUser().getUsername(), getCurrentUser().getPassword(), fullPath);
             retry++;
         }
+    }
+
+    /**
+     * Delete a site
+     * 
+     * @param site
+     */
+    public void deleteSite(SiteModel site)
+    {
+        if (siteService.exists(site.getId(), getAdminUser().getUsername(), getAdminUser().getPassword()))
+        {
+            LOG.info("Deleting site {} with user {}", site.toString(), getCurrentUser().toString());
+            siteService.delete(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getCurrentUser().getDomain(), site.getId());
+        }
+    }
+    
+    /**
+     * Delete entire childs of the FolderModel 
+     * @param from
+     */
+    public void deleteTree(FolderModel from)
+    {
+        LOG.info("Deleting entire tree of {}", from.getCmisLocation());
+        contentService.deleteTreeByPath(getCurrentUser().getUsername(), getCurrentUser().getPassword(), from.getCmisLocation());
     }
 }

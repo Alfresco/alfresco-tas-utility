@@ -57,6 +57,7 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
         return getTestUser();
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public Client usingRoot() throws Exception
     {
@@ -105,10 +106,12 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
     }
 
     @Override
-    public void setCurrentSpace(String currentRepositorySpace)
+    @SuppressWarnings("unchecked")
+    public Client setCurrentSpace(String currentRepositorySpace)
     {
         this.currentSpace = currentRepositorySpace;
         setLastResource(currentRepositorySpace);
+        return (Client) this;
     }
 
     @SuppressWarnings("unchecked")

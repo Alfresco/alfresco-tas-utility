@@ -11,11 +11,9 @@ import org.alfresco.utility.data.RandomData;
 @XmlType(name = "folder")
 public class FolderModel extends ContentModel
 {
-    protected List<FileModel> files = new ArrayList<FileModel>();
-
+    protected List<FileModel> files = new ArrayList<FileModel>();    
     public FolderModel()
     {
-
     }
 
     public FolderModel(String name)

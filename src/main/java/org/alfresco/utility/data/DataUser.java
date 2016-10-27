@@ -30,7 +30,9 @@ public class DataUser extends TestData<DataUser>
     /**
      * Creates a new random user with a specific user name on test server defined in {@link TasProperties}
      * file.
-     * If no user is specified with {@link #usingUser(UserModel)} then the random user is created with admin
+     * If no user is specified with {@link #usingUser(UserModel)} then the random user is created with admin.
+     * 
+     * This user will have default password set to "password"
      * 
      * @param userName
      * @return
@@ -38,19 +40,33 @@ public class DataUser extends TestData<DataUser>
      */
     public UserModel createUser(String userName) throws DataPreparationException
     {
-        UserModel newUser = new UserModel(userName, PASSWORD);
+        return createUser(userName, PASSWORD);
+    }
+    
+    /**
+     * Creates a new random user with a specific user name on test server defined in {@link TasProperties}
+     * file.
+     * If no user is specified with {@link #usingUser(UserModel)} then the random user is created with admin
+     * 
+     * @param userName
+     * @return
+     * @throws DataPreparationException
+     */
+    public UserModel createUser(String userName, String password) throws DataPreparationException
+    {
+        UserModel newUser = new UserModel(userName, password);
         LOG.info("Create user {}", newUser.toString());
         
         Boolean created = userService.create(getAdminUser().getUsername(), 
                                             getAdminUser().getPassword(), 
-                                            userName, PASSWORD, String.format(EMAIL, userName),
+                                            userName, password, String.format(EMAIL, userName),
                                             String.format("%s FirstName", userName), 
                                             String.format("LN-%s", userName));
         if (!created)
             throw new DataPreparationException(String.format(USER_NOT_CREATED, newUser.toString()));
 
         newUser.setDomain(getCurrentUser().getDomain());
-        return newUser;
+        return newUser;  
     }
     
     /**
@@ -132,21 +148,25 @@ public class DataUser extends TestData<DataUser>
     public void assertUserExist(String username)
     {
         LOG.info("Check user {} exist in repository", username.toString());
-        Assert.assertTrue(userService.userExists(
-                            tasProperties.getAdminUser(), 
-                            tasProperties.getAdminPassword(), 
-                            username),
+        Assert.assertTrue(isUserInRepo(username),
                             String.format("User {} exist in repository", username));  
     }
 
     public void assertUserDoesNotExist(UserModel user)
     {
         LOG.info("Check user {} does not exist in repository", user.toString());
-        Assert.assertFalse(userService.userExists(
-                              tasProperties.getAdminUser(), 
-                              tasProperties.getAdminPassword(), 
-                              user.getUsername()),
+        Assert.assertFalse(isUserInRepo(user.getUsername()),
                 String.format("User {} exist in repository", user.toString()));
+    }
+    
+    /**
+     * Check if user exist in repository
+     * @param username
+     * @return boolean 
+     */
+    public boolean isUserInRepo(String username)
+    {
+       return userService.userExists(tasProperties.getAdminUser(), tasProperties.getAdminPassword(), username); 
     }
     
     /**
