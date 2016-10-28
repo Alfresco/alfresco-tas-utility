@@ -102,4 +102,10 @@ public class DataSite extends TestData<DataSite>
     {
         return !siteService.getSiteNodeRef(getCurrentUser().getUsername(), getCurrentUser().getPassword(), siteModel.getId()).isEmpty();
     }
+
+    public void deleteSite(SiteModel siteModel) throws DataPreparationException
+    {
+        STEP(String.format("DATAPREP: Delete site %s", siteModel.getId()));
+        siteService.delete(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getCurrentUser().getDomain(), siteModel.getId());
+    }
 }
