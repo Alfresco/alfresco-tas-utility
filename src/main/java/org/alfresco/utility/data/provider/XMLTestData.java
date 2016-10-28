@@ -136,7 +136,7 @@ public class XMLTestData
             UserModel userFolder = getUserBy(dataContent.getAdminUser(), folder.getCreatedBy());
 
             FolderModel folderInRepo = dataContent.usingUser(userFolder).setCurrentSpace(location).createFolder(folder.getModel());
-            
+
             createFilesStructure(folder.getFiles(), folderInRepo, dataContent);
             createFolderStructure(folder.getFolders(), folderInRepo.getCmisLocation(), dataContent);
         }
@@ -161,12 +161,26 @@ public class XMLTestData
             UserModel userFile = getUserBy(dataContent.getAdminUser(), file.getCreatedBy());
             if (testModel instanceof FolderModel)
             {
-                dataContent.usingUser(userFile).usingResource((FolderModel) testModel).createContent(file.getModel());
+                if (file.hasOneCustomModel())
+                    dataContent.usingUser(userFile)
+                               .usingResource((FolderModel) testModel)
+                               .createCustomContent(file.getModel(), 
+                                                    file.getCustomModel().getName(),
+                                                    file.getCustomModel().getObjectTypeProperties());
+                else
+                    dataContent.usingUser(userFile).usingResource((FolderModel) testModel).createContent(file.getModel());
             }
 
             if (testModel instanceof SiteModel)
             {
-                dataContent.usingUser(userFile).usingSite((SiteModel) testModel).createContent(file.getModel());
+                if (file.hasOneCustomModel())
+                    dataContent.usingUser(userFile)
+                               .usingSite((SiteModel) testModel)
+                               .createCustomContent(file.getModel(), 
+                                                    file.getCustomModel().getName(),
+                                                    file.getCustomModel().getObjectTypeProperties());
+                else
+                    dataContent.usingUser(userFile).usingSite((SiteModel) testModel).createContent(file.getModel());
             }
         }
     }

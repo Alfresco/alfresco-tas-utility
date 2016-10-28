@@ -21,6 +21,7 @@ public class XMLFileData implements XMLDataItem
     private String name;
     private String createdBy;
     private String content;
+    private XMLCustomModel customModel;
 
     @XmlAttribute(name = "name")
     public String getName()
@@ -72,6 +73,22 @@ public class XMLFileData implements XMLDataItem
     public void setParent(String parent)
     {
         this.parent = parent;
+    }
+
+    @XmlElement(name = "custom-model")
+    public XMLCustomModel getCustomModel()
+    {
+        return customModel;
+    }
+
+    public void setCustomModel(XMLCustomModel customModel)
+    {
+        this.customModel = customModel;
+    }
+    
+    public boolean hasOneCustomModel()
+    {
+        return content != null;
     }
 
 }

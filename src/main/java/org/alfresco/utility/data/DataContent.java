@@ -2,10 +2,17 @@ package org.alfresco.utility.data;
 
 import static org.alfresco.utility.report.log.Step.STEP;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.alfresco.dataprep.CMISUtil.DocumentType;
@@ -18,9 +25,11 @@ import org.alfresco.utility.exception.DataPreparationException;
 import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.model.ContentModel;
 import org.alfresco.utility.model.FileModel;
+import org.alfresco.utility.model.FileType;
 import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.UserModel;
+import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.client.api.Session;
@@ -28,6 +37,7 @@ import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
 import org.apache.chemistry.opencmis.commons.enums.VersioningState;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisStorageException;
+import org.apache.chemistry.opencmis.commons.impl.dataobjects.ContentStreamImpl;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -296,12 +306,12 @@ public class DataContent extends TestData<DataContent>
      * http://docs.alfresco.com/5.1/tasks/deploy-dynamic.html
      * 
      * @param localModelXMLFilePath
-     * @throws TestConfigurationException 
+     * @throws TestConfigurationException
      */
     public void deployContentModel(String localModelXMLFilePath) throws TestConfigurationException
     {
         File file = Utility.getTestResourceFile(localModelXMLFilePath);
-        
+
         LOG.info("Deploying custom content Model from XML file: {}", file.getPath());
         FileInputStream inputStream = null;
         try
@@ -320,9 +330,107 @@ public class DataContent extends TestData<DataContent>
         Session session = contentService.getCMISSession(getCurrentUser().getUsername(), getCurrentUser().getPassword());
         ContentStream contentStream = session.getObjectFactory().createContentStream(file.getName(), file.length(), FilenameUtils.getExtension(file.getPath()),
                 inputStream);
-        
-        Folder models = (Folder) session.getObjectByPath("/Data Dictionary/Models");
 
-        models.createDocument(props, contentStream, VersioningState.MAJOR);
+        CmisObject modelInRepo = session.getObjectByPath(String.format("/Data Dictionary/Models/%s", file.getName()));
+        if (modelInRepo != null)
+        {
+            LOG.info("Custom Content Model [{}] is already deployed under [/Data Dictionary/Models/] location", localModelXMLFilePath);
+        }
+        else
+        {
+            Folder model = (Folder) session.getObjectByPath("/Data Dictionary/Models");
+            model.createDocument(props, contentStream, VersioningState.MAJOR);
+        }
+    }
+
+    public ContentStream getContentStream(String fileName, String content) throws Exception
+    {
+        if (content == null)
+        {
+            content = "";
+        }
+        byte[] byteContent = content.getBytes("UTF-8");
+        InputStream stream = new ByteArrayInputStream(byteContent);
+        DataInputStream dataInputStream = new DataInputStream(stream);
+        byteContent = new byte[content.length()];
+        dataInputStream.readFully(byteContent);
+        dataInputStream.close();
+        stream.close();
+        ContentStream contentStream = new ContentStreamImpl(fileName, BigInteger.valueOf(byteContent.length), FileType.fromName(fileName).mimeType,
+                new ByteArrayInputStream(byteContent));
+        return contentStream;
+    }
+
+    public void closeContentStream(ContentStream contentStream) throws IOException
+    {
+        try
+        {
+            contentStream.getStream().close();
+        }
+        catch (IOException e)
+        {
+            LOG.error("Unable to close the content stream", e);
+        }
+    }
+
+    /**
+     * @param contentModel
+     * @param objectTypeID
+     *            Example: objectTypeID = "D:cmis:document"
+     * @throws Exception
+     */
+    public ContentModel createCustomContent(ContentModel contentModel, String objectTypeID, CustomObjectTypeProperties objectTypeProperty) throws Exception
+    {
+        Map<String, Object> properties = new HashMap<String, Object>();
+        properties.put(PropertyIds.OBJECT_TYPE_ID, objectTypeID);
+        properties.put(PropertyIds.NAME, contentModel.getName());
+
+        List<Object> aspects = new ArrayList<Object>();
+        aspects.add("P:cm:titled");
+        properties.put(PropertyIds.SECONDARY_OBJECT_TYPE_IDS, aspects);
+        properties.put("cm:title", contentModel.getTitle());
+        properties.put("cm:description", contentModel.getDescription());
+
+        File fullPath = new File(String.format("%s/%s", getCurrentSpace(), contentModel.getName()));
+
+        CmisObject parentCMISFolder = contentService.getCmisObject(getCurrentUser().getUsername(), getCurrentUser().getPassword(),
+                fullPath.getParentFile().getPath());
+        if (parentCMISFolder instanceof Document)
+            throw new TestConfigurationException(String.format("It seems the parent folder of your resource %s is a file", fullPath));
+
+        Folder folder = (Folder) parentCMISFolder;
+
+        if (contentModel instanceof FolderModel)
+        {
+            STEP(String.format("DATAPREP: Create custom Folder '%s' with typeID: %s, in '%s'", contentModel.getName(), objectTypeID, getCurrentSpace()));
+            Folder newFolder = folder.createFolder(properties);
+            if (objectTypeProperty != null)
+            {
+                objectTypeProperty.updatePropertiesTo(newFolder);
+            }
+
+            contentModel.setNodeRef(newFolder.getId());
+        }
+
+        if (contentModel instanceof FileModel)
+        {
+            FileModel fileModel = (FileModel) contentModel;
+            STEP(String.format("DATAPREP: Create custom File '%s' with typeID: %s, in '%s'", contentModel.getName(), objectTypeID, getCurrentSpace()));
+            ContentStream contentStream = getContentStream(contentModel.getName(), fileModel.getContent());
+            Document newFile = folder.createDocument(properties, contentStream, VersioningState.MAJOR);
+
+            if (objectTypeProperty != null)
+            {
+                objectTypeProperty.updatePropertiesTo(newFile);
+            }
+
+            contentModel.setNodeRef(newFile.getId());
+            closeContentStream(contentStream);
+        }
+
+        contentModel.setProtocolLocation(fullPath.getPath());
+        contentModel.setCmisLocation(fullPath.getPath());
+
+        return contentModel;
     }
 }

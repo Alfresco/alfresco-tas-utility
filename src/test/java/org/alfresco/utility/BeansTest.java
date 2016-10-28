@@ -52,7 +52,7 @@ public class BeansTest extends AbstractTestNGSpringContextTests
     public void checkServerHealth() throws Exception
     {
         serverHealth.assertServerIsOnline();
-        siteModel = dataSite.createPublicRandomSite();
+        //siteModel = dataSite.createPublicRandomSite();
     }
 
     @Test
@@ -103,5 +103,5 @@ public class BeansTest extends AbstractTestNGSpringContextTests
         UserModel newUser = dataUser.createRandomTestUser();
         newFolder = dataContent.usingUser(newUser).usingUserHome().createFolder();
         dataContent.assertContentExist(newFolder);
-    }
+    }      
 }
