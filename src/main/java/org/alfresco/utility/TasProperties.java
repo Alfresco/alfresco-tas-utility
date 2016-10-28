@@ -52,6 +52,15 @@ public class TasProperties
     @Value("${jmx.useJolokiaAgent:true}")
     private Boolean useJolokiaJmxAgent;
 
+    @Value("${db.url}")
+    private String dbUrl;
+
+    @Value("${db.username}")
+    private String dbUsername;
+
+    @Value("${db.password}")
+    private String dbPassword;
+
     /**
      * # in containers we cannot access directly JMX, so we will use {@link http://jolokia.org} agent
      * # disabling this we will use direct JMX calls to server
@@ -171,6 +180,36 @@ public class TasProperties
     public String getTestServerUrl()
     {
         return String.format("%s://%s", getScheme(), getServer());
+    }
+
+    public String getDbUrl()
+    {
+        return dbUrl;
+    }
+
+    public void setDbUrl(String dbUrl)
+    {
+        this.dbUrl = dbUrl;
+    }
+
+    public String getDbUsername()
+    {
+        return dbUsername;
+    }
+
+    public void setDbUsername(String dbUsername)
+    {
+        this.dbUsername = dbUsername;
+    }
+
+    public String getDbPassword()
+    {
+        return dbPassword;
+    }
+
+    public void setDbPassword(String dbPassword)
+    {
+        this.dbPassword = dbPassword;
     }
 
 }
