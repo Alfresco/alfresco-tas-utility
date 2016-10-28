@@ -1,7 +1,11 @@
 package org.alfresco.utility.data.provider;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
 
 import org.alfresco.utility.model.FileModel;
@@ -21,6 +25,7 @@ public class XMLFileData implements XMLDataItem
     private String name;
     private String createdBy;
     private String content;
+    private List<XMLCommentData> comments = new ArrayList<XMLCommentData>();
 
     @XmlAttribute(name = "name")
     public String getName()
@@ -72,6 +77,18 @@ public class XMLFileData implements XMLDataItem
     public void setParent(String parent)
     {
         this.parent = parent;
+    }
+
+    @XmlElementWrapper
+    @XmlElement(name = "comment")
+    public List<XMLCommentData> getComments()
+    {
+        return comments;
+    }
+
+    public void setComments(List<XMLCommentData> comments)
+    {
+        this.comments = comments;
     }
 
 }
