@@ -8,5 +8,5 @@ import org.alfresco.utility.model.TestModel;
  */
 public interface XMLDataItem
 {
-    public TestModel toModel();
+    public TestModel getModel();
 }

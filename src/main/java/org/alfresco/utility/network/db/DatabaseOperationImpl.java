@@ -14,6 +14,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
+/**
+ * Handle Database operations, like execution of queries over DB, getting status of db or search results
+ */
 @Service
 public class DatabaseOperationImpl implements DatabaseOperation
 {
@@ -105,13 +108,12 @@ public class DatabaseOperationImpl implements DatabaseOperation
 
     }
 
-    private static class TestRowMapper implements RowMapper
+    private static class TestRowMapper implements RowMapper<Object>
     {
-
+        @Override
         public Object mapRow(ResultSet rs, int rowNum) throws SQLException
         {
             return rs.getObject(1);
         }
     }
-
 }

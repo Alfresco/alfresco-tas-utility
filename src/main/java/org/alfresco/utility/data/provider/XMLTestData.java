@@ -99,7 +99,7 @@ public class XMLTestData
     {
         for (XMLSiteData site : getSites())
         {
-            if (dataSite.usingAdmin().isSiteCreated(site.toModel()))
+            if (dataSite.usingAdmin().isSiteCreated(site.getModel()))
             {
                 LOG.info("Skipping Site: {}. This site already exists in repository!", site.getFullLocation());
             }
@@ -109,10 +109,10 @@ public class XMLTestData
                  * get the user model of the site
                  */
                 UserModel user = getUserBy(dataContent.getAdminUser(), site.getCreatedBy());
-                dataSite.usingUser(user).createSite(site.toModel());
+                dataSite.usingUser(user).createSite(site.getModel());
             }
 
-            createFilesStructure(site.getFiles(), site.toModel(), dataContent);
+            createFilesStructure(site.getFiles(), site.getModel(), dataContent);
             createFolderStructure(site.getFolders(), site.getFullLocation(), dataContent);
         }
     }
@@ -135,7 +135,8 @@ public class XMLTestData
              */
             UserModel userFolder = getUserBy(dataContent.getAdminUser(), folder.getCreatedBy());
 
-            FolderModel folderInRepo = dataContent.usingUser(userFolder).setCurrentSpace(location).createFolder(folder.toModel());
+            FolderModel folderInRepo = dataContent.usingUser(userFolder).setCurrentSpace(location).createFolder(folder.getModel());
+            
             createFilesStructure(folder.getFiles(), folderInRepo, dataContent);
             createFolderStructure(folder.getFolders(), folderInRepo.getCmisLocation(), dataContent);
         }
@@ -160,12 +161,12 @@ public class XMLTestData
             UserModel userFile = getUserBy(dataContent.getAdminUser(), file.getCreatedBy());
             if (testModel instanceof FolderModel)
             {
-                dataContent.usingUser(userFile).usingResource((FolderModel) testModel).createContent(file.toModel());
+                dataContent.usingUser(userFile).usingResource((FolderModel) testModel).createContent(file.getModel());
             }
 
             if (testModel instanceof SiteModel)
             {
-                dataContent.usingUser(userFile).usingSite((SiteModel) testModel).createContent(file.toModel());
+                dataContent.usingUser(userFile).usingSite((SiteModel) testModel).createContent(file.getModel());
             }
         }
     }
@@ -182,19 +183,19 @@ public class XMLTestData
         {
             for (XMLFolderData folder : site.getFolders())
             {
-                dataContent.usingAdmin().deleteTree(folder.toModel());
+                dataContent.usingAdmin().deleteTree(folder.getModel());
             }
 
             for (XMLFileData file : site.getFiles())
             {
-                if (dataContent.checkContent(file.toModel().getCmisLocation(), dataContent.getAdminUser()))
+                if (dataContent.checkContent(file.getModel().getCmisLocation(), dataContent.getAdminUser()))
                     try
                     {
-                        dataContent.usingAdmin().usingResource(file.toModel()).deleteContent();
+                        dataContent.usingAdmin().usingResource(file.getModel()).deleteContent();
                     }
                     catch (Exception e)
                     {
-                        LOG.error("Could not delete file: {}", file.toModel().toString());
+                        LOG.error("Could not delete file: {}", file.getModel().toString());
                     }
             }
         }
@@ -219,7 +220,7 @@ public class XMLTestData
         {
             if (u.getName().equals(username))
             {
-                user = u.toModel();
+                user = u.getModel();
                 break;
             }
         }

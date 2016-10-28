@@ -7,7 +7,6 @@ import org.alfresco.utility.model.QueryModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -31,20 +30,20 @@ public class XMLDataProviderTest extends AbstractTestNGSpringContextTests
 
     XMLTestData testData;
 
-    @AfterClass(alwaysRun = true)
+    //@AfterClass(alwaysRun = true)
     public void cleanupEnvironment() throws Exception
     {
         testData.cleanup(dataContentService);
     }
 
-    @Test(priority = 0, dataProviderClass = XMLTestDataProvider.class, dataProvider = "prepareEnvironmentData")
+    //@Test(priority = 0, dataProviderClass = XMLTestDataProvider.class, dataProvider = "prepareEnvironmentData")
     public void prepareEnvironmentData(XMLTestData testData) throws Exception
     {
         this.testData = testData;
         testData.createUsers(userDataService);
         testData.createSitesStructure(dataSiteService, dataContentService);
     }
-
+    
     @Test(dataProviderClass = XMLTestDataProvider.class, dataProvider = "getUsersData")
     public void getUsersData(XMLUserData user)
     {

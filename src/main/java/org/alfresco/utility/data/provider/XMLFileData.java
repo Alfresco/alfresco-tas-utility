@@ -56,7 +56,7 @@ public class XMLFileData implements XMLDataItem
     }
     
     @Override
-    public FileModel toModel()
+    public FileModel getModel()
     {
         FileModel f = new FileModel(getName());
         f.setContent(getContent());

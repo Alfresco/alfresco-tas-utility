@@ -91,7 +91,7 @@ public class XMLSiteData implements XMLDataItem
     }
 
     @Override
-    public SiteModel toModel()
+    public SiteModel getModel()
     {
         SiteModel s = new SiteModel(getName());
         Visibility v = Visibility.PUBLIC;

@@ -69,7 +69,7 @@ public class XMLFolderData implements XMLDataItem
     }
     
     @Override
-    public FolderModel toModel()
+    public FolderModel getModel()
     {
         FolderModel f = new FolderModel(getName());
         f.setCmisLocation(String.format("%s/%s", getParent(), getName()));
@@ -92,7 +92,7 @@ public class XMLFolderData implements XMLDataItem
     {
         for(XMLFolderData f : folders)
         {
-            f.setParent(toModel().getCmisLocation());
+            f.setParent(getModel().getCmisLocation());
         }        
         return folders;
     }

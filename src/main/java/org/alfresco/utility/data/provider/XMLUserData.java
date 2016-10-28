@@ -12,7 +12,7 @@ public class XMLUserData implements XMLDataItem
     private String password;
 
     @Override
-    public UserModel toModel()
+    public UserModel getModel()
     {
         return new UserModel(getName(), getPassword());
     }

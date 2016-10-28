@@ -3,6 +3,10 @@ package org.alfresco.utility.data;
 import static org.alfresco.utility.report.log.Step.STEP;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.alfresco.dataprep.CMISUtil.DocumentType;
 import org.alfresco.dataprep.ContentActions;
@@ -11,6 +15,7 @@ import org.alfresco.dataprep.ContentService;
 import org.alfresco.dataprep.SiteService;
 import org.alfresco.utility.Utility;
 import org.alfresco.utility.exception.DataPreparationException;
+import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.model.ContentModel;
 import org.alfresco.utility.model.FileModel;
 import org.alfresco.utility.model.FolderModel;
@@ -18,6 +23,10 @@ import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.UserModel;
 import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
+import org.apache.chemistry.opencmis.client.api.Session;
+import org.apache.chemistry.opencmis.commons.PropertyIds;
+import org.apache.chemistry.opencmis.commons.data.ContentStream;
+import org.apache.chemistry.opencmis.commons.enums.VersioningState;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisStorageException;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -186,10 +195,10 @@ public class DataContent extends TestData<DataContent>
     public FileModel createContent(FileModel fileModel) throws DataPreparationException
     {
         String fileFullName = fileModel.getName();
-        
-        if(FilenameUtils.getExtension(fileFullName).length()==0)
-             fileFullName = String.format("%s.%s", fileModel.getName(), fileModel.getFileType().extention);
-         
+
+        if (FilenameUtils.getExtension(fileFullName).length() == 0)
+            fileFullName = String.format("%s.%s", fileModel.getName(), fileModel.getFileType().extention);
+
         STEP(String.format("DATAPREP: Creating a new non-empty content %s in %s ", fileModel.getName(), getLastResource()));
 
         if (getLastResource().isEmpty())
@@ -270,14 +279,50 @@ public class DataContent extends TestData<DataContent>
             siteService.delete(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getCurrentUser().getDomain(), site.getId());
         }
     }
-    
+
     /**
-     * Delete entire childs of the FolderModel 
+     * Delete entire childs of the FolderModel
+     * 
      * @param from
      */
     public void deleteTree(FolderModel from)
     {
         LOG.info("Deleting entire tree of {}", from.getCmisLocation());
         contentService.deleteTreeByPath(getCurrentUser().getUsername(), getCurrentUser().getPassword(), from.getCmisLocation());
+    }
+
+    /**
+     * Deploy a custom content model to repository
+     * http://docs.alfresco.com/5.1/tasks/deploy-dynamic.html
+     * 
+     * @param localModelXMLFilePath
+     * @throws TestConfigurationException 
+     */
+    public void deployContentModel(String localModelXMLFilePath) throws TestConfigurationException
+    {
+        File file = Utility.getTestResourceFile(localModelXMLFilePath);
+        
+        LOG.info("Deploying custom content Model from XML file: {}", file.getPath());
+        FileInputStream inputStream = null;
+        try
+        {
+            inputStream = new FileInputStream(file);
+        }
+        catch (FileNotFoundException ef)
+        {
+            throw new TestConfigurationException("Could not find your custom model XML file provided:" + ef.getMessage());
+        }
+
+        Map<String, Object> props = new HashMap<String, Object>();
+        props.put(PropertyIds.OBJECT_TYPE_ID, "D:cm:dictionaryModel");
+        props.put(PropertyIds.NAME, file.getName());
+        props.put("cm:modelActive", true);
+        Session session = contentService.getCMISSession(getCurrentUser().getUsername(), getCurrentUser().getPassword());
+        ContentStream contentStream = session.getObjectFactory().createContentStream(file.getName(), file.length(), FilenameUtils.getExtension(file.getPath()),
+                inputStream);
+        
+        Folder models = (Folder) session.getObjectByPath("/Data Dictionary/Models");
+
+        models.createDocument(props, contentStream, VersioningState.MAJOR);
     }
 }
