@@ -2,6 +2,7 @@ package org.alfresco.utility.network.db;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -10,8 +11,10 @@ import javax.sql.DataSource;
 import org.alfresco.utility.TasProperties;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.IncorrectResultSetColumnCountException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.stereotype.Service;
 
 /**
@@ -110,10 +113,23 @@ public class DatabaseOperationImpl implements DatabaseOperation
 
     private static class TestRowMapper implements RowMapper<Object>
     {
+        /**
+         * Extract first column from result set
+         */
+
         @Override
         public Object mapRow(ResultSet rs, int rowNum) throws SQLException
         {
-            return rs.getObject(1);
+
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int nrOfColumns = rsmd.getColumnCount();
+            if (nrOfColumns != 1)
+            {
+                throw new IncorrectResultSetColumnCountException(1, nrOfColumns);
+            }
+
+            // Extract column value from JDBC ResultSet.
+            return JdbcUtils.getResultSetValue(rs, 1);
         }
     }
 }
