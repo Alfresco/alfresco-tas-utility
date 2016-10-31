@@ -334,4 +334,15 @@ public class DataContent extends TestData<DataContent>
     {
         return contentService.getNodeRefByPath(userModel.getUsername(), userModel.getPassword(), Utility.convertBackslashToSlash(fullPath));
     }
+    
+    /**
+     * Get the corresponding CMIS Document Object of a file using only the file path
+     * @param filePath
+     * @return
+     */
+    public Document getCMISDocument(String filePath) {
+        Document document = contentService.getDocumentObject(getCurrentUser().getUsername(), getCurrentUser().getPassword(), filePath);
+        
+        return document;
+    }
 }
