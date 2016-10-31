@@ -22,6 +22,7 @@ public class XMLFolderData implements XMLDataItem
     private List<XMLFolderData> folders = new ArrayList<XMLFolderData>();
     private String parent;
     private List<XMLCommentData> comments = new ArrayList<XMLCommentData>();
+    private XMLCustomModel customModel;
     
     @XmlAttribute(name = "name")
     public String getName()
@@ -113,5 +114,16 @@ public class XMLFolderData implements XMLDataItem
     public void setComments(List<XMLCommentData> comments)
     {
         this.comments = comments;
+    }
+    
+    @XmlElement(name = "custom-model")
+    public XMLCustomModel getCustomModel()
+    {
+        return customModel;
+    }
+
+    public void setCustomModel(XMLCustomModel customModel)
+    {
+        this.customModel = customModel;
     }
 }

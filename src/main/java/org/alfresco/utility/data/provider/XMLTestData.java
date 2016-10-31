@@ -30,9 +30,9 @@ public class XMLTestData
 {
     static Logger LOG = LogFactory.getLogger();
 
-    private List<QueryModel> queries;
+    private List<QueryModel> queries = new ArrayList<QueryModel>();
     private List<XMLSiteData> sites = new ArrayList<XMLSiteData>();
-    private List<XMLUserData> users;
+    private List<XMLUserData> users = new ArrayList<XMLUserData>();
 
     @XmlElementWrapper
     @XmlElement(name = "query")
