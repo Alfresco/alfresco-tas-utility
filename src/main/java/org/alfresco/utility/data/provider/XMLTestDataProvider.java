@@ -1,8 +1,7 @@
 package org.alfresco.utility.data.provider;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -18,23 +17,25 @@ import org.testng.annotations.DataProvider;
  * 
  * Provides test data providers based on XML input file
  * 
+ * This class is working in correlation with {@link XMLDataConfig} annotation
  * @author Paul Brodner
  *
  */
 public class XMLTestDataProvider
 {
-    private static String xmlImputPath;
 
-    private static XMLTestData getXMLTestDataFromFile() throws Exception
+    private static XMLTestData initializeXMLFileData(Method m) throws Exception
     {
-        if (getXmlImputFile() == null)
-            throw new DataPreparationException(
-                    "You didn't defined the Input XML file path for this data provider. Please call setXmlImputFile(...) in a @BeforeClass method");
-
+        XMLDataConfig config = (m.getAnnotation(XMLDataConfig.class));
+        if(config==null)
+        {            
+            throw new DataPreparationException("Please annotate your test that is using XMLTestDataProvider with @XMLDataConfig(file='../location-to-your-xml-test-data-file.xml'");
+        }
+        
         JAXBContext context = JAXBContext.newInstance(XMLTestData.class);
         Unmarshaller um = context.createUnmarshaller();
 
-        XMLTestData dataProvider = (XMLTestData) um.unmarshal(getXmlImputFile());
+        XMLTestData dataProvider = (XMLTestData) um.unmarshal(new FileInputStream(config.file()));
         return dataProvider;
     }
 
@@ -45,11 +46,11 @@ public class XMLTestDataProvider
      * @throws Exception
      */
     @DataProvider
-    public static Iterator<Object[]> getSitesData() throws Exception
+    public static Iterator<Object[]> getSitesData(Method m) throws Exception
     {
         List<Object[]> dataToBeReturned = new ArrayList<Object[]>();
 
-        XMLTestData dataReader = getXMLTestDataFromFile();
+        XMLTestData dataReader = initializeXMLFileData(m);
         List<XMLSiteData> sites = dataReader.getSites();
 
         for (XMLSiteData site : sites)
@@ -61,11 +62,11 @@ public class XMLTestDataProvider
     }
 
     @DataProvider
-    public static Iterator<Object[]> getUsersData() throws Exception
+    public static Iterator<Object[]> getUsersData(Method m) throws Exception
     {
         List<Object[]> dataToBeReturned = new ArrayList<Object[]>();
 
-        XMLTestData dataReader = getXMLTestDataFromFile();
+        XMLTestData dataReader = initializeXMLFileData(m);
         List<XMLUserData> users = dataReader.getUsers();
 
         for (XMLUserData user : users)
@@ -75,6 +76,7 @@ public class XMLTestDataProvider
 
         return dataToBeReturned.iterator();
     }
+    
 
     /**
      * Get all Queries from the input xml "*.xml" used as input data in tests
@@ -83,11 +85,11 @@ public class XMLTestDataProvider
      * @throws Exception
      */
     @DataProvider
-    public static Iterator<Object[]> getQueriesData() throws Exception
+    public static Iterator<Object[]> getQueriesData(Method m) throws Exception
     {
         List<Object[]> dataToBeReturned = new ArrayList<Object[]>();
 
-        XMLTestData dataReader = getXMLTestDataFromFile();
+        XMLTestData dataReader = initializeXMLFileData(m);
         List<QueryModel> queries = dataReader.getQueries();
 
         for (QueryModel query : queries)
@@ -106,19 +108,10 @@ public class XMLTestDataProvider
      * @throws Exception
      */
     @DataProvider
-    public static Object[][] prepareEnvironmentData() throws Exception
-    { 
-        XMLTestData dataFromXMLFile = getXMLTestDataFromFile();
+    public static Object[][] getAllData(Method m) throws Exception
+    {        
+        XMLTestData dataFromXMLFile = initializeXMLFileData(m);
         return  new Object[][] { {dataFromXMLFile }};
     }
-
-    public static InputStream getXmlImputFile() throws FileNotFoundException
-    {
-        return new FileInputStream(xmlImputPath);
-    }
-
-    public static void setXmlImputFile(String xmlImputFile)
-    {
-        XMLTestDataProvider.xmlImputPath = xmlImputFile;
-    }
+    
 }

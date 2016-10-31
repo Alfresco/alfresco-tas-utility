@@ -203,9 +203,11 @@ public abstract class TestData<Data> implements DSL<Data>
      * 
      * @param lastResource
      */
-    public void setLastResource(String lastResource)
+    @SuppressWarnings("unchecked")
+    public Data setLastResource(String lastResource)
     {
         this.lastResource = lastResource;
+        return (Data) this;
     }
 
     public void setCurrentUser(UserModel testUser)

@@ -28,6 +28,7 @@ import org.alfresco.utility.model.FileModel;
 import org.alfresco.utility.model.FileType;
 import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.SiteModel;
+import org.alfresco.utility.model.TagModel;
 import org.alfresco.utility.model.UserModel;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.Document;
@@ -222,8 +223,12 @@ public class DataContent extends TestData<DataContent>
 
         try
         {
-            cmisDocument = contentService.createDocumentInRepository(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getLastResource(),
-                    DocumentType.valueOf(fileModel.getFileType().toString()), fileFullName, fileModel.getContent());
+            cmisDocument = contentService.createDocumentInRepository(
+                                            getCurrentUser().getUsername(), 
+                                            getCurrentUser().getPassword(), getLastResource(),
+                                            DocumentType.valueOf(fileModel.getFileType().toString()), 
+                                            fileFullName, 
+                                            fileModel.getContent());
         }
         catch (CmisStorageException cse)
         {
@@ -396,7 +401,7 @@ public class DataContent extends TestData<DataContent>
         properties.put("cm:description", contentModel.getDescription());
 
         File fullPath = new File(String.format("%s/%s", getCurrentSpace(), contentModel.getName()));
-
+        LOG.info("Creating custom Content Model {} in: {}", contentModel.toString(), fullPath.getPath());
         CmisObject parentCMISFolder = contentService.getCmisObject(getCurrentUser().getUsername(), getCurrentUser().getPassword(),
                 fullPath.getParentFile().getPath());
         if (parentCMISFolder instanceof Document)
@@ -436,5 +441,15 @@ public class DataContent extends TestData<DataContent>
         contentModel.setCmisLocation(fullPath.getPath());
 
         return contentModel;
+    }
+    
+    /**
+     * Creates a tag for a content file
+     * @param fileModel
+     * @param model tag model
+     */
+    public void addTagToContent(String cmisObjectPath, TagModel model)
+    {
+        contentActions.addSingleTag(getCurrentUser().getUsername(), getCurrentUser().getPassword(), cmisObjectPath, model.getTag());
     }
 }

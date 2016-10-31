@@ -9,6 +9,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
 
 import org.alfresco.utility.model.FileModel;
+import org.alfresco.utility.model.FileType;
 
 /**
  * <file name="a.txt" createdBy="paul">
@@ -27,7 +28,9 @@ public class XMLFileData implements XMLDataItem
     private String content;
     private XMLCustomModel customModel;
     private List<XMLCommentData> comments = new ArrayList<XMLCommentData>();
-
+    private List<XMLTagData> tags = new ArrayList<XMLTagData>();
+    private FileModel model = new FileModel();
+    
     @XmlAttribute(name = "name")
     public String getName()
     {
@@ -61,13 +64,15 @@ public class XMLFileData implements XMLDataItem
         this.content = content;
     }
     
+    
     @Override
     public FileModel getModel()
     {
-        FileModel f = new FileModel(getName());
-        f.setContent(getContent());
-        f.setCmisLocation(String.format("%s/%s", getParent(), getName()));
-        return f;
+        model.setName(getName());
+        model.setFileType(FileType.fromName(getName()));
+        model.setContent(getContent());
+        model.setCmisLocation(String.format("%s/%s", getParent(), getName()));
+        return model;
     }
 
     public String getParent()
@@ -103,9 +108,21 @@ public class XMLFileData implements XMLDataItem
         this.customModel = customModel;
     }
     
-    public boolean hasOneCustomModel()
+    public boolean isCustomModel()
     {
-        return content != null;
+        return customModel != null;
+    }
+
+    @XmlElementWrapper
+    @XmlElement(name = "tag")
+    public List<XMLTagData> getTags()
+    {
+        return tags;
+    }
+
+    public void setTags(List<XMLTagData> tags)
+    {
+        this.tags = tags;
     }
 
 }
