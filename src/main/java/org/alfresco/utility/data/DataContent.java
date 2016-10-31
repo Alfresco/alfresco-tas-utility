@@ -329,4 +329,9 @@ public class DataContent extends TestData<DataContent>
 
         models.createDocument(props, contentStream, VersioningState.MAJOR);
     }
+    
+    public String getNodeRef(String fullPath, UserModel userModel)
+    {
+        return contentService.getNodeRefByPath(userModel.getUsername(), userModel.getPassword(), Utility.convertBackslashToSlash(fullPath));
+    }
 }

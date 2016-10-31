@@ -114,16 +114,15 @@ public class XMLSiteData implements XMLDataItem
     @XmlElement(name = "file")
     public List<XMLFileData> getFiles()
     {
-        return files;
-    }
-
-    public void setFiles(List<XMLFileData> files)
-    {
         for(XMLFileData f : files)
         {
             f.setParent(getFullLocation());
         }
-        
+        return files;
+    }
+
+    public void setFiles(List<XMLFileData> files)
+    {        
         this.files = files;
     }  
 }
