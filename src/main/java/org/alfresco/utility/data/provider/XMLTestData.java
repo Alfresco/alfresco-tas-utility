@@ -27,7 +27,7 @@ import org.slf4j.Logger;
  * @author Paul Brodner
  */
 @XmlRootElement(name = "testData")
-public class XMLTestData
+public class XMLTestData extends XMLCollection
 {
     static Logger LOG = LogFactory.getLogger();
 
@@ -112,7 +112,7 @@ public class XMLTestData
                  * get the user model of the site
                  */
                 LOG.info("Creating Site: {}", site.getFullLocation());
-                  
+
                 UserModel user = getUserBy(dataContent.getAdminUser(), site.getCreatedBy());
                 dataSite.usingUser(user).createSite(site.getModel());
             }
@@ -142,27 +142,25 @@ public class XMLTestData
             UserModel userFolder = getUserBy(dataContent.getAdminUser(), folder.getCreatedBy());
 
             FolderModel folderInRepo = null;
-            
+
             /*
              * create a custom folder model
              */
-            if(folder.isCustomModel())
-            {                
-                LOG.info("Creating Custom Folder: {}", folder.getModel().toString());
-                folderInRepo  = (FolderModel) dataContent.usingUser(userFolder).setCurrentSpace(location).createCustomContent(
-                                                                folder.getModel(), 
-                                                                folder.getCustomModel().getName(),
-                                                                folder.getCustomModel().getObjectTypeProperties());        
-            }
-            else //create a basic folder model using standard CMIS object type id
+            if (folder.isCustomModel())
             {
-                
+                LOG.info("Creating Custom Folder: {}", folder.getModel().toString());
+                folderInRepo = (FolderModel) dataContent.usingUser(userFolder).setCurrentSpace(location).createCustomContent(folder.getModel(),
+                        folder.getCustomModel().getName(), folder.getCustomModel().getObjectTypeProperties());
+            }
+            else // create a basic folder model using standard CMIS object type id
+            {
+
                 folderInRepo = dataContent.usingUser(userFolder).setCurrentSpace(location).createFolder(folder.getModel());
             }
 
- 	    addComments(folderInRepo.getCmisLocation(), folder.getComments(), dataContent);
+            addComments(folderInRepo.getCmisLocation(), folder.getComments(), dataContent);
             addTags(folderInRepo.getCmisLocation(), folder.getTags(), dataContent);
-            
+
             createFilesStructure(folder.getFiles(), folderInRepo, dataContent);
             createFolderStructure(folder.getFolders(), folderInRepo.getCmisLocation(), dataContent);
         }
@@ -185,42 +183,36 @@ public class XMLTestData
              * get the user model of the folder
              */
             UserModel userFile = getUserBy(dataContent.getAdminUser(), file.getCreatedBy());
-             FileModel contentInRepo = null;            
+            FileModel contentInRepo = null;
             if (parentFolder instanceof FolderModel)
             {
                 FolderModel parentFoldeInCmis = (FolderModel) parentFolder;
                 if (file.isCustomModel())
-                {                    
+                {
                     dataContent.usingUser(userFile).usingResource(parentFoldeInCmis).setCurrentSpace(parentFoldeInCmis.getCmisLocation());
-                    contentInRepo = (FileModel) dataContent.createCustomContent(
-                                    file.getModel(), 
-                                    file.getCustomModel().getName(),
-                                    file.getCustomModel().getObjectTypeProperties());                               
-                }            
+                    contentInRepo = (FileModel) dataContent.createCustomContent(file.getModel(), file.getCustomModel().getName(),
+                            file.getCustomModel().getObjectTypeProperties());
+                }
                 else
                 {
                     dataContent.usingUser(userFile).usingResource(parentFoldeInCmis).setCurrentSpace(parentFoldeInCmis.getCmisLocation());
-                    contentInRepo =  dataContent.usingUser(userFile).createContent(file.getModel());
-                }                    
+                    contentInRepo = dataContent.usingUser(userFile).createContent(file.getModel());
+                }
             }
 
             if (parentFolder instanceof SiteModel)
             {
                 if (file.isCustomModel())
-                    contentInRepo = (FileModel)dataContent.usingUser(userFile)
-                               .usingSite((SiteModel) parentFolder)
-                               .createCustomContent(file.getModel(), 
-                                                    file.getCustomModel().getName(),
-                                                    file.getCustomModel().getObjectTypeProperties());
+                    contentInRepo = (FileModel) dataContent.usingUser(userFile).usingSite((SiteModel) parentFolder).createCustomContent(file.getModel(),
+                            file.getCustomModel().getName(), file.getCustomModel().getObjectTypeProperties());
                 else
                     contentInRepo = dataContent.usingUser(userFile).usingSite((SiteModel) parentFolder).createContent(file.getModel());
             }
-            
-           
+
             addComments(contentInRepo.getCmisLocation(), file.getComments(), dataContent);
-                      
-            addTags(contentInRepo.getCmisLocation(), file.getTags(), dataContent);            
-        }         
+
+            addTags(contentInRepo.getCmisLocation(), file.getTags(), dataContent);
+        }
     }
 
     /**
@@ -293,53 +285,97 @@ public class XMLTestData
         info.append("xmlFileInputData-PREPARING[users=").append(getUsers().size()).append(", sites=").append(getSites().size()).append("]");
         return info.toString();
     }
-    
+
     /**
-     * Add users as members with role to site 
+     * Add users as members with role to site
      * 
      * @param membersStructure a list of users to be added as members
-     * @param inSite 
+     * @param inSite
      * @param dataUser
      * @throws Exception
      */
     private void addMembers(List<XMLUserData> membersStructure, SiteModel siteModel, DataUser dataUser) throws Exception
     {
-        //add members to site
-        for (XMLUserData user: membersStructure)
+        // add members to site
+        for (XMLUserData user : membersStructure)
         {
-            //get UserModel from XML structure
+            // get UserModel from XML structure
             UserModel userFile = getUserBy(dataUser.getAdminUser(), user.getName());
-            
+
             dataUser.addUserToSite(userFile, siteModel, UserRole.valueOf(user.getRole()));
         }
     }
-    
+
     /*
      * apply all comments to created file
      */
     private void addComments(String objectPathInCmis, List<XMLCommentData> comments, DataContent dataContent) throws DataPreparationException
-    {    
-        if(comments.size()>0)
-            LOG.info("Adding Comments Count: {} to object: {}",comments.size(), objectPathInCmis);
-        
+    {
+        if (comments.size() > 0)
+            LOG.info("Adding Comments Count: {} to object: {}", comments.size(), objectPathInCmis);
+
         for (XMLCommentData comment : comments)
         {
             UserModel userComment = getUserBy(dataContent.getAdminUser(), comment.getCreatedBy());
             dataContent.getContentActions().addComment(userComment.getUsername(), userComment.getPassword(), objectPathInCmis, comment.getValue());
         }
     }
-    
+
     /*
      * applying all tags to created file
      */
     private void addTags(String objectPathInCmis, List<XMLTagData> tags, DataContent dataContent) throws DataPreparationException
     {
-        if(tags.size()>0)
-            LOG.info("Adding Tags Count: {} to object: {}",tags.size(), objectPathInCmis);
+        if (tags.size() > 0)
+            LOG.info("Adding Tags Count: {} to object: {}", tags.size(), objectPathInCmis);
         for (XMLTagData tag : tags)
         {
-          UserModel userTag = getUserBy(dataContent.getAdminUser(), tag.getCreatedBy());
-          dataContent.usingUser(userTag).addTagToContent(objectPathInCmis, tag.getModel());
+            UserModel userTag = getUserBy(dataContent.getAdminUser(), tag.getCreatedBy());
+            dataContent.usingUser(userTag).addTagToContent(objectPathInCmis, tag.getModel());
         }
     }
+
+    @Override
+    protected List<XMLDataItem> getImbricatedData()
+    {
+        this.entireStructure.addAll(getUsers());
+        for (XMLSiteData site : getSites())
+        {
+            this.entireStructure.addAll(site.getEntireStructure());
+        }
+        return entireStructure;
+    }
+
+    public void logEntireStructure()
+    {
+        LOG.info("Summarizing the Test Data Structure:");
+        for (XMLDataItem item : getEntireStructure())
+        {
+            LOG.info("Found Test Data Model [{}] with -> id [{}], info: {}", item.getClass(), item.getId(), item.toString());
+        }
+    }
+
+    /**
+     * @param id
+     * @return {@link XMLDataItem} based on the id of the object
+     */
+    public XMLDataItem getTestDataItemWithId(String id)
+    {
+        LOG.info("Searching for Test Data Item with id: {}", id);
+        XMLDataItem dataFound = null;
+        for (XMLDataItem item : getEntireStructure())
+        {
+            if (item.getId() == null)
+
+                LOG.error("Test Data Item  [{}] does not have id assigned", item.toString());
+
+            if (item.getId().equals(id))
+            {
+                dataFound = item;
+                break;
+            }
+        }
+        return dataFound;
+    }
+
 }

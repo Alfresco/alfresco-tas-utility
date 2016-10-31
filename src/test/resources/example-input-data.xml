@@ -2,48 +2,47 @@
 <testData>
 
 	<users>
-		<user name="paul2" password="ppp56g66g" />
-		<user name="paul" password="password" />
+		<user id="user1" name="search" password="password" />
 	</users>
 
 	<sites>
-		<site name="haha" createdBy="admin" visibility="PUBLIC">
+		<site id="s1" name="MySampleSite" createdBy="search"
+			visibility="PUBLIC">
 			<folders>
-				<folder name="f1" createdBy="admin">
+				<folder id="f1" name="folder1" createdBy="search">
+					<!-- <custom-model name="F:tas:folder" /> -->
+					<comments>
+						<comment id="c1" value="folderComment" createdBy="admin" />
+					</comments>
 					<files>
-						<file name="a.txt" createdBy="admin">
-							<content>abce</content>
-						</file>
-						<file name="a2.txt" createdBy="admin">
-							<content>abce</content>
+						<file id="f1" name="f1.txt" createdBy="admin">
+							<content>content of f1</content>
+							<!-- <custom-model name="D:tas:document">
+								<properties>
+									<property name="tas:TextPropertyC" value="abcd" />
+								</properties>
+							</custom-model> -->
+							<comments>
+								<comment id="c2" value="haha" createdBy="admin" />
+							</comments>
+							<tags>
+								<tag id="tag-1" value="tag1" createdBy="admin" />
+								<tag id="tag-2" value="tag1" createdBy="admin" />
+							</tags>
 						</file>
 					</files>
 					<folders>
-						<folder name="f2" createdBy="admin">
-							<aspect>do:asdad</aspect>
-						</folder>					
+						<folder id="f11" name="folderChildOfFolder1" createdBy="admin"/>						
 					</folders>
 				</folder>
-				<folder name="f2" createdBy="admin">
-					<aspect>do:asdad</aspect>
-				</folder>
 			</folders>
-			<files>
-				<file name="a.txt" createdBy="admin">
-					<content>abce</content>
-				</file>
-				<file name="a2.txt" createdBy="admin">
-					<content>abce</content>
-				</file>
-			</files>
 		</site>
 	</sites>
 
 	<!--CMIS Queries: passing the search query as first param and results expected -->
 	<queries>
-		<query value="SELECT * something 1" expectedResults="1" />
-		<query value="SELECT * something 2" expectedResults="2" />
-
+		<query value="SELECT * FROM cmis:folder" expectedResults="100" />
+		<query value="SELECT * FROM cmis:document" expectedResults="100" />		
 	</queries>
 
 </testData>

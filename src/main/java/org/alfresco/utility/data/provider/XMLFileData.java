@@ -19,18 +19,20 @@ import org.alfresco.utility.model.FileType;
  * @author Paul Brodner
  */
 @XmlType(name = "file")
-public class XMLFileData implements XMLDataItem
+public class XMLFileData extends XMLCollection implements XMLDataItem
 {
     private String parent;
-    
+
     private String name;
     private String createdBy;
     private String content;
+    private String id;
+
     private XMLCustomModel customModel;
     private List<XMLCommentData> comments = new ArrayList<XMLCommentData>();
     private List<XMLTagData> tags = new ArrayList<XMLTagData>();
     private FileModel model = new FileModel();
-    
+
     @XmlAttribute(name = "name")
     public String getName()
     {
@@ -63,8 +65,7 @@ public class XMLFileData implements XMLDataItem
     {
         this.content = content;
     }
-    
-    
+
     @Override
     public FileModel getModel()
     {
@@ -84,7 +85,7 @@ public class XMLFileData implements XMLDataItem
     {
         this.parent = parent;
     }
-    
+
     @XmlElementWrapper
     @XmlElement(name = "comment")
     public List<XMLCommentData> getComments()
@@ -107,7 +108,7 @@ public class XMLFileData implements XMLDataItem
     {
         this.customModel = customModel;
     }
-    
+
     public boolean isCustomModel()
     {
         return customModel != null;
@@ -125,4 +126,35 @@ public class XMLFileData implements XMLDataItem
         this.tags = tags;
     }
 
+    @Override
+    @XmlAttribute(name = "id")
+    public String getId()
+    {
+        return id;
+    }
+
+    public void setId(String id)
+    {
+        this.id = id;
+    }
+
+    @Override
+    protected List<XMLDataItem> getImbricatedData()
+    {
+        this.entireStructure.add(this);
+        this.entireStructure.addAll(getComments());
+        this.entireStructure.addAll(getTags());
+        return entireStructure;
+    }
+    
+    @Override
+    public String toString()
+    {
+        StringBuilder info = new StringBuilder();
+        info.append("file[name='").append(getName()).append("',")
+            .append("createdBy='").append(getCreatedBy())
+            .append("', id='").append(getId()).append("']");       
+
+        return info.toString();
+    }
 }
