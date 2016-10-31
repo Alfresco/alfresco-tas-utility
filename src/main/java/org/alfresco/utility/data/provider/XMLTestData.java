@@ -12,6 +12,7 @@ import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.DataSite;
 import org.alfresco.utility.data.DataUser;
 import org.alfresco.utility.exception.DataPreparationException;
+import org.alfresco.utility.model.FileModel;
 import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.QueryModel;
 import org.alfresco.utility.model.SiteModel;
@@ -103,7 +104,8 @@ public class XMLTestData
             {
                 LOG.info("Skipping Site: {}. This site already exists in repository!", site.getFullLocation());
             }
-            else // create site with the user provided in XML file
+            else
+            // create site with the user provided in XML file
             {
                 /*
                  * get the user model of the site
@@ -137,6 +139,12 @@ public class XMLTestData
 
             FolderModel folderInRepo = dataContent.usingUser(userFolder).setCurrentSpace(location).createFolder(folder.getModel());
             
+            for (XMLCommentData comment : folder.getComments())
+            {
+                UserModel userComment = getUserBy(dataContent.getAdminUser(), comment.getCreatedBy());
+                dataContent.getContentActions().addComment(userComment.getUsername(), userComment.getPassword(), folderInRepo.getCmisLocation(), comment.getValue());
+            }
+
             createFilesStructure(folder.getFiles(), folderInRepo, dataContent);
             createFolderStructure(folder.getFolders(), folderInRepo.getCmisLocation(), dataContent);
         }
@@ -159,15 +167,23 @@ public class XMLTestData
              * get the user model of the folder
              */
             UserModel userFile = getUserBy(dataContent.getAdminUser(), file.getCreatedBy());
+            FileModel fileInRepo = null;
             if (testModel instanceof FolderModel)
             {
-                dataContent.usingUser(userFile).usingResource((FolderModel) testModel).createContent(file.getModel());
+                fileInRepo = dataContent.usingUser(userFile).usingResource((FolderModel) testModel).createContent(file.getModel());
             }
 
             if (testModel instanceof SiteModel)
             {
-                dataContent.usingUser(userFile).usingSite((SiteModel) testModel).createContent(file.getModel());
+                fileInRepo = dataContent.usingUser(userFile).usingSite((SiteModel) testModel).createContent(file.getModel());
             }
+
+            for (XMLCommentData comment : file.getComments())
+            {
+                UserModel userComment = getUserBy(dataContent.getAdminUser(), comment.getCreatedBy());
+                dataContent.getContentActions().addComment(userComment.getUsername(), userComment.getPassword(), fileInRepo.getCmisLocation(), comment.getValue());
+            }
+
         }
     }
 

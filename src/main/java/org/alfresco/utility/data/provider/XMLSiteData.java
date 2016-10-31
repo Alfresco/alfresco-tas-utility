@@ -125,5 +125,5 @@ public class XMLSiteData implements XMLDataItem
         }
         
         this.files = files;
-    }    
+    }  
 }
