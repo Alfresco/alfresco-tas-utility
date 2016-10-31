@@ -20,6 +20,7 @@ import org.alfresco.utility.model.ContentModel;
 import org.alfresco.utility.model.FileModel;
 import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.SiteModel;
+import org.alfresco.utility.model.TagModel;
 import org.alfresco.utility.model.UserModel;
 import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
@@ -324,5 +325,15 @@ public class DataContent extends TestData<DataContent>
         Folder models = (Folder) session.getObjectByPath("/Data Dictionary/Models");
 
         models.createDocument(props, contentStream, VersioningState.MAJOR);
+    }
+    
+    /**
+     * Creates a tag for a content file
+     * @param fileModel
+     * @param model tag model
+     */
+    public void addTagToContent(FileModel fileModel, TagModel model)
+    {
+        contentActions.addSingleTag(getCurrentUser().getUsername(), getCurrentUser().getPassword(), fileModel.getCmisLocation(), model.getTag());
     }
 }

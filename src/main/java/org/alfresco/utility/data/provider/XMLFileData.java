@@ -1,7 +1,11 @@
 package org.alfresco.utility.data.provider;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
 
 import org.alfresco.utility.model.FileModel;
@@ -22,6 +26,8 @@ public class XMLFileData implements XMLDataItem
     private String createdBy;
     private String content;
 
+    private List<XMLTagData> tags = new ArrayList<XMLTagData>();
+    
     @XmlAttribute(name = "name")
     public String getName()
     {
@@ -55,6 +61,7 @@ public class XMLFileData implements XMLDataItem
         this.content = content;
     }
     
+    
     @Override
     public FileModel getModel()
     {
@@ -72,6 +79,18 @@ public class XMLFileData implements XMLDataItem
     public void setParent(String parent)
     {
         this.parent = parent;
+    }
+
+    @XmlElementWrapper
+    @XmlElement(name = "tag")
+    public List<XMLTagData> getTags()
+    {
+        return tags;
+    }
+
+    public void setTags(List<XMLTagData> tags)
+    {
+        this.tags = tags;
     }
 
 }

@@ -3,6 +3,7 @@ package org.alfresco.utility.data.provider;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -75,6 +76,7 @@ public class XMLTestDataProvider
 
         return dataToBeReturned.iterator();
     }
+    
 
     /**
      * Get all Queries from the input xml "*.xml" used as input data in tests
@@ -106,8 +108,10 @@ public class XMLTestDataProvider
      * @throws Exception
      */
     @DataProvider
-    public static Object[][] prepareEnvironmentData() throws Exception
+    public static Object[][] prepareEnvironmentData(Method m) throws Exception
     { 
+        String file = (m.getAnnotation(DataProviderFile.class)).file();
+        setXmlImputFile(file);
         XMLTestData dataFromXMLFile = getXMLTestDataFromFile();
         return  new Object[][] { {dataFromXMLFile }};
     }

@@ -12,12 +12,14 @@ import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.DataSite;
 import org.alfresco.utility.data.DataUser;
 import org.alfresco.utility.exception.DataPreparationException;
+import org.alfresco.utility.model.FileModel;
 import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.QueryModel;
 import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.TestModel;
 import org.alfresco.utility.model.UserModel;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * XML structure for Test Data
@@ -136,7 +138,7 @@ public class XMLTestData
             UserModel userFolder = getUserBy(dataContent.getAdminUser(), folder.getCreatedBy());
 
             FolderModel folderInRepo = dataContent.usingUser(userFolder).setCurrentSpace(location).createFolder(folder.getModel());
-            
+
             createFilesStructure(folder.getFiles(), folderInRepo, dataContent);
             createFolderStructure(folder.getFolders(), folderInRepo.getCmisLocation(), dataContent);
         }
@@ -159,15 +161,27 @@ public class XMLTestData
              * get the user model of the folder
              */
             UserModel userFile = getUserBy(dataContent.getAdminUser(), file.getCreatedBy());
+            FileModel fileModel = null;
             if (testModel instanceof FolderModel)
             {
-                dataContent.usingUser(userFile).usingResource((FolderModel) testModel).createContent(file.getModel());
+                fileModel = dataContent.usingUser(userFile).usingResource((FolderModel) testModel).createContent(file.getModel());
             }
 
             if (testModel instanceof SiteModel)
             {
-                dataContent.usingUser(userFile).usingSite((SiteModel) testModel).createContent(file.getModel());
+                fileModel = dataContent.usingUser(userFile).usingSite((SiteModel) testModel).createContent(file.getModel());
             }
+
+            createTagsStructure(file.getTags(), fileModel, dataContent);
+        }
+    }
+
+    private void createTagsStructure(List<XMLTagData> tagsStructure, FileModel testModel, DataContent dataContent) throws Exception
+    {
+        for (XMLTagData tag : tagsStructure)
+        {
+            UserModel userTag = getUserBy(dataContent.getAdminUser(), tag.getCreatedBy());
+            dataContent.usingUser(userTag).addTagToContent(testModel, tag.getModel());
         }
     }
 
