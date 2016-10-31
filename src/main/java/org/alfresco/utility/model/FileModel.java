@@ -58,11 +58,14 @@ public class FileModel extends ContentModel
 
     public FileType getFileType()
     {
+        if(this.fileType==null)
+            fileType = FileType.TEXT_PLAIN;
+        
         return fileType;
     }
 
     public void setFileType(FileType fileType)
-    {
+    {        
         this.fileType = fileType;
     }
 

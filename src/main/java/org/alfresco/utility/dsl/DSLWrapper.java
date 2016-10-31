@@ -19,6 +19,11 @@ public abstract class DSLWrapper<Client>
     @Autowired
     protected DataContent dataContent;
     
+    public DataContent getDataContentService()
+    {
+       return dataContent; 
+    }
+    
     @Autowired
     protected ContentService contentService;
 

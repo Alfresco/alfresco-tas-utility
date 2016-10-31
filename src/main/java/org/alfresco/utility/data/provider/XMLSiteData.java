@@ -24,6 +24,7 @@ public class XMLSiteData implements XMLDataItem
     private List<XMLFolderData> folders = new ArrayList<XMLFolderData>();
     private List<XMLFileData> files = new ArrayList<XMLFileData>();
     private List<XMLUserData> members = new ArrayList<XMLUserData>();
+    private SiteModel model = new SiteModel();
 
     @XmlAttribute(name = "visibility")
     public String getVisibility()
@@ -94,7 +95,8 @@ public class XMLSiteData implements XMLDataItem
     @Override
     public SiteModel getModel()
     {
-        SiteModel s = new SiteModel(getName());
+        model.setId(getName());
+        model.setTitle(getName());
         Visibility v = Visibility.PUBLIC;
         switch (getVisibility())
         {
@@ -107,8 +109,8 @@ public class XMLSiteData implements XMLDataItem
                 break;                
         }
         
-        s.setVisibility(v);
-        return s;
+        model.setVisibility(v);
+        return model;
     }
 
     @XmlElementWrapper
@@ -124,6 +126,10 @@ public class XMLSiteData implements XMLDataItem
 
     public void setFiles(List<XMLFileData> files)
     {        
+    	for(XMLFileData f : files)
+        {
+            f.setParent(getFullLocation());
+        }
         this.files = files;
     }  
     

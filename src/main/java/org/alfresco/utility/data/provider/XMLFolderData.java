@@ -22,6 +22,10 @@ public class XMLFolderData implements XMLDataItem
     private List<XMLFolderData> folders = new ArrayList<XMLFolderData>();
     private String parent;
     private List<XMLCommentData> comments = new ArrayList<XMLCommentData>();
+    private List<XMLTagData> tags = new ArrayList<XMLTagData>();
+    private XMLCustomModel customModel;
+    
+    private FolderModel model = new FolderModel(); 
     
     @XmlAttribute(name = "name")
     public String getName()
@@ -71,10 +75,10 @@ public class XMLFolderData implements XMLDataItem
     
     @Override
     public FolderModel getModel()
-    {
-        FolderModel f = new FolderModel(getName());
-        f.setCmisLocation(String.format("%s/%s", getParent(), getName()));
-        return f;
+    {        
+        model.setName(getName());
+        model.setCmisLocation(String.format("%s/%s", getParent(), getName()));
+        return model;
     }
 
     public String getParent()
@@ -113,5 +117,33 @@ public class XMLFolderData implements XMLDataItem
     public void setComments(List<XMLCommentData> comments)
     {
         this.comments = comments;
+    }
+    
+    @XmlElement(name = "custom-model")
+    public XMLCustomModel getCustomModel()
+    {
+        return customModel;
+    }
+
+    public void setCustomModel(XMLCustomModel customModel)
+    {
+        this.customModel = customModel;
+    }
+    
+    public boolean isCustomModel()
+    {
+        return customModel != null;
+    }
+    
+    @XmlElementWrapper
+    @XmlElement(name = "tag")
+    public List<XMLTagData> getTags()
+    {
+        return tags;
+    }
+
+    public void setTags(List<XMLTagData> tags)
+    {
+        this.tags = tags;
     }
 }
