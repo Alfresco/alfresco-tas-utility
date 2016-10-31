@@ -10,7 +10,7 @@ import javax.xml.bind.annotation.XmlType;
 public class XMLPropertyData
 {
     private String name;
-    private Object value;
+    private String value;
 
     @XmlAttribute(name = "name")
     public String getName()
@@ -24,12 +24,12 @@ public class XMLPropertyData
     }
 
     @XmlAttribute(name = "value")
-    public Object getValue()
+    public String getValue()
     {
         return value;
     }
 
-    public void setValue(Object value)
+    public void setValue(String value)
     {
         this.value = value;
     }

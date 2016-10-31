@@ -161,14 +161,20 @@ public class XMLTestData
             UserModel userFile = getUserBy(dataContent.getAdminUser(), file.getCreatedBy());
             if (testModel instanceof FolderModel)
             {
+                FolderModel f = (FolderModel) testModel;
                 if (file.hasOneCustomModel())
-                    dataContent.usingUser(userFile)
-                               .usingResource((FolderModel) testModel)
-                               .createCustomContent(file.getModel(), 
-                                                    file.getCustomModel().getName(),
-                                                    file.getCustomModel().getObjectTypeProperties());
+                {                    
+                    dataContent.usingUser(userFile).setLastResource(f.getCmisLocation());
+                    dataContent.createCustomContent(
+                                    file.getModel(), 
+                                    file.getCustomModel().getName(),
+                                    file.getCustomModel().getObjectTypeProperties());                               
+                }            
                 else
-                    dataContent.usingUser(userFile).usingResource((FolderModel) testModel).createContent(file.getModel());
+                {
+                    dataContent.usingUser(userFile).setLastResource(f.getCmisLocation());
+                    dataContent.usingUser(userFile).createContent(file.getModel());
+                }                    
             }
 
             if (testModel instanceof SiteModel)
