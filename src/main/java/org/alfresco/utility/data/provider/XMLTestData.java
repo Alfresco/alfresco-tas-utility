@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.alfresco.utility.LogFactory;
+import org.alfresco.utility.constants.UserRole;
 import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.DataSite;
 import org.alfresco.utility.data.DataUser;
@@ -96,7 +97,7 @@ public class XMLTestData
      * 
      * @throws Exception
      */
-    public void createSitesStructure(DataSite dataSite, DataContent dataContent) throws Exception
+    public void createSitesStructure(DataSite dataSite, DataContent dataContent, DataUser dataUser) throws Exception
     {
         for (XMLSiteData site : getSites())
         {
@@ -114,6 +115,7 @@ public class XMLTestData
                 dataSite.usingUser(user).createSite(site.getModel());
             }
 
+            addMembers(site.getMembers(), site.getModel(), dataUser);
             createFilesStructure(site.getFiles(), site.getModel(), dataContent);
             createFolderStructure(site.getFolders(), site.getFullLocation(), dataContent);
         }
@@ -256,5 +258,25 @@ public class XMLTestData
         StringBuilder info = new StringBuilder();
         info.append("xmlFileInputData-PREPARING[users=").append(getUsers().size()).append(", sites=").append(getSites().size()).append("]");
         return info.toString();
+    }
+    
+    /**
+     * Add users as members with role to site 
+     * 
+     * @param membersStructure a list of users to be added as members
+     * @param inSite 
+     * @param dataUser
+     * @throws Exception
+     */
+    private void addMembers(List<XMLUserData> membersStructure, SiteModel siteModel, DataUser dataUser) throws Exception
+    {
+        //add members to site
+        for (XMLUserData user: membersStructure)
+        {
+            //get UserModel from XML structure
+            UserModel userFile = getUserBy(dataUser.getAdminUser(), user.getName());
+            
+            dataUser.addUserToSite(userFile, siteModel, UserRole.valueOf(user.getRole()));
+        }
     }
 }

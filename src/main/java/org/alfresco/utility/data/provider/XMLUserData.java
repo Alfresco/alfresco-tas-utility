@@ -10,6 +10,7 @@ public class XMLUserData implements XMLDataItem
 {
     private String name;
     private String password;
+    private String role;
 
     @Override
     public UserModel getModel()
@@ -39,6 +40,17 @@ public class XMLUserData implements XMLDataItem
         this.password = password;
     }
     
+    @XmlAttribute(name = "role")
+    public String getRole()
+    {
+        return role;
+    }
+
+    public void setRole(String role)
+    {
+        this.role = role;
+    }
+  
     @Override
     public String toString()
     {
