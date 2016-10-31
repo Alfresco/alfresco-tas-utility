@@ -23,6 +23,7 @@ public class XMLSiteData implements XMLDataItem
     
     private List<XMLFolderData> folders = new ArrayList<XMLFolderData>();
     private List<XMLFileData> files = new ArrayList<XMLFileData>();
+    private List<XMLUserData> members = new ArrayList<XMLUserData>();
 
     @XmlAttribute(name = "visibility")
     public String getVisibility()
@@ -125,4 +126,17 @@ public class XMLSiteData implements XMLDataItem
     {        
         this.files = files;
     }  
+    
+    @XmlElementWrapper
+    @XmlElement(name = "user")
+    public List<XMLUserData> getMembers()
+    {
+        return members;
+    }
+
+    public void setMembers(List<XMLUserData> members)
+    {
+        this.members = members;
+    }
+    
 }

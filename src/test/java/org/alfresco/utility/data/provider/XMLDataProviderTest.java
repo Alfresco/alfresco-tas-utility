@@ -41,7 +41,7 @@ public class XMLDataProviderTest extends AbstractTestNGSpringContextTests
     {
         this.testData = testData;
         testData.createUsers(userDataService);
-        testData.createSitesStructure(dataSiteService, dataContentService);
+        testData.createSitesStructure(dataSiteService, dataContentService, userDataService);
     }
     
     @Test(dataProviderClass = XMLTestDataProvider.class, dataProvider = "getUsersData")
