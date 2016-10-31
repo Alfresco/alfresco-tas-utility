@@ -12,6 +12,7 @@ import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.DataSite;
 import org.alfresco.utility.data.DataUser;
 import org.alfresco.utility.exception.DataPreparationException;
+import org.alfresco.utility.model.ContentModel;
 import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.QueryModel;
 import org.alfresco.utility.model.SiteModel;
@@ -137,6 +138,11 @@ public class XMLTestData
 
             FolderModel folderInRepo = dataContent.usingUser(userFolder).setCurrentSpace(location).createFolder(folder.getModel());
 
+	    for (XMLCommentData comment : folder.getComments())
+            {
+                UserModel userComment = getUserBy(dataContent.getAdminUser(), comment.getCreatedBy());
+                dataContent.getContentActions().addComment(userComment.getUsername(), userComment.getPassword(), folderInRepo.getCmisLocation(), comment.getValue());
+            }
             createFilesStructure(folder.getFiles(), folderInRepo, dataContent);
             createFolderStructure(folder.getFolders(), folderInRepo.getCmisLocation(), dataContent);
         }
@@ -159,13 +165,14 @@ public class XMLTestData
              * get the user model of the folder
              */
             UserModel userFile = getUserBy(dataContent.getAdminUser(), file.getCreatedBy());
+            ContentModel contentInRepo = null;
             if (testModel instanceof FolderModel)
             {
                 FolderModel f = (FolderModel) testModel;
                 if (file.hasOneCustomModel())
                 {                    
                     dataContent.usingUser(userFile).setLastResource(f.getCmisLocation());
-                    dataContent.createCustomContent(
+                    contentInRepo = dataContent.createCustomContent(
                                     file.getModel(), 
                                     file.getCustomModel().getName(),
                                     file.getCustomModel().getObjectTypeProperties());                               
@@ -173,7 +180,7 @@ public class XMLTestData
                 else
                 {
                     dataContent.usingUser(userFile).setLastResource(f.getCmisLocation());
-                    dataContent.usingUser(userFile).createContent(file.getModel());
+                    contentInRepo =  dataContent.usingUser(userFile).createContent(file.getModel());
                 }                    
             }
 
@@ -187,6 +194,12 @@ public class XMLTestData
                                                     file.getCustomModel().getObjectTypeProperties());
                 else
                     dataContent.usingUser(userFile).usingSite((SiteModel) testModel).createContent(file.getModel());
+            }
+            
+            for (XMLCommentData comment : file.getComments())
+            {
+                UserModel userComment = getUserBy(dataContent.getAdminUser(), comment.getCreatedBy());
+                dataContent.getContentActions().addComment(userComment.getUsername(), userComment.getPassword(), contentInRepo.getCmisLocation(), comment.getValue());
             }
         }
     }

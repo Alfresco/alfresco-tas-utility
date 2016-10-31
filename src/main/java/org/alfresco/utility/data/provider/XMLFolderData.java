@@ -21,6 +21,7 @@ public class XMLFolderData implements XMLDataItem
     private List<XMLFileData> files = new ArrayList<XMLFileData>();
     private List<XMLFolderData> folders = new ArrayList<XMLFolderData>();
     private String parent;
+    private List<XMLCommentData> comments = new ArrayList<XMLCommentData>();
     
     @XmlAttribute(name = "name")
     public String getName()
@@ -101,4 +102,16 @@ public class XMLFolderData implements XMLDataItem
     {
         this.folders = folders;
     }   
+    
+    @XmlElementWrapper
+    @XmlElement(name = "comment")
+    public List<XMLCommentData> getComments()
+    {
+        return comments;
+    }
+
+    public void setComments(List<XMLCommentData> comments)
+    {
+        this.comments = comments;
+    }
 }

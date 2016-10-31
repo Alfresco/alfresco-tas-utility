@@ -64,6 +64,10 @@ public class DataContent extends TestData<DataContent>
     @Autowired
     private SiteService siteService;
 
+    public ContentActions getContentActions()
+    {
+        return contentActions;
+    }
     /**
      * It will create a new folder in current resource
      */

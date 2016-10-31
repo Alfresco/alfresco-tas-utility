@@ -39,4 +39,5 @@ public @interface TestGroup
     public static String WEBDAV = "webdav";
     public static String FTP = "ftp";
     public static String INTEGRATION = "integration";
+    public static String UPGRADE = "upgrade";
 }
