@@ -21,7 +21,7 @@ public class XMLFolderData extends XMLCollection implements XMLDataItem
     private String id;
     private List<XMLFileData> files = new ArrayList<XMLFileData>();
     private List<XMLFolderData> folders = new ArrayList<XMLFolderData>();
-    private String parent;
+
     private List<XMLCommentData> comments = new ArrayList<XMLCommentData>();
     private List<XMLTagData> tags = new ArrayList<XMLTagData>();
     private XMLCustomModel customModel;
@@ -66,9 +66,7 @@ public class XMLFolderData extends XMLCollection implements XMLDataItem
     public String toString()
     {
         StringBuilder info = new StringBuilder();
-        info.append("folder[name='").append(getName()).append("',")
-            .append("createdBy='").append(getCreatedBy())
-            .append("', id='").append(getId()).append("']");       
+        info.append("folder[name='").append(getName()).append("',").append("createdBy='").append(getCreatedBy()).append("', id='").append(getId()).append("']");
         return info.toString();
     }
 
@@ -78,16 +76,6 @@ public class XMLFolderData extends XMLCollection implements XMLDataItem
         model.setName(getName());
         model.setCmisLocation(String.format("%s/%s", getParent(), getName()));
         return model;
-    }
-
-    public String getParent()
-    {
-        return parent;
-    }
-
-    public void setParent(String parent)
-    {
-        this.parent = parent;
     }
 
     @XmlElementWrapper
@@ -166,14 +154,15 @@ public class XMLFolderData extends XMLCollection implements XMLDataItem
         this.entireStructure.addAll(getTags());
         for (XMLFileData file : getFiles())
         {
+            file.setParent(getModel().getCmisLocation());
             this.entireStructure.addAll(file.getEntireStructure());
         }
         for (XMLFolderData folder : getFolders())
         {
+            folder.setParent(getModel().getCmisLocation());
             this.entireStructure.addAll(folder.getEntireStructure());
         }
         return entireStructure;
     }
-    
-     
+
 }

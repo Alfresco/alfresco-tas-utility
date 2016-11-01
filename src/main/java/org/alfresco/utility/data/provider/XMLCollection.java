@@ -6,7 +6,18 @@ import java.util.List;
 public abstract class XMLCollection
 {
     protected List<XMLDataItem> entireStructure = new ArrayList<>();
+    private String parent;
+    
+    public String getParent()
+    {
+        return parent;
+    }
 
+    public void setParent(String parent)
+    {
+        this.parent = parent;
+    }
+    
     public List<XMLDataItem> getEntireStructure()
     {
         if (this.entireStructure.isEmpty())
@@ -15,6 +26,7 @@ public abstract class XMLCollection
         }
         return entireStructure;
     }
+    
 
     protected abstract List<XMLDataItem> getImbricatedData();
 

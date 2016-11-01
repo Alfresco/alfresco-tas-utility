@@ -20,9 +20,7 @@ import org.alfresco.utility.model.FileType;
  */
 @XmlType(name = "file")
 public class XMLFileData extends XMLCollection implements XMLDataItem
-{
-    private String parent;
-
+{    
     private String name;
     private String createdBy;
     private String content;
@@ -74,17 +72,7 @@ public class XMLFileData extends XMLCollection implements XMLDataItem
         model.setContent(getContent());
         model.setCmisLocation(String.format("%s/%s", getParent(), getName()));
         return model;
-    }
-
-    public String getParent()
-    {
-        return parent;
-    }
-
-    public void setParent(String parent)
-    {
-        this.parent = parent;
-    }
+    }    
 
     @XmlElementWrapper
     @XmlElement(name = "comment")

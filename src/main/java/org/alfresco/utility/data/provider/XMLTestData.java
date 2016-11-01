@@ -89,7 +89,8 @@ public class XMLTestData extends XMLCollection
                 LOG.info("Creating USER data:" + user.toString());
                 dataUser.createUser(user.getName(), user.getPassword());
             }
-        }
+        }        
+        logEntireStructure();
     }
 
     /**
