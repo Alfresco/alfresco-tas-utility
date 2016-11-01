@@ -37,7 +37,6 @@ import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
 import org.apache.chemistry.opencmis.commons.enums.VersioningState;
-import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisStorageException;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ContentStreamImpl;
 import org.apache.commons.io.FilenameUtils;
@@ -340,20 +339,21 @@ public class DataContent extends TestData<DataContent>
         Session session = contentService.getCMISSession(getCurrentUser().getUsername(), getCurrentUser().getPassword());
         ContentStream contentStream = session.getObjectFactory().createContentStream(file.getName(), file.length(), FilenameUtils.getExtension(file.getPath()),
                 inputStream);
-        CmisObject modelInRepo = null;
+        CmisObject modelInRepo;
+        //it will throw exception if object is not found, so in that case we will upload it
         try
         {
             modelInRepo = session.getObjectByPath(String.format("/Data Dictionary/Models/%s", file.getName()));
+            if (modelInRepo != null)
+            {
+                LOG.info("Custom Content Model [{}] is already deployed under [/Data Dictionary/Models/] location", localModelXMLFilePath);
+            }
         }
-        catch(CmisObjectNotFoundException nf)
+        catch (Exception e)
         {
             Folder model = (Folder) session.getObjectByPath("/Data Dictionary/Models");
             model.createDocument(props, contentStream, VersioningState.MAJOR);
-        }
-        if (modelInRepo != null)
-        {
-            LOG.info("Custom Content Model [{}] is already deployed under [/Data Dictionary/Models/] location", localModelXMLFilePath);
-        }
+        } 
     }
 
     public ContentStream getContentStream(String fileName, String content) throws Exception
@@ -406,6 +406,7 @@ public class DataContent extends TestData<DataContent>
         properties.put("cm:description", contentModel.getDescription());
         File fullPath = new File(String.format("%s/%s", getCurrentSpace(), contentModel.getName()));
         String parentFolder = Utility.convertBackslashToSlash(fullPath.getParent());
+        
         LOG.info("Creating custom Content Model {} in: {}", contentModel.toString(), fullPath.getPath());
         CmisObject parentCMISFolder = contentService.getCmisObject(getCurrentUser().getUsername(), getCurrentUser().getPassword(), parentFolder);
         if (parentCMISFolder instanceof Document)
