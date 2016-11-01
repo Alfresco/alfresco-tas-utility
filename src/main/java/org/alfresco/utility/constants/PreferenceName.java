@@ -6,7 +6,8 @@ package org.alfresco.utility.constants;
 public enum PreferenceName
 {
     SITES_FAVORITES_PREFIX("org.alfresco.share.sites.favourites."),
-    DOCS_FAVORITES_PREFIX("org.alfresco.share.documents.favourites.");
+    FOLDERS_FAVORITES_PREFIX("org.alfresco.share.folders.favourites"),
+    DOCUMENTS_FAVORITES_PREFIX("org.alfresco.share.documents.favourites");
     
     private final String preferenceName;
 
