@@ -47,7 +47,16 @@ public class XMLCustomModel implements XMLDataItem
         CustomObjectTypeProperties customProps = new CustomObjectTypeProperties();
         for(XMLPropertyData p : properties)
         {
-            customProps.addProperty(p.getName(), p.getValue());
+            try
+            {
+              int value =  Integer.parseInt(p.getValue());
+              customProps.addProperty(p.getName(), value);
+            }
+            catch (NumberFormatException e)
+            {
+               customProps.addProperty(p.getName(), p.getValue());
+            }
+            
         }
         return customProps;
     }
