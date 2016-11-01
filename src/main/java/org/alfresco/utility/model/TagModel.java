@@ -14,6 +14,11 @@ public class TagModel extends TestModel
     {
     }
 
+    public TagModel(String tag)
+    {
+        this.tag = tag;
+    }
+
     public String getId()
     {
         return id;
