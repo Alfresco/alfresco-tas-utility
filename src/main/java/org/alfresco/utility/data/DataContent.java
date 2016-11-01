@@ -37,6 +37,7 @@ import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
 import org.apache.chemistry.opencmis.commons.enums.VersioningState;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisStorageException;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ContentStreamImpl;
 import org.apache.commons.io.FilenameUtils;
@@ -339,16 +340,19 @@ public class DataContent extends TestData<DataContent>
         Session session = contentService.getCMISSession(getCurrentUser().getUsername(), getCurrentUser().getPassword());
         ContentStream contentStream = session.getObjectFactory().createContentStream(file.getName(), file.length(), FilenameUtils.getExtension(file.getPath()),
                 inputStream);
-
-        CmisObject modelInRepo = session.getObjectByPath(String.format("/Data Dictionary/Models/%s", file.getName()));
-        if (modelInRepo != null)
+        CmisObject modelInRepo = null;
+        try
         {
-            LOG.info("Custom Content Model [{}] is already deployed under [/Data Dictionary/Models/] location", localModelXMLFilePath);
+            modelInRepo = session.getObjectByPath(String.format("/Data Dictionary/Models/%s", file.getName()));
         }
-        else
+        catch(CmisObjectNotFoundException nf)
         {
             Folder model = (Folder) session.getObjectByPath("/Data Dictionary/Models");
             model.createDocument(props, contentStream, VersioningState.MAJOR);
+        }
+        if (modelInRepo != null)
+        {
+            LOG.info("Custom Content Model [{}] is already deployed under [/Data Dictionary/Models/] location", localModelXMLFilePath);
         }
     }
 
