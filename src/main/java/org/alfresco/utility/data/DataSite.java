@@ -9,6 +9,7 @@ import org.alfresco.utility.model.SiteModel;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.social.alfresco.api.entities.Site;
 import org.springframework.stereotype.Service;
 
 
@@ -64,6 +65,32 @@ public class DataSite extends TestData<DataSite>
     {
         String randomSite = RandomData.getRandomName("site");
         return createSite(new SiteModel(randomSite));
+    }
+    
+    /**
+     * Create moderated site immediately
+     * 
+     * @return
+     * @throws DataPreparationException 
+     */
+    public SiteModel createModeratedRandomSite() throws DataPreparationException
+    {
+        SiteModel randomSite = new SiteModel(RandomData.getRandomName("site"));
+        randomSite.setVisibility(Site.Visibility.MODERATED);
+        return createSite(randomSite);
+    }
+    
+    /**
+     * Create private site immediately
+     * 
+     * @return
+     * @throws DataPreparationException 
+     */
+    public SiteModel createPrivateRandomSite() throws DataPreparationException
+    {
+        SiteModel randomSite = new SiteModel(RandomData.getRandomName("site"));
+        randomSite.setVisibility(Site.Visibility.PRIVATE);
+        return createSite(randomSite);
     }
     
     /**

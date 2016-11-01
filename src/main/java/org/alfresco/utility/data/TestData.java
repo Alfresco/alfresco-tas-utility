@@ -6,6 +6,8 @@ import org.alfresco.utility.Utility;
 import org.alfresco.utility.dsl.DSL;
 import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.model.ContentModel;
+import org.alfresco.utility.model.FileModel;
+import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.UserModel;
 import org.slf4j.Logger;
@@ -122,7 +124,24 @@ public abstract class TestData<Data> implements DSL<Data>
     @Override
     @SuppressWarnings("unchecked")
     public Data usingResource(ContentModel model) throws Exception
-    {
+    {          
+        if (model.getCmisLocation().equals(model.getName()))
+        {
+            String location="";
+            if(model instanceof FolderModel)
+            {
+                location = Utility.buildPath(getLastResource(), model.getName());
+            }
+            else if(model instanceof FileModel)
+            {
+                FileModel fileModel = (FileModel) model;                
+                location = Utility.buildPath(getLastResource(), String.format("%s.%s", model.getName(), fileModel.getFileType().extention));
+            }
+            
+            location = Utility.removeLastSlash(location);
+            model.setCmisLocation(location);
+        }
+        
         setLastResource(model.getCmisLocation());
         return (Data) this;
     }
@@ -214,4 +233,5 @@ public abstract class TestData<Data> implements DSL<Data>
     {
         this.currentUser = testUser;
     }
+    
 }

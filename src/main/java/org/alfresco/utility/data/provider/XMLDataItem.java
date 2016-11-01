@@ -9,4 +9,6 @@ import org.alfresco.utility.model.TestModel;
 public interface XMLDataItem
 {
     public TestModel getModel();
+
+    public String getId();
 }

@@ -453,9 +453,13 @@ public class DataContent extends TestData<DataContent>
         contentActions.addSingleTag(getCurrentUser().getUsername(), getCurrentUser().getPassword(), cmisObjectPath, model.getTag());
     }
     
-    public String getNodeRef(String fullPath, UserModel userModel)
+    /**
+     * @return nodeRef of the current resource used
+     * You can use this in correlation with {@link DataContent#usingResource(ContentModel)} and/or {@link DataContent#usingSite(SiteModel)}, etc.
+     */
+    public String getNodeRef()
     {
-        return contentService.getNodeRefByPath(userModel.getUsername(), userModel.getPassword(), Utility.convertBackslashToSlash(fullPath));
+        return contentService.getNodeRefByPath(getCurrentUser().getUsername(), getCurrentUser().getPassword(), Utility.convertBackslashToSlash(getLastResource()));
     }
     
     /**

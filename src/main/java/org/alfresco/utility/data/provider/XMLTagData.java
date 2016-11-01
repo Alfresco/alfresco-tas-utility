@@ -6,10 +6,11 @@ import javax.xml.bind.annotation.XmlType;
 import org.alfresco.utility.model.TagModel;
 
 @XmlType(name = "tag")
-public class XMLTagData implements XMLDataItem
+public class XMLTagData implements XMLDataItem 
 {
     private String value;
     private String createdBy;
+    private String id;
     
     @Override
     public TagModel getModel()
@@ -41,4 +42,27 @@ public class XMLTagData implements XMLDataItem
         this.createdBy = createdBy;
     }
 
+    @Override
+    @XmlAttribute(name = "id")
+    public String getId()
+    {
+        return id;
+    }
+
+    public void setId(String id)
+    {
+        this.id = id;
+    }
+
+       
+    @Override
+    public String toString()
+    {
+        StringBuilder info = new StringBuilder();
+        info.append("tag[value='").append(getName()).append("',")
+            .append("createdBy='").append(getCreatedBy())
+            .append("', id='").append(getId()).append("']");       
+
+        return info.toString();
+    }
 }

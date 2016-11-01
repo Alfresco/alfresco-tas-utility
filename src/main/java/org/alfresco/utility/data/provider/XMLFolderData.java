@@ -14,19 +14,20 @@ import org.alfresco.utility.model.FolderModel;
  * <folder name="f1" createdBy="user1">
  */
 @XmlType(name = "folder")
-public class XMLFolderData implements XMLDataItem
+public class XMLFolderData extends XMLCollection implements XMLDataItem
 {
     private String name;
     private String createdBy;
+    private String id;
     private List<XMLFileData> files = new ArrayList<XMLFileData>();
     private List<XMLFolderData> folders = new ArrayList<XMLFolderData>();
     private String parent;
     private List<XMLCommentData> comments = new ArrayList<XMLCommentData>();
     private List<XMLTagData> tags = new ArrayList<XMLTagData>();
     private XMLCustomModel customModel;
-    
-    private FolderModel model = new FolderModel(); 
-    
+
+    private FolderModel model = new FolderModel();
+
     @XmlAttribute(name = "name")
     public String getName()
     {
@@ -48,11 +49,11 @@ public class XMLFolderData implements XMLDataItem
     {
         this.createdBy = createdBy;
     }
-    
+
     @XmlElementWrapper
     @XmlElement(name = "file")
     public List<XMLFileData> getFiles()
-    {                
+    {
         return files;
     }
 
@@ -65,17 +66,15 @@ public class XMLFolderData implements XMLDataItem
     public String toString()
     {
         StringBuilder info = new StringBuilder();
-        info.append("site[name='")
-            .append(getName()).append("',")
-            .append("createdBy='")
-            .append(getCreatedBy()).append("']");
-
+        info.append("folder[name='").append(getName()).append("',")
+            .append("createdBy='").append(getCreatedBy())
+            .append("', id='").append(getId()).append("']");       
         return info.toString();
     }
-    
+
     @Override
     public FolderModel getModel()
-    {        
+    {
         model.setName(getName());
         model.setCmisLocation(String.format("%s/%s", getParent(), getName()));
         return model;
@@ -95,18 +94,18 @@ public class XMLFolderData implements XMLDataItem
     @XmlElement(name = "folder")
     public List<XMLFolderData> getFolders()
     {
-        for(XMLFolderData f : folders)
+        for (XMLFolderData f : folders)
         {
             f.setParent(getModel().getCmisLocation());
-        }        
+        }
         return folders;
     }
 
     public void setFolders(List<XMLFolderData> folders)
     {
         this.folders = folders;
-    }   
-    
+    }
+
     @XmlElementWrapper
     @XmlElement(name = "comment")
     public List<XMLCommentData> getComments()
@@ -118,7 +117,7 @@ public class XMLFolderData implements XMLDataItem
     {
         this.comments = comments;
     }
-    
+
     @XmlElement(name = "custom-model")
     public XMLCustomModel getCustomModel()
     {
@@ -129,12 +128,12 @@ public class XMLFolderData implements XMLDataItem
     {
         this.customModel = customModel;
     }
-    
+
     public boolean isCustomModel()
     {
         return customModel != null;
     }
-    
+
     @XmlElementWrapper
     @XmlElement(name = "tag")
     public List<XMLTagData> getTags()
@@ -146,4 +145,35 @@ public class XMLFolderData implements XMLDataItem
     {
         this.tags = tags;
     }
+
+    @Override
+    @XmlAttribute(name = "id")
+    public String getId()
+    {
+        return id;
+    }
+
+    public void setId(String id)
+    {
+        this.id = id;
+    }
+
+    @Override
+    protected List<XMLDataItem> getImbricatedData()
+    {
+        this.entireStructure.add(this);
+        this.entireStructure.addAll(getComments());
+        this.entireStructure.addAll(getTags());
+        for (XMLFileData file : getFiles())
+        {
+            this.entireStructure.addAll(file.getEntireStructure());
+        }
+        for (XMLFolderData folder : getFolders())
+        {
+            this.entireStructure.addAll(folder.getEntireStructure());
+        }
+        return entireStructure;
+    }
+    
+     
 }

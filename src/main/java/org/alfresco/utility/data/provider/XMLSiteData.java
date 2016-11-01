@@ -15,16 +15,17 @@ import org.springframework.social.alfresco.api.entities.Site.Visibility;
  * <site name="site1" createdBy="admin">
  */
 @XmlType(name = "site")
-public class XMLSiteData implements XMLDataItem
-{    
+public class XMLSiteData extends XMLCollection implements XMLDataItem 
+{
     private String name;
     private String createdBy;
-    private String visibility;    
-    
+    private String visibility;
+    private String id;
+
     private List<XMLFolderData> folders = new ArrayList<XMLFolderData>();
     private List<XMLFileData> files = new ArrayList<XMLFileData>();
     private List<XMLUserData> members = new ArrayList<XMLUserData>();
-    private SiteModel model = new SiteModel();
+    private SiteModel model = new SiteModel();    
 
     @XmlAttribute(name = "visibility")
     public String getVisibility()
@@ -36,13 +37,13 @@ public class XMLSiteData implements XMLDataItem
     {
         this.visibility = visibility;
     }
-    
+
     @XmlAttribute(name = "name")
     public String getName()
     {
         return name;
     }
-    
+
     public String getFullLocation()
     {
         return String.format("/Sites/%s/documentLibrary", getName());
@@ -67,8 +68,8 @@ public class XMLSiteData implements XMLDataItem
     @XmlElementWrapper
     @XmlElement(name = "folder")
     public List<XMLFolderData> getFolders()
-    {        
-        for(XMLFolderData f : folders)
+    {
+        for (XMLFolderData f : folders)
         {
             f.setParent(getFullLocation());
         }
@@ -84,8 +85,7 @@ public class XMLSiteData implements XMLDataItem
     public String toString()
     {
         StringBuilder info = new StringBuilder();
-        info.append("site[name='")
-            .append(getName()).append("',")
+        info.append("site[name='").append(getName()).append("',")
             .append("createdBy='")
             .append(getCreatedBy()).append("']");
 
@@ -101,14 +101,14 @@ public class XMLSiteData implements XMLDataItem
         switch (getVisibility())
         {
             case "public":
-                v =Visibility.PUBLIC;
+                v = Visibility.PUBLIC;
                 break;
 
-            case "private":            
-                v =Visibility.PRIVATE;
-                break;                
+            case "private":
+                v = Visibility.PRIVATE;
+                break;
         }
-        
+
         model.setVisibility(v);
         return model;
     }
@@ -117,7 +117,7 @@ public class XMLSiteData implements XMLDataItem
     @XmlElement(name = "file")
     public List<XMLFileData> getFiles()
     {
-        for(XMLFileData f : files)
+        for (XMLFileData f : files)
         {
             f.setParent(getFullLocation());
         }
@@ -125,14 +125,14 @@ public class XMLSiteData implements XMLDataItem
     }
 
     public void setFiles(List<XMLFileData> files)
-    {        
-    	for(XMLFileData f : files)
+    {
+        for (XMLFileData f : files)
         {
             f.setParent(getFullLocation());
         }
         this.files = files;
-    }  
-    
+    }
+
     @XmlElementWrapper
     @XmlElement(name = "user")
     public List<XMLUserData> getMembers()
@@ -144,5 +144,33 @@ public class XMLSiteData implements XMLDataItem
     {
         this.members = members;
     }
-    
+
+    @Override
+    @XmlAttribute(name = "id")
+    public String getId()
+    {
+        return id;
+    }
+
+    public void setId(String id)
+    {
+        this.id = id;
+    }
+
+    @Override
+    protected List<XMLDataItem> getImbricatedData()
+    {       
+        this.entireStructure.add(this);
+        this.entireStructure.addAll(getMembers());
+        for(XMLFileData file : getFiles())
+        {
+            this.entireStructure.addAll(file.getEntireStructure());
+        }
+        for(XMLFolderData folder : getFolders())
+        {
+            this.entireStructure.addAll(folder.getEntireStructure());
+        }
+        return entireStructure;
+    }
+
 }
