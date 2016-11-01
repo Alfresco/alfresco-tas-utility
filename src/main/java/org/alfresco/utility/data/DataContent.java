@@ -470,14 +470,36 @@ public class DataContent extends TestData<DataContent>
         
         return document;
     }
-    
+
     /**
      * Adding aspects to ContentModels
-     * 
+     *
      * @param object
      */
     public void addAspect(List<String> aspects)
-    {       
+    {
         contentAspect.addAspect(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getLastResource(), aspects.toArray(new String[0]));
+    }
+
+    /**
+     * Add file to favorites
+     *
+     * @throws DataPreparationException
+     */
+    public void addFileToFavorites(FileModel file) throws DataPreparationException
+    {
+        STEP(String.format("DATAPREP: Add file %s.%s to Favorites", file.getName(), file.getFileType().extention));
+        contentActions.setFileAsFavorite(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getCurrentSite(), String.format("%s.%s",file.getName(), file.getFileType().extention));
+    }
+
+    /**
+     * Add folder to favorites
+     *
+     * @throws DataPreparationException
+     */
+    public void addFolderToFavorites(FolderModel folder) throws DataPreparationException
+    {
+        STEP(String.format("DATAPREP: Add folder %s to Favorites", folder.getName()));
+        contentActions.setFolderAsFavorite(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getCurrentSite(), folder.getName());
     }
 }
