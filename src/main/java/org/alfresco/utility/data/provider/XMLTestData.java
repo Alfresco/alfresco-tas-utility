@@ -364,9 +364,10 @@ public class XMLTestData extends XMLCollection
         for (XMLDataItem item : getEntireStructure())
         {
             if (item.getId() == null)
-
+            {
                 LOG.error("Test Data Item  [{}] does not have id assigned", item.toString());
-
+                continue;
+            }
             if (item.getId().equals(id))
             {
                 dataFound = item;
