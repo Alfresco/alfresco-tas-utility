@@ -394,7 +394,6 @@ public class DataContent extends TestData<DataContent>
      */
     public ContentModel createCustomContent(ContentModel contentModel, String objectTypeID, CustomObjectTypeProperties objectTypeProperty) throws Exception
     {
-        Utility.waitToLoopTime(1);
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put(PropertyIds.OBJECT_TYPE_ID, objectTypeID);
         properties.put(PropertyIds.NAME, contentModel.getName());

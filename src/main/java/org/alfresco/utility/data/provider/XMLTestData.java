@@ -117,7 +117,6 @@ public class XMLTestData extends XMLCollection
                 UserModel user = getUserBy(dataContent.getAdminUser(), site.getCreatedBy());
                 dataSite.usingUser(user).createSite(site.getModel());
             }
-
             addMembers(site.getMembers(), site.getModel(), dataUser);
             createFilesStructure(site.getFiles(), site.getModel(), dataContent);
             createFolderStructure(site.getFolders(), site.getFullLocation(), dataContent);
@@ -397,9 +396,10 @@ public class XMLTestData extends XMLCollection
         for (XMLDataItem item : getEntireStructure())
         {
             if (item.getId() == null)
-
+            {
                 LOG.error("Test Data Item  [{}] does not have id assigned", item.toString());
-
+                continue;
+            }
             if (item.getId().equals(id))
             {
                 dataFound = item;
