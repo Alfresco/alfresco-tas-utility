@@ -124,24 +124,31 @@ public abstract class TestData<Data> implements DSL<Data>
     @Override
     @SuppressWarnings("unchecked")
     public Data usingResource(ContentModel model) throws Exception
-    {          
+    {
         if (model.getCmisLocation().equals(model.getName()))
         {
-            String location="";
-            if(model instanceof FolderModel)
+            String location = "";
+            if (model instanceof FolderModel)
             {
                 location = Utility.buildPath(getLastResource(), model.getName());
             }
-            else if(model instanceof FileModel)
+            else if (model instanceof FileModel)
             {
-                FileModel fileModel = (FileModel) model;                
-                location = Utility.buildPath(getLastResource(), String.format("%s.%s", model.getName(), fileModel.getFileType().extention));
+                FileModel fileModel = (FileModel) model;
+                if (model.getName().contains(fileModel.getFileType().extention))
+                {
+                    location = Utility.buildPath(getLastResource(), model.getName());
+                }
+                else 
+                {
+                    location = Utility.buildPath(getLastResource(), String.format("%s.%s", model.getName(), fileModel.getFileType().extention));
+                }
             }
-            
+
             location = Utility.removeLastSlash(location);
             model.setCmisLocation(location);
         }
-        
+
         setLastResource(model.getCmisLocation());
         return (Data) this;
     }
@@ -217,8 +224,9 @@ public abstract class TestData<Data> implements DSL<Data>
     {
         return lastResource;
     }
+
     /**
-     * Set last resource with content protocol location 
+     * Set last resource with content protocol location
      * 
      * @param lastResource
      */
@@ -233,5 +241,5 @@ public abstract class TestData<Data> implements DSL<Data>
     {
         this.currentUser = testUser;
     }
-    
+
 }
