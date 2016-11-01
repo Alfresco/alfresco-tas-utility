@@ -40,5 +40,6 @@ public @interface TestGroup
     public static String FTP = "ftp";
     public static String INTEGRATION = "integration";
     public static String CONTENT = "content";
-    public static String UPGRADE = "upgrade";
+    public static String PREUPGRADE = "pre-upgrade";
+    public static String POSTUPGRADE = "post-upgrade";
 }
