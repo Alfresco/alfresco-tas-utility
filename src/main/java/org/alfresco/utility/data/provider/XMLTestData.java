@@ -208,9 +208,7 @@ public class XMLTestData extends XMLCollection
                 else
                     contentInRepo = dataContent.usingUser(userFile).usingSite((SiteModel) parentFolder).createContent(file.getModel());
             }
-
             addComments(contentInRepo.getCmisLocation(), file.getComments(), dataContent);
-
             addTags(contentInRepo.getCmisLocation(), file.getTags(), dataContent);
         }
     }
@@ -229,10 +227,9 @@ public class XMLTestData extends XMLCollection
             {
                 dataContent.usingAdmin().deleteTree(folder.getModel());
             }
-
             for (XMLFileData file : site.getFiles())
             {
-                if (dataContent.checkContent(file.getModel().getCmisLocation(), dataContent.getAdminUser()))
+                if (dataContent.checkContent(file.getModel().getCmisLocation(),  dataContent.getAdminUser()))
                     try
                     {
                         dataContent.usingAdmin().usingResource(file.getModel()).deleteContent();
@@ -377,5 +374,4 @@ public class XMLTestData extends XMLCollection
         }
         return dataFound;
     }
-
 }
