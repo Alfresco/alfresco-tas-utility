@@ -9,6 +9,7 @@ import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
+import org.alfresco.utility.Utility;
 import org.alfresco.utility.exception.DataPreparationException;
 import org.alfresco.utility.model.QueryModel;
 import org.testng.annotations.DataProvider;
@@ -23,7 +24,6 @@ import org.testng.annotations.DataProvider;
  */
 public class XMLTestDataProvider
 {
-
     private static XMLTestData initializeXMLFileData(Method m) throws Exception
     {
         XMLDataConfig config = (m.getAnnotation(XMLDataConfig.class));
@@ -34,7 +34,7 @@ public class XMLTestDataProvider
         
         JAXBContext context = JAXBContext.newInstance(XMLTestData.class);
         Unmarshaller um = context.createUnmarshaller();
-
+       
         XMLTestData dataProvider = (XMLTestData) um.unmarshal(new FileInputStream(config.file()));
         return dataProvider;
     }

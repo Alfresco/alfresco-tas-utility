@@ -117,7 +117,6 @@ public class XMLTestData extends XMLCollection
                 UserModel user = getUserBy(dataContent.getAdminUser(), site.getCreatedBy());
                 dataSite.usingUser(user).createSite(site.getModel());
             }
-
             addMembers(site.getMembers(), site.getModel(), dataUser);
             createFilesStructure(site.getFiles(), site.getModel(), dataContent);
             createFolderStructure(site.getFolders(), site.getFullLocation(), dataContent);
