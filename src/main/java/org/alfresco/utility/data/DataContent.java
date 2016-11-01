@@ -37,6 +37,7 @@ import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
 import org.apache.chemistry.opencmis.commons.enums.VersioningState;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisStorageException;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ContentStreamImpl;
 import org.apache.commons.io.FilenameUtils;
@@ -249,7 +250,7 @@ public class DataContent extends TestData<DataContent>
      */
     public void assertContentExist(String fullPath)
     {
-        boolean contentExist = !checkContent(fullPath, getCurrentUser());
+        boolean contentExist = checkContent(fullPath, getCurrentUser());
         Assert.assertTrue(contentExist, String.format("Content {%s} was found in repository", fullPath));
     }
 
@@ -264,13 +265,13 @@ public class DataContent extends TestData<DataContent>
 
     public void assertContentDoesNotExist(String fullPath)
     {
-        boolean contentDoesNotExist = !checkContent(fullPath, getCurrentUser());
+        boolean contentDoesNotExist = checkContent(fullPath, getCurrentUser());
         Assert.assertFalse(contentDoesNotExist, String.format("Content {%s} was NOT found in repository", fullPath));
     }
 
     public boolean checkContent(String fullPath, UserModel userModel)
     {
-        return contentService.getNodeRefByPath(userModel.getUsername(), userModel.getPassword(), Utility.convertBackslashToSlash(fullPath)).isEmpty();
+        return !contentService.getNodeRefByPath(userModel.getUsername(), userModel.getPassword(), Utility.convertBackslashToSlash(fullPath)).isEmpty();
     }
 
     public void waitUntilContentIsDeleted(String fullPath)
@@ -339,16 +340,19 @@ public class DataContent extends TestData<DataContent>
         Session session = contentService.getCMISSession(getCurrentUser().getUsername(), getCurrentUser().getPassword());
         ContentStream contentStream = session.getObjectFactory().createContentStream(file.getName(), file.length(), FilenameUtils.getExtension(file.getPath()),
                 inputStream);
-
-        CmisObject modelInRepo = session.getObjectByPath(String.format("/Data Dictionary/Models/%s", file.getName()));
-        if (modelInRepo != null)
+        CmisObject modelInRepo = null;
+        try
         {
-            LOG.info("Custom Content Model [{}] is already deployed under [/Data Dictionary/Models/] location", localModelXMLFilePath);
+            modelInRepo = session.getObjectByPath(String.format("/Data Dictionary/Models/%s", file.getName()));
         }
-        else
+        catch(CmisObjectNotFoundException nf)
         {
             Folder model = (Folder) session.getObjectByPath("/Data Dictionary/Models");
             model.createDocument(props, contentStream, VersioningState.MAJOR);
+        }
+        if (modelInRepo != null)
+        {
+            LOG.info("Custom Content Model [{}] is already deployed under [/Data Dictionary/Models/] location", localModelXMLFilePath);
         }
     }
 
@@ -390,6 +394,7 @@ public class DataContent extends TestData<DataContent>
      */
     public ContentModel createCustomContent(ContentModel contentModel, String objectTypeID, CustomObjectTypeProperties objectTypeProperty) throws Exception
     {
+        Utility.waitToLoopTime(1);
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put(PropertyIds.OBJECT_TYPE_ID, objectTypeID);
         properties.put(PropertyIds.NAME, contentModel.getName());
@@ -399,16 +404,14 @@ public class DataContent extends TestData<DataContent>
         properties.put(PropertyIds.SECONDARY_OBJECT_TYPE_IDS, aspects);
         properties.put("cm:title", contentModel.getTitle());
         properties.put("cm:description", contentModel.getDescription());
-
         File fullPath = new File(String.format("%s/%s", getCurrentSpace(), contentModel.getName()));
+        String parentFolder = Utility.convertBackslashToSlash(fullPath.getParent());
         LOG.info("Creating custom Content Model {} in: {}", contentModel.toString(), fullPath.getPath());
-        CmisObject parentCMISFolder = contentService.getCmisObject(getCurrentUser().getUsername(), getCurrentUser().getPassword(),
-                fullPath.getParentFile().getPath());
+        CmisObject parentCMISFolder = contentService.getCmisObject(getCurrentUser().getUsername(), getCurrentUser().getPassword(), parentFolder);
         if (parentCMISFolder instanceof Document)
             throw new TestConfigurationException(String.format("It seems the parent folder of your resource %s is a file", fullPath));
 
         Folder folder = (Folder) parentCMISFolder;
-
         if (contentModel instanceof FolderModel)
         {
             STEP(String.format("DATAPREP: Create custom Folder '%s' with typeID: %s, in '%s'", contentModel.getName(), objectTypeID, getCurrentSpace()));
@@ -417,10 +420,8 @@ public class DataContent extends TestData<DataContent>
             {
                 objectTypeProperty.updatePropertiesTo(newFolder);
             }
-
             contentModel.setNodeRef(newFolder.getId());
         }
-
         if (contentModel instanceof FileModel)
         {
             FileModel fileModel = (FileModel) contentModel;
@@ -432,14 +433,11 @@ public class DataContent extends TestData<DataContent>
             {
                 objectTypeProperty.updatePropertiesTo(newFile);
             }
-
             contentModel.setNodeRef(newFile.getId());
             closeContentStream(contentStream);
         }
-
         contentModel.setProtocolLocation(fullPath.getPath());
         contentModel.setCmisLocation(fullPath.getPath());
-
         return contentModel;
     }
     
