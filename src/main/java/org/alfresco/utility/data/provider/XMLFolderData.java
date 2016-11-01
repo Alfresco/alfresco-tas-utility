@@ -21,9 +21,10 @@ public class XMLFolderData extends XMLCollection implements XMLDataItem
     private String id;
     private List<XMLFileData> files = new ArrayList<XMLFileData>();
     private List<XMLFolderData> folders = new ArrayList<XMLFolderData>();
-
     private List<XMLCommentData> comments = new ArrayList<XMLCommentData>();
     private List<XMLTagData> tags = new ArrayList<XMLTagData>();
+    private List<XMLAspectData> aspects = new ArrayList<XMLAspectData>();
+    
     private XMLCustomModel customModel;
 
     private FolderModel model = new FolderModel();
@@ -38,11 +39,11 @@ public class XMLFolderData extends XMLCollection implements XMLDataItem
     {
         this.name = name;
     }
-
+    
     @XmlAttribute(name = "createdBy")
     public String getCreatedBy()
     {
-        return createdBy;
+        return createdBy; 
     }
 
     public void setCreatedBy(String createdBy)
@@ -163,6 +164,18 @@ public class XMLFolderData extends XMLCollection implements XMLDataItem
             this.entireStructure.addAll(folder.getEntireStructure());
         }
         return entireStructure;
+    }
+    
+    @XmlElementWrapper
+    @XmlElement(name = "aspect")
+    public List<XMLAspectData> getAspects()
+    {
+        return aspects;
+    }
+
+    public void setAspects(List<XMLAspectData> aspects)
+    {
+        this.aspects = aspects;
     }
 
 }

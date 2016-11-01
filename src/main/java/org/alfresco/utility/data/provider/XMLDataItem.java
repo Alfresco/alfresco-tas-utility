@@ -10,5 +10,5 @@ public interface XMLDataItem
 {
     public TestModel getModel();
 
-    public String getId();
+    public String getId();    
 }

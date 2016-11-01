@@ -3,13 +3,11 @@ package org.alfresco.utility.data.provider;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
-import org.alfresco.utility.model.TestModel;
-
 /**
  * <property name="tas:TextPropertyC" value = "abcd"/>
  */
 @XmlType(name = "property")
-public class XMLPropertyData implements XMLDataItem
+public class XMLPropertyData
 {
     private String name;
     private String value;
@@ -37,16 +35,6 @@ public class XMLPropertyData implements XMLDataItem
         this.value = value;
     }
 
-    @Override
-    public TestModel getModel()
-    {       
-        return new TestModel(){
-            
-        };
-                
-    }
-
-    @Override
     @XmlAttribute(name = "id")
     public String getId()
     {
@@ -57,14 +45,12 @@ public class XMLPropertyData implements XMLDataItem
     {
         this.id = id;
     }
-    
+
     @Override
     public String toString()
     {
         StringBuilder info = new StringBuilder();
-        info.append("property[name='").append(getName()).append("',")
-            .append("value='").append(getValue())
-            .append("', id='").append(getId()).append("']");       
+        info.append("property[name='").append(getName()).append("',").append("value='").append(getValue()).append("', id='").append(getId()).append("']");
 
         return info.toString();
     }

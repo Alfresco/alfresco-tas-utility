@@ -75,5 +75,4 @@ public class XMLUserData implements XMLDataItem
     {
         this.id = id;
     }
-
 }

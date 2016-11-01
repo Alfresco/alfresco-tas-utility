@@ -9,10 +9,9 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
 
 import org.alfresco.utility.data.CustomObjectTypeProperties;
-import org.alfresco.utility.model.TestModel;
 
 @XmlType(name = "custom-model")
-public class XMLCustomModel implements XMLDataItem 
+public class XMLCustomModel 
 {
     private String name;
     private String id;
@@ -60,16 +59,7 @@ public class XMLCustomModel implements XMLDataItem
         }
         return customProps;
     }
-
-    @Override
-    public TestModel getModel()
-    {        
-        return new TestModel(){
-            
-        };
-    }
-
-    @Override
+ 
     @XmlAttribute(name = "id")
     public String getId()
     {         
@@ -91,4 +81,6 @@ public class XMLCustomModel implements XMLDataItem
 
         return info.toString();
     }
+
+    
 }

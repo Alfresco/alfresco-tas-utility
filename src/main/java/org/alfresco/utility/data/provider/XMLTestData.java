@@ -89,7 +89,7 @@ public class XMLTestData extends XMLCollection
                 LOG.info("Creating USER data:" + user.toString());
                 dataUser.createUser(user.getName(), user.getPassword());
             }
-        }        
+        }
         logEntireStructure();
     }
 
@@ -159,6 +159,7 @@ public class XMLTestData extends XMLCollection
                 folderInRepo = dataContent.usingUser(userFolder).setCurrentSpace(location).createFolder(folder.getModel());
             }
 
+            addAspects(folder, folder.getAspects(), dataContent);
             addComments(folderInRepo.getCmisLocation(), folder.getComments(), dataContent);
             addTags(folderInRepo.getCmisLocation(), folder.getTags(), dataContent);
 
@@ -209,6 +210,8 @@ public class XMLTestData extends XMLCollection
                 else
                     contentInRepo = dataContent.usingUser(userFile).usingSite((SiteModel) parentFolder).createContent(file.getModel());
             }
+
+            addAspects(file, file.getAspects(), dataContent);
             addComments(contentInRepo.getCmisLocation(), file.getComments(), dataContent);
             addTags(contentInRepo.getCmisLocation(), file.getTags(), dataContent);
         }
@@ -230,7 +233,7 @@ public class XMLTestData extends XMLCollection
             }
             for (XMLFileData file : site.getFiles())
             {
-                if (dataContent.checkContent(file.getModel().getCmisLocation(),  dataContent.getAdminUser()))
+                if (dataContent.checkContent(file.getModel().getCmisLocation(), dataContent.getAdminUser()))
                     try
                     {
                         dataContent.usingAdmin().usingResource(file.getModel()).deleteContent();
@@ -330,6 +333,36 @@ public class XMLTestData extends XMLCollection
         {
             UserModel userTag = getUserBy(dataContent.getAdminUser(), tag.getCreatedBy());
             dataContent.usingUser(userTag).addTagToContent(objectPathInCmis, tag.getModel());
+        }
+    }
+
+    /*
+     * apply all aspects to content model
+     */
+    private void addAspects(XMLDataItem dataItem, List<XMLAspectData> aspects, DataContent dataContent) throws DataPreparationException
+    {       
+        if (aspects.size() > 0)
+        {
+            List<String> allAspects = new ArrayList<String>();
+            for (XMLAspectData aspect : aspects)
+            {
+                allAspects.add(aspect.getName());
+            }
+            
+            LOG.info("Adding Aspects Count: {} to object: {}", aspects.size(), dataItem.getModel().toString());
+
+            if (dataItem instanceof XMLFolderData)
+            {
+                XMLFolderData f = (XMLFolderData) dataItem;
+                UserModel user = getUserBy(dataContent.getAdminUser(), f.getCreatedBy());
+                dataContent.usingUser(user).setLastResource(f.getModel().getCmisLocation()).addAspect(allAspects);
+            }
+            else if (dataItem instanceof XMLFileData)
+            {
+                XMLFileData f = (XMLFileData) dataItem;
+                UserModel user = getUserBy(dataContent.getAdminUser(), f.getCreatedBy());
+                dataContent.usingUser(user).setLastResource(f.getModel().getCmisLocation()).addAspect(allAspects);
+            }
         }
     }
 

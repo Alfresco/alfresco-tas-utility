@@ -471,4 +471,14 @@ public class DataContent extends TestData<DataContent>
         
         return document;
     }
+    
+    /**
+     * Adding aspects to ContentModels
+     * 
+     * @param object
+     */
+    public void addAspect(List<String> aspects)
+    {       
+        contentAspect.addAspect(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getLastResource(), aspects.toArray(new String[0]));
+    }
 }
