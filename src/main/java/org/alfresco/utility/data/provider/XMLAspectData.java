@@ -38,37 +38,42 @@ public class XMLAspectData
     {
         this.properties = properties;
     }
-    
-    public  Map<String, Object> getPropertiesAsHashMap()
-    {        
+
+    public Map<String, Object> getPropertiesAsHashMap()
+    {
         Map<String, Object> allProps = new HashMap<String, Object>();
-        for(XMLPropertyData p : properties)
+        for (XMLPropertyData p : properties)
         {
             try
             {
-              int value =  Integer.parseInt(p.getValue());
-              allProps.put(p.getName(), value);
+                int value = Integer.parseInt(p.getValue());
+                allProps.put(p.getName(), value);
             }
             catch (NumberFormatException e)
             {
-               allProps.put(p.getName(), p.getValue());
+                allProps.put(p.getName(), p.getValue());
             }
-            
+
         }
         return allProps;
     }
     
+    public boolean hasProperties()
+    {
+        return !this.getProperties().isEmpty();
+    }
+
     @Override
     public String toString()
     {
         StringBuilder info = new StringBuilder();
         info.append("aspect[name='").append(getName()).append("', properties=[");
-        for(XMLPropertyData p : properties)
+        for (XMLPropertyData p : properties)
         {
             info.append("{").append(p.getName()).append("=").append(p.getValue()).append("} ");
         }
         info.append("]");
         return info.toString();
     }
-            
+
 }
