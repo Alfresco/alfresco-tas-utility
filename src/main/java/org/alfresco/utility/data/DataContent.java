@@ -493,7 +493,28 @@ public class DataContent extends TestData<DataContent>
         {
             LOG.info("Preparing to apply {}",aspect.toString());
             contentActions.addProperties(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getLastResource(), aspect.getPropertiesAsHashMap());
-        }
-        
+        }        
+    }
+    
+    /**
+     * Add file to favorites
+     *
+     * @throws DataPreparationException
+     */
+    public void addFileToFavorites(FileModel file) throws DataPreparationException
+    {
+        STEP(String.format("DATAPREP: Add file %s.%s to Favorites", file.getName(), file.getFileType().extention));
+        contentActions.setFileAsFavorite(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getCurrentSite(), String.format("%s.%s",file.getName(), file.getFileType().extention));
+    }
+
+    /**
+     * Add folder to favorites
+     *
+     * @throws DataPreparationException
+     */
+    public void addFolderToFavorites(FolderModel folder) throws DataPreparationException
+    {
+        STEP(String.format("DATAPREP: Add folder %s to Favorites", folder.getName()));
+        contentActions.setFolderAsFavorite(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getCurrentSite(), folder.getName());
     }
 }
