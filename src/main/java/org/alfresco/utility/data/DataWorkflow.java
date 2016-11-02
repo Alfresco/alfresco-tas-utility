@@ -142,6 +142,64 @@ public class DataWorkflow extends TestData<DataWorkflow>
         }
         return process;
     }
+    
+    /**
+     * Starts a Review and Approve (group review) workflow with items added from a site
+     * Example of usage:
+     * dataWorkflow.usingUser(userWhoStartsTask).usingSite(siteModel).usingResource(document).createNewTaskAndAssignTo(assignee);
+     * 
+     * @param userModel
+     * @return
+     * @throws Exception
+     */
+    public ProcessModel createGroupReviewTaskAndAssignTo(GroupModel groupModel) throws Exception
+    {
+        ProcessModel process = new ProcessModel();
+        STEP(String.format("DATAPREP: User %s creates new 'group review' workflow and assigns it to group %s", getCurrentUser().getUsername(), 
+                groupModel.getDisplayName()));
+
+        DateTime today = new DateTime();
+        String workflowId = workflowService.startGroupReview(getCurrentUser().getUsername(), 
+                                                              getCurrentUser().getPassword(), 
+                                                              RandomData.getRandomAlphanumeric(),
+                                                              today.plusDays(2).toDate(), 
+                                                              groupModel.getDisplayName(), 
+                                                              Priority.High, 
+                                                              getCurrentSite(),
+                                                              Arrays.asList(new File(getLastResource()).getName()), 0, true);
+        
+        process.setId(workflowId);
+        return process;
+    }
+    
+    /**
+     * Starts a Review and Approve (single reviewer) workflow with items added from a site
+     * Example of usage:
+     * dataWorkflow.usingUser(userWhoStartsTask).usingSite(siteModel).usingResource(document).createNewTaskAndAssignTo(assignee);
+     * 
+     * @param userModel
+     * @return
+     * @throws Exception
+     */
+    public ProcessModel createSingleReviewerTaskAndAssignTo(UserModel userModel) throws Exception
+    {
+        ProcessModel process = new ProcessModel();
+        STEP(String.format("DATAPREP: User %s creates new 'single reviewer' workflow and assigns it to user %s", getCurrentUser().getUsername(), 
+                userModel.getUsername()));
+
+        DateTime today = new DateTime();
+        String workflowId = workflowService.startSingleReview(getCurrentUser().getUsername(), 
+                                                              getCurrentUser().getPassword(), 
+                                                              RandomData.getRandomAlphanumeric(),
+                                                              today.plusDays(2).toDate(), 
+                                                              userModel.getUsername(), 
+                                                              Priority.High, 
+                                                              getCurrentSite(),
+                                                              Arrays.asList(new File(getLastResource()).getName()), true);
+        
+        process.setId(workflowId);
+        return process;
+    }
 
     public ProcessModel approveTask(ProcessModel processModel)
     {
