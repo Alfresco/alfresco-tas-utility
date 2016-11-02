@@ -21,6 +21,7 @@ import org.alfresco.dataprep.ContentAspects;
 import org.alfresco.dataprep.ContentService;
 import org.alfresco.dataprep.SiteService;
 import org.alfresco.utility.Utility;
+import org.alfresco.utility.data.provider.XMLAspectData;
 import org.alfresco.utility.exception.DataPreparationException;
 import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.model.ContentModel;
@@ -418,7 +419,7 @@ public class DataContent extends TestData<DataContent>
             Folder newFolder = folder.createFolder(properties);
             if (objectTypeProperty != null)
             {
-                objectTypeProperty.updatePropertiesTo(newFolder);
+                objectTypeProperty.applyPropertiesTo(newFolder);
             }
             contentModel.setNodeRef(newFolder.getId());
         }
@@ -431,7 +432,7 @@ public class DataContent extends TestData<DataContent>
 
             if (objectTypeProperty != null)
             {
-                objectTypeProperty.updatePropertiesTo(newFile);
+                objectTypeProperty.applyPropertiesTo(newFile);
             }
             contentModel.setNodeRef(newFile.getId());
             closeContentStream(contentStream);
@@ -476,8 +477,23 @@ public class DataContent extends TestData<DataContent>
      * 
      * @param object
      */
-    public void addAspect(List<String> aspects)
-    {       
-        contentAspect.addAspect(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getLastResource(), aspects.toArray(new String[0]));
+    public void addAspect(List<XMLAspectData> aspects)
+    {   
+        List<String> allAspectNames = new ArrayList<String>();
+        for(XMLAspectData aspect : aspects)
+        {
+               allAspectNames.add(aspect.getName());
+               
+        }
+        
+        contentAspect.addAspect(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getLastResource(), allAspectNames.toArray(new String[0]));
+
+        //now add the properies corelated to each aspect     
+        for(XMLAspectData aspect : aspects)
+        {
+            LOG.info("Preparing to apply {}",aspect.toString());
+            contentActions.addProperties(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getLastResource(), aspect.getPropertiesAsHashMap());
+        }
+        
     }
 }

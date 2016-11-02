@@ -25,7 +25,7 @@ public class XMLFolderData extends XMLCollection implements XMLDataItem
     private List<XMLTagData> tags = new ArrayList<XMLTagData>();
     private List<XMLAspectData> aspects = new ArrayList<XMLAspectData>();
     
-    private XMLCustomModel customModel;
+    private XMLCustomModel customModel = null;
 
     private FolderModel model = new FolderModel();
 

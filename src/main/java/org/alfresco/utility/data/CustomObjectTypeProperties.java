@@ -26,7 +26,7 @@ public class CustomObjectTypeProperties
         return this;
     }
 
-    public void updatePropertiesTo(CmisObject cmisObject)
+    public void applyPropertiesTo(CmisObject cmisObject)
     {
         if (!properties.isEmpty())
         {

@@ -1,48 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testData>
-
 	<users>
-		<user id="user1" name="search" password="password" />
+		<user id="user-1" name="thisIsTheUserName" password="password" />
 	</users>
 
 	<sites>
-		<site id="s1" name="MySampleSite" createdBy="search"
+		<site id="site-1" name="thisIsTheSiteName" createdBy="user-1"
 			visibility="PUBLIC">
 			<folders>
-				<folder id="f1" name="folder1" createdBy="search">
-					<!-- <custom-model name="F:tas:folder" /> -->
+				<folder id="folder-1" name="tas-folder1" createdBy="user-1">
+					<custom-model name="cmis:folder">
+						<properties>
+							<property name="cmis:name" value="tas-folder1" />
+						</properties>
+					</custom-model>
 					<comments>
-						<comment id="c1" value="folderComment" createdBy="admin" />
+						<comment id="id-of-comment" value="commment1" createdBy="user-1" />
 					</comments>
+					<tags>
+						<tag id="id-of-tag" value="tag" createdBy="user-1" />
+					</tags>
 					<files>
-						<file id="f1" name="f1.txt" createdBy="admin">
-							<content>content of f1</content>
-							<!-- <custom-model name="D:tas:document">
+						<file id="file-1" name="custom-file.txt" createdBy="admin">
+							<content>content sub-file 1</content>
+							<!-- use standard models, just for exemplification, but you could 
+								use your own custom model here -->
+							<custom-model name="cmis:document">
 								<properties>
-									<property name="tas:TextPropertyC" value="abcd" />
+									<!-- this is the property of your custom model -->
+									<property name="cm:description" value="description" />
 								</properties>
-							</custom-model> -->
-							<comments>
-								<comment id="c2" value="haha" createdBy="admin" />
-							</comments>
-							<tags>
-								<tag id="tag-1" value="tag1" createdBy="admin" />
-								<tag id="tag-2" value="tag1" createdBy="admin" />
-							</tags>
+							</custom-model>
+						</file>
+						<file id="file-2" name="standard-file.txt" createdBy="user-1">
+							<content>content sub-file 2</content>
+						</file>
+						<file id="d3" name="tas-sub-file3-with-aspect.txt" createdBy="user-1">
+							<content>content sub-file 3</content>
+							<aspects>
+								<!-- using existing aspect -->
+								<aspect name="P:cm:dublincore">
+									<properties>									
+										<property name="cm:subject" value="subject" />
+									</properties>
+								</aspect>
+							</aspects>
 						</file>
 					</files>
-					<folders>
-						<folder id="f11" name="folderChildOfFolder1" createdBy="admin"/>						
-					</folders>
 				</folder>
+				<folder name="tas-folder2" createdBy="user-1" />
 			</folders>
+			<files>
+				<file id="file-3" name="standard-file-in-root.txt" createdBy="user-1">
+					<content>abcs</content>
+				</file>
+			</files>
 		</site>
 	</sites>
 
-	<!--CMIS Queries: passing the search query as first param and results expected -->
 	<queries>
-		<query value="SELECT * FROM cmis:folder" expectedResults="100" />
-		<query value="SELECT * FROM cmis:document" expectedResults="100" />		
+		<query value="SELECT * FROM tas:folder" expectedResults="3" />
 	</queries>
-
-</testData>
+</testData> 
