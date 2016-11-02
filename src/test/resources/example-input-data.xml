@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testData>
+<testData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xsi:noNamespaceSchemaLocation="https://gitlab.alfresco.com/tas/tas-namespaces/raw/master/input-test-data.xsd">
+
 	<users>
 		<user id="user-1" name="thisIsTheUserName" password="password" />
 	</users>
@@ -7,6 +10,9 @@
 	<sites>
 		<site id="site-1" name="thisIsTheSiteName" createdBy="user-1"
 			visibility="PUBLIC">
+			<members>
+				<member id="user-1" />
+			</members>
 			<folders>
 				<folder id="folder-1" name="tas-folder1" createdBy="user-1">
 					<custom-model name="cmis:folder">
@@ -40,7 +46,7 @@
 							<aspects>
 								<!-- using existing aspect -->
 								<aspect name="P:cm:dublincore">
-									<properties>									
+									<properties>
 										<property name="cm:subject" value="subject" />
 									</properties>
 								</aspect>
@@ -48,8 +54,9 @@
 						</file>
 					</files>
 				</folder>
-				<folder name="tas-folder2" createdBy="user-1" />
+				<folder id="folder-3" name="tas-folder2" createdBy="user-1" />
 			</folders>
+
 			<files>
 				<file id="file-3" name="standard-file-in-root.txt" createdBy="user-1">
 					<content>abcs</content>

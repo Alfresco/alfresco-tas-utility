@@ -1,5 +1,7 @@
 package org.alfresco.sample;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+
 import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.DataSite;
 import org.alfresco.utility.data.DataUser;
@@ -80,7 +82,7 @@ public class PrepareEnvironmentFromXMLFileTest extends AbstractTestNGSpringConte
     }
 
     @Test(dependsOnMethods = "prepareEnvironmentData")
-    public void iCanIdentifyTestDataByID()
+    public void iCanIdentifyTestDataByID() throws DatatypeConfigurationException
     {
         FolderModel f1 = (FolderModel) testData.getTestDataItemWithId("f1").getModel();
         Assert.assertEquals(f1.getName(), "folder1");

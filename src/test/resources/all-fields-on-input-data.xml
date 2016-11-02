@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-	xsi:noNamespaceSchemaLocation="https://gitlab.alfresco.com/tas/tas-namespaces/raw/master/input-test-data.xsd">
+<testData>
 	<users>
 		<user id="user-1" name="thisIsTheUserName" password="password" />
 	</users>
 
 	<sites>
 		<site id="site-1" name="thisIsTheSiteName" createdBy="user-1"
-			visibility="PUBLIC">
+			visibility="PUBLIC">			
 			<folders>
 				<folder id="folder-1" name="tas-folder1" createdBy="thisIsTheUserName">
 					<custom-model name="F:tas:folder">
@@ -98,10 +96,7 @@
 						<tag id="id-of-tag" value="commment1" createdBy="user-1" />
 					</tags>
 				</file>
-			</files>
-			<members>
-				<user id="user-2" />
-			</members>
+			</files>			
 		</site>
 	</sites>
 
