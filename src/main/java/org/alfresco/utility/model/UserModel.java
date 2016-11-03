@@ -76,9 +76,14 @@ public class UserModel extends TestModel
     }
 
     public static UserModel getAdminTenantUser()
+    { 
+        return getAdminUserForTenant(getRandomTenant("tenant"));
+    }
+    
+    public static UserModel getAdminUserForTenant(String tenantName)
     {
         UserModel tenantAdmin = new UserModel("admin", TestData.PASSWORD);
-        tenantAdmin.setDomain(getRandomTenant("tenant"));
+        tenantAdmin.setDomain(tenantName);
         return tenantAdmin;
     }
 

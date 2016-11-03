@@ -80,10 +80,10 @@ public class DataUser extends TestData<DataUser>
      */
     public UserModel createUserWithTenant(String userName) throws DataPreparationException
     {
-        UserModel newUser = new UserModel(userName, PASSWORD);
-        LOG.info("Create user {}", newUser.toString());
-        
+        UserModel newUser = new UserModel(userName, PASSWORD);        
         newUser.setDomain(getCurrentUser().getDomain());
+        
+        LOG.info("Create user {}", newUser.toString());
         Boolean created = userService.create(getCurrentUser().getUsername(), 
                                             getCurrentUser().getPassword(), 
                                             userName, PASSWORD, String.format(EMAIL, userName),

@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Created by Cristina Axinte on 9/26/2016.
  */
-public class NetworkModel
+public class NetworkModel extends TestModel
 {
     @JsonProperty(required = true)
     private String id;
@@ -55,16 +55,6 @@ public class NetworkModel
         this.homeNetwork = homeNetwork;
     }
 
-    public boolean isEnabled()
-    {
-        return isEnabled;
-    }
-
-    public void setEnabled(boolean isEnabled)
-    {
-        this.isEnabled = isEnabled;
-    }
-
     public String getCreatedAt()
     {
         return createdAt;
@@ -104,5 +94,15 @@ public class NetworkModel
     {
         this.quotas = quotas;
     }
+
+    public boolean isEnabled()
+    {
+        return isEnabled;
+    }
+
+    public void setEnabled(boolean isEnabled)
+    {
+        this.isEnabled = isEnabled;
+    }  
 
 }
