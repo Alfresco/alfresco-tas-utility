@@ -103,5 +103,15 @@ public class BeansTest extends AbstractTestNGSpringContextTests
         UserModel newUser = dataUser.createRandomTestUser();
         newFolder = dataContent.usingUser(newUser).usingUserHome().createFolder();
         dataContent.assertContentExist(newFolder);
-    }      
+    }     
+    
+
+    @Test
+    public void testServerlogs() throws Exception
+    {
+        dataUser.usingLastServerLogLines(100).assertLogLineIs("DEBUG");
+    }
+    
+    
+    
 }
