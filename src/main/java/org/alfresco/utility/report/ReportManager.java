@@ -29,17 +29,16 @@ public class ReportManager
     public synchronized static ExtentReports getReporter() throws TestConfigurationException, URISyntaxException
     {
         if (extent == null)
-        {                       
+        {
             Properties properties = Utility.getProperties(ReportManager.class, Utility.getEnvironmentPropertyFile());
             String reportHtmlPath = properties.getProperty("reports.path");
             if (StringUtils.isEmpty(reportHtmlPath))
                 reportHtmlPath = "./target/reports";
             reportHtmlPath = Paths.get(reportHtmlPath, "report.html").toFile().getPath();
 
-            
             extent = new ExtentReports(reportHtmlPath, true);
             LOG.info("Initializing ReportManager to generate HTML report at:{}", reportHtmlPath);
-            
+
             URL reportConfigUrl = ReportManager.class.getClassLoader().getResource("shared-resources/report/alfresco-report-config.xml");
 
             try
@@ -49,15 +48,24 @@ public class ReportManager
             }
             catch (Exception e)
             {
-                LOG.error("Loaded ReportManager configuration file: {}. Error: {}",reportConfigUrl, e.getMessage());
+                LOG.error("Loaded ReportManager configuration file: {}. Error: {}", reportConfigUrl, e.getMessage());
             }
 
             extent.addSystemInfo("Alfresco Server", 
                     String.format("%s://%s:%s", 
-                            properties.getProperty("alfresco.scheme"),
-                            properties.getProperty("alfresco.server"), 
-                            properties.getProperty("alfresco.port")));
+                            getEnvProperty("alfresco.scheme",properties), 
+                            getEnvProperty("alfresco.server",properties),
+                            getEnvProperty("alfresco.port",properties)));
         }
         return extent;
+    }
+
+    private static String getEnvProperty(String key, Properties properties)
+    {
+        String value = System.getProperty(key);
+        if (value == null)
+            return properties.getProperty(key);
+        else
+            return value;
     }
 }
