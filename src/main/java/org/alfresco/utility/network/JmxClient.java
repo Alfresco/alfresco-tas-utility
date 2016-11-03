@@ -5,14 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import javax.management.Attribute;
-import javax.management.InstanceNotFoundException;
-import javax.management.MBeanException;
-import javax.management.MBeanServerConnection;
-import javax.management.MalformedObjectNameException;
-import javax.management.ObjectInstance;
-import javax.management.ObjectName;
-import javax.management.ReflectionException;
+import javax.management.*;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
@@ -185,10 +178,14 @@ public class JmxClient implements Jmx
     }
 
     @Override
-    public Object executeJMXMethod(String methodName) throws Exception
+    public Object executeJMXMethod(String objectName, String methodName, Object ... pArgs) throws Exception
     {
-        // TODO Auto-generated method stub
-        return null;
+        JMXConnector connector = getJmxConnection();
+        MBeanServerConnection mBSC = connector.getMBeanServerConnection();
+        ObjectName objectJmx = new ObjectName(objectName);
+
+        LOG.info("Executing methodName {} on objectName {}  via JmxClient", methodName, objectName);
+        return mBSC.invoke(objectJmx, methodName, pArgs, new String[] {});
     }
 
 }
