@@ -483,17 +483,18 @@ public class DataContent extends TestData<DataContent>
         for(XMLAspectData aspect : aspects)
         {
                allAspectNames.add(aspect.getName());
-               
         }
-        
         contentAspect.addAspect(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getLastResource(), allAspectNames.toArray(new String[0]));
 
-        //now add the properies corelated to each aspect     
+        //now add the properies corelated to each aspect
         for(XMLAspectData aspect : aspects)
         {
-            LOG.info("Preparing to apply {}",aspect.toString());
-            contentActions.addProperties(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getLastResource(), aspect.getPropertiesAsHashMap());
-        }        
+            if(aspect.hasProperties())
+            {
+                LOG.info("Preparing to apply {}",aspect.toString());
+                contentActions.addProperties(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getLastResource(), aspect.getPropertiesAsHashMap());
+            }
+        }
     }
     
     /**
