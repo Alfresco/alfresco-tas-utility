@@ -1,5 +1,13 @@
 package org.alfresco.utility.data;
 
+import static org.alfresco.utility.report.log.Step.STEP;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.management.openmbean.CompositeData;
+
 import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.TasProperties;
 import org.alfresco.utility.Utility;
@@ -10,8 +18,14 @@ import org.alfresco.utility.model.FileModel;
 import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.UserModel;
+import org.alfresco.utility.network.JmxBuilder;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.testng.Assert;
 
 import com.google.common.io.Files;
 
@@ -47,6 +61,13 @@ public abstract class TestData<Data> implements DSL<Data>
 
     public static String PASSWORD = "password";
     public static String EMAIL = "%s@tas-automation.org";
+
+    private String serverLogUrl;
+
+    private String logResponse;
+
+    @Autowired
+    private JmxBuilder jmxBuilder;
 
     /**
      * Check if <filename> passed as parameter is a file or not based on
@@ -124,24 +145,24 @@ public abstract class TestData<Data> implements DSL<Data>
     @Override
     @SuppressWarnings("unchecked")
     public Data usingResource(ContentModel model) throws Exception
-    {          
+    {
         if (model.getCmisLocation().equals(model.getName()))
         {
-            String location="";
-            if(model instanceof FolderModel)
+            String location = "";
+            if (model instanceof FolderModel)
             {
                 location = Utility.buildPath(getLastResource(), model.getName());
             }
-            else if(model instanceof FileModel)
+            else if (model instanceof FileModel)
             {
-                FileModel fileModel = (FileModel) model;                
+                FileModel fileModel = (FileModel) model;
                 location = Utility.buildPath(getLastResource(), String.format("%s.%s", model.getName(), fileModel.getFileType().extention));
             }
-            
+
             location = Utility.removeLastSlash(location);
             model.setCmisLocation(location);
         }
-        
+
         setLastResource(model.getCmisLocation());
         return (Data) this;
     }
@@ -217,8 +238,9 @@ public abstract class TestData<Data> implements DSL<Data>
     {
         return lastResource;
     }
+
     /**
-     * Set last resource with content protocol location 
+     * Set last resource with content protocol location
      * 
      * @param lastResource
      */
@@ -233,5 +255,64 @@ public abstract class TestData<Data> implements DSL<Data>
     {
         this.currentUser = testUser;
     }
-    
+
+    @SuppressWarnings("unchecked")
+    public Data usingLastServerLogLines(int lineNumber) throws Exception
+    {
+
+        assertExtensionAmpExists("alfresco-log-extension");
+
+        this.serverLogUrl = tasProperties.getFullServerUrl() + "/alfresco/s/tas/log";
+
+        String baseDir = (String) jmxBuilder.getJmxClient().readProperty("Alfresco:Name=SystemProperties", "alfresco.home");
+        STEP(String.format("Log API: jmx alfresco.home", baseDir));
+        String logFile = (String) jmxBuilder.getJmxClient().readProperty("log4j:appender=File", "file");
+        STEP(String.format("Log API: jmx log4j:appender=File", logFile));
+
+        String logPath = baseDir + File.separator + logFile;
+
+        Map<String, String> paramsServerlog = new HashMap<String, String>();
+        paramsServerlog.put("path", logPath);
+        paramsServerlog.put("lineNumber", "" + lineNumber);
+        serverLogUrl = Utility.toUrlParams(serverLogUrl, paramsServerlog);
+
+        HttpClient client = new HttpClient();
+        GetMethod get = new GetMethod(serverLogUrl);
+        String unhashedString = String.format("%s:%s", tasProperties.getAdminUser(), tasProperties.getAdminPassword());
+        get.setRequestHeader("Authorization", "Basic " + Base64.encodeBase64String(unhashedString.getBytes()));
+
+        get.getParams().setSoTimeout(5000);
+        client.executeMethod(get);
+        logResponse = IOUtils.toString(get.getResponseBodyAsStream());
+
+        return (Data) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public Data assertLogLineIs(String logLine) throws Exception
+    {
+
+        STEP(String.format("Log API: Assert that log file contains %s", logLine));
+        Assert.assertTrue(logResponse.contains(logLine), "Log file doesn't contain %s " + logLine);
+        return (Data) this;
+
+    }
+
+    public void assertExtensionAmpExists(String moduleId) throws Exception
+    {
+        CompositeData[] allInstaledModules = (CompositeData[]) jmxBuilder.getJmxClient().readProperty("Alfresco:Name=ModuleService", "AllModules");
+        boolean findModule = false;
+
+        for (CompositeData compData : allInstaledModules)
+        {
+            if ((compData.containsKey("module.id")) && (compData.get("module.id").equals(moduleId)))
+            {
+                findModule = true;
+                break;
+            }
+        }
+
+        Assert.assertEquals(findModule, true,"Alfresco AMP module :" + moduleId + " is not installed");
+
+    }
 }
