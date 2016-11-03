@@ -21,8 +21,6 @@ import org.alfresco.utility.model.FileType;
 @XmlType(name = "file")
 public class XMLFileData extends XMLCollection implements XMLDataItem
 {
-    private String parent;
-
     private String name;
     private String createdBy;
     private String content;
@@ -31,6 +29,8 @@ public class XMLFileData extends XMLCollection implements XMLDataItem
     private XMLCustomModel customModel;
     private List<XMLCommentData> comments = new ArrayList<XMLCommentData>();
     private List<XMLTagData> tags = new ArrayList<XMLTagData>();
+    private List<XMLAspectData> aspects = new ArrayList<XMLAspectData>();
+
     private FileModel model = new FileModel();
 
     @XmlAttribute(name = "name")
@@ -74,16 +74,6 @@ public class XMLFileData extends XMLCollection implements XMLDataItem
         model.setContent(getContent());
         model.setCmisLocation(String.format("%s/%s", getParent(), getName()));
         return model;
-    }
-
-    public String getParent()
-    {
-        return parent;
-    }
-
-    public void setParent(String parent)
-    {
-        this.parent = parent;
     }
 
     @XmlElementWrapper
@@ -146,15 +136,25 @@ public class XMLFileData extends XMLCollection implements XMLDataItem
         this.entireStructure.addAll(getTags());
         return entireStructure;
     }
-    
+
     @Override
     public String toString()
     {
         StringBuilder info = new StringBuilder();
-        info.append("file[name='").append(getName()).append("',")
-            .append("createdBy='").append(getCreatedBy())
-            .append("', id='").append(getId()).append("']");       
+        info.append("file[name='").append(getName()).append("',").append("createdBy='").append(getCreatedBy()).append("', id='").append(getId()).append("']");
 
         return info.toString();
+    }
+
+    @XmlElementWrapper
+    @XmlElement(name = "aspect")
+    public List<XMLAspectData> getAspects()
+    {
+        return aspects;
+    }
+
+    public void setAspects(List<XMLAspectData> aspects)
+    {
+        this.aspects = aspects;
     }
 }

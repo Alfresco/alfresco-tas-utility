@@ -164,10 +164,12 @@ public class XMLSiteData extends XMLCollection implements XMLDataItem
         this.entireStructure.addAll(getMembers());
         for(XMLFileData file : getFiles())
         {
+            file.setParent(getFullLocation());
             this.entireStructure.addAll(file.getEntireStructure());
         }
         for(XMLFolderData folder : getFolders())
         {
+            folder.setParent(getFullLocation());
             this.entireStructure.addAll(folder.getEntireStructure());
         }
         return entireStructure;

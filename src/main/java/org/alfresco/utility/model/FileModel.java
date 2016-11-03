@@ -8,7 +8,7 @@ import org.testng.reporters.Files;
 
 public class FileModel extends ContentModel
 {
-    private String content;
+    private String content="";
     private FileType fileType;
     
     public FileModel()

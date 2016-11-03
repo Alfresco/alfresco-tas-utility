@@ -21,6 +21,7 @@ import org.alfresco.dataprep.ContentAspects;
 import org.alfresco.dataprep.ContentService;
 import org.alfresco.dataprep.SiteService;
 import org.alfresco.utility.Utility;
+import org.alfresco.utility.data.provider.XMLAspectData;
 import org.alfresco.utility.exception.DataPreparationException;
 import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.model.ContentModel;
@@ -249,7 +250,7 @@ public class DataContent extends TestData<DataContent>
      */
     public void assertContentExist(String fullPath)
     {
-        boolean contentExist = !checkContent(fullPath, getCurrentUser());
+        boolean contentExist = checkContent(fullPath, getCurrentUser());
         Assert.assertTrue(contentExist, String.format("Content {%s} was found in repository", fullPath));
     }
 
@@ -264,13 +265,13 @@ public class DataContent extends TestData<DataContent>
 
     public void assertContentDoesNotExist(String fullPath)
     {
-        boolean contentDoesNotExist = !checkContent(fullPath, getCurrentUser());
+        boolean contentDoesNotExist = checkContent(fullPath, getCurrentUser());
         Assert.assertFalse(contentDoesNotExist, String.format("Content {%s} was NOT found in repository", fullPath));
     }
 
     public boolean checkContent(String fullPath, UserModel userModel)
     {
-        return contentService.getNodeRefByPath(userModel.getUsername(), userModel.getPassword(), Utility.convertBackslashToSlash(fullPath)).isEmpty();
+        return !contentService.getNodeRefByPath(userModel.getUsername(), userModel.getPassword(), Utility.convertBackslashToSlash(fullPath)).isEmpty();
     }
 
     public void waitUntilContentIsDeleted(String fullPath)
@@ -339,17 +340,21 @@ public class DataContent extends TestData<DataContent>
         Session session = contentService.getCMISSession(getCurrentUser().getUsername(), getCurrentUser().getPassword());
         ContentStream contentStream = session.getObjectFactory().createContentStream(file.getName(), file.length(), FilenameUtils.getExtension(file.getPath()),
                 inputStream);
-
-        CmisObject modelInRepo = session.getObjectByPath(String.format("/Data Dictionary/Models/%s", file.getName()));
-        if (modelInRepo != null)
+        CmisObject modelInRepo;
+        //it will throw exception if object is not found, so in that case we will upload it
+        try
         {
-            LOG.info("Custom Content Model [{}] is already deployed under [/Data Dictionary/Models/] location", localModelXMLFilePath);
+            modelInRepo = session.getObjectByPath(String.format("/Data Dictionary/Models/%s", file.getName()));
+            if (modelInRepo != null)
+            {
+                LOG.info("Custom Content Model [{}] is already deployed under [/Data Dictionary/Models/] location", localModelXMLFilePath);
+            }
         }
-        else
+        catch (Exception e)
         {
             Folder model = (Folder) session.getObjectByPath("/Data Dictionary/Models");
             model.createDocument(props, contentStream, VersioningState.MAJOR);
-        }
+        } 
     }
 
     public ContentStream getContentStream(String fileName, String content) throws Exception
@@ -399,28 +404,25 @@ public class DataContent extends TestData<DataContent>
         properties.put(PropertyIds.SECONDARY_OBJECT_TYPE_IDS, aspects);
         properties.put("cm:title", contentModel.getTitle());
         properties.put("cm:description", contentModel.getDescription());
-
         File fullPath = new File(String.format("%s/%s", getCurrentSpace(), contentModel.getName()));
+        String parentFolder = Utility.convertBackslashToSlash(fullPath.getParent());
+        
         LOG.info("Creating custom Content Model {} in: {}", contentModel.toString(), fullPath.getPath());
-        CmisObject parentCMISFolder = contentService.getCmisObject(getCurrentUser().getUsername(), getCurrentUser().getPassword(),
-                fullPath.getParentFile().getPath());
+        CmisObject parentCMISFolder = contentService.getCmisObject(getCurrentUser().getUsername(), getCurrentUser().getPassword(), parentFolder);
         if (parentCMISFolder instanceof Document)
             throw new TestConfigurationException(String.format("It seems the parent folder of your resource %s is a file", fullPath));
 
         Folder folder = (Folder) parentCMISFolder;
-
         if (contentModel instanceof FolderModel)
         {
             STEP(String.format("DATAPREP: Create custom Folder '%s' with typeID: %s, in '%s'", contentModel.getName(), objectTypeID, getCurrentSpace()));
             Folder newFolder = folder.createFolder(properties);
             if (objectTypeProperty != null)
             {
-                objectTypeProperty.updatePropertiesTo(newFolder);
+                objectTypeProperty.applyPropertiesTo(newFolder);
             }
-
             contentModel.setNodeRef(newFolder.getId());
         }
-
         if (contentModel instanceof FileModel)
         {
             FileModel fileModel = (FileModel) contentModel;
@@ -430,16 +432,13 @@ public class DataContent extends TestData<DataContent>
 
             if (objectTypeProperty != null)
             {
-                objectTypeProperty.updatePropertiesTo(newFile);
+                objectTypeProperty.applyPropertiesTo(newFile);
             }
-
             contentModel.setNodeRef(newFile.getId());
             closeContentStream(contentStream);
         }
-
         contentModel.setProtocolLocation(fullPath.getPath());
         contentModel.setCmisLocation(fullPath.getPath());
-
         return contentModel;
     }
     
@@ -471,5 +470,52 @@ public class DataContent extends TestData<DataContent>
         Document document = contentService.getDocumentObject(getCurrentUser().getUsername(), getCurrentUser().getPassword(), filePath);
         
         return document;
+    }
+    
+    /**
+     * Adding aspects to ContentModels
+     * 
+     * @param object
+     */
+    public void addAspect(List<XMLAspectData> aspects)
+    {   
+        List<String> allAspectNames = new ArrayList<String>();
+        for(XMLAspectData aspect : aspects)
+        {
+               allAspectNames.add(aspect.getName());
+        }
+        contentAspect.addAspect(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getLastResource(), allAspectNames.toArray(new String[0]));
+
+        //now add the properies corelated to each aspect
+        for(XMLAspectData aspect : aspects)
+        {
+            if(aspect.hasProperties())
+            {
+                LOG.info("Preparing to apply {}",aspect.toString());
+                contentActions.addProperties(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getLastResource(), aspect.getPropertiesAsHashMap());
+            }
+        }
+    }
+    
+    /**
+     * Add file to favorites
+     *
+     * @throws DataPreparationException
+     */
+    public void addFileToFavorites(FileModel file) throws DataPreparationException
+    {
+        STEP(String.format("DATAPREP: Add file %s.%s to Favorites", file.getName(), file.getFileType().extention));
+        contentActions.setFileAsFavorite(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getCurrentSite(), String.format("%s.%s",file.getName(), file.getFileType().extention));
+    }
+
+    /**
+     * Add folder to favorites
+     *
+     * @throws DataPreparationException
+     */
+    public void addFolderToFavorites(FolderModel folder) throws DataPreparationException
+    {
+        STEP(String.format("DATAPREP: Add folder %s to Favorites", folder.getName()));
+        contentActions.setFolderAsFavorite(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getCurrentSite(), folder.getName());
     }
 }

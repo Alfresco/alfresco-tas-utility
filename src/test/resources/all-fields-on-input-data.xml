@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testData>
+	<users>
+		<user id="user-1" name="thisIsTheUserName" password="password" />
+	</users>
+
+	<sites>
+		<site id="site-1" name="thisIsTheSiteName" createdBy="user-1"
+			visibility="PUBLIC">			
+			<folders>
+				<folder id="folder-1" name="tas-folder1" createdBy="thisIsTheUserName">
+					<custom-model name="F:tas:folder">
+						<properties>
+							<property name="tas:TextPropertyC" value="text sub-file-1" />
+						</properties>
+					</custom-model>
+					<aspects>
+						<aspect name="aspect-name">
+							<properties>
+								<property name="tas:TextPropertyC" value="text sub-file-1" />
+							</properties>
+						</aspect>
+					</aspects>
+					<comments>
+						<comment id="id-of-comment" value="commment1" createdBy="user-1" />
+					</comments>
+					<tags>
+						<tag id="id-of-tag" value="tag" createdBy="user-1" />
+					</tags>
+					<files>
+						<file id="file-1" name="custom-file.txt" createdBy="admin">
+							<content>content sub-file 1</content>
+							<custom-model name="D:tas:document">
+								<properties>
+									<property name="tas:TextPropertyC" value="text sub-file-1" />
+								</properties>
+							</custom-model>
+							<aspects>
+								<aspect name="aspect-name">
+									<properties>
+										<property name="tas:TextPropertyC" value="text sub-file-1" />
+									</properties>
+								</aspect>
+							</aspects>
+							<comments>
+								<comment id="id-of-comment2" value="commment1" createdBy="user-1" />
+							</comments>
+							<tags>
+								<tag id="id-of-tag2" value="tag" createdBy="user-1" />
+							</tags>
+						</file>
+					</files>
+					<folders>
+						<folder id="folder-2" name="sub-folder-custom" createdBy="thisIsTheUserName">
+							<custom-model name="F:tas:folder">
+								<properties>
+									<property name="tas:TextPropertyF" value="text sub-folder-1" />
+								</properties>
+							</custom-model>
+							<aspects>
+								<aspect name="aspect-name">
+									<properties>
+										<property name="tas:TextPropertyC" value="text sub-file-1" />
+									</properties>
+								</aspect>
+							</aspects>
+							<comments>
+								<comment id="id-of-comment" value="commment1" createdBy="user-1" />
+							</comments>
+							<tags>
+								<tag id="id-of-tag" value="commment1" createdBy="user-1" />
+							</tags>
+						</folder>
+					</folders>
+				</folder>
+			</folders>
+			<files>
+				<file id="file-3" name="custom-file.txt" createdBy="userSearchId">
+					<content>content sub-file 1</content>
+					<custom-model name="D:tas:document">
+						<properties>
+							<property name="tas:TextPropertyC" value="text sub-file-1" />
+						</properties>
+					</custom-model>
+					<aspects>
+						<aspect name="aspect-name">
+							<properties>
+								<property name="tas:TextPropertyC" value="text sub-file-1" />
+							</properties>
+						</aspect>
+					</aspects>
+					<comments>
+						<comment id="id-of-comment" value="commment1" createdBy="user-1" />
+					</comments>
+					<tags>
+						<tag id="id-of-tag" value="commment1" createdBy="user-1" />
+					</tags>
+				</file>
+			</files>			
+		</site>
+	</sites>
+
+	<queries>
+		<query value="SELECT * FROM tas:folder" expectedResults="3" />
+	</queries>
+</testData> 

@@ -1,21 +1,19 @@
 package org.alfresco.utility.data.provider;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
 
-import org.alfresco.utility.data.CustomObjectTypeProperties;
-
-@XmlType(name = "custom-model")
-public class XMLCustomModel 
+@XmlType(name = "aspect")
+public class XMLAspectData
 {
     private String name;
-    private String id;
-    
     private List<XMLPropertyData> properties = new ArrayList<XMLPropertyData>();
 
     @XmlAttribute(name = "name")
@@ -41,46 +39,41 @@ public class XMLCustomModel
         this.properties = properties;
     }
 
-    public CustomObjectTypeProperties getObjectTypeProperties()
-    {        
-        CustomObjectTypeProperties customProps = new CustomObjectTypeProperties();
-        for(XMLPropertyData p : properties)
+    public Map<String, Object> getPropertiesAsHashMap()
+    {
+        Map<String, Object> allProps = new HashMap<String, Object>();
+        for (XMLPropertyData p : properties)
         {
             try
             {
-              int value =  Integer.parseInt(p.getValue());
-              customProps.addProperty(p.getName(), value);
+                int value = Integer.parseInt(p.getValue());
+                allProps.put(p.getName(), value);
             }
             catch (NumberFormatException e)
             {
-               customProps.addProperty(p.getName(), p.getValue());
+                allProps.put(p.getName(), p.getValue());
             }
-            
+
         }
-        return customProps;
+        return allProps;
     }
- 
-    @XmlAttribute(name = "id")
-    public String getId()
-    {         
-        return id;
+    
+    public boolean hasProperties()
+    {
+        return !this.getProperties().isEmpty();
     }
 
-    public void setId(String id)
-    {
-        this.id = id;
-    }
-     
-    
     @Override
     public String toString()
     {
         StringBuilder info = new StringBuilder();
-        info.append("custom-model[name='").append(getName()).append("',")
-            .append("id='").append(getId()).append("']");
-
+        info.append("aspect[name='").append(getName()).append("', properties=[");
+        for (XMLPropertyData p : properties)
+        {
+            info.append("{").append(p.getName()).append("=").append(p.getValue()).append("} ");
+        }
+        info.append("]");
         return info.toString();
     }
 
-    
 }

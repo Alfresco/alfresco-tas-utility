@@ -29,10 +29,15 @@ public class SiteModel extends TestModel
 
     public SiteModel(String title)
     {
+        this(title, Visibility.PUBLIC);
+    }
+    
+    public SiteModel(String title,Visibility visibility)
+    {
+        this.visibility = visibility;
         setTitle(title);
         setId(title);
-        this.visibility = Visibility.PUBLIC;
-        setDescription(RandomData.getRandomAlphanumeric());
+        setDescription(String.format("%s%s", title, visibility));
     }
 
     public SiteModel(Visibility visibility, String guid, String id, String title, String description)

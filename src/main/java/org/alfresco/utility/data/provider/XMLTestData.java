@@ -6,6 +6,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.datatype.DatatypeConfigurationException;
 
 import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.constants.UserRole;
@@ -90,6 +91,7 @@ public class XMLTestData extends XMLCollection
                 dataUser.createUser(user.getName(), user.getPassword());
             }
         }
+        logEntireStructure();
     }
 
     /**
@@ -116,7 +118,6 @@ public class XMLTestData extends XMLCollection
                 UserModel user = getUserBy(dataContent.getAdminUser(), site.getCreatedBy());
                 dataSite.usingUser(user).createSite(site.getModel());
             }
-
             addMembers(site.getMembers(), site.getModel(), dataUser);
             createFilesStructure(site.getFiles(), site.getModel(), dataContent);
             createFolderStructure(site.getFolders(), site.getFullLocation(), dataContent);
@@ -158,6 +159,7 @@ public class XMLTestData extends XMLCollection
                 folderInRepo = dataContent.usingUser(userFolder).setCurrentSpace(location).createFolder(folder.getModel());
             }
 
+            addAspects(folder, folder.getAspects(), dataContent);
             addComments(folderInRepo.getCmisLocation(), folder.getComments(), dataContent);
             addTags(folderInRepo.getCmisLocation(), folder.getTags(), dataContent);
 
@@ -209,8 +211,8 @@ public class XMLTestData extends XMLCollection
                     contentInRepo = dataContent.usingUser(userFile).usingSite((SiteModel) parentFolder).createContent(file.getModel());
             }
 
+            addAspects(file, file.getAspects(), dataContent);
             addComments(contentInRepo.getCmisLocation(), file.getComments(), dataContent);
-
             addTags(contentInRepo.getCmisLocation(), file.getTags(), dataContent);
         }
     }
@@ -229,7 +231,6 @@ public class XMLTestData extends XMLCollection
             {
                 dataContent.usingAdmin().deleteTree(folder.getModel());
             }
-
             for (XMLFileData file : site.getFiles())
             {
                 if (dataContent.checkContent(file.getModel().getCmisLocation(), dataContent.getAdminUser()))
@@ -248,13 +249,13 @@ public class XMLTestData extends XMLCollection
 
     /**
      * @param admin
-     * @param username
+     * @param userIdFromXMLFile
      * @return UserModel based on the username provider, or the Admin UserModel if "admin" is used in XML input file
      * @throws DataPreparationException
      */
-    private UserModel getUserBy(UserModel admin, String username) throws DataPreparationException
+    private UserModel getUserBy(UserModel admin, String userIdFromXMLFile) throws DataPreparationException
     {
-        if (username.toLowerCase().equals("admin"))
+        if (userIdFromXMLFile.toLowerCase().equals("admin"))
             return admin;
         /*
          * get the user model of the site
@@ -262,7 +263,7 @@ public class XMLTestData extends XMLCollection
         UserModel user = null;
         for (XMLUserData u : users)
         {
-            if (u.getName().equals(username))
+            if (u.getId().equals(userIdFromXMLFile))
             {
                 user = u.getModel();
                 break;
@@ -271,7 +272,7 @@ public class XMLTestData extends XMLCollection
 
         if (user == null)
         {
-            String info = String.format("You want to use user [%s] but this wasn't specified in <users> section in your xml file.", username);
+            String info = String.format("You want to use user with ID [%s] but this wasn't specified in <users> section in your xml file.", userIdFromXMLFile);
             throw new DataPreparationException(info);
         }
 
@@ -300,7 +301,7 @@ public class XMLTestData extends XMLCollection
         for (XMLUserData user : membersStructure)
         {
             // get UserModel from XML structure
-            UserModel userFile = getUserBy(dataUser.getAdminUser(), user.getName());
+            UserModel userFile = getUserBy(dataUser.getAdminUser(), user.getId());
 
             dataUser.addUserToSite(userFile, siteModel, UserRole.valueOf(user.getRole()));
         }
@@ -335,6 +336,31 @@ public class XMLTestData extends XMLCollection
         }
     }
 
+    /*
+     * apply all aspects to content model
+     */
+    private void addAspects(XMLDataItem dataItem, List<XMLAspectData> aspects, DataContent dataContent) throws DataPreparationException
+    {       
+        if (aspects.size() > 0)
+        {
+            
+            LOG.info("Adding Aspects Count: {} to object: {}", aspects.size(), dataItem.getModel().toString());
+
+            if (dataItem instanceof XMLFolderData)
+            {
+                XMLFolderData f = (XMLFolderData) dataItem;
+                UserModel user = getUserBy(dataContent.getAdminUser(), f.getCreatedBy());
+                dataContent.usingUser(user).setLastResource(f.getModel().getCmisLocation()).addAspect(aspects);
+            }
+            else if (dataItem instanceof XMLFileData)
+            {
+                XMLFileData f = (XMLFileData) dataItem;
+                UserModel user = getUserBy(dataContent.getAdminUser(), f.getCreatedBy());
+                dataContent.usingUser(user).setLastResource(f.getModel().getCmisLocation()).addAspect(aspects);
+            }
+        }
+    }
+
     @Override
     protected List<XMLDataItem> getImbricatedData()
     {
@@ -358,24 +384,28 @@ public class XMLTestData extends XMLCollection
     /**
      * @param id
      * @return {@link XMLDataItem} based on the id of the object
+     * @throws DatatypeConfigurationException 
      */
-    public XMLDataItem getTestDataItemWithId(String id)
+    public XMLDataItem getTestDataItemWithId(String id) throws DatatypeConfigurationException
     {
         LOG.info("Searching for Test Data Item with id: {}", id);
         XMLDataItem dataFound = null;
         for (XMLDataItem item : getEntireStructure())
         {
             if (item.getId() == null)
-
+            {
                 LOG.error("Test Data Item  [{}] does not have id assigned", item.toString());
-
+                continue;
+            }
             if (item.getId().equals(id))
             {
                 dataFound = item;
                 break;
             }
         }
+        
+        if(dataFound==null)
+            throw new DatatypeConfigurationException("It seems you don't have a Test Data with ID " + id + " in your input xml file.");
         return dataFound;
     }
-
 }

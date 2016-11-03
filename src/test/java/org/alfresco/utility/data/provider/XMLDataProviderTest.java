@@ -1,5 +1,7 @@
 package org.alfresco.utility.data.provider;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+
 import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.DataSite;
 import org.alfresco.utility.data.DataUser;
@@ -31,7 +33,7 @@ public class XMLDataProviderTest extends AbstractTestNGSpringContextTests
     @AfterClass(alwaysRun = true)
     public void cleanupEnvironment() throws Exception
     {
-        testData.cleanup(dataContentService);
+        //testData.cleanup(dataContentService);
     }
 
     @Test(dataProviderClass = XMLTestDataProvider.class, dataProvider = "getAllData")
@@ -75,9 +77,9 @@ public class XMLDataProviderTest extends AbstractTestNGSpringContextTests
     }
 
     @Test(dependsOnMethods = "prepareEnvironmentData")    
-    public void iCanIdentifyTestDataByID()
+    public void iCanIdentifyTestDataByID() throws DatatypeConfigurationException
     {
-        FolderModel f1 = (FolderModel) testData.getTestDataItemWithId("f1").getModel();
+        FolderModel f1 = (FolderModel) testData.getTestDataItemWithId("folder-1").getModel();
         Assert.assertEquals(f1.getName(), "folder1");
     }
 

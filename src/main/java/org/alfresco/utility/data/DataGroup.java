@@ -29,9 +29,21 @@ public class DataGroup extends TestData<DataGroup>
     public GroupModel createRandomGroup()
     {
         String groupName = RandomData.getRandomName("Group");
-        STEP(String.format("DATAPREP: Creating group %s with admin", groupName));
-
         GroupModel groupModel = new GroupModel(groupName);
+        
+        groupModel = createGroup(groupModel);
+
+        return groupModel;
+    }
+    
+    /**
+     * Creates a new group with admin user based on a group model
+     * 
+     * @return new created group
+     */
+    public GroupModel createGroup(GroupModel groupModel)
+    {
+        STEP(String.format("DATAPREP: Creating group %s with admin", groupModel.getDisplayName()));
         groupService.createGroup(getAdminUser().getUsername(), getAdminUser().getPassword(), groupModel.getDisplayName());
 
         return groupModel;
