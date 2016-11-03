@@ -11,11 +11,7 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.IOUtils;
 import org.jolokia.client.J4pClient;
 import org.jolokia.client.exception.J4pRemoteException;
-import org.jolokia.client.request.J4pReadRequest;
-import org.jolokia.client.request.J4pReadResponse;
-import org.jolokia.client.request.J4pRequest;
-import org.jolokia.client.request.J4pResponse;
-import org.jolokia.client.request.J4pWriteRequest;
+import org.jolokia.client.request.*;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -110,10 +106,13 @@ public class JmxJolokiaProxyClient implements Jmx
     }
 
     @Override
-    public Object executeJMXMethod(String methodName) throws Exception
+    public Object executeJMXMethod(String objectName, String methodName, Object ... pArgs) throws Exception
     {
-        // TODO Auto-generated method stub
-        return null;
+        J4pExecRequest request = new J4pExecRequest(objectName, methodName, pArgs);
+        J4pExecResponse response = (J4pExecResponse) executeRequest(request);
+
+        LOG.info("Executing methodName {} on objectName {} via JmxJolokia", methodName, objectName);
+        return response.getValue();
     }
 
 }
