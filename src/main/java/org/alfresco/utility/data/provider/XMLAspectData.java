@@ -38,6 +38,11 @@ public class XMLAspectData
     {
         this.properties = properties;
     }
+    
+    public void addProperty(XMLPropertyData property)
+    {
+        getProperties().add(property);
+    }
 
     public Map<String, Object> getPropertiesAsHashMap()
     {
