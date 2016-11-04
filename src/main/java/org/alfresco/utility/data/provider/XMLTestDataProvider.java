@@ -9,7 +9,6 @@ import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
-import org.alfresco.utility.Utility;
 import org.alfresco.utility.exception.DataPreparationException;
 import org.alfresco.utility.model.QueryModel;
 import org.testng.annotations.DataProvider;

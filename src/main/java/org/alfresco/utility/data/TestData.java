@@ -2,7 +2,6 @@ package org.alfresco.utility.data;
 
 import static org.alfresco.utility.report.log.Step.STEP;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,7 +18,6 @@ import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.network.JmxBuilder;
-import org.apache.chemistry.opencmis.commons.impl.json.JSONObject;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
