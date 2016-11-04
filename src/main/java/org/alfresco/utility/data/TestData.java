@@ -19,10 +19,12 @@ import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.network.JmxBuilder;
+import org.apache.chemistry.opencmis.commons.impl.json.JSONObject;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.IOUtils;
+import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
@@ -300,15 +302,35 @@ public abstract class TestData<Data> implements DSL<Data>
 
     public void assertExtensionAmpExists(String moduleId) throws Exception
     {
-        CompositeData[] allInstaledModules = (CompositeData[]) jmxBuilder.getJmxClient().readProperty("Alfresco:Name=ModuleService", "AllModules");
         boolean findModule = false;
-
-        for (CompositeData compData : allInstaledModules)
+        
+        if (tasProperties.useJolokiaJmxAgent())
         {
-            if ((compData.containsKey("module.id")) && (compData.get("module.id").equals(moduleId)))
+            String allInstaledModules = (String) jmxBuilder.getJmxClient().readProperty("Alfresco:Name=ModuleService", "AllModules");
+            JSONArray modules = new JSONArray(allInstaledModules);
+
+            for (int i = 0; i < modules.length(); i++)
             {
-                findModule = true;
-                break;
+                if (modules.getJSONObject(i).get("module.id").toString().equals(moduleId)
+                        && modules.getJSONObject(i).get("module.installState").toString().equals("INSTALLED"))
+                {
+                    findModule = true;
+                    break;
+                }
+            }
+        }
+        
+        else
+        {
+            CompositeData[] allInstaledModules = (CompositeData[]) jmxBuilder.getJmxClient().readProperty("Alfresco:Name=ModuleService", "AllModules");
+
+            for (CompositeData compData : allInstaledModules)
+            {
+                if ((compData.containsKey("module.id")) && (compData.get("module.id").equals(moduleId)))
+                {
+                    findModule = true;
+                    break;
+                }
             }
         }
 
