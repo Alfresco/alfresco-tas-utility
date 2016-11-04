@@ -177,6 +177,15 @@ public class JmxClient implements Jmx
         return isAlive;
     }
 
+    /**
+     * Use this to invoke operation methodName on mBean objectName
+     * Example of usage: executeJMXMethod("Alfresco:Name=DatabaseInformation,Tool=SchemaValidator”, "validateSchema");
+     * @param objectName
+     * @param methodName
+     * @param pArgs
+     * @return
+     * @throws Exception
+     */
     @Override
     public Object executeJMXMethod(String objectName, String methodName, Object ... pArgs) throws Exception
     {
@@ -185,7 +194,27 @@ public class JmxClient implements Jmx
         ObjectName objectJmx = new ObjectName(objectName);
 
         LOG.info("Executing methodName {} on objectName {}  via JmxClient", methodName, objectName);
-        return mBSC.invoke(objectJmx, methodName, pArgs, new String[] {});
+        return mBSC.invoke(objectJmx, methodName, pArgs, new String[]{});
+    }
+
+    /**
+     * Use this to invoke operation methodName with specified signature on mBean objectName
+     * Example of usage: executeJMXMethod("Alfresco:Name=DatabaseInformation,Tool=SchemaExport", "dumpSchemaToXML",  new String[]{"java.lang.String"}, "alf_node_, alf_acl_");
+     * @param objectName
+     * @param methodName
+     * @param signature
+     * @param pArgs
+     * @return
+     * @throws Exception
+     */
+    public Object executeJMXMethod(String objectName, String methodName, String signature[], Object ... pArgs) throws Exception
+    {
+        JMXConnector connector = getJmxConnection();
+        MBeanServerConnection mBSC = connector.getMBeanServerConnection();
+        ObjectName objectJmx = new ObjectName(objectName);
+
+        LOG.info("Executing methodName {} with signature {} on objectName {}  via JmxClient", methodName, signature, objectName);
+        return mBSC.invoke(objectJmx, methodName, pArgs, signature);
     }
 
 }
