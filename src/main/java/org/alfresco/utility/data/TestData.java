@@ -293,7 +293,7 @@ public abstract class TestData<Data> implements DSL<Data>
     {
 
         STEP(String.format("Log API: Assert that log file contains %s", logLine));
-        Assert.assertTrue(logResponse.contains(logLine), String.format("Log file doesn't contain %s ", logLine));
+        Assert.assertTrue(logResponse.contains(logLine), String.format("Log file doesn't contain %s. Found %s", logLine, logResponse));
         return (Data) this;
 
     }
