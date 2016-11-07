@@ -14,6 +14,7 @@ import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.DataSite;
 import org.alfresco.utility.data.DataUser;
 import org.alfresco.utility.exception.DataPreparationException;
+import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.model.FileModel;
 import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.QueryModel;
@@ -219,10 +220,11 @@ public class XMLTestData extends XMLCollection
 
     /**
      * Calling this method will delete entire test data structure from your alfresco repository
+     * @throws TestConfigurationException 
      * 
      * @throws Exception
      */
-    public void cleanup(DataContent dataContent)
+    public void cleanup(DataContent dataContent) throws TestConfigurationException
     {
         LOG.info("Startig CLEANUP process...");
         for (XMLSiteData site : getSites())
