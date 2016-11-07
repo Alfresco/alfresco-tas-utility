@@ -70,8 +70,13 @@ public class DataContent extends TestData<DataContent>
     {
         return contentActions;
     }
+    
     /**
      * It will create a new folder in current resource
+     * <code>
+     *          FolderModel newRandomFolder = FolderModel.getRandomFolderModel();
+     *          dataContent.usingUser(testUser).usingSite(testSite).createFolder(newRandomFolder);
+     * <code>         
      */
     public FolderModel createFolder(FolderModel folderModel)
     {
@@ -88,6 +93,9 @@ public class DataContent extends TestData<DataContent>
 
     /**
      * It will create a random folder in current resource
+     * <code>
+     *  dataContent.usingUser(testUser).usingSite(testSite).createFolder();
+     * <code> 
      */
     public FolderModel createFolder()
     {
@@ -107,6 +115,9 @@ public class DataContent extends TestData<DataContent>
 
     /**
      * Use this to delete the last resource, either file or folder
+     * <code>
+     *  dataContent.usingUser(adminUser).usingSite(siteModel).usingResource(repoFile).deleteContent();
+     * </code> 
      */
     public void deleteContent()
     {
@@ -118,6 +129,9 @@ public class DataContent extends TestData<DataContent>
     /**
      * Use this to rename a file or a folder
      * 
+     * <code>
+     *        dataContent.usingUser(adminUser).usingSite(siteModel).usingResource(repoFolder).renameContent(newRepoFolder);
+     * </code>       
      * @param newContent
      */
     public void renameContent(ContentModel newContent)
@@ -130,6 +144,9 @@ public class DataContent extends TestData<DataContent>
     /**
      * Add Email Alias aspect (emailserver:aliasable)
      * 
+     * <code>
+     *  dataContent.usingSite(testSite).usingResource(testFolder).addEmailAlias("aliasTas");
+     * </code> 
      * @param alias
      * @return
      * @throws Exception
@@ -147,6 +164,9 @@ public class DataContent extends TestData<DataContent>
      * Creates a random document based on {@link DocumentType} passed
      * Return the {@link Document} object on success creation
      * 
+     * <code>
+     * dataContent.usingUser(userModel).usingResource(myFolder).createContent(DocumentType.TEXT_PLAIN);
+     * </code>
      * @param documentType
      * @return
      * @throws DataPreparationException
@@ -179,30 +199,14 @@ public class DataContent extends TestData<DataContent>
         newFile.setNodeRef(cmisDocument.getId());
         return newFile;
     }
-
+ 
     /**
      * Creates a random document based on {@link DocumentType} passed
      * Return the {@link Document} object on success creation
      * 
-     * @param documentType
-     * @param siteName
-     * @return
-     */
-    public FileModel createContent(DocumentType documentType, String siteName)
-    {
-        String newContent = String.format("%s.%s", RandomData.getRandomName("file"), Utility.cmisDocTypeToExtentions(documentType));
-        STEP(String.format("DATAPREP: Creating a new non-empty content %s in %s site", newContent, siteName));
-
-        Document cmisDocument = contentService.createDocument(getCurrentUser().getUsername(), getCurrentUser().getPassword(), siteName, documentType,
-                newContent, "This is a file file");
-        FileModel newFile = new FileModel(cmisDocument.getPaths().get(0).toString());
-        newFile.setNodeRef(cmisDocument.getId());
-        return newFile;
-    }
-
-    /**
-     * Creates a random document based on {@link DocumentType} passed
-     * Return the {@link Document} object on success creation
+     * <code>
+     * dataContent.usingSite(site).createContent(sourceFile);
+     * </code>
      * 
      * @param documentType
      * @return
@@ -247,30 +251,27 @@ public class DataContent extends TestData<DataContent>
     /**
      * @param fullPath - the full path to CMIS object
      * @param userModel
+     * @throws TestConfigurationException 
      */
-    public void assertContentExist(String fullPath)
+    public void assertContentExist() throws TestConfigurationException
     {
-        boolean contentExist = checkContent(fullPath, getCurrentUser());
-        Assert.assertTrue(contentExist, String.format("Content {%s} was found in repository", fullPath));
+        boolean contentExist = checkContent(getLastResource(), getCurrentUser());
+        Assert.assertTrue(contentExist, String.format("Content {%s} was found in repository", getLastResource()));
     }
 
-    /**
-     * @param fullPath - the full path to CMIS object
-     * @param userModel
-     */
-    public void assertContentExist(ContentModel contentModel)
+     
+
+    public void assertContentDoesNotExist() throws TestConfigurationException
     {
-        assertContentExist(contentModel.getCmisLocation());
+        boolean contentDoesNotExist = checkContent(getLastResource(), getCurrentUser());
+        Assert.assertFalse(contentDoesNotExist, String.format("Content {%s} was NOT found in repository", getLastResource()));
     }
 
-    public void assertContentDoesNotExist(String fullPath)
+    public boolean checkContent(String fullPath, UserModel userModel) throws TestConfigurationException
     {
-        boolean contentDoesNotExist = checkContent(fullPath, getCurrentUser());
-        Assert.assertFalse(contentDoesNotExist, String.format("Content {%s} was NOT found in repository", fullPath));
-    }
-
-    public boolean checkContent(String fullPath, UserModel userModel)
-    {
+        if(fullPath==null || fullPath.isEmpty())
+            throw new TestConfigurationException("You didn't specify your #lastResource. Please call #usingResource(..) or #setLastResource(...) methods");
+        
         return !contentService.getNodeRefByPath(userModel.getUsername(), userModel.getPassword(), Utility.convertBackslashToSlash(fullPath)).isEmpty();
     }
 

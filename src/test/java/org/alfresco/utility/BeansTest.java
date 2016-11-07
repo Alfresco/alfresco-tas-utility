@@ -52,7 +52,7 @@ public class BeansTest extends AbstractTestNGSpringContextTests
     public void checkServerHealth() throws Exception
     {
         serverHealth.assertServerIsOnline();
-        //siteModel = dataSite.createPublicRandomSite();
+        siteModel = dataSite.createPublicRandomSite();
     }
 
     @Test
@@ -89,10 +89,10 @@ public class BeansTest extends AbstractTestNGSpringContextTests
     public void createFolderAndContent() throws Exception
     {
         FolderModel newFolder = dataContent.usingAdmin().usingSite(siteModel).createFolder();
-        dataContent.assertContentExist(newFolder);
+        dataContent.usingResource(newFolder).assertContentExist();
 
         FileModel newFile = dataContent.createContent(DocumentType.MSEXCEL);
-        dataContent.assertContentExist(newFile);
+        dataContent.usingResource(newFile).assertContentExist();
     }
 
     @Test
@@ -102,7 +102,7 @@ public class BeansTest extends AbstractTestNGSpringContextTests
 
         UserModel newUser = dataUser.createRandomTestUser();
         newFolder = dataContent.usingUser(newUser).usingUserHome().createFolder();
-        dataContent.assertContentExist(newFolder);
+        dataContent.usingResource(newFolder).assertContentExist();
     }     
     
 
@@ -111,7 +111,5 @@ public class BeansTest extends AbstractTestNGSpringContextTests
     {
         dataUser.usingLastServerLogLines(100).assertLogLineIs("DEBUG");
     }
-    
-    
     
 }
