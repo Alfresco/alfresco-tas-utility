@@ -169,8 +169,8 @@ public class DataContent extends TestData<DataContent>
         }
         catch (CmisStorageException cse)
         {
-            LOG.error(cse.getMessage());
-            throw new DataPreparationException(cse.getMessage());
+            cmisDocument = contentService.createDocumentInRepository(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getLastResource(),
+                    documentType, newContent, "This is a file file");
         }
 
         FileModel newFile = new FileModel(cmisDocument.getName());
