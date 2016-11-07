@@ -269,7 +269,8 @@ public abstract class TestData<Data> implements DSL<Data>
         String logFile = (String) jmxBuilder.getJmxClient().readProperty("log4j:appender=File", "file");
         STEP(String.format("Log API: jmx log4j:appender=File", logFile));
 
-        String logPath = Utility. buildPath(baseDir,logFile);
+        String logPath = logFile.contains(baseDir) ? logFile : Utility. buildPath(baseDir,logFile);
+        STEP(String.format("Log API: log path is %s", logPath));
 
         Map<String, String> paramsServerlog = new HashMap<String, String>();
         paramsServerlog.put("path", logPath);
@@ -293,7 +294,7 @@ public abstract class TestData<Data> implements DSL<Data>
     {
 
         STEP(String.format("Log API: Assert that log file contains %s", logLine));
-        Assert.assertTrue(logResponse.contains(logLine), String.format("Log file doesn't contain %s ", logLine));
+        Assert.assertTrue(logResponse.contains(logLine), String.format("Log file doesn't contain %s. Found %s", logLine, logResponse));
         return (Data) this;
 
     }
