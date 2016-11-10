@@ -54,6 +54,8 @@ import org.testng.Assert;
 @Scope(value = "prototype")
 public class DataContent extends TestData<DataContent>
 {
+    private Session session;
+    
     @Autowired
     private ContentService contentService;
 
@@ -71,6 +73,29 @@ public class DataContent extends TestData<DataContent>
         return contentActions;
     }
     
+    private Session getSession()
+    {
+        if(session == null)
+        {
+            return usingAdmin().session;
+        }
+        return session;
+    }
+    
+    @Override
+    public DataContent usingUser(UserModel user)
+    {
+        currentUser = user;
+        session = contentService.getCMISSession(user.getUsername(), user.getPassword());
+        return (DataContent) this;
+    }
+    
+    @Override
+    public DataContent usingAdmin()
+    {
+        return usingUser(getAdminUser());
+    }
+    
     /**
      * It will create a new folder in current resource
      * <code>
@@ -83,8 +108,7 @@ public class DataContent extends TestData<DataContent>
         STEP(String.format("DATAPREP: Creating a new folder content %s in %s ", folderModel.getName(), getCurrentSpace()));
         String location = Utility.buildPath(getCurrentSpace(), folderModel.getName());
         setLastResource(location);
-        Folder cmisFolder = contentService.createFolderInRepository(getCurrentUser().getUsername(), getCurrentUser().getPassword(), folderModel.getName(),
-                getCurrentSpace());
+        Folder cmisFolder = contentService.createFolderInRepository(getSession(), folderModel.getName(), getCurrentSpace());
         folderModel.setProtocolLocation(location);
         folderModel.setNodeRef(cmisFolder.getId());
         folderModel.setCmisLocation(location);
@@ -102,11 +126,9 @@ public class DataContent extends TestData<DataContent>
         String folderName = RandomData.getRandomName("Folder");
         STEP(String.format("DATAPREP: Create folder '%s' in %s", folderName, getCurrentSpace()));
         FolderModel folderModel = new FolderModel(folderName);
-
         String location = Utility.buildPath(getCurrentSpace(), folderName);
         setLastResource(location);
-        Folder cmisFolder = contentService.createFolderInRepository(getCurrentUser().getUsername(), getCurrentUser().getPassword(), folderName,
-                getCurrentSpace());
+        Folder cmisFolder = contentService.createFolderInRepository(getSession(), folderName, getCurrentSpace());
         folderModel.setProtocolLocation(cmisFolder.getPath());
         folderModel.setCmisLocation(cmisFolder.getPath());
         folderModel.setNodeRef(cmisFolder.getId());
@@ -121,9 +143,8 @@ public class DataContent extends TestData<DataContent>
      */
     public void deleteContent()
     {
-        File file = new File(getLastResource());
-        STEP(String.format("DATAPREP: Deleting '%s' from %s", file.getName(), getCurrentSpace()));
-        contentService.deleteFolder(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getCurrentSite(), file.getName());
+        STEP(String.format("DATAPREP: Deleting '%s'", getLastResource()));
+        contentService.deleteContentByPath(getSession(), getLastResource());
     }
 
     /**
@@ -138,7 +159,7 @@ public class DataContent extends TestData<DataContent>
     {
         File file = new File(getLastResource());
         STEP(String.format("DATAPREP: Rename content '%s' in %s", file.getName(), getCurrentSpace()));
-        contentActions.renameContent(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getCurrentSite(), file.getName(), newContent.getName());
+        contentActions.renameContent(getSession(), getLastResource(), newContent.getName());
     }
 
     /**
@@ -181,18 +202,14 @@ public class DataContent extends TestData<DataContent>
             setLastResource(RandomData.getRandomName("Folder"));
 
         Document cmisDocument = null;
-
         try
         {
-            cmisDocument = contentService.createDocumentInRepository(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getLastResource(),
-                    documentType, newContent, "This is a file file");
+            cmisDocument = contentService.createDocumentInRepository(getSession(), getLastResource(), documentType, newContent, "This is a file file");
         }
         catch (CmisStorageException cse)
         {
-            cmisDocument = contentService.createDocumentInRepository(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getLastResource(),
-                    documentType, newContent, "This is a file file");
+            cmisDocument = contentService.createDocumentInRepository(getSession(), getLastResource(), documentType, newContent, "This is a file file");
         }
-
         FileModel newFile = new FileModel(cmisDocument.getName());
         newFile.setCmisLocation(newLocation);
         newFile.setProtocolLocation(newLocation);
@@ -215,32 +232,24 @@ public class DataContent extends TestData<DataContent>
     public FileModel createContent(FileModel fileModel) throws DataPreparationException
     {
         String fileFullName = fileModel.getName();
-
         if (FilenameUtils.getExtension(fileFullName).length() == 0)
             fileFullName = String.format("%s.%s", fileModel.getName(), fileModel.getFileType().extention);
 
         STEP(String.format("DATAPREP: Creating a new non-empty content %s in %s ", fileModel.getName(), getLastResource()));
-
         if (getLastResource().isEmpty())
             setLastResource(RandomData.getRandomName("Folder"));
 
         Document cmisDocument = null;
-
         try
         {
-            cmisDocument = contentService.createDocumentInRepository(
-                                            getCurrentUser().getUsername(), 
-                                            getCurrentUser().getPassword(), getLastResource(),
-                                            DocumentType.valueOf(fileModel.getFileType().toString()), 
-                                            fileFullName, 
-                                            fileModel.getContent());
+            cmisDocument = contentService.createDocumentInRepository(getSession(), getLastResource(), DocumentType.valueOf(fileModel.getFileType().toString()), 
+                                            fileFullName, fileModel.getContent());
         }
         catch (CmisStorageException cse)
         {
-            LOG.error(cse.getMessage());
-            throw new DataPreparationException(cse.getMessage());
+            cmisDocument = contentService.createDocumentInRepository(getSession(), getLastResource(), DocumentType.valueOf(fileModel.getFileType().toString()), 
+                    fileFullName, fileModel.getContent());
         }
-
         String fileLocation = Utility.buildPath(getLastResource(), fileFullName);
         fileModel.setCmisLocation(fileLocation);
         fileModel.setProtocolLocation(fileLocation);
@@ -259,8 +268,6 @@ public class DataContent extends TestData<DataContent>
         Assert.assertTrue(contentExist, String.format("Content {%s} was found in repository", getLastResource()));
     }
 
-     
-
     public void assertContentDoesNotExist() throws TestConfigurationException
     {
         boolean contentDoesNotExist = checkContent(getLastResource(), getCurrentUser());
@@ -270,19 +277,20 @@ public class DataContent extends TestData<DataContent>
     public boolean checkContent(String fullPath, UserModel userModel) throws TestConfigurationException
     {
         if(fullPath==null || fullPath.isEmpty())
+        {
             throw new TestConfigurationException("You didn't specify your #lastResource. Please call #usingResource(..) or #setLastResource(...) methods");
-        
-        return !contentService.getNodeRefByPath(userModel.getUsername(), userModel.getPassword(), Utility.convertBackslashToSlash(fullPath)).isEmpty();
+        }
+        return !contentService.getNodeRefByPath(getSession(), Utility.convertBackslashToSlash(fullPath)).isEmpty();
     }
 
     public void waitUntilContentIsDeleted(String fullPath)
     {
         int retry = 0;
-        String deletedObject = contentService.getNodeRefByPath(getCurrentUser().getUsername(), getCurrentUser().getPassword(), fullPath);
+        String deletedObject = contentService.getNodeRefByPath(getSession(), fullPath);
         while (!StringUtils.isEmpty(deletedObject) && retry < Utility.retryCountSeconds)
         {
             Utility.waitToLoopTime(1);
-            deletedObject = contentService.getNodeRefByPath(getCurrentUser().getUsername(), getCurrentUser().getPassword(), fullPath);
+            deletedObject = contentService.getNodeRefByPath(getSession(), fullPath);
             retry++;
         }
     }
@@ -309,7 +317,7 @@ public class DataContent extends TestData<DataContent>
     public void deleteTree(FolderModel from)
     {
         LOG.info("Deleting entire tree of {}", from.getCmisLocation());
-        contentService.deleteTreeByPath(getCurrentUser().getUsername(), getCurrentUser().getPassword(), from.getCmisLocation());
+        contentService.deleteTreeByPath(getSession(), from.getCmisLocation());
     }
 
     /**
@@ -459,18 +467,27 @@ public class DataContent extends TestData<DataContent>
      */
     public String getNodeRef()
     {
-        return contentService.getNodeRefByPath(getCurrentUser().getUsername(), getCurrentUser().getPassword(), Utility.convertBackslashToSlash(getLastResource()));
+        return contentService.getNodeRefByPath(getSession(), Utility.convertBackslashToSlash(getLastResource()));
     }
     
     /**
      * Get the corresponding CMIS Document Object of a file using only the file path
      * @param filePath
-     * @return
+     * @return {@link Document}
      */
-    public Document getCMISDocument(String filePath) {
-        Document document = contentService.getDocumentObject(getCurrentUser().getUsername(), getCurrentUser().getPassword(), filePath);
-        
-        return document;
+    public Document getCMISDocument(String filePath) 
+    {
+        return contentService.getDocumentObject(getSession(), filePath);
+    }
+    
+    /**
+     * Get the corresponding CMIS Folder Object of a file using only the file path
+     * @param filePath
+     * @return {@link Folder}
+     */
+    public Folder getCMISFolder(String folderPath) 
+    {
+        return contentService.getFolderObject(getSession(), folderPath);
     }
     
     /**
@@ -483,9 +500,9 @@ public class DataContent extends TestData<DataContent>
         List<String> allAspectNames = new ArrayList<String>();
         for(XMLAspectData aspect : aspects)
         {
-               allAspectNames.add(aspect.getName());
+            allAspectNames.add(aspect.getName());
         }
-        contentAspect.addAspect(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getLastResource(), allAspectNames.toArray(new String[0]));
+        contentAspect.addAspect(getSession(), getLastResource(), allAspectNames.toArray(new String[0]));
 
         //now add the properies corelated to each aspect
         for(XMLAspectData aspect : aspects)

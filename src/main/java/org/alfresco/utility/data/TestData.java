@@ -38,7 +38,7 @@ public abstract class TestData<Data> implements DSL<Data>
      * If none specified we will use the admin user defined in
      * default.properties
      */
-    private UserModel currentUser;
+    protected UserModel currentUser;
 
     /**
      * The current space (location) used in Test Data This can be a Site
@@ -162,7 +162,6 @@ public abstract class TestData<Data> implements DSL<Data>
             location = Utility.removeLastSlash(location);
             model.setCmisLocation(location);
         }
-
         setLastResource(model.getCmisLocation());
         return (Data) this;
     }
@@ -259,7 +258,6 @@ public abstract class TestData<Data> implements DSL<Data>
     @SuppressWarnings("unchecked")
     public Data usingLastServerLogLines(int lineNumber) throws Exception
     {
-
         assertExtensionAmpExists("alfresco-log-extension");
 
         this.serverLogUrl = tasProperties.getFullServerUrl() + "/alfresco/s/tas/log";
@@ -269,7 +267,7 @@ public abstract class TestData<Data> implements DSL<Data>
         String logFile = (String) jmxBuilder.getJmxClient().readProperty("log4j:appender=File", "file");
         STEP(String.format("Log API: jmx log4j:appender=File", logFile));
 
-        String logPath = logFile.contains(baseDir) ? logFile : Utility. buildPath(baseDir,logFile);
+        String logPath = logFile.contains(baseDir) ? logFile : Utility.buildPath(baseDir, logFile);
         STEP(String.format("Log API: log path is %s", logPath));
 
         Map<String, String> paramsServerlog = new HashMap<String, String>();
@@ -285,29 +283,24 @@ public abstract class TestData<Data> implements DSL<Data>
         get.getParams().setSoTimeout(5000);
         client.executeMethod(get);
         logResponse = IOUtils.toString(get.getResponseBodyAsStream());
-
         return (Data) this;
     }
 
     @SuppressWarnings("unchecked")
     public Data assertLogLineIs(String logLine) throws Exception
     {
-
         STEP(String.format("Log API: Assert that log file contains %s", logLine));
         Assert.assertTrue(logResponse.contains(logLine), String.format("Log file doesn't contain %s. Found %s", logLine, logResponse));
         return (Data) this;
-
     }
 
     public void assertExtensionAmpExists(String moduleId) throws Exception
     {
         boolean findModule = false;
-        
         if (tasProperties.useJolokiaJmxAgent())
         {
             String allInstaledModules = (String) jmxBuilder.getJmxClient().readProperty("Alfresco:Name=ModuleService", "AllModules");
             JSONArray modules = new JSONArray(allInstaledModules);
-
             for (int i = 0; i < modules.length(); i++)
             {
                 if (modules.getJSONObject(i).get("module.id").toString().equals(moduleId)
@@ -318,11 +311,10 @@ public abstract class TestData<Data> implements DSL<Data>
                 }
             }
         }
-        
+
         else
         {
             CompositeData[] allInstaledModules = (CompositeData[]) jmxBuilder.getJmxClient().readProperty("Alfresco:Name=ModuleService", "AllModules");
-
             for (CompositeData compData : allInstaledModules)
             {
                 if ((compData.containsKey("module.id")) && (compData.get("module.id").equals(moduleId)))
@@ -332,8 +324,6 @@ public abstract class TestData<Data> implements DSL<Data>
                 }
             }
         }
-
-        Assert.assertEquals(findModule, true,"Alfresco AMP module :" + moduleId + " is not installed");
-
+        Assert.assertEquals(findModule, true, "Alfresco AMP module :" + moduleId + " is not installed");
     }
 }
