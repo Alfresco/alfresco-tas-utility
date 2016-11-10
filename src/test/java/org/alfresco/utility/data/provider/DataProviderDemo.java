@@ -29,7 +29,7 @@ public class DataProviderDemo extends AbstractTestNGSpringContextTests
         testData.cleanup(dataContentService);
     }
 
-    @Test(dataProviderClass = XMLTestDataProvider.class, dataProvider = "getAllData")
+    @Test(groups="demo", dataProviderClass = XMLTestDataProvider.class, dataProvider = "getAllData")
     @XMLDataConfig(file = "src/test/resources/data-provider-demo.xml")
     public void prepareEnvironmentData(XMLTestData testData) throws Exception
     {
