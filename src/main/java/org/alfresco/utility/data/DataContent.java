@@ -453,12 +453,17 @@ public class DataContent extends TestData<DataContent>
     
     /**
      * Creates a tag for a content file
+     * You must use this in correlation with {@link DataContent#usingResource(ContentModel)}
      * @param fileModel
      * @param model tag model
+     * @throws TestConfigurationException 
      */
-    public void addTagToContent(String cmisObjectPath, TagModel model)
+    public void addTagToContent(TagModel model) throws TestConfigurationException
     {
-        contentActions.addSingleTag(getCurrentUser().getUsername(), getCurrentUser().getPassword(), cmisObjectPath, model.getTag());
+        if (getLastResource() == null || getLastResource().isEmpty())
+            throw new TestConfigurationException("You didn't specify your last resource in your tests. Please call usingResource(...) before adding a tag");
+        
+        contentActions.addSingleTag(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getLastResource(), model.getTag());
     }
     
     /**

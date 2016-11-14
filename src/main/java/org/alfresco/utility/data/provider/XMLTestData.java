@@ -327,14 +327,14 @@ public class XMLTestData extends XMLCollection
     /*
      * applying all tags to created file
      */
-    private void addTags(String objectPathInCmis, List<XMLTagData> tags, DataContent dataContent) throws DataPreparationException
+    private void addTags(String objectPathInCmis, List<XMLTagData> tags, DataContent dataContent) throws Exception
     {
         if (tags.size() > 0)
             LOG.info("Adding Tags Count: {} to object: {}", tags.size(), objectPathInCmis);
         for (XMLTagData tag : tags)
         {
             UserModel userTag = getUserBy(dataContent.getAdminUser(), tag.getCreatedBy());
-            dataContent.usingUser(userTag).addTagToContent(objectPathInCmis, tag.getModel());
+            dataContent.usingUser(userTag).setLastResource(objectPathInCmis).addTagToContent( tag.getModel());
         }
     }
 
