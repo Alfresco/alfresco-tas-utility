@@ -43,7 +43,6 @@ public class DataUser extends TestData<DataUser>
         return createUser(userName, PASSWORD);
     }
     
-    
     /**
      * Create a new user based on the {@link UserModel} provided
      * @param user
@@ -54,7 +53,6 @@ public class DataUser extends TestData<DataUser>
     {
         return createUser(user.getUsername(), user.getPassword());
     }
-    
     
     /**
      * Creates a new random user with a specific user name on test server defined in {@link TasProperties}
@@ -93,7 +91,7 @@ public class DataUser extends TestData<DataUser>
      */
     public UserModel createUserWithTenant(String userName) throws DataPreparationException
     {
-        UserModel newUser = new UserModel(userName, PASSWORD);        
+        UserModel newUser = new UserModel(userName, PASSWORD);
         newUser.setDomain(getCurrentUser().getDomain());
         
         LOG.info("Create user {}", newUser.toString());
@@ -145,7 +143,7 @@ public class DataUser extends TestData<DataUser>
         ListUserWithRoles usersWithRoles = new ListUserWithRoles();
     	for(UserRole role: roles)
     	{
-        	UserModel userModel = createRandomTestUser();        
+        	UserModel userModel = createRandomTestUser();
         	addUserToSite(userModel, siteModel, role);
         	usersWithRoles.add(userModel);
     	}
@@ -217,5 +215,20 @@ public class DataUser extends TestData<DataUser>
            return userModel;
         }
     }
-            
+    
+    /**
+     * Delete user
+     * 
+     * @param userToDelete UserModel user delete
+     * @throws DataPreparationException
+     */
+    public void deleteUser(UserModel userToDelete) throws DataPreparationException
+    {
+        LOG.info("Delete user {}", userToDelete.getUsername());
+        boolean deleted = userService.delete(getAdminUser().getUsername(), getAdminUser().getPassword(), userToDelete.getUsername());
+        if (!deleted)
+        {
+            throw new DataPreparationException(String.format("Failed to delete user '%s'.", userToDelete.getUsername()));
+        }
+    }
 }
