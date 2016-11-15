@@ -431,7 +431,7 @@ Please read the following [Wiki](https://gitlab.alfresco.com/tas/alfresco-tas-te
   You will see there that we have one listener added:
   
   ```java
-  <listener class-name="org.alfresco.utility.report.ReportListenerAdapter"></listener>
+  <listener class-name="org.alfresco.utility.report.HtmlReportListener"></listener>
   ```
   This will tell our framework, after we run all tests, to generate one HTML report file with graphs and metrics.
   
@@ -521,7 +521,7 @@ We wanted to simplify the Test Rail integration, so we used listeners in order t
     <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
     <suite name="Suite" parallel="classes">
     	<listeners>
-    		<listener class-name="org.alfresco.utility.report.ReportListenerAdapter"></listener>
+    		<listener class-name="org.alfresco.utility.report.HtmlReportListener"></listener>
     		<listener class-name="org.alfresco.utility.testrail.TestRailExecutorListener"></listener>
     	</listeners>
     	<test name="Sanity Demo Test">
