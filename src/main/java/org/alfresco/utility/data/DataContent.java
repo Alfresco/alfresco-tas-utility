@@ -467,6 +467,27 @@ public class DataContent extends TestData<DataContent>
     }
     
     /**
+     * Verify content has tag
+     * @param cmisObjectPath
+     * @param model
+     */
+    public void assertContentHasTag(String cmisObjectPath, TagModel model){
+        
+        STEP(String.format("DATAPREP: Verify content %s has tag", cmisObjectPath, model.getTag()));
+        List<String> tags=  contentActions.getTagNamesFromContent(getCurrentUser().getUsername(), getCurrentUser().getPassword(), cmisObjectPath);
+       boolean found = false;
+        for(String tag:tags){
+            if(model != null && model.getTag() != null && model.getTag().equals(tag)){
+                found = true;
+                break;
+            }
+        }
+        
+        Assert.assertTrue(found, "content has tag");
+    }
+
+    
+    /**
      * @return nodeRef of the current resource used
      * You can use this in correlation with {@link DataContent#usingResource(ContentModel)} and/or {@link DataContent#usingSite(SiteModel)}, etc.
      */
