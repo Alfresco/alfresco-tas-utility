@@ -283,5 +283,13 @@ public class Utility
             envPropName = String.format("%s.properties", envPropName);
         return envPropName;
     }
+        
+    public static String splitGuidVersion(String guidWithVersion)
+    {
+        if(guidWithVersion!=null && guidWithVersion.contains(";") )
+            return guidWithVersion.split(";")[0];
+        
+        return guidWithVersion;
+    }
 
 }

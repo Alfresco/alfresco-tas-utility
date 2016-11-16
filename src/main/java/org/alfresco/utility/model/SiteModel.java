@@ -2,6 +2,7 @@ package org.alfresco.utility.model;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
+import org.alfresco.utility.Utility;
 import org.alfresco.utility.data.RandomData;
 import org.springframework.social.alfresco.api.entities.Site.Visibility;
 
@@ -73,6 +74,17 @@ public class SiteModel extends TestModel
     public String getGuid()
     {
         return guid;
+    }
+    
+    
+    /**
+     * Example: 25eb5ef8-50a5-4873-adc5-8edd87e628a4;1.0
+     * will be returned as "25eb5ef8-50a5-4873-adc5-8edd87e628a4" without 1.0
+     * @return {@link #getGuid() } without version number
+     */
+    public String getGuidWithoutVersion()
+    {
+        return Utility.splitGuidVersion(getGuid());
     }
 
     public void setGuid(String guid)
