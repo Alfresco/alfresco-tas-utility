@@ -15,7 +15,7 @@ public class TestRailExecutorListener implements ITestListener
     @Override
     public void onTestStart(ITestResult result)
     {
-        Step.testSteps.clear();
+
         testCaseUploader.addTestRailIfNotExist(result);
     }
 
@@ -23,14 +23,20 @@ public class TestRailExecutorListener implements ITestListener
     public void onTestSuccess(ITestResult result)
     {
         testCaseUploader.updateTestRailTestCase(result);
-        testCaseUploader.updateTestRailTestSteps(result, String.join(System.lineSeparator(), Step.testSteps));
+        if (Step.testSteps.get(result.getMethod().getMethodName()) != null)
+        {
+            testCaseUploader.updateTestRailTestSteps(result, String.join(System.lineSeparator(), Step.testSteps.get(result.getMethod().getMethodName())));
+        }
     }
 
     @Override
     public void onTestFailure(ITestResult result)
     {
         testCaseUploader.updateTestRailTestCase(result);
-        testCaseUploader.updateTestRailTestSteps(result, String.join(System.lineSeparator(), Step.testSteps));
+        if (Step.testSteps.get(result.getMethod().getMethodName()) != null)
+        {
+            testCaseUploader.updateTestRailTestSteps(result, String.join(System.lineSeparator(), Step.testSteps.get(result.getMethod().getMethodName())));
+        }
     }
 
     @Override
@@ -43,12 +49,16 @@ public class TestRailExecutorListener implements ITestListener
     public void onTestFailedButWithinSuccessPercentage(ITestResult result)
     {
         testCaseUploader.updateTestRailTestCase(result);
-        testCaseUploader.updateTestRailTestSteps(result, String.join(System.lineSeparator(), Step.testSteps));
+        if (Step.testSteps.get(result.getMethod().getMethodName()) != null)
+        {
+            testCaseUploader.updateTestRailTestSteps(result, String.join(System.lineSeparator(), Step.testSteps.get(result.getMethod().getMethodName())));
+        }
     }
 
     @Override
     public void onStart(ITestContext context)
     {
+        Step.testSteps.clear();
         testCaseUploader.oneTimeUpdateFromTestRail();
     }
 
