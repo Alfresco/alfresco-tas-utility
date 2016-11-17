@@ -1,13 +1,10 @@
 <?xml version="1.0"?>
-<project
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.alfresco.tas</groupId>
 	<artifactId>utility</artifactId>
 	<name>alfresco-tas-utility</name>
-
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0.1-SNAPSHOT</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -25,6 +22,29 @@
 		<org.jvnet.version>0.6.5</org.jvnet.version>
 		<tas.utility.version>1.0-SNAPSHOT</tas.utility.version>
 	</properties>
+	
+	<scm>
+		<connection>scm:git:https://gitlab.alfresco.com/tas/alfresco-tas-tester.git</connection>
+		<developerConnection>scm:git:https://gitlab.alfresco.com/tas/alfresco-tas-tester.git</developerConnection>
+		<url>https://gitlab.alfresco.com/tas/alfresco-tas-tester</url>
+		<tag>HEAD</tag>
+	</scm>
+	
+	<issueManagement>
+		<system>JIRA</system>
+		<url>https://issues.alfresco.com/jira/browse/</url>
+	</issueManagement>
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>alfresco-internal-snapshots</id>
+			<url>https://nexus.alfresco.com/nexus/content/repositories/internal-snapshots/</url>
+		</snapshotRepository>
+		<repository>
+			<id>alfresco-internal</id>
+			<url>https://nexus.alfresco.com/nexus/content/repositories/internal-releases/</url>
+		</repository>
+	</distributionManagement>
 
 	<build>
 		<pluginManagement>
@@ -32,6 +52,13 @@
 				<plugin>
 					<artifactId>maven-remote-resources-plugin</artifactId>
 					<version>${maven-remote-resources.version}</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-release-plugin</artifactId>
+					<configuration>
+						<autoVersionSubmodules>true</autoVersionSubmodules>
+						<tagNameFormat>@{project.version}</tagNameFormat>
+					</configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -214,10 +241,23 @@
 
 	</dependencies>
 
-	<distributionManagement>
-		<snapshotRepository>
-			<id>alfresco-internal</id>
-			<url>https://nexus.alfresco.com/nexus/content/repositories/internal-snapshots/</url>
-		</snapshotRepository>
-	</distributionManagement>
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-changes-plugin</artifactId>
+				<version>2.12.1</version>
+				<configuration>
+					<useJql>true</useJql>
+				</configuration>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>changes-report</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+		</plugins>
+	</reporting>
 </project>
