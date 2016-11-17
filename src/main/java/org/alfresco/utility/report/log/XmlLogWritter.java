@@ -7,8 +7,10 @@ import java.io.StringWriter;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -35,7 +37,7 @@ import org.w3c.dom.ProcessingInstruction;
 public class XmlLogWritter
 {
     public static Logger LOG = LogFactory.getLogger();
-    
+
     Properties tasProperties = new Properties();
     private String logPath;
     private String fullPath;
@@ -49,11 +51,11 @@ public class XmlLogWritter
             logPath = tasProperties.getProperty("reports.path");
             if (StringUtils.isEmpty(logPath))
                 logPath = "./target/reports";
-            
+
             Paths.get(logPath).toFile().mkdirs();
-            
+
             logPath = Paths.get(logPath, "logs").toFile().getPath();
-            
+
             URL inputUrl = getClass().getClassLoader().getResource("shared-resources/log/TransformLog.xsl");
             File dest = Paths.get(logPath, "TransformLog.xsl").toFile();
             FileUtils.copyURLToFile(inputUrl, dest);
@@ -61,7 +63,7 @@ public class XmlLogWritter
             inputUrl = getClass().getClassLoader().getResource("shared-resources/logo.png");
             dest = Paths.get(logPath, "logo.png").toFile();
             FileUtils.copyURLToFile(inputUrl, dest);
-            
+
         }
         catch (TestConfigurationException | IOException e1)
         {
@@ -179,7 +181,7 @@ public class XmlLogWritter
         updateLog(doc);
     }
 
-    public void addTestExecution(ITestResult result, List<String> testSteps)
+    public void addTestExecution(ITestResult result, Map<String, ArrayList<String>> testSteps)
     {
         Document doc = getLogFile(fullPath);
         Node tests = doc.getElementsByTagName("tests").item(0);
@@ -211,11 +213,15 @@ public class XmlLogWritter
         Node steps = doc.createElement("steps");
         test.appendChild(steps);
         Node stepNode = null;
-        for (String step : testSteps)
+        List<String> methodSteps = testSteps.get(result.getMethod().getMethodName());
+        if (methodSteps != null && methodSteps.size() != 0)
         {
-            stepNode = doc.createElement("step");
-            stepNode.appendChild(doc.createTextNode(step));
-            steps.appendChild(stepNode);
+            for (String step : methodSteps)
+            {
+                stepNode = doc.createElement("step");
+                stepNode.appendChild(doc.createTextNode(step));
+                steps.appendChild(stepNode);
+            }
         }
         if (!result.isSuccess())
         {
