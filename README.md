@@ -24,6 +24,7 @@
     * [Configuration](#configuration)  
     * [How to enable Test Rail Integration?](#how-to-enable-test-rail-integration)
 * [Reference](#reference)
+* [Change Log](docs/CHANGELOG.md) :glowing_star: 
 * [Contributors](#contributors)
 * [License](#license)
 
