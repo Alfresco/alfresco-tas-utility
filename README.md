@@ -209,6 +209,7 @@ In your maven project, in your pom.xml file add the following dependency
 </dependency>
 ```
 (where ${tas.utility.version} is the latest verion released on [Nexus](https://artifacts.alfresco.com/nexus/content/groups/internal) internal)
+You can also take a look on our [changelog](docs/CHANGELOG.md) page for more details.
 
 **_NOTE_:** _you can also browse the [samples](samples) folder for simple maven projects that is consuming this library. Just import this existing Maven project in your IDE (if you are using Eclipse follow [this](http://help.eclipse.org/kepler/index.jsp?topic=%2Forg.eclipse.platform.doc.user%2Ftasks%2Ftasks-importproject.htm) guide)_
 
