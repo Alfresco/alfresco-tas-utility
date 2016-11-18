@@ -19,8 +19,7 @@
 		<extentreports.version>2.41.1</extentreports.version>
 		<google.guava.version>19.0</google.guava.version>
 		<jackson-databind.version>2.4.4</jackson-databind.version>
-		<org.jvnet.version>0.6.5</org.jvnet.version>
-		<tas.utility.version>1.0-SNAPSHOT</tas.utility.version>
+		<org.jvnet.version>0.6.5</org.jvnet.version>		
 	</properties>
 	
 	<scm>
