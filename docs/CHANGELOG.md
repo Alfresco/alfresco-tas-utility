@@ -1,7 +1,7 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## [[v1.0.0] - 2016-11-18](commits/v1.0.0)
+## [[v1.0.0] - 2016-11-18](/commits/v1.0.0)
 ### Added
 
 - ability to use models of Alfresco objects in your automation test
