@@ -1,8 +1,8 @@
 ![in progress](https://img.shields.io/badge/Document_Level-In_Progress-yellow.svg?style=flat-square)
 
 ---
-:octocat: <- Back to [TAS Master Documentation](https://gitlab.alfresco.com/tas/documentation/wikis/home)
-
+:paw_prints:  Back to [TAS Master Documentation](https://gitlab.alfresco.com/tas/documentation/wikis/home)
+ 
 ## Table of Contents
 * [Synopsis](#synopsis)
 * [Prerequisite](#prerequisite)
