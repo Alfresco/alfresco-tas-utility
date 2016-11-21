@@ -1,5 +1,4 @@
 :octocat: <- [Back to README](README.md)
-
 # Change Log
 All notable changes to this project will be documented in this file.
 
