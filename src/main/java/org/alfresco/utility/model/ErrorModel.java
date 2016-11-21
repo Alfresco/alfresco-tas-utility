@@ -13,6 +13,8 @@ public class ErrorModel extends TestModel
     public static String PERMISSION_WAS_DENIED = "Permission was denied";
     public static String ENTITY_NOT_FOUND = "%s was not found";
     public static String AUTHENTICATION_FAILED = "Authentication failed";
+    public static String INVALID_ARGUMENT = "An invalid argument was received";
+    public static String UNABLE_TO_LOCATE = "Unable to locate resource";
 
     public String getErrorKey()
     {
