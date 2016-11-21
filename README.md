@@ -1,7 +1,7 @@
 ![in progress](https://img.shields.io/badge/Document_Level-In_Progress-yellow.svg?style=flat-square)
+:paw_prints:  Back to [TAS Master Documentation](https://gitlab.alfresco.com/tas/documentation/wikis/home)
 
 ---
-:paw_prints:  Back to [TAS Master Documentation](https://gitlab.alfresco.com/tas/documentation/wikis/home)
  
 ## Table of Contents
 * [Synopsis](#synopsis)
@@ -66,20 +66,26 @@ Using a centralized location (Nexus), everyone will be able to reuse this indivi
 
 **[Back to Top ^](#table-of-contents)**
 
-## Installation (if you want to contribute)
+## Installation (if you want to contribute or run tests from your locall machine)
 
 * Open your Gitlab client and clone the repository of this project.
 * You can do this also from command line (or in your terminal) adding:
 
 ```bash
-> git clone https://gitlab.alfresco.com/tas/alfresco-tas-tester.git
+# this command will cloen the utility project locally
+$ git clone https://gitlab.alfresco.com/tas/alfresco-tas-tester.git 
+
+# this clone will have the latest changes from repository. If you want to checkout a specific version released, take a look at the [Change Log](docs/CHANGELOG.md) page
+$ cd alfresco-tas-tester
+# this command will checkout the remove v1.0.0 tagged repository and create locally a new branch v1.0.0
+$ git checkout tags/v1.0.0 -b v1.0.0 
 ```
 
 * Install and check if all dependencies are downloaded
+(in your downloaded repository run the following commands:)
 
 ```bash
-> cd alfresco-tas-tester
-> mvn clean install -DskipTests
+$ mvn clean install -DskipTests
 # you should see one [INFO] BUILD SUCCESS message displayed
 ```
 **[Back to Top ^](#table-of-contents)**
