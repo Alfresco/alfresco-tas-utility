@@ -15,6 +15,8 @@ public class ErrorModel extends TestModel
     public static String AUTHENTICATION_FAILED = "Authentication failed";
     public static String INVALID_ARGUMENT = "An invalid argument was received";
     public static String UNABLE_TO_LOCATE = "Unable to locate resource";
+    public static String NULL_ARGUMENT = "Must provide a non-null %s";
+    public static String CANNOT_COMMENT = "Cannot comment on this node";
 
     public String getErrorKey()
     {
