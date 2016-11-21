@@ -4,6 +4,16 @@
 
 # Change Log
 All notable changes to this project will be documented in this file.
+## [[v1.0.1] - 2016-11-21](/tas/alfresco-tas-tester/commits/v1.0.1)
+### Added
+- DataLink.class # createRandomLink()
+ 
+### Removed
+- unnecessary plugin dependencies
+
+### Update
+- dataprep version to v1.16
+- ErrorModel
 
 ## [[v1.0.0] - 2016-11-18](/tas/alfresco-tas-tester/commits/v1.0.0)
 ### Added
