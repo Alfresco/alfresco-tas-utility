@@ -41,8 +41,7 @@ public class DataSite extends TestData<DataSite>
      */
     public synchronized SiteModel createSite(SiteModel siteModel) throws DataPreparationException
     {    
-        LOG.info("Creating site {} with user {}", siteModel.toString(), getCurrentUser().toString());
-        
+        STEP(String.format("Creating site %s with user %s", siteModel.toString(), getCurrentUser().toString()));
         siteService.create(
                 getCurrentUser().getUsername(), 
                 getCurrentUser().getPassword(), 
@@ -64,6 +63,8 @@ public class DataSite extends TestData<DataSite>
     public SiteModel createPublicRandomSite() throws DataPreparationException
     {
         String randomSite = RandomData.getRandomName("site");
+        STEP(String.format("Creating public site %s with user %s", randomSite, getCurrentUser().toString()));
+
         return createSite(new SiteModel(randomSite));
     }
     
@@ -76,6 +77,8 @@ public class DataSite extends TestData<DataSite>
     public SiteModel createModeratedRandomSite() throws DataPreparationException
     {
         SiteModel randomSite = new SiteModel(RandomData.getRandomName("site"));
+        STEP(String.format("Creating moderated site %s with user %s", randomSite, getCurrentUser().toString()));
+
         randomSite.setVisibility(Site.Visibility.MODERATED);
         return createSite(randomSite);
     }
@@ -89,6 +92,8 @@ public class DataSite extends TestData<DataSite>
     public SiteModel createPrivateRandomSite() throws DataPreparationException
     {
         SiteModel randomSite = new SiteModel(RandomData.getRandomName("site"));
+        STEP(String.format("Creating private site %s with user %s", randomSite, getCurrentUser().toString()));
+
         randomSite.setVisibility(Site.Visibility.PRIVATE);
         return createSite(randomSite);
     }
@@ -102,6 +107,8 @@ public class DataSite extends TestData<DataSite>
     public SiteModel createIMAPSite() throws DataPreparationException
     {
         String imapSite = RandomData.getRandomName("IMAPsite");       
+        STEP(String.format("Creating public site %s with user %s and setting as IMAP Favourite", imapSite, getCurrentUser().toString()));
+
         SiteModel siteModel = createSite(new SiteModel(imapSite));
         siteService.setIMAPFavorite(getCurrentUser().getUsername(), getCurrentUser().getPassword(), imapSite);
         return siteModel;

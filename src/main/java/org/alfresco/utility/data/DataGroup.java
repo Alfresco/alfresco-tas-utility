@@ -29,6 +29,8 @@ public class DataGroup extends TestData<DataGroup>
     public GroupModel createRandomGroup()
     {
         String groupName = RandomData.getRandomName("Group");
+        STEP(String.format("DATAPREP: Creating group %s with admin", groupName));
+        
         GroupModel groupModel = new GroupModel(groupName);
         
         groupModel = createGroup(groupModel);
@@ -77,6 +79,7 @@ public class DataGroup extends TestData<DataGroup>
     {
         for(UserModel userModel: users)
         {     
+                STEP(String.format("DATAPREP: Add user %s to group %s", getCurrentUser().getUsername(), groupModel.getDisplayName()));
                 usingUser(userModel).addUserToGroup(groupModel);
         }
         

@@ -1,5 +1,7 @@
 package org.alfresco.utility.data;
 
+import static org.alfresco.utility.report.log.Step.STEP;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +18,6 @@ import org.testng.Assert;
 
 /**
  * Data Preparation for Users
- * 
  */
 @Service
 @Scope(value = "prototype")
@@ -31,7 +32,6 @@ public class DataUser extends TestData<DataUser>
      * Creates a new user with a specific user name on test server defined in {@link TasProperties}
      * file.
      * If no user is specified with {@link #usingUser(UserModel)} then the random user is created with admin.
-     * 
      * This user will have default password set to "password"
      * 
      * @param userName
@@ -40,20 +40,23 @@ public class DataUser extends TestData<DataUser>
      */
     public UserModel createUser(String userName) throws DataPreparationException
     {
+        STEP(String.format("DATAPREP: Creating %s user", userName));
         return createUser(userName, PASSWORD);
     }
-    
+
     /**
      * Create a new user based on the {@link UserModel} provided
+     * 
      * @param user
      * @return {@link UserModel}
      * @throws DataPreparationException
      */
     public UserModel createUser(UserModel user) throws DataPreparationException
     {
+        STEP(String.format("DATAPREP: Creating %s user", user.getUsername()));
         return createUser(user.getUsername(), user.getPassword());
     }
-    
+
     /**
      * Creates a new random user with a specific user name on test server defined in {@link TasProperties}
      * file.
@@ -66,20 +69,18 @@ public class DataUser extends TestData<DataUser>
     public UserModel createUser(String userName, String password) throws DataPreparationException
     {
         UserModel newUser = new UserModel(userName, password);
+        STEP(String.format("DATAPREP: Creating %s user", newUser.toString()));
         LOG.info("Create user {}", newUser.toString());
-        
-        Boolean created = userService.create(getAdminUser().getUsername(), 
-                                            getAdminUser().getPassword(), 
-                                            userName, password, String.format(EMAIL, userName),
-                                            String.format("%s FirstName", userName), 
-                                            String.format("LN-%s", userName));
+
+        Boolean created = userService.create(getAdminUser().getUsername(), getAdminUser().getPassword(), userName, password, String.format(EMAIL, userName),
+                String.format("%s FirstName", userName), String.format("LN-%s", userName));
         if (!created)
             throw new DataPreparationException(String.format(USER_NOT_CREATED, newUser.toString()));
 
         newUser.setDomain(getCurrentUser().getDomain());
-        return newUser;  
+        return newUser;
     }
-    
+
     /**
      * Creates a new random user with a specific user name on test server defined in {@link TasProperties}
      * file.
@@ -93,16 +94,13 @@ public class DataUser extends TestData<DataUser>
     {
         UserModel newUser = new UserModel(userName, PASSWORD);
         newUser.setDomain(getCurrentUser().getDomain());
-        
-        LOG.info("Create user {}", newUser.toString());
-        Boolean created = userService.create(getCurrentUser().getUsername(), 
-                                            getCurrentUser().getPassword(), 
-                                            userName, PASSWORD, String.format(EMAIL, userName),
-                                            String.format("%s FirstName", userName), 
-                                            String.format("LN-%s", userName));
+
+        STEP(String.format("DATAPREP: Creating %s tenant user", newUser.toString()));
+        Boolean created = userService.create(getCurrentUser().getUsername(), getCurrentUser().getPassword(), userName, PASSWORD, String.format(EMAIL, userName),
+                String.format("%s FirstName", userName), String.format("LN-%s", userName));
         if (!created)
             throw new DataPreparationException(String.format(USER_NOT_CREATED, newUser.toString()));
-        
+
         return newUser;
     }
 
@@ -115,7 +113,9 @@ public class DataUser extends TestData<DataUser>
      */
     public UserModel createRandomTestUser() throws DataPreparationException
     {
-        return createRandomTestUser("User");
+        String user = RandomData.getRandomName("User");
+        STEP(String.format("DATAPREP: Creating %s user", user));
+        return createUser(user);
     }
 
     /**
@@ -127,95 +127,99 @@ public class DataUser extends TestData<DataUser>
      */
     public UserModel createRandomTestUser(String prefix) throws DataPreparationException
     {
-        return createUser(RandomData.getRandomName(prefix));
+        String user = RandomData.getRandomName(prefix);
+        STEP(String.format("DATAPREP: Creating %s user", user));
+        return createUser(user);
     }
-    
+
     public void addUserToSite(UserModel userModel, SiteModel siteModel, UserRole role)
     {
-        userService.createSiteMember(getCurrentUser().getUsername(), getCurrentUser().getPassword(),
-                userModel.getUsername(), siteModel.getId(), role.toString());
-        
+        STEP(String.format("DATAPREP: Adding %s user with %s role to %s site", userModel.getUsername(), role.toString(), siteModel.getId()));
+        userService.createSiteMember(getCurrentUser().getUsername(), getCurrentUser().getPassword(), userModel.getUsername(), siteModel.getId(),
+                role.toString());
+
         userModel.setUserRole(role);
     }
-    
+
     public ListUserWithRoles addUsersWithRolesToSite(SiteModel siteModel, UserRole... roles) throws DataPreparationException
     {
         ListUserWithRoles usersWithRoles = new ListUserWithRoles();
-    	for(UserRole role: roles)
-    	{
-        	UserModel userModel = createRandomTestUser();
-        	addUserToSite(userModel, siteModel, role);
-        	usersWithRoles.add(userModel);
-    	}
-    	
-    	return usersWithRoles;
+        for (UserRole role : roles)
+        {
+            UserModel userModel = createRandomTestUser();
+            STEP(String.format("DATAPREP: Adding %s user with %s role to %s site", userModel.getUsername(), role.toString(), siteModel.getId()));
+            addUserToSite(userModel, siteModel, role);
+            usersWithRoles.add(userModel);
+        }
+
+        return usersWithRoles;
     }
-    
+
     public void assertUserExist(UserModel user)
     {
         assertUserExist(user.getUsername());
     }
-    
+
     public void assertUserExist(String username)
     {
+        STEP(String.format("DATAPREP: Assert that %s user exists",username));
         LOG.info("Check user {} exist in repository", username.toString());
-        Assert.assertTrue(isUserInRepo(username),
-                            String.format("User {} exist in repository", username));  
+        Assert.assertTrue(isUserInRepo(username), String.format("User {} exist in repository", username));
     }
 
     public void assertUserDoesNotExist(UserModel user)
     {
+        STEP(String.format("DATAPREP: Assert that %s user does not exist ",user.getUsername()));
         LOG.info("Check user {} does not exist in repository", user.toString());
-        Assert.assertFalse(isUserInRepo(user.getUsername()),
-                String.format("User {} exist in repository", user.toString()));
+        Assert.assertFalse(isUserInRepo(user.getUsername()), String.format("User {} exist in repository", user.toString()));
     }
-    
+
     /**
      * Check if user exist in repository
+     * 
      * @param username
-     * @return boolean 
+     * @return boolean
      */
     public boolean isUserInRepo(String username)
     {
-       return userService.userExists(tasProperties.getAdminUser(), tasProperties.getAdminPassword(), username); 
+        return userService.userExists(tasProperties.getAdminUser(), tasProperties.getAdminPassword(), username);
     }
-    
+
     /**
-     * 
      * Handle list of user with particular roles
-     *
      */
     public class ListUserWithRoles
     {
         private List<UserModel> usersWithRoles;
-        
+
         public ListUserWithRoles()
         {
             usersWithRoles = new ArrayList<UserModel>();
         }
-        
+
         public void add(UserModel userModel)
         {
             this.usersWithRoles.add(userModel);
         }
-        
+
         /**
-         * Return one user that has the role specified 
+         * Return one user that has the role specified
+         * 
          * @param userRole
          * @return
          */
         public UserModel getOneUserWithRole(UserRole userRole)
         {
-           UserModel userModel = null; 
-           for(UserModel user :  this.usersWithRoles)
-           {
-               if(user.getUserRole().equals(userRole))
-                   return user;
-           }
-           return userModel;
+            UserModel userModel = null;
+            for (UserModel user : this.usersWithRoles)
+            {
+                if (user.getUserRole().equals(userRole))
+                    return user;
+            }
+            return userModel;
         }
     }
-    
+
     /**
      * Delete user
      * 
@@ -224,6 +228,7 @@ public class DataUser extends TestData<DataUser>
      */
     public void deleteUser(UserModel userToDelete) throws DataPreparationException
     {
+        STEP(String.format("DATAPREP: Deleting %s user",userToDelete.getUsername()));
         LOG.info("Delete user {}", userToDelete.getUsername());
         boolean deleted = userService.delete(getAdminUser().getUsername(), getAdminUser().getPassword(), userToDelete.getUsername());
         if (!deleted)

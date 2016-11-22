@@ -460,6 +460,8 @@ public class DataContent extends TestData<DataContent>
      */
     public void addTagToContent(TagModel model) throws TestConfigurationException
     {
+        STEP(String.format("DATAPREP: Create '%s' tag to content %s", model.getTag()));
+        
         if (getLastResource() == null || getLastResource().isEmpty())
             throw new TestConfigurationException("You didn't specify your last resource in your tests. Please call usingResource(...) before adding a tag");
         
@@ -473,7 +475,7 @@ public class DataContent extends TestData<DataContent>
      */
     public void assertContentHasTag(String cmisObjectPath, TagModel model){
         
-        STEP(String.format("DATAPREP: Verify content %s has tag", cmisObjectPath, model.getTag()));
+        STEP(String.format("DATAPREP: Verify content %s has tag %s", cmisObjectPath, model.getTag()));
         List<String> tags=  contentActions.getTagNamesFromContent(getCurrentUser().getUsername(), getCurrentUser().getPassword(), cmisObjectPath);
        boolean found = false;
         for(String tag:tags){
