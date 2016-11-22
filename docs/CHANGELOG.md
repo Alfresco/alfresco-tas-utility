@@ -4,6 +4,15 @@
 
 # Change Log
 All notable changes to this project will be documented in this file.
+
+## [[v1.0.2] - 2016-11-22](/tas/alfresco-tas-tester/commits/v1.0.2)
+### Added
+- step on Data preparation
+
+### Update
+- ErrorModel
+- TestRail integration fixes (
+
 ## [[v1.0.1] - 2016-11-21](/tas/alfresco-tas-tester/commits/v1.0.1)
 ### Added
 - DataLink.class # createRandomLink()
