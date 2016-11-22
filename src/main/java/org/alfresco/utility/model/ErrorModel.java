@@ -12,6 +12,7 @@ public class ErrorModel extends TestModel
     private String descriptionURL = "";
     public static String PERMISSION_WAS_DENIED = "Permission was denied";
     public static String ENTITY_NOT_FOUND = "%s was not found";
+    public static String RELATIONSHIP_NOT_FOUND = "The relationship resource was not found for the entity with id: %s and a relationship id of %s";
     public static String AUTHENTICATION_FAILED = "Authentication failed";
     public static String INVALID_ARGUMENT = "An invalid %s was received";
     public static String UNABLE_TO_LOCATE = "Unable to locate resource";
