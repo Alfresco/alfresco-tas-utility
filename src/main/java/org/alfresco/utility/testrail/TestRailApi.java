@@ -59,6 +59,7 @@ public class TestRailApi
     private int currentProjectID;
     private String currentRun;
     private boolean configurationError = true;
+    private String suiteId;
 
     private TestCase tmpTestCase = null;
 
@@ -87,6 +88,10 @@ public class TestRailApi
 
                 this.currentRun = testRailProperties.getProperty("testManagement.testRun");
                 Utility.checkObjectIsInitialized(currentRun, "currentRun");
+                
+                this.suiteId = testRailProperties.getProperty("testManagement.suiteId");
+                Utility.checkObjectIsInitialized(suiteId, "suiteId");
+                
                 configurationError = false;
             }
             catch (Exception e)
@@ -308,6 +313,7 @@ public class TestRailApi
             data.put("custom_exce_type", executionTypeList);
             data.put("custom_description", annotation.description());
             data.put("priority_id", new Integer(TEST_PRIORITY_MEDIUM));
+            data.put("custom_platform", 1);
 
             Object response = postRequest("add_case/" + section.getId(), data);
             tmpTestCase = toClass(response, TestCase.class);
@@ -343,7 +349,7 @@ public class TestRailApi
         tmpTestCase = null;
         try
         {
-            Object response = getRequest("/get_cases/" + currentProjectID + "&type_id=" + annotation.testType().value() + "&section_id=" + section.getId());
+            Object response = getRequest("/get_cases/" + currentProjectID + "&type_id=" + annotation.testType().value() + "&suite_id=" + suiteId + "&section_id=" + section.getId());
             List<TestCase> existingTestCases = toCollection(response, TestCase.class);
             for (TestCase tc : existingTestCases)
             {
@@ -443,7 +449,7 @@ public class TestRailApi
         Object response;
         try
         {
-            response = getRequest("get_sections/" + projectID);
+            response = getRequest("get_sections/" + projectID + "&suite_id=" + suiteId);
             return toCollection(response, Section.class);
         }
         catch (Exception e)

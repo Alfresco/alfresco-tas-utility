@@ -1,6 +1,7 @@
 package org.alfresco.utility.testrail.annotation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.alfresco.utility.testrail.model.Section;
@@ -12,6 +13,7 @@ public class SectionUtil
      */
     public String[] section;
     private Section rootSection = null;
+    private String sectionSplit = "|";
 
     /*
      * get all the section names without the root name
@@ -29,7 +31,24 @@ public class SectionUtil
 
     public SectionUtil(String[] section)
     {
-        this.section = section;
+        List<String> sections = new ArrayList<String>();
+        for (int i = 0; i < section.length; i++)
+        {
+            if (section[i] != null)
+            {
+                if (section[i].contains(sectionSplit))
+                {
+                    sections.addAll(Arrays.asList(section[i].split(sectionSplit)));
+                }
+                else
+                {
+                    sections.add(section[i]);
+                }
+
+            }
+        }
+        this.section = (String[]) sections.toArray();
+
     }
 
     public String getRootSectionName()
