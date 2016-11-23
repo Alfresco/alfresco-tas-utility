@@ -5,6 +5,7 @@ import org.testng.Assert;
 public class ErrorModel extends TestModel
 {
     private String errorKey = "";
+    private String logId = "";
     private int statusCode = 0;
 
     private String briefSummary = "";
@@ -73,7 +74,17 @@ public class ErrorModel extends TestModel
     {
         this.descriptionURL = descriptionURL;
     }
-    
+
+    public String getLogId()
+    {
+        return logId;
+    }
+
+    public void setLogId(String logId)
+    {
+        this.logId = logId;
+    }
+
     public ErrorModel containsSummary(String summary)
     {
         if(!getBriefSummary().contains(summary))
