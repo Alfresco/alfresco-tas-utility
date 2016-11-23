@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.alfresco.utility.LogFactory;
+import org.alfresco.utility.TestRailSampleTest;
 import org.alfresco.utility.testrail.annotation.SectionUtil;
 import org.alfresco.utility.testrail.annotation.TestRail;
 import org.alfresco.utility.testrail.model.Run;
@@ -62,37 +63,28 @@ public class TestCaseUploader
             if (sectionUtil.hasRoot())
             {
                 Section lastChildSection = null;
-                if(!sectionUtil.getRootChildSections().isEmpty() && annotation.section().length > 0)
+                if (!sectionUtil.getRootChildSections().isEmpty() && annotation.section().length > 0)
                 {
-                    for (Section tmpSection : allSections)
-                    {
-                        for (String sectionChild : sectionUtil.getRootChildSections())
-                        {
-                            if (tmpSection.getName().equals(sectionChild) && tmpSection.getParent_id() == sectionUtil.getRootSection().getId()
-                                    && tmpSection.getDepth() > 0)
-                            {
-                                lastChildSection = tmpSection;
-                            }
-                        }
-                    }
+                    lastChildSection = getLastChild(allSections, sectionUtil.getRootChildSections(), sectionUtil.getRootSection().getId());
                 }
                 else
                 {
                     lastChildSection = sectionUtil.getRootSection();
                 }
-                
+
                 if (lastChildSection != null)
                 {
                     testSection = lastChildSection;
                     if (testRail.isAutomatedTestCaseInSection(result.getMethod().getMethodName(), lastChildSection, annotation))
                     {
-                        LOG.info("Test Case [{}] is already uploaded under Section(s) {}.", result.getMethod().getMethodName(), ArrayUtils.toString(annotation.section()));
+                        LOG.info("Test Case [{}] is already uploaded under Section(s) {}.", result.getMethod().getMethodName(),
+                                ArrayUtils.toString(annotation.section()));
                     }
                     else
                     {
                         testRail.addTestCase(result, lastChildSection, annotation);
-                        LOG.info("Test Case [{}] marked as [{}] Test Type is uploaded under Section(s) {}.", testRail.getFullTestCaseName(result),
-                                annotation.testType().toString(), ArrayUtils.toString(annotation.section()));
+                        LOG.info("Test Case [{}] marked as [{}] Test Type is uploaded under Section(s) {}.", testRail.getFullTestCaseName(result), annotation
+                                .testType().toString(), ArrayUtils.toString(annotation.section()));
                     }
                 }
                 else
@@ -112,7 +104,7 @@ public class TestCaseUploader
         {
             testCasesNotUploaded.put(testRail.getFullTestCaseName(result), "Test Case is NOT marked for Test Rail. Use @TestRail annotation.");
         }
-        
+
     }
 
     public void updateTestRailTestSteps(ITestResult result, String steps)
@@ -120,10 +112,10 @@ public class TestCaseUploader
         if (testRail.hasConfigurationErrors())
             return;
         annotation = result.getMethod().getConstructorOrMethod().getMethod().getAnnotation(TestRail.class);
-        if(annotation != null && testSection != null)
+        if (annotation != null && testSection != null)
             testRail.addTestSteps(result, steps, testSection, annotation);
     }
-    
+
     public void updateTestRailTestCase(ITestResult result)
     {
         if (testRail.hasConfigurationErrors())
@@ -142,6 +134,34 @@ public class TestCaseUploader
             Object value = thisEntry.getValue();
             LOG.error("Review Test Case [{}], I cannot upload to Test Rail due to: [{}]", key, value);
         }
+    }
+
+    List<Section> childSection = new ArrayList<Section>();
+
+    private Section getLastChild(List<Section> allSection, List<String> rootChildSection, int parentId)
+    {
+
+        Section founded = null;
+        for (String sectionChild : rootChildSection)
+        {
+            for (Section tmpSection : allSections)
+            {
+                if (parentId == tmpSection.getParent_id())
+                {
+
+                    if (tmpSection.getName().equals(sectionChild))
+                    {
+                        parentId = tmpSection.getId();
+                        founded = tmpSection;
+                    }
+                }
+
+            }
+
+        }
+
+        return founded;
+
     }
 
 }

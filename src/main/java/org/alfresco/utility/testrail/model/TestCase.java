@@ -302,7 +302,27 @@ public class TestCase
     {
         this.custom_min_vers = custom_min_vers;
     }
+    
+ public List<String> getCustom_max_version()
+    {
+        return custom_max_version;
+    }
 
+    public void setCustom_max_version(List<String> custom_max_version)
+    {
+        this.custom_max_version = custom_max_version;
+    }
+
+    public int getCustom_platform()
+    {
+        return custom_platform;
+    }
+
+    public void setCustom_platform(int custom_platform)
+    {
+        this.custom_platform = custom_platform;
+    }
+ 
 
     private int id;
     private String title;
@@ -331,4 +351,7 @@ public class TestCase
     private String custom_description;
     private String custom_test_notes;
     private List<String> custom_min_vers;
+    private List<String> custom_max_version;
+    private int custom_platform;
+
 }
