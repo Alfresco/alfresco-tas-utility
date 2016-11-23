@@ -12,7 +12,7 @@ public class LogsListener implements ITestListener
     public void onTestStart(ITestResult result)
     {
         XmlLogWritter.LOG.info("Starting test: " + result.getMethod().getMethodName());
-        //Step.testSteps.clear();
+        // Step.testSteps.clear();
     }
 
     @Override
@@ -51,4 +51,5 @@ public class LogsListener implements ITestListener
     {
         logWritter.setFinish(context);
     }
+
 }
