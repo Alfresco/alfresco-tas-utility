@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.alfresco.utility.LogFactory;
-import org.alfresco.utility.TestRailSampleTest;
 import org.alfresco.utility.testrail.annotation.SectionUtil;
 import org.alfresco.utility.testrail.annotation.TestRail;
 import org.alfresco.utility.testrail.model.Run;
@@ -129,7 +128,7 @@ public class TestCaseUploader
         while (entries.hasNext())
         {
             @SuppressWarnings("rawtypes")
-            Entry thisEntry = (Entry) entries.next();
+            Entry thisEntry = entries.next();
             Object key = thisEntry.getKey();
             Object value = thisEntry.getValue();
             LOG.error("Review Test Case [{}], I cannot upload to Test Rail due to: [{}]", key, value);
