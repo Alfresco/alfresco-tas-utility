@@ -5,6 +5,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [[v1.0.4] - 2016-11-24](/tas/alfresco-tas-tester/commits/v1.0.4)
+### Update
+- ErrorModel needed for further RestAPI release
+
 ## [[v1.0.3] - 2016-11-24](/tas/alfresco-tas-tester/commits/v1.0.3)
 ### Fix
 - issue related to TestRail (now we can update tests on Alfresco One Test Rail project)
