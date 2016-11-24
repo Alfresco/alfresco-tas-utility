@@ -24,6 +24,8 @@ public class ErrorModel extends TestModel
     public static String NULL_LIKE_RATING = "Rating should be non-null and a boolean for 'likes' rating scheme";
     public static String NULL_FIVESTAR_RATING = "Rating should be non-null and an integer for 'fiveStar' rating scheme";
     public static String CANNOT_RATE = "Cannot rate this node";
+    public static String NOT_SUFFICIENT_PERMISSIONS = "The current user does not have sufficient permissions to delete membership details of the site %s";
+    public static String DELETE_EMPTY_ARGUMENT = "DELETE is executed against the instance URL";
 
     public String getErrorKey()
     {
