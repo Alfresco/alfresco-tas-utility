@@ -1,5 +1,8 @@
 package org.alfresco.utility.testrail;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.alfresco.utility.report.log.Step;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
@@ -23,20 +26,46 @@ public class TestRailExecutorListener implements ITestListener
     public void onTestSuccess(ITestResult result)
     {
         testCaseUploader.updateTestRailTestCase(result);
+        List<String> stepsToBeUpdated = new ArrayList<String>();
+
+        if (Step.testSteps.get(result.getTestClass().getName()) != null)
+        {
+            stepsToBeUpdated.add("---START DATAPREP -----");
+            stepsToBeUpdated.addAll(Step.testSteps.get(result.getTestClass().getName()));
+            stepsToBeUpdated.add("---END DATAPREP -----");
+
+        }
         if (Step.testSteps.get(result.getMethod().getMethodName()) != null)
         {
-            testCaseUploader.updateTestRailTestSteps(result, String.join(System.lineSeparator(), Step.testSteps.get(result.getMethod().getMethodName())));
+            stepsToBeUpdated.addAll(Step.testSteps.get(result.getMethod().getMethodName()));
+
         }
+
+        testCaseUploader.updateTestRailTestSteps(result, String.join(System.lineSeparator(), stepsToBeUpdated));
+
     }
 
     @Override
     public void onTestFailure(ITestResult result)
     {
         testCaseUploader.updateTestRailTestCase(result);
+        List<String> stepsToBeUpdated = new ArrayList<String>();
+
+        if (Step.testSteps.get(result.getTestClass().getName()) != null)
+        {
+            stepsToBeUpdated.add("---START DATAPREP -----");
+            stepsToBeUpdated.addAll(Step.testSteps.get(result.getTestClass().getName()));
+            stepsToBeUpdated.add("---END DATAPREP -----");
+
+        }
         if (Step.testSteps.get(result.getMethod().getMethodName()) != null)
         {
-            testCaseUploader.updateTestRailTestSteps(result, String.join(System.lineSeparator(), Step.testSteps.get(result.getMethod().getMethodName())));
+            stepsToBeUpdated.addAll(Step.testSteps.get(result.getMethod().getMethodName()));
+
         }
+
+        testCaseUploader.updateTestRailTestSteps(result, String.join(System.lineSeparator(), stepsToBeUpdated));
+
     }
 
     @Override
@@ -49,10 +78,23 @@ public class TestRailExecutorListener implements ITestListener
     public void onTestFailedButWithinSuccessPercentage(ITestResult result)
     {
         testCaseUploader.updateTestRailTestCase(result);
+        List<String> stepsToBeUpdated = new ArrayList<String>();
+
+        if (Step.testSteps.get(result.getTestClass().getName()) != null)
+        {
+            stepsToBeUpdated.add("---START DATAPREP -----");
+            stepsToBeUpdated.addAll(Step.testSteps.get(result.getTestClass().getName()));
+            stepsToBeUpdated.add("---END DATAPREP -----");
+
+        }
         if (Step.testSteps.get(result.getMethod().getMethodName()) != null)
         {
-            testCaseUploader.updateTestRailTestSteps(result, String.join(System.lineSeparator(), Step.testSteps.get(result.getMethod().getMethodName())));
+            stepsToBeUpdated.addAll(Step.testSteps.get(result.getMethod().getMethodName()));
+
         }
+
+        testCaseUploader.updateTestRailTestSteps(result, String.join(System.lineSeparator(), stepsToBeUpdated));
+
     }
 
     @Override

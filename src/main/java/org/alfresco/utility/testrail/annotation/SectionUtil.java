@@ -3,6 +3,7 @@ package org.alfresco.utility.testrail.annotation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.alfresco.utility.testrail.model.Section;
 
@@ -36,18 +37,18 @@ public class SectionUtil
         {
             if (section[i] != null)
             {
-                if (section[i].contains(sectionSplit))
+                if (section[i].contains("|"))
                 {
-                    sections.addAll(Arrays.asList(section[i].split(sectionSplit)));
+                    sections.addAll(Arrays.asList(section[i].split(Pattern.quote(sectionSplit),-1)));
                 }
                 else
                 {
-                    sections.add(section[i]);
+                    sections.add((String)section[i]);
                 }
 
             }
         }
-        this.section = (String[]) sections.toArray();
+        this.section = sections.toArray(new String[sections.size()]);
 
     }
 

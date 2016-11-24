@@ -63,7 +63,6 @@ public class DataSite extends TestData<DataSite>
     public SiteModel createPublicRandomSite() throws DataPreparationException
     {
         String randomSite = RandomData.getRandomName("site");
-        STEP(String.format("Creating public site %s with user %s", randomSite, getCurrentUser().toString()));
 
         return createSite(new SiteModel(randomSite));
     }
@@ -77,7 +76,6 @@ public class DataSite extends TestData<DataSite>
     public SiteModel createModeratedRandomSite() throws DataPreparationException
     {
         SiteModel randomSite = new SiteModel(RandomData.getRandomName("site"));
-        STEP(String.format("Creating moderated site %s with user %s", randomSite, getCurrentUser().toString()));
 
         randomSite.setVisibility(Site.Visibility.MODERATED);
         return createSite(randomSite);
@@ -92,7 +90,6 @@ public class DataSite extends TestData<DataSite>
     public SiteModel createPrivateRandomSite() throws DataPreparationException
     {
         SiteModel randomSite = new SiteModel(RandomData.getRandomName("site"));
-        STEP(String.format("Creating private site %s with user %s", randomSite, getCurrentUser().toString()));
 
         randomSite.setVisibility(Site.Visibility.PRIVATE);
         return createSite(randomSite);

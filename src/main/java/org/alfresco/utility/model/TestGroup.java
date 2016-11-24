@@ -17,7 +17,7 @@ public @interface TestGroup
     /*
      * Used in Rest api mostly
      */
-    public static String REST_API = "rest-api";
+    public static String REST_API = "Platform|Rest API";
     public static String COMMENTS = "comments";
     public static String DEPLOYMENTS = "deployments";
     public static String FAVORITES = "favorites";

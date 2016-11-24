@@ -209,6 +209,19 @@ public class XmlLogWritter
         Node duration = doc.createElement("duration");
         duration.appendChild(doc.createTextNode(getDuration(endTime, startTime)));
         test.appendChild(duration);
+        
+        Node pres = doc.createElement("pres");
+        test.appendChild(pres);
+        Node preNode = null;
+        List<String> methodPres = testSteps.get(result.getTestClass().getName());
+        if(methodPres != null && methodPres.size() != 0){
+            for (String step : methodPres)
+            {
+                preNode = doc.createElement("pre");
+                preNode.appendChild(doc.createTextNode(step));
+                pres.appendChild(preNode);
+            }
+        }
 
         Node steps = doc.createElement("steps");
         test.appendChild(steps);
@@ -300,4 +313,5 @@ public class XmlLogWritter
     {
         return new SimpleDateFormat("mm:ss:SSS").format(new Date(endTime - startTime));
     }
+
 }

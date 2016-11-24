@@ -40,7 +40,6 @@ public class DataUser extends TestData<DataUser>
      */
     public UserModel createUser(String userName) throws DataPreparationException
     {
-        STEP(String.format("DATAPREP: Creating %s user", userName));
         return createUser(userName, PASSWORD);
     }
 
@@ -53,7 +52,6 @@ public class DataUser extends TestData<DataUser>
      */
     public UserModel createUser(UserModel user) throws DataPreparationException
     {
-        STEP(String.format("DATAPREP: Creating %s user", user.getUsername()));
         return createUser(user.getUsername(), user.getPassword());
     }
 
@@ -69,7 +67,7 @@ public class DataUser extends TestData<DataUser>
     public UserModel createUser(String userName, String password) throws DataPreparationException
     {
         UserModel newUser = new UserModel(userName, password);
-        STEP(String.format("DATAPREP: Creating %s user", newUser.toString()));
+        STEP(String.format("DATAPREP: Creating %s user", newUser.getUsername()));
         LOG.info("Create user {}", newUser.toString());
 
         Boolean created = userService.create(getAdminUser().getUsername(), getAdminUser().getPassword(), userName, password, String.format(EMAIL, userName),
@@ -95,7 +93,7 @@ public class DataUser extends TestData<DataUser>
         UserModel newUser = new UserModel(userName, PASSWORD);
         newUser.setDomain(getCurrentUser().getDomain());
 
-        STEP(String.format("DATAPREP: Creating %s tenant user", newUser.toString()));
+        STEP(String.format("DATAPREP: Creating %s tenant user", newUser.getUsername()));
         Boolean created = userService.create(getCurrentUser().getUsername(), getCurrentUser().getPassword(), userName, PASSWORD, String.format(EMAIL, userName),
                 String.format("%s FirstName", userName), String.format("LN-%s", userName));
         if (!created)
@@ -114,7 +112,6 @@ public class DataUser extends TestData<DataUser>
     public UserModel createRandomTestUser() throws DataPreparationException
     {
         String user = RandomData.getRandomName("User");
-        STEP(String.format("DATAPREP: Creating %s user", user));
         return createUser(user);
     }
 
@@ -128,7 +125,6 @@ public class DataUser extends TestData<DataUser>
     public UserModel createRandomTestUser(String prefix) throws DataPreparationException
     {
         String user = RandomData.getRandomName(prefix);
-        STEP(String.format("DATAPREP: Creating %s user", user));
         return createUser(user);
     }
 
