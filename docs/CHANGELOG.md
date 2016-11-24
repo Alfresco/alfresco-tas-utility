@@ -5,13 +5,21 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [[v1.0.3] - 2016-11-24](/tas/alfresco-tas-tester/commits/v1.0.3)
+### Fix
+- issue related to TestRail (now we can update tests on Alfresco One Test Rail project)
+
+### Update
+- ErrorModel
+- Data utilities log info
+
 ## [[v1.0.2] - 2016-11-22](/tas/alfresco-tas-tester/commits/v1.0.2)
 ### Added
 - step on Data preparation
 
 ### Update
 - ErrorModel
-- TestRail integration fixes (
+- TestRail integration fixes
 
 ## [[v1.0.1] - 2016-11-21](/tas/alfresco-tas-tester/commits/v1.0.1)
 ### Added
