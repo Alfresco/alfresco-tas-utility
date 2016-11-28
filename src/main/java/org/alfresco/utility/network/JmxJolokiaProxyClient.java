@@ -2,6 +2,8 @@ package org.alfresco.utility.network;
 
 import java.io.IOException;
 
+import javax.management.*;
+
 import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.TasProperties;
 import org.alfresco.utility.exception.EnvironmentConfigurationException;
@@ -47,7 +49,26 @@ public class JmxJolokiaProxyClient implements Jmx
         J4pWriteRequest requestW = new J4pWriteRequest(objectName, attributeName, attributeValue, "");
         J4pResponse<J4pWriteRequest> response = getClient().execute(requestW);
         LOG.info("Updating objectName {}.{} with value {} via JmxJolokia", objectName, attributeName, attributeValue);
+        refreshServerProperty(objectName, JmxClient.JmxPropertyOperation.stop);
+        refreshServerProperty(objectName, JmxClient.JmxPropertyOperation.start);
         return response.getValue();
+    }
+
+    /**
+     * Use this to perform start/stop operation after changing server properties
+     *
+     * @param objectName
+     * @param operation
+     * @throws MalformedObjectNameException
+     * @throws ReflectionException
+     * @throws MBeanException
+     * @throws InstanceNotFoundException
+     */
+    public void refreshServerProperty(String objectName, JmxClient.JmxPropertyOperation operation) throws Exception
+    {
+        ObjectName objectJmx = new ObjectName(objectName);
+        J4pExecRequest j4pExecRequest = new J4pExecRequest(objectJmx, operation.toString(), new Object[] {});
+        getClient().execute(j4pExecRequest);
     }
 
     private J4pResponse<?> executeRequest(J4pRequest request) throws Exception
