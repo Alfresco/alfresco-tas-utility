@@ -26,6 +26,8 @@ public class ErrorModel extends TestModel
     public static String CANNOT_RATE = "Cannot rate this node";
     public static String NOT_SUFFICIENT_PERMISSIONS = "The current user does not have sufficient permissions to delete membership details of the site %s";
     public static String DELETE_EMPTY_ARGUMENT = "DELETE is executed against the instance URL";
+    public static String INVALID_MAXITEMS = "Invalid paging parameter maxItems:%s";
+    public static String INVALID_SKIPCOUNT = "Invalid paging parameter skipCount:%s";
 
     public String getErrorKey()
     {
