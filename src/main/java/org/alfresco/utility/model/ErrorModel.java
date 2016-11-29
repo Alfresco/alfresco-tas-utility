@@ -26,10 +26,12 @@ public class ErrorModel extends TestModel
     public static String CANNOT_RATE = "Cannot rate this node";
     public static String NOT_SUFFICIENT_PERMISSIONS = "The current user does not have sufficient permissions to delete membership details of the site %s";
     public static String DELETE_EMPTY_ARGUMENT = "DELETE is executed against the instance URL";
+    public static String PUT_EMPTY_ARGUMENT = "PUT is executed against the instance URL";
     public static String INVALID_MAXITEMS = "Invalid paging parameter maxItems:%s";
     public static String INVALID_SKIPCOUNT = "Invalid paging parameter skipCount:%s";
     public static String INVALID_TAG = "Tag name must not contain %s char sequence";
     public static String EMPTY_TAG = "New tag cannot be null";
+    public static String UNKNOWN_ROLE = "Unknown role '%s'";
 
     public String getErrorKey()
     {
