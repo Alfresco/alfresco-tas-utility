@@ -5,6 +5,13 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [[v1.0.5-SNAPSHOT] - NOT-YET-RELEASED](/tas/alfresco-tas-tester/commits/v1.0.5)
+### Added
+- ability to remove site from favorites
+
+### Update
+- jolokia writeProperty method (server property is refreshed)
+
 ## [[v1.0.4] - 2016-11-24](/tas/alfresco-tas-tester/commits/v1.0.4)
 ### Update
 - ErrorModel needed for further RestAPI release
