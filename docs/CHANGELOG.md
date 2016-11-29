@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 
 ### Update
 - jolokia writeProperty method (server property is refreshed)
+- dataprep version to v1.17
 
 ## [[v1.0.4] - 2016-11-24](/tas/alfresco-tas-tester/commits/v1.0.4)
 ### Update

@@ -28,6 +28,7 @@ public class ErrorModel extends TestModel
     public static String DELETE_EMPTY_ARGUMENT = "DELETE is executed against the instance URL";
     public static String INVALID_MAXITEMS = "Invalid paging parameter maxItems:%s";
     public static String INVALID_SKIPCOUNT = "Invalid paging parameter skipCount:%s";
+    public static String INVALID_TAG = "Tag name must not contain %s char sequence";
 
     public String getErrorKey()
     {
