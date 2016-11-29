@@ -29,6 +29,7 @@ public class ErrorModel extends TestModel
     public static String INVALID_MAXITEMS = "Invalid paging parameter maxItems:%s";
     public static String INVALID_SKIPCOUNT = "Invalid paging parameter skipCount:%s";
     public static String INVALID_TAG = "Tag name must not contain %s char sequence";
+    public static String EMPTY_TAG = "New tag cannot be null";
 
     public String getErrorKey()
     {
