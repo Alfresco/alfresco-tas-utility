@@ -133,7 +133,20 @@ public class DataSite extends TestData<DataSite>
         STEP(String.format("DATAPREP: Add site %s to Favorites", getCurrentSite()));
         siteService.setFavorite(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getCurrentSite());
         return new SiteModel(getCurrentSite());
-    }   
+    }
+
+    /**
+     * Remove current site from favorites
+     *
+     * @return current site model
+     * @throws DataPreparationException
+     */
+    public SiteModel removeSiteFromFavorites() throws DataPreparationException
+    {
+        STEP(String.format("DATAPREP: Remove site %s from Favorites", getCurrentSite()));
+        siteService.removeFavorite(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getCurrentSite());
+        return new SiteModel(getCurrentSite());
+    }
     
     /**
      * Check if site is created
