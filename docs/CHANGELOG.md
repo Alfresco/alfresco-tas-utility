@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 ## [[v1.0.5-SNAPSHOT] - NOT-YET-RELEASED](/tas/alfresco-tas-tester/commits/v1.0.5)
 ### Added
 - ability to remove site from favorites
+- remove ErrorModel from model package (moved to restapi project)
 
 ### Update
 - jolokia writeProperty method (server property is refreshed)
