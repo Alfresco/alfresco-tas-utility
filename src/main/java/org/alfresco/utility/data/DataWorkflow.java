@@ -208,4 +208,15 @@ public class DataWorkflow extends TestData<DataWorkflow>
         workflowService.approveTask(getCurrentUser().getUsername(), getCurrentUser().getPassword(), processModel.getId(), true, TaskStatus.COMPLETED, "");
         return processModel;
     }
+    
+    /**
+     * Mark a task as done
+     * @param taskModel {@link TaskModel}
+     */
+    public TaskModel taskDone(TaskModel taskModel)
+    {
+        STEP(String.format("DATAPREP: User %s completes task %s", getCurrentUser().getUsername(), taskModel.getId()));
+        workflowService.taskDone(getCurrentUser().getUsername(), getCurrentUser().getPassword(), taskModel.getNodeRef(), TaskStatus.COMPLETED, "complete task");
+        return taskModel;
+    }
 }
