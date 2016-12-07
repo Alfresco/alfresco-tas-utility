@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - ability to remove site from favorites
 - remove ErrorModel from model package (moved to restapi project)
+- add checkFileInPath (recursive search in directory)
 
 ### Update
 - jolokia writeProperty method (server property is refreshed)

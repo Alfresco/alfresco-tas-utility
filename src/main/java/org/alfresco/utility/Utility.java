@@ -14,6 +14,7 @@ import java.util.Scanner;
 import org.alfresco.dataprep.CMISUtil.DocumentType;
 import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.exception.TestObjectNotDefinedException;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.json.JSONObject;
@@ -32,6 +33,7 @@ public class Utility
 
     /**
      * Return a file from the filePath location
+     * 
      * @param filePath
      * @return file object
      * @throws Exception
@@ -45,7 +47,7 @@ public class Utility
         {
             throw new TestConfigurationException(String.format("[%s] file was not found in your main resources folder.", filePath));
         }
-        
+
         return new File(resource.getFile());
     }
 
@@ -136,11 +138,11 @@ public class Utility
         {
             if (!path.isEmpty())
             {
-                if(path.substring(0,1).equals("/"))
+                if (path.substring(0, 1).equals("/"))
                 {
                     path = path.replaceFirst("/", "");
                 }
-                if(path.endsWith("/"))
+                if (path.endsWith("/"))
                 {
                     path = path.substring(0, path.length() - 1);
                 }
@@ -283,13 +285,44 @@ public class Utility
             envPropName = String.format("%s.properties", envPropName);
         return envPropName;
     }
-        
+
     public static String splitGuidVersion(String guidWithVersion)
     {
-        if(guidWithVersion!=null && guidWithVersion.contains(";") )
+        if (guidWithVersion != null && guidWithVersion.contains(";"))
             return guidWithVersion.split(";")[0];
-        
+
         return guidWithVersion;
+    }
+    
+    /**
+     * Search recursively in path
+     * 
+     * @param fileName
+     * @param path
+     */
+    public static File checkFileInPath(String fileName, String path)
+    {
+        File directory = new File(path);
+        File[] list = directory.listFiles();
+
+        if (list == null)
+            return null;
+
+        for (File f : list)
+        {
+            if (f.isDirectory())
+            {
+                checkFileInPath(fileName, f.getAbsolutePath());
+            }
+            else
+            {
+                if (FilenameUtils.getBaseName(f.getName()).equals(fileName))
+                {
+                    return f;
+                }
+            }
+        }
+        return null;
     }
 
 }
