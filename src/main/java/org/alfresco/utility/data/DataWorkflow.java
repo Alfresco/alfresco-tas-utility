@@ -63,7 +63,14 @@ public class DataWorkflow extends TestData<DataWorkflow>
                                                          getCurrentSite(),
                                                          Arrays.asList(new File(getLastResource()).getName()), taskModel.getSendEmail());
         taskModel.setNodeRef(workflowId);
-        taskModel.setId(workflowService.getTaskId(taskModel.getAssignee(), getCurrentUser().getPassword(), workflowId));
+        if(taskModel.getAssignee().equals(getAdminUser().getUsername()))
+        {
+            taskModel.setId(workflowService.getTaskId(taskModel.getAssignee(), getAdminUser().getPassword(), workflowId));
+        }
+        else
+        {
+            taskModel.setId(workflowService.getTaskId(taskModel.getAssignee(), getCurrentUser().getPassword(), workflowId));
+        }
         return taskModel;
     }
 
