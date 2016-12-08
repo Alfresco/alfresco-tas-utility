@@ -1,6 +1,7 @@
 package org.alfresco.utility.network;
 
 import static org.alfresco.utility.report.log.Step.STEP;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -21,10 +22,12 @@ import org.springframework.stereotype.Service;
 public class ServerHealth
 {
     private Logger LOG = LogFactory.getLogger();
-    private static final String ADMIN_SYSTEMSUMMARY_PAGE = "/alfresco/service/enterprise/admin";
+    private static final String SERVER_VERSION_PATH = "/alfresco/service/api/server";
 
     @Autowired
     protected TasProperties properties;
+    
+    
 
     public boolean isServerReachable() throws Exception
     {
@@ -56,28 +59,32 @@ public class ServerHealth
         boolean isAlfrescoRunning = false;
         GetMethod get;
         String response;
-        String alfrescoSummaryPage = properties.getFullServerUrl() + ADMIN_SYSTEMSUMMARY_PAGE;
-        LOG.info("Check Alfresco Test Server: {} is Online based on Admin System Summary Page {}.", properties.getServer(), alfrescoSummaryPage);
+        String alfrescoServerVersionPage = properties.getFullServerUrl() + SERVER_VERSION_PATH;
+        LOG.info("Check Alfresco Test Server: {} is Online based on Admin System Summary Page {}.", properties.getServer(), alfrescoServerVersionPage);
         try
         {
             HttpClient client = new HttpClient();
             
-            get = new GetMethod(alfrescoSummaryPage);
+            get = new GetMethod(alfrescoServerVersionPage);
             String unhashedString = String.format("%s:%s", properties.getAdminUser(), properties.getAdminPassword());
             get.setRequestHeader("Authorization", "Basic " + Base64.encodeBase64String(unhashedString.getBytes()));
 
             get.getParams().setSoTimeout(5000);
             client.executeMethod(get);
             response = IOUtils.toString(get.getResponseBodyAsStream());
-
+            
+            LOG.info(response.toString());
+            
             get.releaseConnection();
             isAlfrescoRunning = response.contains("alfresco");
         }
         catch (Exception ex)
         {
-            LOG.error("Cannot GET {} page. Exception: {} ", alfrescoSummaryPage, ex.getMessage());
+            LOG.error("Cannot GET {} page. Exception: {} ", alfrescoServerVersionPage, ex.getMessage());
             isAlfrescoRunning = false;
         }
+        
+            
 
         return isAlfrescoRunning;
     }
