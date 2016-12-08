@@ -7,7 +7,7 @@
 ## Table of Contents
 * [Synopsis](#synopsis)
 * [Prerequisite](#prerequisite)
-* [Installation](#installation-if-you-want-to-contribute)
+* [Installation](#installation-if-you-want-to-contribute-or-run-tests-from-your-local-machine)
 * [Package Presentation](#package-presentation)
 * [High Level Concepts](#high-level-concepts)
     * [DSL](#dsl)
@@ -67,7 +67,7 @@ Using a centralized location (Nexus), everyone will be able to reuse this indivi
 
 **[Back to Top ^](#table-of-contents)**
 
-## Installation (if you want to contribute or run tests from your locall machine)
+## Installation (if you want to contribute or run tests from your local machine)
 
 * Open your Gitlab client and clone the repository of this project.
 * You can do this also from command line (or in your terminal) adding:
