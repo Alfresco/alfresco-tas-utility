@@ -76,7 +76,7 @@ public class ServerHealth
             LOG.info(response.toString());
             
             get.releaseConnection();
-            isAlfrescoRunning = response.contains("alfresco");
+            isAlfrescoRunning = response.contains("version");
         }
         catch (Exception ex)
         {
