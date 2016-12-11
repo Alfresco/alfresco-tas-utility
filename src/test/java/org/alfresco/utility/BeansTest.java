@@ -9,8 +9,10 @@ import org.alfresco.utility.model.FileModel;
 import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.UserModel;
-import org.alfresco.utility.network.AlfrescoTenantConsole;
+import org.alfresco.utility.network.ModelAndMessagesConsole;
 import org.alfresco.utility.network.ServerHealth;
+import org.alfresco.utility.network.TenantConsole;
+import org.alfresco.utility.network.WorkflowConsole;
 import org.alfresco.utility.report.HtmlReportListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -48,7 +50,13 @@ public class BeansTest extends AbstractTestNGSpringContextTests
     protected ServerHealth serverHealth;
     
     @Autowired
-    AlfrescoTenantConsole alfrescoTenantConsole;
+    TenantConsole alfrescoTenantConsole;
+    
+    @Autowired
+    WorkflowConsole  workflowConsole;
+    
+    @Autowired
+    ModelAndMessagesConsole modelAndMessagesConsole;
 
     SiteModel siteModel;
 
@@ -116,9 +124,11 @@ public class BeansTest extends AbstractTestNGSpringContextTests
     }
     
     @Test
-    public void testAlfrescoTenantConsole() throws Exception
+    public void testConsole() throws Exception
     {
-        alfrescoTenantConsole.tenantsExists();
+        alfrescoTenantConsole.tenantExist();
+        System.out.println(workflowConsole.user());
+        System.out.println(modelAndMessagesConsole.showModels());
     }
     
 }
