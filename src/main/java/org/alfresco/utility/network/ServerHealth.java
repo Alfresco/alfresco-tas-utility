@@ -27,8 +27,9 @@ public class ServerHealth
     @Autowired
     protected TasProperties properties;
     
+    @Autowired
+    private TenantConsole tenantConsole;
     
-
     public boolean isServerReachable() throws Exception
     {
         STEP(String.format("Check the server %s is reachable", properties.getFullServerUrl()));
@@ -48,6 +49,7 @@ public class ServerHealth
         }
 
         LOG.info("Check Alfresco Test Server: {} is Reachable, found: {}", properties.getServer(), reachable);
+        LOG.info("Check if there are Tenants Members on the Server: {}", tenantConsole.tenantExist());
         return reachable;
     }
 

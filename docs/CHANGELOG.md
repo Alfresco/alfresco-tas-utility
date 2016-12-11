@@ -10,6 +10,8 @@ All notable changes to this project will be documented in this file.
 - ability to remove site from favorites
 - remove ErrorModel from model package (moved to restapi project)
 - add checkFileInPath (recursive search in directory)
+- add Console operation (now you can also interact with TenantConsole, Workflow Console from admin console). You can also add new functionalities on these classes also.
+- check for tenant creation on Server Health status
 
 ### Update
 - jolokia writeProperty method (server property is refreshed)
