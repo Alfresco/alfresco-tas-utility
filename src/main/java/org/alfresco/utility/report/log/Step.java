@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.alfresco.utility.LogFactory;
 
+import org.alfresco.utility.LogFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -61,7 +61,7 @@ public class Step
             }
             catch (Exception e)
             {
-                LogFactory.getLogger().error(e.getMessage());
+                e.printStackTrace();
             }
 
         }
