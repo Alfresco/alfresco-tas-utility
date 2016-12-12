@@ -26,29 +26,35 @@ public class ServerHealth
 
     @Autowired
     protected TasProperties properties;
-    
+
     @Autowired
     private TenantConsole tenantConsole;
-    
-    public boolean isServerReachable() throws Exception
-    {
-        STEP(String.format("Check the server %s is reachable", properties.getFullServerUrl()));
+
+    public boolean isServerReachable(String server, int port)
+    {        
         boolean reachable = false;
         try
         {
             try (Socket soc = new Socket())
             {
-                soc.connect(new InetSocketAddress(properties.getServer(), properties.getPort()), 5000);
+                soc.connect(new InetSocketAddress(server, port), 5000);
             }
             reachable = true;
         }
         catch (IOException ex)
         {
-            LOG.info("Check Alfresco Test Server: {} is Reachable, found: {}", properties.getServer(), ex.getMessage());
+            LOG.info("Check Alfresco Test Server: {} is Reachable, found: {}", server, ex.getMessage());
             return false;
         }
 
-        LOG.info("Check Alfresco Test Server: {} is Reachable, found: {}", properties.getServer(), reachable);
+        LOG.info("Check Alfresco Test Server: {} is Reachable, found: {}", server, reachable);
+        return reachable;
+    }
+
+    public boolean isServerReachable() throws Exception
+    {
+        STEP(String.format("Check the server %s is reachable", properties.getFullServerUrl()));
+        boolean reachable = isServerReachable(properties.getServer(), properties.getPort());
         LOG.info("Check if there are Tenants Members on the Server: {}", tenantConsole.tenantExist());
         return reachable;
     }
@@ -66,7 +72,7 @@ public class ServerHealth
         try
         {
             HttpClient client = new HttpClient();
-            
+
             get = new GetMethod(alfrescoServerVersionPage);
             String unhashedString = String.format("%s:%s", properties.getAdminUser(), properties.getAdminPassword());
             get.setRequestHeader("Authorization", "Basic " + Base64.encodeBase64String(unhashedString.getBytes()));
@@ -74,9 +80,9 @@ public class ServerHealth
             get.getParams().setSoTimeout(5000);
             client.executeMethod(get);
             response = IOUtils.toString(get.getResponseBodyAsStream());
-            
+
             LOG.info(response.toString());
-            
+
             get.releaseConnection();
             isAlfrescoRunning = response.contains("version");
         }
@@ -85,8 +91,6 @@ public class ServerHealth
             LOG.error("Cannot GET {} page. Exception: {} ", alfrescoServerVersionPage, ex.getMessage());
             isAlfrescoRunning = false;
         }
-        
-            
 
         return isAlfrescoRunning;
     }
