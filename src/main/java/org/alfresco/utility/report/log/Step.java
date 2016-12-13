@@ -8,7 +8,6 @@ import java.util.Map;
 
 import org.alfresco.utility.LogFactory;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 public class Step
 {
@@ -38,7 +37,7 @@ public class Step
             try
             {
                 newClass = Class.forName(stack.getClassName());
-                if (newClass.getAnnotation(Test.class) != null)
+                if (newClass.toString().contains("Test"))
                 {
                     Method method = newClass.getDeclaredMethod(stack.getMethodName());
                     if (method.getAnnotation(BeforeClass.class) != null)
