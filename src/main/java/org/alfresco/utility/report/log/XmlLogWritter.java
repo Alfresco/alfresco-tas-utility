@@ -99,7 +99,7 @@ public class XmlLogWritter
 
             // set attribute class name
             Attr classValue = doc.createAttribute("name");
-            classValue.setValue(context.getCurrentXmlTest().getClasses().get(0).getName());
+            classValue.setValue(context.getCurrentXmlTest().getSuite().getName());
             className.setAttributeNode(classValue);
 
             // start time
