@@ -169,22 +169,17 @@ public class HtmlReportListener implements IReporter
     {
         String content = "";
         List<String> lines = new ArrayList<String>();
-
+        BufferedReader reader = null;
         try
         {    
-            BufferedReader reader = Files.newBufferedReader(Paths.get(filePath), StandardCharsets.ISO_8859_1);
-            lines = reader.lines().collect(Collectors.toList());
+            reader = Files.newBufferedReader(Paths.get(filePath), StandardCharsets.ISO_8859_1);
+            lines = reader.lines().collect(Collectors.toList());            
+            content = String.join("\n", lines);
         }
         catch (IOException e)
         {
             throw new ReportConfigurationException(String.format("Cannot read log file due tos: %s", e.getMessage()));
-        }
-
-        for (String line : lines)
-        {
-            content = content.concat(line + "\n");
-        }
-
+        }       
         return content;
     }
 
@@ -195,7 +190,7 @@ public class HtmlReportListener implements IReporter
         try
         {
             log4jProperties = Utility.getProperties(getClass(), "log4j.properties");
-            log4jPath = log4jProperties.getProperty("log4j.appender.R.File");
+            log4jPath = log4jProperties.getProperty("log4j.appender.file.File");
         }
         catch (TestConfigurationException e1)
         {
