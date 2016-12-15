@@ -232,4 +232,20 @@ public class DataUser extends TestData<DataUser>
             throw new DataPreparationException(String.format("Failed to delete user '%s'.", userToDelete.getUsername()));
         }
     }
+    
+    /**
+     * Disable user
+     * 
+     * @param userToDisable
+     * @throws DataPreparationException
+     */
+    public void disableUser(UserModel userToDisable) throws DataPreparationException
+    {
+        STEP(String.format("DATAPREP: Disable %s user",userToDisable.getUsername()));
+        boolean disabled = userService.disableUser(getCurrentUser().getUsername(), getCurrentUser().getPassword(), userToDisable.getUsername(), true);
+        if (!disabled)
+        {
+            throw new DataPreparationException(String.format("Failed to disable user '%s'.", userToDisable.getUsername()));
+        }
+    }
 }
