@@ -1,13 +1,12 @@
 package org.alfresco.utility.model;
 
+import java.util.Date;
+
 import org.alfresco.dataprep.CMISUtil.Priority;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import org.alfresco.utility.data.RandomData;
 import org.joda.time.DateTime;
 
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class TaskModel extends RepoTestModel
 {
@@ -96,5 +95,4 @@ public class TaskModel extends RepoTestModel
     {
         this.sendEmail = sendEmail;
     }
-
 }
