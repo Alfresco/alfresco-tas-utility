@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.alfresco.dataprep.CMISUtil.DocumentAspect;
 import org.alfresco.dataprep.CMISUtil.DocumentType;
 import org.alfresco.dataprep.ContentActions;
 import org.alfresco.dataprep.ContentAspects;
@@ -541,7 +542,7 @@ public class DataContent extends TestData<DataContent>
                 contentActions.addProperties(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getLastResource(), aspect.getPropertiesAsHashMap());
             }
         }
-    }
+    }   
     
     /**
      * Add file to favorites
@@ -563,5 +564,17 @@ public class DataContent extends TestData<DataContent>
     {
         STEP(String.format("DATAPREP: Add folder %s to Favorites", folder.getName()));
         contentActions.setFolderAsFavorite(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getCurrentSite(), folder.getName());
+    }
+    
+    /**
+     * Asserting the version of the content
+     * 
+     * @param version
+     */
+    public void assertContentVersionIs(String version)
+    {	
+        STEP(String.format("DATAPREP: Asserting that the version of the '%s' content is %s", getLastResource(), version));
+    	String currentVersion = getCMISDocument(getLastResource()).getVersionLabel();
+    	Assert.assertEquals(currentVersion, version);
     }
 }
