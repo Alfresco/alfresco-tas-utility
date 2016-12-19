@@ -6,8 +6,7 @@ public class StatusModel extends TestModel
 {
     private int code = 0;
     private String name = "n/a";
-    private String description = "n/a";
-    public static String UNAUTHORIZED = "Unauthorized";
+    private String description = "n/a";    
 
     public int getCode()
     {
