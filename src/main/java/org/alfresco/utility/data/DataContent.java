@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.alfresco.dataprep.CMISUtil.DocumentAspect;
 import org.alfresco.dataprep.CMISUtil.DocumentType;
 import org.alfresco.dataprep.ContentActions;
 import org.alfresco.dataprep.ContentAspects;
@@ -576,5 +575,23 @@ public class DataContent extends TestData<DataContent>
         STEP(String.format("DATAPREP: Asserting that the version of the '%s' content is %s", getLastResource(), version));
     	String currentVersion = getCMISDocument(getLastResource()).getVersionLabel();
     	Assert.assertEquals(currentVersion, version);
+    }
+    
+    /**
+     * Check out document
+     */
+    public void checkOutDocument()
+    {
+        STEP(String.format("DATAPREP: Check out document %s", getLastResource()));
+        contentActions.checkOut(contentActions.getCMISSession(getCurrentUser().getUsername(), getCurrentUser().getPassword()), getLastResource());
+    }
+
+    /**
+     * Check out document
+     */
+    public void cancelCheckOut()
+    {
+        STEP(String.format("DATAPREP: Cancel check out on document %s", getLastResource()));
+        contentActions.cancelCheckOut(contentActions.getCMISSession(getCurrentUser().getUsername(), getCurrentUser().getPassword()), getLastResource());
     }
 }

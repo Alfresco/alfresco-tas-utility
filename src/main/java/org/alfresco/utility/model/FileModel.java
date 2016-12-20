@@ -109,4 +109,22 @@ public class FileModel extends ContentModel
 
         return testFile;
     }
+    
+    /**
+     * Clone file model to working copy. (e.g. 'test.txt' to 'test (Working Copy).txt' )
+     * @return {@link FileModel}
+     */
+    public FileModel cloneAsWorkingCopy()
+    {
+        FileModel workingCopy = new FileModel();
+        String type = FileType.fromName(getName()).extention;
+        String nameNoType = getName().replace("." + type, "");
+        String workingCopyName = nameNoType + " (Working Copy)." + type;
+        workingCopy.setName(workingCopyName);
+        workingCopy.setFileType(FileType.fromName(getName()));
+        workingCopy.setContent(getContent());
+        workingCopy.setCmisLocation(getCmisLocation().replace(getName(), workingCopyName));
+        workingCopy.setProtocolLocation(getProtocolLocation().replace(getName(), workingCopyName));
+        return workingCopy;
+    }
 }
