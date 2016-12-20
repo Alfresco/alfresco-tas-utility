@@ -112,14 +112,14 @@ public class DataSite extends TestData<DataSite>
     }
 
     /**
-     * Set site as IMAP favorite
+     * Set current site as IMAP favorite
      *
      * @throws DataPreparationException
      */
-    public void setIMAPFavorite(SiteModel siteModel) throws DataPreparationException
+    public void setIMAPFavorite() throws DataPreparationException
     {
         STEP(String.format("DATAPREP: Set site %s as IMAP Favorite", getCurrentSite()));
-        siteService.setIMAPFavorite(getCurrentUser().getUsername(), getCurrentUser().getPassword(), siteModel.getId());
+        siteService.setIMAPFavorite(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getCurrentSite());
     }
 
     /**
