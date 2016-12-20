@@ -163,6 +163,7 @@ public abstract class TestData<Data> implements DSL<Data>
             model.setCmisLocation(location);
         }
         setLastResource(model.getCmisLocation());
+        setCurrentSpace(model.getCmisLocation());
         return (Data) this;
     }
 
