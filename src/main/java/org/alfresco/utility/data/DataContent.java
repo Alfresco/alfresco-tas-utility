@@ -42,6 +42,7 @@ import org.apache.chemistry.opencmis.commons.exceptions.CmisStorageException;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ContentStreamImpl;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -310,6 +311,19 @@ public class DataContent extends TestData<DataContent>
             Utility.waitToLoopTime(1);
             newObject = contentService.getNodeRefByPath(getSession(), fullPath);
             retry++;
+        }
+    }
+    
+    /**
+     * Wait and retry for 15 seconds checking if a resource is created for Linux OS
+     * 
+     * @param fullPath
+     */
+    public void waitUntilContentIsCreatedInLinux(String fullPath)
+    {
+        if (SystemUtils.IS_OS_LINUX)
+        {
+            waitUntilContentIsCreated(fullPath);
         }
     }
 
