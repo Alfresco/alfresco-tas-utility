@@ -294,6 +294,24 @@ public class DataContent extends TestData<DataContent>
             retry++;
         }
     }
+    
+    /**
+     * Wait and retry for 15 seconds checking if a resource is created
+     * 
+     * @param fullPath
+     */
+    public void waitUntilContentIsCreated(String fullPath)
+    {
+        LOG.info("Wait until new content is created up to 15 seconds");
+        int retry = 0;
+        String newObject = contentService.getNodeRefByPath(getSession(), fullPath);
+        while (StringUtils.isEmpty(newObject) && retry < 15)
+        {
+            Utility.waitToLoopTime(1);
+            newObject = contentService.getNodeRefByPath(getSession(), fullPath);
+            retry++;
+        }
+    }
 
     /**
      * Delete a site
