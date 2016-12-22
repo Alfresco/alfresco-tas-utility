@@ -5,6 +5,35 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [[v1.0.7] - 2016-12-21](/tas/alfresco-tas-tester/commits/v1.0.7)
+### Added
+- CreateRandomTenant
+- method to clone file model to working copy
+- methods to check out and cancel check out a document
+- create random wiki
+
+### Fixed
+- using current site in setIMAPFavorite
+- usingResource
+
+## [[v1.0.6] - 2016-12-19](/tas/alfresco-tas-tester/commits/v1.0.6)
+### Added
+- method to generate file of specific size
+- ACE-2152 assertVersionIs
+- ACE-2132 added listener to get the number of tests
+
+### Removed
+- models CompanyModel, NetworkModel, QuotaModel from utility to rest-api project
+
+### Updated
+- dataprep to 1.19 version. Add method to disable user
+- update log4j properties showing timestamp
+
+### Fixed
+- using current site in setIMAPFavorite
+- usingResource
+
+
 ## [[v1.0.5] - 2016-12-13](/tas/alfresco-tas-tester/commits/v1.0.5)
 ### Added
 - ability to remove site from favorites
