@@ -290,7 +290,7 @@ public class DataContent extends TestData<DataContent>
         String deletedObject = contentService.getNodeRefByPath(getSession(), fullPath);
         while (!StringUtils.isEmpty(deletedObject) && retry < Utility.retryCountSeconds)
         {
-            Utility.waitToLoopTime(1);
+            Utility.waitToLoopTime(2);
             deletedObject = contentService.getNodeRefByPath(getSession(), fullPath);
             retry++;
         }
