@@ -27,7 +27,7 @@ import org.slf4j.Logger;
 public class Utility
 {
     static Logger LOG = LogFactory.getLogger();
-    public static int retryCountSeconds = 10;
+    public static int retryCountSeconds = 15;
 
     public static void checkObjectIsInitialized(Object model, String message) throws Exception
     {
