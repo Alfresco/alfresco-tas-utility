@@ -37,10 +37,19 @@ public class Step
             try
             {
                 newClass = Class.forName(stack.getClassName());
-                if (newClass.toString().contains("Test"))
+                if ((newClass.toString().endsWith("Test") || newClass.toString().endsWith("Tests")) && (newClass.toString().contains("org.alfresco")))
                 {
-                    Method method = newClass.getDeclaredMethod(stack.getMethodName());
-                    if (method.getAnnotation(BeforeClass.class) != null)
+                    Method method  = null;
+                    try
+                    {
+
+                        method = newClass.getDeclaredMethod(stack.getMethodName());
+                    }
+                    catch (NoSuchMethodException ex)
+                    {
+                        // doNothing when method has params
+                    }
+                    if (method != null &&  method.getAnnotation(BeforeClass.class) != null)
                     {
                         methodNameKey = stack.getClassName();
                     }
