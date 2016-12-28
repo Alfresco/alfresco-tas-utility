@@ -5,6 +5,9 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [[v1.0.8] - NOT-YET-RELEASED](/tas/alfresco-tas-tester/commits/v1.0.8)
+### TBD
+
 ## [[v1.0.7] - 2016-12-21](/tas/alfresco-tas-tester/commits/v1.0.7)
 ### Added
 - CreateRandomTenant
