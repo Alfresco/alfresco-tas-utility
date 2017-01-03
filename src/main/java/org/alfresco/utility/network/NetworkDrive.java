@@ -70,7 +70,7 @@ public abstract class NetworkDrive
     protected void runCommand(String command, Object... arguments) throws Exception
     {
         String cmdWithArgs = String.format(command, arguments);
-        LOG.info("Running command {}", cmdWithArgs);
+        LOG.info("Running command [{}]", cmdWithArgs);
         Process process = Runtime.getRuntime().exec(cmdWithArgs);
         InputStream s = process.getInputStream();
         BufferedReader in = new BufferedReader(new InputStreamReader(s));
@@ -109,14 +109,16 @@ public abstract class NetworkDrive
 
     public boolean isNetworkDriveMounted() throws Exception
     {
-        LOG.info("Verify network mounted drive : {}", getLocalVolumePath());
         long counter = 0;
         File mountedDrive = Paths.get(getLocalVolumePath()).toFile();
+        
         while (counter < 20 && !mountedDrive.exists())
         {
             TimeUnit.MILLISECONDS.sleep(200);
             counter++;
         }
+        
+        LOG.info("Verify network mounted drive : {}, Mounted: {} ", getLocalVolumePath(), mountedDrive.exists());
         return mountedDrive.exists();
     }
 
