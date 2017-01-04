@@ -55,103 +55,106 @@ public class TestCountListener implements ISuiteListener
 
         Map<String, Collection<ITestNGMethod>> groupsOfTests = suite.getMethodsByGroups();
 
-        for (String key : projects)
+        for (String key: projects)
         {
 
-            int sanity = 0;
-            int full = 0;
-            int core = 0;
-            int notAllowed = 0;
-            
-            bugAnnotation = 0;
-
-            int bugSanity = 0;
-            int bugFull = 0;
-            int bugCore = 0;
-
-            System.out.println("----------" + key + "----------");
-            System.out.println("TOTAL NUMBER OF TESTS for :  " + key + " - " + groupsOfTests.get(key).size());
-
-            iterator = groupsOfTests.get(key).iterator();
-            while (iterator.hasNext())
+            if(groupsOfTests.keySet().contains(key))
             {
-                TestNGMethod test = (TestNGMethod) iterator.next();
-                int bugLength  = test.getMethod().getDeclaredAnnotationsByType(Bug.class).length;
-               
-                List<String> testgroups = Arrays.asList(test.getGroups());
-                
-                if (testgroups.contains(TestGroup.SANITY))
+                int sanity = 0;
+
+                int full = 0;
+                int core = 0;
+                int notAllowed = 0;
+
+                bugAnnotation = 0;
+
+                int bugSanity = 0;
+                int bugFull = 0;
+                int bugCore = 0;
+
+                System.out.println("----------" + key + "----------");
+                System.out.println("TOTAL NUMBER OF TESTS for :  " + key + " - " + groupsOfTests.get(key).size());
+
+                iterator = groupsOfTests.get(key).iterator();
+                while (iterator.hasNext())
                 {
-                    sanity++;
+                    TestNGMethod test = (TestNGMethod) iterator.next();
+                    int bugLength = test.getMethod().getDeclaredAnnotationsByType(Bug.class).length;
+
+                    List<String> testgroups = Arrays.asList(test.getGroups());
+
+                    if (testgroups.contains(TestGroup.SANITY))
+                    {
+                        sanity++;
+                        if (bugLength == 1)
+                            bugSanity++;
+                    }
+                    else if (testgroups.contains(TestGroup.CORE))
+                    {
+                        core++;
+                        if (bugLength == 1)
+                            bugCore++;
+                    }
+                    else if (testgroups.contains(TestGroup.FULL))
+                    {
+                        full++;
+                        if (bugLength == 1)
+                            bugFull++;
+                    }
+                    else
+                        notAllowed++;
+
                     if (bugLength == 1)
-                        bugSanity++;
+                        bugAnnotation++;
                 }
-                else if (testgroups.contains(TestGroup.CORE))
+                try
                 {
-                    core++;
-                    if (bugLength == 1)
-                        bugCore++;
+                    fileWriter.append(key);
+                    fileWriter.append(COMMA_DELIMITER);
+
+                    fileWriter.append(String.valueOf(groupsOfTests.get(key).size()));
+                    fileWriter.append(COMMA_DELIMITER);
+
+                    fileWriter.append(String.valueOf(bugAnnotation));
+                    fileWriter.append(COMMA_DELIMITER);
+
+                    fileWriter.append(String.valueOf(sanity));
+                    fileWriter.append(COMMA_DELIMITER);
+
+                    fileWriter.append(String.valueOf(bugSanity));
+                    fileWriter.append(COMMA_DELIMITER);
+
+                    fileWriter.append(String.valueOf(core));
+                    fileWriter.append(COMMA_DELIMITER);
+
+                    fileWriter.append(String.valueOf(bugCore));
+                    fileWriter.append(COMMA_DELIMITER);
+
+                    fileWriter.append(String.valueOf(full));
+                    fileWriter.append(COMMA_DELIMITER);
+
+                    fileWriter.append(String.valueOf(bugFull));
+                    fileWriter.append(NEW_LINE_SEPARATOR);
+
                 }
-                else if (testgroups.contains(TestGroup.FULL))
+                catch (IOException e)
                 {
-                    full++;
-                    if (bugLength == 1)
-                        bugFull++;
+                    System.out.println("Error while writing on fileWriter !!!");
+                    e.printStackTrace();
                 }
-                else
-                    notAllowed++;
 
-                if (bugLength == 1)
-                    bugAnnotation++;
+                System.out.println("NUMBER OF TESTS @Bug: " + bugAnnotation);
+
+                System.out.println("NUMBER OF TESTS for :  " + key + " - SANITY " + sanity);
+                System.out.println("NUMBER OF TESTS Bug - SANITY " + bugSanity);
+                System.out.println("NUMBER OF TESTS for:  " + key + " - CORE " + core);
+                System.out.println("NUMBER OF TESTS Bug - CORE " + bugCore);
+                System.out.println("NUMBER OF TESTS for:  " + key + " - FULL " + full);
+                System.out.println("NUMBER OF TESTS Bug - FULL " + bugFull);
+                System.out.println("NUMBER OF TESTS for:  " + key + " - NO PHASE " + notAllowed);
+
+                System.out.println("----------");
             }
-            try
-            {
-                fileWriter.append(key);
-                fileWriter.append(COMMA_DELIMITER);
-
-                fileWriter.append(String.valueOf(groupsOfTests.get(key).size()));
-                fileWriter.append(COMMA_DELIMITER);
-                
-                fileWriter.append(String.valueOf(bugAnnotation));
-                fileWriter.append(COMMA_DELIMITER);
-                
-                fileWriter.append(String.valueOf(sanity));
-                fileWriter.append(COMMA_DELIMITER);
-
-                fileWriter.append(String.valueOf(bugSanity));
-                fileWriter.append(COMMA_DELIMITER);
-                
-                fileWriter.append(String.valueOf(core));
-                fileWriter.append(COMMA_DELIMITER);
-                
-                fileWriter.append(String.valueOf(bugCore));
-                fileWriter.append(COMMA_DELIMITER);
-                
-                fileWriter.append(String.valueOf(full));
-                fileWriter.append(COMMA_DELIMITER);
-
-                fileWriter.append(String.valueOf(bugFull));
-                fileWriter.append(NEW_LINE_SEPARATOR);
-
-            }
-            catch (IOException e)
-            {
-                System.out.println("Error while writing on fileWriter !!!");
-                e.printStackTrace();
-            }
-
-            System.out.println("NUMBER OF TESTS @Bug: " + bugAnnotation);
-            
-            System.out.println("NUMBER OF TESTS for :  " + key + " - SANITY " + sanity);
-            System.out.println("NUMBER OF TESTS Bug - SANITY " + bugSanity);
-            System.out.println("NUMBER OF TESTS for:  " + key + " - CORE " + core);
-            System.out.println("NUMBER OF TESTS Bug - CORE " + bugCore);
-            System.out.println("NUMBER OF TESTS for:  " + key + " - FULL " + full);
-            System.out.println("NUMBER OF TESTS Bug - FULL " + bugFull);
-            System.out.println("NUMBER OF TESTS for:  " + key + " - NO PHASE " + notAllowed);
-
-
-            System.out.println("----------");
         }
 
         try
