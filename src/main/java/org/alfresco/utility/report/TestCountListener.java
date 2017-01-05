@@ -102,8 +102,10 @@ public class TestCountListener implements ISuiteListener
                             bugFull++;
                     }
                     else
+                    {
                         notAllowed++;
-
+                       	System.out.println("Test without group:" + test.getInstance().getClass().getSimpleName() + "#" + test.getMethodName());
+                    }
                     if (bugLength == 1)
                         bugAnnotation++;
                 }
@@ -180,8 +182,7 @@ public class TestCountListener implements ISuiteListener
     {
 
         String FILE_HEADER = "TASRegression,total,totalbugs,sanity,sanitybugs,core,curebugs,full,fullbugs";
-
-        fileWriter = new FileWriter("FullRegression.cvs");
+        fileWriter = new FileWriter("TASRegression.cvs");
         fileWriter.append(FILE_HEADER.toString());
         fileWriter.append(NEW_LINE_SEPARATOR);
     }
