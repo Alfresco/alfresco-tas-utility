@@ -114,4 +114,15 @@ public class ContentModel extends RepoTestModel
     {
         return new File(getProtocolLocation()).getParent();
     }
+    
+    /**
+     * @return -my- 
+     */
+    public static ContentModel my()
+    {
+        ContentModel my = new ContentModel();
+        my.setName("-my-");
+        my.setNodeRef("-my-");
+        return my;
+    }
 }

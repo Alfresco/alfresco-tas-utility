@@ -1,7 +1,5 @@
 package org.alfresco.utility.network;
 
-import org.alfresco.utility.data.DataUser;
-import org.alfresco.utility.data.RandomData;
 import org.alfresco.utility.model.UserModel;
 import org.apache.http.message.BasicNameValuePair;
 import org.springframework.stereotype.Service;

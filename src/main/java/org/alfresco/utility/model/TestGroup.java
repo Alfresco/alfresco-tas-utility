@@ -33,6 +33,7 @@ public @interface TestGroup
     public static String PROCESS_DEFINITION = "process-definitions";
     public static String ACTIVITIES = "activities";    
     public static String EXTENTION_POINTS = "extention-points";
+    public static String NODES = "nodes";
     
     public static String IMAP = "imap";
     public static String SMTP = "smtp";
