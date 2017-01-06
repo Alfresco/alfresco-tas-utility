@@ -60,6 +60,7 @@ public class TestRailApi
     private String currentRun;
     private boolean configurationError = true;
     public int suiteId;
+    protected String serverUrl;
 
     private TestCase tmpTestCase = null;
 
@@ -74,24 +75,32 @@ public class TestRailApi
             try
             {
                 testRailProperties.load(defaultPropsInputStream);
-                this.username = testRailProperties.getProperty("testManagement.username");
+
+                this.username = Utility.getSystemOrFileProperty("testManagement.username", testRailProperties);
                 Utility.checkObjectIsInitialized(username, "username");
 
-                this.password = testRailProperties.getProperty("testManagement.apiKey");
+                this.password = Utility.getSystemOrFileProperty("testManagement.apiKey", testRailProperties);
                 Utility.checkObjectIsInitialized(password, "password");
 
-                this.endPointApiPath = testRailProperties.getProperty("testManagement.endPoint") + "index.php?/api/v2/";
+                this.endPointApiPath = Utility.getSystemOrFileProperty("testManagement.endPoint", testRailProperties) + "index.php?/api/v2/";
                 Utility.checkObjectIsInitialized(endPointApiPath, "endPointApiPath");
 
-                this.currentProjectID = Integer.parseInt(testRailProperties.getProperty("testManagement.project"));
+                this.currentProjectID = Integer.parseInt(Utility.getSystemOrFileProperty("testManagement.project", testRailProperties));
                 Utility.checkObjectIsInitialized(currentProjectID, "currentProjectID");
 
-                this.currentRun = testRailProperties.getProperty("testManagement.testRun");
+                this.currentRun = Utility.getSystemOrFileProperty("testManagement.testRun", testRailProperties);
                 Utility.checkObjectIsInitialized(currentRun, "currentRun");
-                
-                this.suiteId = Integer.valueOf(testRailProperties.getProperty("testManagement.suiteId"));
+
+                this.suiteId = Integer.valueOf(Utility.getSystemOrFileProperty("testManagement.suiteId", testRailProperties));
                 Utility.checkObjectIsInitialized(suiteId, "suiteId");
-                
+
+                /*
+                 * alfresco.scheme=http
+                 * alfresco.server=localhost
+                 * alfresco.port=8080
+                 */
+                serverUrl = String.format("%s://%s:%s", testRailProperties.getProperty("alfresco.scheme"), testRailProperties.getProperty("alfresco.server"),
+                        testRailProperties.getProperty("alfresco.port"));
                 configurationError = false;
             }
             catch (Exception e)
@@ -184,7 +193,7 @@ public class TestRailApi
         conn.addRequestProperty("Authorization", "Basic " + DatatypeConverter.printBase64Binary(String.format("%s:%s", username, password).getBytes()));
         if (data != null)
         {
-            byte[] block = JSONValue.toJSONString(data).getBytes("UTF-8");            
+            byte[] block = JSONValue.toJSONString(data).getBytes("UTF-8");
             conn.setDoOutput(true);
             OutputStream ostream = conn.getOutputStream();
             ostream.write(block);
@@ -265,18 +274,18 @@ public class TestRailApi
     {
         return getSections(currentProjectID);
     }
-    
+
     @SuppressWarnings("unchecked")
     public Section addNewSection(String name, int parent_id, int projectID, int suite_id)
     {
         Section s = new Section();
-        
+
         @SuppressWarnings("rawtypes")
         Map data = new HashMap();
         data.put("suite_id", suite_id);
         data.put("name", name);
         data.put("parent_id", parent_id);
-        
+
         LOG.info("Add missing section [{}] as child of parent section with ID: {}", name, parent_id);
         Object response;
         try
@@ -295,7 +304,7 @@ public class TestRailApi
     {
         for (Run run : getRuns(projectID))
         {
-            if (run.getName().equals(name))
+            if (run.getName().equals(name) && !run.isIs_completed())
                 return run;
         }
         return null;
@@ -374,7 +383,8 @@ public class TestRailApi
         tmpTestCase = null;
         try
         {
-            Object response = getRequest("/get_cases/" + currentProjectID + "&type_id=" + annotation.testType().value() + "&suite_id=" + suiteId + "&section_id=" + section.getId());
+            Object response = getRequest(
+                    "/get_cases/" + currentProjectID + "&type_id=" + annotation.testType().value() + "&suite_id=" + suiteId + "&section_id=" + section.getId());
             List<TestCase> existingTestCases = toCollection(response, TestCase.class);
             for (TestCase tc : existingTestCases)
             {
@@ -433,9 +443,9 @@ public class TestRailApi
                 data.put("comment", sw.toString());
             }
         }
-        
+
         /*
-         * BUG section, taking in consideration TestNG tests that are marked with @Bug annotation          
+         * BUG section, taking in consideration TestNG tests that are marked with @Bug annotation
          */
         Bug bugAnnotated = result.getMethod().getConstructorOrMethod().getMethod().getAnnotation(Bug.class);
 
@@ -458,9 +468,33 @@ public class TestRailApi
     /**
      * Returns the current Test Runs of current project
      */
+    @SuppressWarnings("unchecked")
     public Run getRunOfCurrentProject()
     {
-        return getRun(currentRun, currentProjectID);
+        Run r = getRun(currentRun, currentProjectID);
+        if (r == null)
+        {
+            @SuppressWarnings("rawtypes")
+            Map data = new HashMap();
+            data.put("suite_id", suiteId);
+            data.put("name", currentRun);
+            data.put("include_all", true);
+            data.put("description", "**Server:** " + serverUrl);
+
+            LOG.info("Add new RUN [{}]", currentRun);
+            Object response;
+            try
+            {
+                response = postRequest("add_run/" + currentProjectID, data);
+                r = toClass(response, Run.class);
+            }
+            catch (Exception e)
+            {
+                LOG.error("Cannot add new section: {}", e.getMessage());
+            }
+        }
+
+        return r;
     }
 
     public String getFullTestCaseName(ITestResult result)

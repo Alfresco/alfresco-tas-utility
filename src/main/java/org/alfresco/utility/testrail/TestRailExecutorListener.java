@@ -2,8 +2,13 @@ package org.alfresco.utility.testrail;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
+import org.alfresco.utility.LogFactory;
+import org.alfresco.utility.Utility;
+import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.report.log.Step;
+import org.slf4j.Logger;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
@@ -13,11 +18,26 @@ import org.testng.ITestResult;
  */
 public class TestRailExecutorListener implements ITestListener
 {
+    private static boolean isTestRailExecutorEnabled = isPropertyEnabled("testManagement.enabled");
+    private static boolean justUpdateResults = isPropertyEnabled("testManagement.updateTestExecutionResultsOnly");
+    private static Logger LOG = LogFactory.getLogger();
     private static TestCaseUploader testCaseUploader = new TestCaseUploader();
 
     @Override
     public void onTestStart(ITestResult result)
     {
+        if (!isTestRailExecutorEnabled)
+        {
+            LOG.info("'TestRailExecutorListener' is added in your suite.xml file, but the property: testManagement.enabled is set to 'false' in your {} file",
+                    Utility.getEnvironmentPropertyFile());
+            return;
+        }
+        
+        if (justUpdateResults)
+        {
+            LOG.info("'testManagement.justUpdateResults' is set to 'false' in your {} file, so only the test execution status will be updated in TestRail.",
+                    Utility.getEnvironmentPropertyFile());
+        }
 
         testCaseUploader.addTestRailIfNotExist(result);
     }
@@ -25,7 +45,14 @@ public class TestRailExecutorListener implements ITestListener
     @Override
     public void onTestSuccess(ITestResult result)
     {
+        if (!isTestRailExecutorEnabled)
+            return;
         testCaseUploader.updateTestRailTestCase(result);
+
+        // no need to update the content of the test case, we wanted just the results as updated above
+        if (justUpdateResults)
+            return;
+
         List<String> stepsToBeUpdated = new ArrayList<String>();
 
         if (Step.testSteps.get(result.getTestClass().getName()) != null)
@@ -40,15 +67,20 @@ public class TestRailExecutorListener implements ITestListener
             stepsToBeUpdated.addAll(Step.testSteps.get(result.getMethod().getMethodName()));
 
         }
-
         testCaseUploader.updateTestRailTestSteps(result, String.join(System.lineSeparator(), stepsToBeUpdated));
-
     }
 
     @Override
     public void onTestFailure(ITestResult result)
     {
+        if (!isTestRailExecutorEnabled)
+            return;
         testCaseUploader.updateTestRailTestCase(result);
+
+        // no need to update the content of the test case, we wanted just the results as updated above
+        if (justUpdateResults)
+            return;
+
         List<String> stepsToBeUpdated = new ArrayList<String>();
 
         if (Step.testSteps.get(result.getTestClass().getName()) != null)
@@ -61,23 +93,29 @@ public class TestRailExecutorListener implements ITestListener
         if (Step.testSteps.get(result.getMethod().getMethodName()) != null)
         {
             stepsToBeUpdated.addAll(Step.testSteps.get(result.getMethod().getMethodName()));
-
         }
-
         testCaseUploader.updateTestRailTestSteps(result, String.join(System.lineSeparator(), stepsToBeUpdated));
-
     }
 
     @Override
     public void onTestSkipped(ITestResult result)
     {
+        if (!isTestRailExecutorEnabled)
+            return;
         testCaseUploader.updateTestRailTestCase(result);
     }
 
     @Override
     public void onTestFailedButWithinSuccessPercentage(ITestResult result)
     {
+        if (!isTestRailExecutorEnabled)
+            return;
         testCaseUploader.updateTestRailTestCase(result);
+
+        // no need to update the content of the test case, we wanted just the results as updated above
+        if (justUpdateResults)
+            return;
+
         List<String> stepsToBeUpdated = new ArrayList<String>();
 
         if (Step.testSteps.get(result.getTestClass().getName()) != null)
@@ -90,23 +128,47 @@ public class TestRailExecutorListener implements ITestListener
         if (Step.testSteps.get(result.getMethod().getMethodName()) != null)
         {
             stepsToBeUpdated.addAll(Step.testSteps.get(result.getMethod().getMethodName()));
-
         }
-
         testCaseUploader.updateTestRailTestSteps(result, String.join(System.lineSeparator(), stepsToBeUpdated));
-
     }
 
     @Override
     public void onStart(ITestContext context)
     {
-        Step.testSteps.clear();
+        if (!isTestRailExecutorEnabled)
+            return;
         testCaseUploader.oneTimeUpdateFromTestRail();
+
+        // no need to update the content of the test case, we wanted just the results as updated above
+        if (justUpdateResults)
+            return;
+
+        Step.testSteps.clear();
+
     }
 
     @Override
     public void onFinish(ITestContext context)
     {
+        if (!isTestRailExecutorEnabled)
+            return;
         testCaseUploader.showTestCasesNotUploaded();
+    }
+
+    private static boolean isPropertyEnabled(String propertyName)
+    {
+        boolean isEnabled = false;
+        Properties properties = new Properties();
+        try
+        {
+            properties = Utility.getProperties(TestRailExecutorListener.class, Utility.getEnvironmentPropertyFile());
+            isEnabled = Boolean.valueOf(Utility.getSystemOrFileProperty(propertyName, properties));
+        }
+        catch (TestConfigurationException e1)
+        {
+            System.err.println("Cannot read properties from '" + Utility.getEnvironmentPropertyFile() + "'. Error: " + e1.getMessage());
+        }
+
+        return isEnabled;
     }
 }

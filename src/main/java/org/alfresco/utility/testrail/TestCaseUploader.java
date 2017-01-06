@@ -33,6 +33,9 @@ public class TestCaseUploader
     List<Section> allSections = new ArrayList<Section>();
     private Run currentTestRun = null;
 
+    /**
+     * Make just one call on this method when the tests will start.
+     */
     public void oneTimeUpdateFromTestRail()
     {
         if (testRail.hasConfigurationErrors())
