@@ -297,7 +297,7 @@ public class Utility
 
         return guidWithVersion;
     }
-    
+
     /**
      * Search recursively in path
      * 
@@ -329,38 +329,50 @@ public class Utility
         return null;
     }
 
-   /**
-    * Create a new {@link File} with specific size (MB)
-    * @param fileName
-    * @param sizeMB
-    * @return {@link File}
-    * @throws Exception
-    */
-   public static File getFileWithSize(String fileName , int sizeMB) throws Exception
-   {
-       byte[] buffer = getRandomString( 1024 * 1024 ).getBytes();
-       int number_of_lines = sizeMB;
-       @SuppressWarnings("resource" )
-       FileChannel rwChannel = new RandomAccessFile(fileName, "rw").getChannel();
-       ByteBuffer wrBuf = rwChannel. map(FileChannel.MapMode. READ_WRITE, 0 , buffer.length * number_of_lines);
-       for (int i = 0; i < number_of_lines; i++)
-       {
-           wrBuf.put(buffer );
-       }
-       rwChannel.close();
-       File file1 = new File(fileName);
-       return file1 ;
-   }
-   
-   private static String getRandomString(int length)
-   {
-       Random RANDOM = new Random();
-       char from[] = "abcdefghijklmnopqrstuvwxyz".toCharArray();
-       StringBuilder result = new StringBuilder();
-       for (int i = 0; i < length; i++)
-       {
-           result.append(from[RANDOM.nextInt((from.length - 1))]);
-       }
-       return result.toString();
-   }
+    /**
+     * Create a new {@link File} with specific size (MB)
+     * 
+     * @param fileName
+     * @param sizeMB
+     * @return {@link File}
+     * @throws Exception
+     */
+    public static File getFileWithSize(String fileName, int sizeMB) throws Exception
+    {
+        byte[] buffer = getRandomString(1024 * 1024).getBytes();
+        int number_of_lines = sizeMB;
+        @SuppressWarnings("resource")
+        FileChannel rwChannel = new RandomAccessFile(fileName, "rw").getChannel();
+        ByteBuffer wrBuf = rwChannel.map(FileChannel.MapMode.READ_WRITE, 0, buffer.length * number_of_lines);
+        for (int i = 0; i < number_of_lines; i++)
+        {
+            wrBuf.put(buffer);
+        }
+        rwChannel.close();
+        File file1 = new File(fileName);
+        return file1;
+    }
+
+    private static String getRandomString(int length)
+    {
+        Random RANDOM = new Random();
+        char from[] = "abcdefghijklmnopqrstuvwxyz".toCharArray();
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < length; i++)
+        {
+            result.append(from[RANDOM.nextInt((from.length - 1))]);
+        }
+        return result.toString();
+    }
+
+    public static String getSystemOrFileProperty(String key, Properties properties)
+    {
+        String value = System.getProperty(key);
+        if (value == null)
+        {
+            return properties.getProperty(key);
+        }
+        else
+            return value;
+    }
 }
