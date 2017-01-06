@@ -76,15 +76,25 @@ public class TestCaseUploader
                     addTestCaseToSection(result, lastChildSection);
                 }
                 else
-                {              
+                {
                     Section parentSection = sectionUtil.getRootSection();
-                    Section newSection  = null;
-                    for(String missingSection : sectionUtil.getRootChildSections())
+                    Section newSection = null;
+
+                    int depth = 0;
+                    for (String missingSection : sectionUtil.getRootChildSections())
                     {
-                        newSection = testRail.addNewSection(missingSection.toString(), parentSection.getId(), testRail.currentProjectID, testRail.suiteId);
-                        parentSection = newSection;
+                        depth += 1;
+                        if (!isSectionInList(depth, parentSection.getId(), missingSection.toString()))
+                        {
+                            newSection = testRail.addNewSection(missingSection.toString(), parentSection.getId(), testRail.currentProjectID, testRail.suiteId);
+                            parentSection = newSection;
+                            allSections.add(newSection);
+                        }
+                        else
+                            continue;
+
                     }
-                                        
+
                     addTestCaseToSection(result, newSection);
                 }
             }
@@ -99,7 +109,19 @@ public class TestCaseUploader
         {
             testCasesNotUploaded.put(testRail.getFullTestCaseName(result), "Test Case is NOT marked for Test Rail. Use @TestRail annotation.");
         }
+    }
 
+    private boolean isSectionInList(int depth, int parent_id, String name)
+    {
+        boolean exists = false;
+        for (Section s : allSections)
+        {
+            if (s.getName().equals(name) && s.getDepth() == depth && s.getParent_id() == parent_id)
+            {
+                return true;
+            }
+        }
+        return exists;
     }
 
     private void addTestCaseToSection(ITestResult result, Section lastChildSection)
@@ -107,14 +129,13 @@ public class TestCaseUploader
         testSection = lastChildSection;
         if (testRail.isAutomatedTestCaseInSection(result.getMethod().getMethodName(), lastChildSection, annotation))
         {
-            LOG.info("Test Case [{}] is already uploaded under Section(s) {}.", result.getMethod().getMethodName(),
-                    ArrayUtils.toString(annotation.section()));
+            LOG.info("Test Case [{}] is already uploaded under Section(s) {}.", result.getMethod().getMethodName(), ArrayUtils.toString(annotation.section()));
         }
         else
         {
             testRail.addTestCase(result, lastChildSection, annotation);
-            LOG.info("Test Case [{}] marked as [{}] Test Type is uploaded under Section(s) {}.", testRail.getFullTestCaseName(result), annotation
-                    .testType().toString(), ArrayUtils.toString(annotation.section()));
+            LOG.info("Test Case [{}] marked as [{}] Test Type is uploaded under Section(s) {}.", testRail.getFullTestCaseName(result),
+                    annotation.testType().toString(), ArrayUtils.toString(annotation.section()));
         }
     }
 
