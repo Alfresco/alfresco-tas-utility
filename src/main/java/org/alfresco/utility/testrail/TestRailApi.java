@@ -56,10 +56,10 @@ public class TestRailApi
     private String username;
     private String password;
     private String endPointApiPath;
-    private int currentProjectID;
+    public int currentProjectID;
     private String currentRun;
     private boolean configurationError = true;
-    private String suiteId;
+    public int suiteId;
 
     private TestCase tmpTestCase = null;
 
@@ -89,7 +89,7 @@ public class TestRailApi
                 this.currentRun = testRailProperties.getProperty("testManagement.testRun");
                 Utility.checkObjectIsInitialized(currentRun, "currentRun");
                 
-                this.suiteId = testRailProperties.getProperty("testManagement.suiteId");
+                this.suiteId = Integer.valueOf(testRailProperties.getProperty("testManagement.suiteId"));
                 Utility.checkObjectIsInitialized(suiteId, "suiteId");
                 
                 configurationError = false;
@@ -264,6 +264,31 @@ public class TestRailApi
     public List<Section> getSectionsOfCurrentProject()
     {
         return getSections(currentProjectID);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public Section addNewSection(String name, int parent_id, int projectID, int suite_id)
+    {
+        Section s = new Section();
+        
+        @SuppressWarnings("rawtypes")
+        Map data = new HashMap();
+        data.put("suite_id", suite_id);
+        data.put("name", name);
+        data.put("parent_id", parent_id);
+        
+        LOG.info("Add missing section [{}] as child of parent section with ID: {}", name, parent_id);
+        Object response;
+        try
+        {
+            response = postRequest("add_section/" + projectID, data);
+            s = toClass(response, Section.class);
+        }
+        catch (Exception e)
+        {
+            LOG.error("Cannot add new section: {}", e.getMessage());
+        }
+        return s;
     }
 
     public Run getRun(String name, int projectID)

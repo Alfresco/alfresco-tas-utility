@@ -73,23 +73,19 @@ public class TestCaseUploader
 
                 if (lastChildSection != null)
                 {
-                    testSection = lastChildSection;
-                    if (testRail.isAutomatedTestCaseInSection(result.getMethod().getMethodName(), lastChildSection, annotation))
-                    {
-                        LOG.info("Test Case [{}] is already uploaded under Section(s) {}.", result.getMethod().getMethodName(),
-                                ArrayUtils.toString(annotation.section()));
-                    }
-                    else
-                    {
-                        testRail.addTestCase(result, lastChildSection, annotation);
-                        LOG.info("Test Case [{}] marked as [{}] Test Type is uploaded under Section(s) {}.", testRail.getFullTestCaseName(result), annotation
-                                .testType().toString(), ArrayUtils.toString(annotation.section()));
-                    }
+                    addTestCaseToSection(result, lastChildSection);
                 }
                 else
-                {
-                    testCasesNotUploaded.put(testRail.getFullTestCaseName(result), "Cannot find Section:" + sectionUtil.getRootChildSections().toString()
-                            + " having as root, section: " + sectionUtil.getRootSectionName());
+                {              
+                    Section parentSection = sectionUtil.getRootSection();
+                    Section newSection  = null;
+                    for(String missingSection : sectionUtil.getRootChildSections())
+                    {
+                        newSection = testRail.addNewSection(missingSection.toString(), parentSection.getId(), testRail.currentProjectID, testRail.suiteId);
+                        parentSection = newSection;
+                    }
+                                        
+                    addTestCaseToSection(result, newSection);
                 }
             }
             else
@@ -104,6 +100,22 @@ public class TestCaseUploader
             testCasesNotUploaded.put(testRail.getFullTestCaseName(result), "Test Case is NOT marked for Test Rail. Use @TestRail annotation.");
         }
 
+    }
+
+    private void addTestCaseToSection(ITestResult result, Section lastChildSection)
+    {
+        testSection = lastChildSection;
+        if (testRail.isAutomatedTestCaseInSection(result.getMethod().getMethodName(), lastChildSection, annotation))
+        {
+            LOG.info("Test Case [{}] is already uploaded under Section(s) {}.", result.getMethod().getMethodName(),
+                    ArrayUtils.toString(annotation.section()));
+        }
+        else
+        {
+            testRail.addTestCase(result, lastChildSection, annotation);
+            LOG.info("Test Case [{}] marked as [{}] Test Type is uploaded under Section(s) {}.", testRail.getFullTestCaseName(result), annotation
+                    .testType().toString(), ArrayUtils.toString(annotation.section()));
+        }
     }
 
     public void updateTestRailTestSteps(ITestResult result, String steps)
