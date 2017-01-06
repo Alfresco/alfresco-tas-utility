@@ -34,6 +34,7 @@ public @interface TestGroup
     public static String ACTIVITIES = "activities";    
     public static String EXTENTION_POINTS = "extention-points";
     public static String NODES = "nodes";
+    public static String AUTH = "auth";
     
     public static String IMAP = "imap";
     public static String SMTP = "smtp";
@@ -46,5 +47,5 @@ public @interface TestGroup
     public static String INTEGRATION = "integration";
     public static String CONTENT = "content";
     public static String PREUPGRADE = "pre-upgrade";
-    public static String POSTUPGRADE = "post-upgrade";
+    public static String POSTUPGRADE = "post-upgrade";    
 }
