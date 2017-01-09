@@ -28,14 +28,14 @@ public class TestRailExecutorListener implements ITestListener
     {
         if (!isTestRailExecutorEnabled)
         {
-            LOG.info("'TestRailExecutorListener' is added in your suite.xml file, but the property: testManagement.enabled is set to 'false' in your {} file",
+            LOG.debug("'TestRailExecutorListener' is added in your suite.xml file, but the property: testManagement.enabled is set to 'false' in your {} file",
                     Utility.getEnvironmentPropertyFile());
             return;
         }
         
         if (justUpdateResults)
         {
-            LOG.info("'testManagement.updateTestExecutionResultsOnly' is set to 'true' in your {} file, so only the test execution status will be updated in TestRail.",
+            LOG.debug("'testManagement.updateTestExecutionResultsOnly' is set to 'true' in your {} file, so only the test execution status will be updated in TestRail.",
                     Utility.getEnvironmentPropertyFile());
         }
 
