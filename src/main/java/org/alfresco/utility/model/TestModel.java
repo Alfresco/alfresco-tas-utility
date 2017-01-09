@@ -15,6 +15,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.slf4j.Logger;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -65,7 +66,6 @@ public abstract class TestModel implements Model
             return e.toString();
         }
     }
-    
 
     /**
      * Sets random values for all fields of a TestModel without specified fields as ignoredFields
@@ -81,36 +81,39 @@ public abstract class TestModel implements Model
 
         for (Field field : allFields)
         {
-            if (!Arrays.asList(ignoredFields).contains(field.getName()))
+            if (!(field.isAnnotationPresent(JsonProperty.class) && field.getAnnotation(JsonProperty.class).value().equals("entry")))
             {
-                field.setAccessible(true);
+                if (!Arrays.asList(ignoredFields).contains(field.getName()))
+                {
+                    field.setAccessible(true);
 
-                if (field.getType().equals(List.class))
-                {
-                    List<String> newListValue = new ArrayList<String>();
-                    newListValue.add(RandomData.getRandomAlphanumeric());
-                    newListValue.add(RandomData.getRandomAlphanumeric());
-                    field.set(testModel, newListValue);
-                }
-                else if (TestModel.class.isAssignableFrom(field.getType()))
-                {
-                    Object model = field.getType().newInstance();
-                    setRandomValuesForAllFields((TestModel) model);
-                    field.set(testModel, model);
-                }
-                else
-                {
-                    if (field.getType().equals(boolean.class))
+                    if (field.getType().equals(List.class))
                     {
-                        field.set(testModel, true);
+                        List<String> newListValue = new ArrayList<String>();
+                        newListValue.add(RandomData.getRandomAlphanumeric());
+                        newListValue.add(RandomData.getRandomAlphanumeric());
+                        field.set(testModel, newListValue);
                     }
-                    else if (field.getName().toLowerCase().endsWith("at"))
+                    else if (TestModel.class.isAssignableFrom(field.getType()))
                     {
-                        field.set(testModel, "2017-01-01T15:16:31.000+0000");
+                        Object model = field.getType().newInstance();
+                        setRandomValuesForAllFields((TestModel) model);
+                        field.set(testModel, model);
                     }
-                    else if (field.getType().equals(String.class))
+                    else
                     {
-                        field.set(testModel, field.getName() + RandomStringUtils.randomAlphabetic(3));
+                        if (field.getType().equals(boolean.class))
+                        {
+                            field.set(testModel, true);
+                        }
+                        else if (field.getName().toLowerCase().endsWith("at"))
+                        {
+                            field.set(testModel, "2017-01-01T15:16:31.000+0000");
+                        }
+                        else if (field.getType().equals(String.class))
+                        {
+                            field.set(testModel, field.getName() + RandomStringUtils.randomAlphabetic(3));
+                        }
                     }
                 }
             }
