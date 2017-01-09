@@ -129,8 +129,8 @@ public class DataUser extends TestData<DataUser>
     }
 
     public void addUserToSite(UserModel userModel, SiteModel siteModel, UserRole role)
-    {
-        STEP(String.format("DATAPREP: Adding %s user with %s role to %s site", userModel.getUsername(), role.toString(), siteModel.getId()));
+    {        
+        STEP(String.format("DATAPREP: Adding [%s] user with role [%s] role to [%s] site", userModel.getUsername(), role.toString(), siteModel.getId()));
         userService.createSiteMember(getCurrentUser().getUsername(), getCurrentUser().getPassword(), userModel.getUsername(), siteModel.getId(),
                 role.toString());
 
@@ -142,8 +142,7 @@ public class DataUser extends TestData<DataUser>
         ListUserWithRoles usersWithRoles = new ListUserWithRoles();
         for (UserRole role : roles)
         {
-            UserModel userModel = createRandomTestUser();
-            STEP(String.format("DATAPREP: Adding %s user with %s role to %s site", userModel.getUsername(), role.toString(), siteModel.getId()));
+            UserModel userModel = createRandomTestUser();            
             addUserToSite(userModel, siteModel, role);
             usersWithRoles.add(userModel);
         }
