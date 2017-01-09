@@ -55,7 +55,8 @@ public class ServerHealth
     {
         STEP(String.format("Check the server %s is reachable", properties.getFullServerUrl()));
         boolean reachable = isServerReachable(properties.getServer(), properties.getPort());
-        LOG.info("Check if there are Tenants Members on the Server: {}", tenantConsole.tenantExist());
+        if(properties.showTenantsOnServerHealth())
+            LOG.info("Check if there are Tenants Members on the Server: {}", tenantConsole.tenantExist());
         return reachable;
     }
 

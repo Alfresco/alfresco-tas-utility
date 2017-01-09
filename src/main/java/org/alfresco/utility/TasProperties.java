@@ -60,6 +60,14 @@ public class TasProperties
 
     @Value("${db.password}")
     private String dbPassword;
+    
+    @Value("${serverHealth.showTenants:true}")
+    private Boolean showTenantsOnServerHealth;
+
+    public Boolean showTenantsOnServerHealth()
+    {
+        return showTenantsOnServerHealth;
+    }
 
     /**
      * # in containers we cannot access directly JMX, so we will use {@link http://jolokia.org} agent
