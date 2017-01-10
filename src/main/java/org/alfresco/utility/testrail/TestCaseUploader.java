@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.testrail.annotation.SectionUtil;
 import org.alfresco.utility.testrail.annotation.TestRail;
 import org.alfresco.utility.testrail.model.Run;
 import org.alfresco.utility.testrail.model.Section;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.ITestResult;
 
 /**
@@ -23,7 +23,7 @@ import org.testng.ITestResult;
  */
 public class TestCaseUploader
 {
-    Logger LOG = LogFactory.getLogger();
+    static Logger LOG = LoggerFactory.getLogger("testrail");
     TestRailApi testRail = new TestRailApi();
     private static Map<String, String> testCasesNotUploaded = new HashMap<String, String>();
 

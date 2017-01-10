@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.Utility;
 import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.report.log.Step;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
@@ -18,9 +18,9 @@ import org.testng.ITestResult;
  */
 public class TestRailExecutorListener implements ITestListener
 {
+    static Logger LOG = LoggerFactory.getLogger("testrail");
     private static boolean isTestRailExecutorEnabled = isPropertyEnabled("testManagement.enabled");
-    private static boolean justUpdateResults = isPropertyEnabled("testManagement.updateTestExecutionResultsOnly");
-    private static Logger LOG = LogFactory.getLogger();
+    private static boolean justUpdateResults = isPropertyEnabled("testManagement.updateTestExecutionResultsOnly");    
     private static TestCaseUploader testCaseUploader = new TestCaseUploader();
 
     @Override
