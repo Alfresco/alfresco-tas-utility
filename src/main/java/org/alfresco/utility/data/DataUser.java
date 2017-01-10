@@ -4,11 +4,13 @@ import static org.alfresco.utility.report.log.Step.STEP;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.alfresco.dataprep.UserService;
 import org.alfresco.utility.TasProperties;
 import org.alfresco.utility.constants.UserRole;
 import org.alfresco.utility.exception.DataPreparationException;
+import org.alfresco.utility.model.ContentModel;
 import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -245,6 +247,42 @@ public class DataUser extends TestData<DataUser>
         if (!disabled)
         {
             throw new DataPreparationException(String.format("Failed to disable user '%s'.", userToDisable.getUsername()));
+        }
+    }
+    
+    /**
+     * Verify if content exists in trash can
+     * 
+     * @param content {@link ContentModel} content to verify
+     */
+    public void assertTrashCanHasContent(ContentModel... contents)
+    {
+        List<String> nodes = userService.getItemsNodeRefFromTrashcan(getCurrentUser().getUsername(),getCurrentUser().getPassword());
+        List<String> matches = new ArrayList<String>();
+        for(ContentModel content: contents)
+        {
+            matches.clear();
+            STEP(String.format("DATAPREP: Verify if %s is in trash can", content.getName()));
+            matches = nodes.stream().filter(it -> it.contains(content.getNodeRef().split(";")[0])).collect(Collectors.toList());
+            Assert.assertFalse(matches.isEmpty(), String.format("Item %s found in trash can", content.getName()));
+        }
+    }
+    
+    /**
+     * Verify that content does not exist in trash can
+     * 
+     * @param content {@link ContentModel} content to verify
+     */
+    public void assertTrashCanDoesNotHaveContent(ContentModel... contents)
+    {
+        List<String> nodes = userService.getItemsNodeRefFromTrashcan(getCurrentUser().getUsername(),getCurrentUser().getPassword());
+        List<String> matches = new ArrayList<String>();
+        for(ContentModel content: contents)
+        {
+            matches.clear();
+            STEP(String.format("DATAPREP: Verify if %s is not in trash can", content.getName()));
+            matches = nodes.stream().filter(it -> it.contains(content.getNodeRef().split(";")[0])).collect(Collectors.toList());
+            Assert.assertTrue(matches.isEmpty(), String.format("Item %s found in trash can", content.getName()));
         }
     }
 }
