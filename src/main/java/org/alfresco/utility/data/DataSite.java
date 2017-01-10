@@ -51,6 +51,7 @@ public class DataSite extends TestData<DataSite>
                 siteModel.getDescription(), 
                 siteModel.getVisibility());
 
+        siteModel.setGuid(siteService.getSiteNodeRef(getCurrentUser().getUsername(), getCurrentUser().getPassword(), siteModel.getId()));
         return siteModel;
     }    
 
