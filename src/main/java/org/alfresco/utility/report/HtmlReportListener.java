@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 
 import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.Utility;
-import org.alfresco.utility.exception.ReportConfigurationException;
 import org.alfresco.utility.exception.TestConfigurationException;
 import org.slf4j.Logger;
 import org.testng.IReporter;
@@ -51,7 +50,8 @@ import com.relevantcodes.extentreports.LogStatus;
 public class HtmlReportListener implements IReporter
 {
     static Logger LOG = LogFactory.getLogger();
-
+    static Properties log4jProperties;
+    static Properties defaultProperties;
     private ExtentReports extent = null;
 
     @Override
@@ -60,6 +60,8 @@ public class HtmlReportListener implements IReporter
 
         try
         {
+            log4jProperties = Utility.getProperties(HtmlReportListener.class, "log4j.properties");
+            defaultProperties = Utility.getProperties(HtmlReportListener.class, Utility.getEnvironmentPropertyFile());
             extent = ReportManager.getReporter();
         }
         catch (TestConfigurationException | URISyntaxException e1)
@@ -83,18 +85,15 @@ public class HtmlReportListener implements IReporter
             }
         }
 
-        String content = "";
-        try
+        if(defaultProperties.getProperty("testManagement.enabled").equals("true"))
         {
-            content = getLogsContent(getLogsLocation());
+            String contentTestRail = getLogsContent(getLogsLocation("log4j.appender.testrailLog.File", log4jProperties));
+            extent.setTestRunnerOutput(String.format("<pre>%s </pre>", contentTestRail));    
         }
-        catch (ReportConfigurationException e)
-        {
-            LOG.error(e.getMessage());
-        }
-
+        
+        String content = getLogsContent(getLogsLocation("log4j.appender.file.File", log4jProperties));
         extent.setTestRunnerOutput(String.format("<pre>%s </pre>", content));
-
+        
         try
         {
             extent.flush();
@@ -165,36 +164,37 @@ public class HtmlReportListener implements IReporter
         return calendar.getTime();
     }
 
-    private String getLogsContent(String filePath) throws ReportConfigurationException
+    private String getLogsContent(String filePath)
     {
         String content = "";
-        List<String> lines = new ArrayList<String>();
-        BufferedReader reader = null;
         try
-        {    
+        {
+            List<String> lines = new ArrayList<String>();
+            BufferedReader reader = null;
+
             reader = Files.newBufferedReader(Paths.get(filePath), StandardCharsets.ISO_8859_1);
-            lines = reader.lines().collect(Collectors.toList());            
+            lines = reader.lines().collect(Collectors.toList());
             content = String.join("\n", lines);
         }
         catch (IOException e)
         {
-            throw new ReportConfigurationException(String.format("Cannot read log file due tos: %s", e.getMessage()));
-        }       
+            LOG.error(String.format("Cannot read log file due tos: %s", e.getMessage()));
+        }
         return content;
     }
 
-    private String getLogsLocation()
+    private String getLogsLocation(String key, Properties properties)
     {
         String log4jPath = ".";
         Properties log4jProperties = new Properties();
         try
         {
             log4jProperties = Utility.getProperties(getClass(), "log4j.properties");
-            log4jPath = log4jProperties.getProperty("log4j.appender.file.File");
+            log4jPath = log4jProperties.getProperty(key);
         }
         catch (TestConfigurationException e1)
         {
-            LOG.error("Cannot read properties from log4j.properties file. Error: {}", e1.getMessage());
+            LOG.error("Cannot read '{}' key from log4j.properties file. Error: {}", key, e1.getMessage());
         }
         return log4jPath;
     }
