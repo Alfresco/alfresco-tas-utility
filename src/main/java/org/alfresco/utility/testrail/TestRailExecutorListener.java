@@ -28,14 +28,14 @@ public class TestRailExecutorListener implements ITestListener
     {
         if (!isTestRailExecutorEnabled)
         {
-            LOG.debug("'TestRailExecutorListener' is added in your suite.xml file, but the property: testManagement.enabled is set to 'false' in your {} file",
+            LOG.info("'TestRailExecutorListener' is added in your suite.xml file, but the property: testManagement.enabled is set to 'false' in your {} file",
                     Utility.getEnvironmentPropertyFile());
             return;
         }
         
         if (justUpdateResults)
         {
-            LOG.debug("'testManagement.updateTestExecutionResultsOnly' is set to 'true' in your {} file, so only the test execution status will be updated in TestRail.",
+            LOG.info("'testManagement.updateTestExecutionResultsOnly' is set to 'true' in your {} file, so only the test execution status will be updated in TestRail.",
                     Utility.getEnvironmentPropertyFile());
         }
 
@@ -47,6 +47,7 @@ public class TestRailExecutorListener implements ITestListener
     {
         if (!isTestRailExecutorEnabled)
             return;
+        
         testCaseUploader.updateTestRailTestCase(result);
 
         // no need to update the content of the test case, we wanted just the results as updated above

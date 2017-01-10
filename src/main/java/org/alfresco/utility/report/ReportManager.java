@@ -53,19 +53,10 @@ public class ReportManager
 
             extent.addSystemInfo("Alfresco Server", 
                     String.format("%s://%s:%s", 
-                            getEnvProperty("alfresco.scheme",properties), 
-                            getEnvProperty("alfresco.server",properties),
-                            getEnvProperty("alfresco.port",properties)));
+                            Utility.getSystemOrFileProperty("alfresco.scheme",properties), 
+                            Utility.getSystemOrFileProperty("alfresco.server",properties),
+                            Utility.getSystemOrFileProperty("alfresco.port",properties)));
         }
         return extent;
-    }
-
-    private static String getEnvProperty(String key, Properties properties)
-    {
-        String value = System.getProperty(key);
-        if (value == null)
-            return properties.getProperty(key);
-        else
-            return value;
     }
 }

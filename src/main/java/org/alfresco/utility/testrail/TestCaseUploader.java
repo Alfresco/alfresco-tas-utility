@@ -155,6 +155,9 @@ public class TestCaseUploader
     {
         if (testRail.hasConfigurationErrors())
             return;
+
+        LOG.info("Update Test Rail execution status of test case: [{}]  ", result.getMethod().getMethodName());
+
         testRail.updateTestCaseResult(result, currentTestRun);
     }
 
