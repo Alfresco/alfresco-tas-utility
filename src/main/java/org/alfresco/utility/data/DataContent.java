@@ -56,7 +56,7 @@ import org.testng.Assert;
 public class DataContent extends TestData<DataContent>
 {
     private Session session;
-    
+
     @Autowired
     private ContentService contentService;
 
@@ -73,16 +73,16 @@ public class DataContent extends TestData<DataContent>
     {
         return contentActions;
     }
-    
+
     private Session getSession()
     {
-        if(session == null)
+        if (session == null)
         {
             return usingAdmin().session;
         }
         return session;
     }
-    
+
     @Override
     public DataContent usingUser(UserModel user)
     {
@@ -90,19 +90,19 @@ public class DataContent extends TestData<DataContent>
         session = contentService.getCMISSession(user.getUsername(), user.getPassword());
         return (DataContent) this;
     }
-    
+
     @Override
     public DataContent usingAdmin()
     {
         return usingUser(getAdminUser());
     }
-    
+
     /**
      * It will create a new folder in current resource
      * <code>
-     *          FolderModel newRandomFolder = FolderModel.getRandomFolderModel();
-     *          dataContent.usingUser(testUser).usingSite(testSite).createFolder(newRandomFolder);
-     * <code>         
+     * FolderModel newRandomFolder = FolderModel.getRandomFolderModel();
+     * dataContent.usingUser(testUser).usingSite(testSite).createFolder(newRandomFolder);
+     * <code>
      */
     public FolderModel createFolder(FolderModel folderModel)
     {
@@ -119,8 +119,8 @@ public class DataContent extends TestData<DataContent>
     /**
      * It will create a random folder in current resource
      * <code>
-     *  dataContent.usingUser(testUser).usingSite(testSite).createFolder();
-     * <code> 
+     * dataContent.usingUser(testUser).usingSite(testSite).createFolder();
+     * <code>
      */
     public FolderModel createFolder()
     {
@@ -140,7 +140,7 @@ public class DataContent extends TestData<DataContent>
      * Use this to delete the last resource, either file or folder
      * <code>
      *  dataContent.usingUser(adminUser).usingSite(siteModel).usingResource(repoFile).deleteContent();
-     * </code> 
+     * </code>
      */
     public void deleteContent()
     {
@@ -150,10 +150,10 @@ public class DataContent extends TestData<DataContent>
 
     /**
      * Use this to rename a file or a folder
-     * 
      * <code>
      *        dataContent.usingUser(adminUser).usingSite(siteModel).usingResource(repoFolder).renameContent(newRepoFolder);
-     * </code>       
+     * </code>
+     * 
      * @param newContent
      */
     public void renameContent(ContentModel newContent)
@@ -165,10 +165,10 @@ public class DataContent extends TestData<DataContent>
 
     /**
      * Add Email Alias aspect (emailserver:aliasable)
-     * 
      * <code>
      *  dataContent.usingSite(testSite).usingResource(testFolder).addEmailAlias("aliasTas");
-     * </code> 
+     * </code>
+     * 
      * @param alias
      * @return
      * @throws Exception
@@ -185,10 +185,10 @@ public class DataContent extends TestData<DataContent>
     /**
      * Creates a random document based on {@link DocumentType} passed
      * Return the {@link Document} object on success creation
-     * 
      * <code>
      * dataContent.usingUser(userModel).usingResource(myFolder).createContent(DocumentType.TEXT_PLAIN);
      * </code>
+     * 
      * @param documentType
      * @return
      * @throws DataPreparationException
@@ -217,11 +217,10 @@ public class DataContent extends TestData<DataContent>
         newFile.setNodeRef(cmisDocument.getId());
         return newFile;
     }
- 
+
     /**
      * Creates a random document based on {@link DocumentType} passed
      * Return the {@link Document} object on success creation
-     * 
      * <code>
      * dataContent.usingSite(site).createContent(sourceFile);
      * </code>
@@ -243,12 +242,12 @@ public class DataContent extends TestData<DataContent>
         Document cmisDocument = null;
         try
         {
-            cmisDocument = contentService.createDocumentInRepository(getSession(), getLastResource(), DocumentType.valueOf(fileModel.getFileType().toString()), 
-                                            fileFullName, fileModel.getContent());
+            cmisDocument = contentService.createDocumentInRepository(getSession(), getLastResource(), DocumentType.valueOf(fileModel.getFileType().toString()),
+                    fileFullName, fileModel.getContent());
         }
         catch (CmisStorageException cse)
         {
-            cmisDocument = contentService.createDocumentInRepository(getSession(), getLastResource(), DocumentType.valueOf(fileModel.getFileType().toString()), 
+            cmisDocument = contentService.createDocumentInRepository(getSession(), getLastResource(), DocumentType.valueOf(fileModel.getFileType().toString()),
                     fileFullName, fileModel.getContent());
         }
         String fileLocation = Utility.buildPath(getLastResource(), fileFullName);
@@ -261,7 +260,7 @@ public class DataContent extends TestData<DataContent>
     /**
      * @param fullPath - the full path to CMIS object
      * @param userModel
-     * @throws TestConfigurationException 
+     * @throws TestConfigurationException
      */
     public void assertContentExist() throws TestConfigurationException
     {
@@ -277,7 +276,7 @@ public class DataContent extends TestData<DataContent>
 
     public boolean checkContent(String fullPath, UserModel userModel) throws TestConfigurationException
     {
-        if(fullPath==null || fullPath.isEmpty())
+        if (fullPath == null || fullPath.isEmpty())
         {
             throw new TestConfigurationException("You didn't specify your #lastResource. Please call #usingResource(..) or #setLastResource(...) methods");
         }
@@ -295,7 +294,7 @@ public class DataContent extends TestData<DataContent>
             retry++;
         }
     }
-    
+
     /**
      * Wait and retry for 15 seconds checking if a resource is created
      * 
@@ -313,7 +312,7 @@ public class DataContent extends TestData<DataContent>
             retry++;
         }
     }
-    
+
     /**
      * Wait and retry for 15 seconds checking if a resource is created for Linux OS
      * 
@@ -382,7 +381,7 @@ public class DataContent extends TestData<DataContent>
         ContentStream contentStream = session.getObjectFactory().createContentStream(file.getName(), file.length(), FilenameUtils.getExtension(file.getPath()),
                 inputStream);
         CmisObject modelInRepo;
-        //it will throw exception if object is not found, so in that case we will upload it
+        // it will throw exception if object is not found, so in that case we will upload it
         try
         {
             modelInRepo = session.getObjectByPath(String.format("/Data Dictionary/Models/%s", file.getName()));
@@ -395,7 +394,7 @@ public class DataContent extends TestData<DataContent>
         {
             Folder model = (Folder) session.getObjectByPath("/Data Dictionary/Models");
             model.createDocument(props, contentStream, VersioningState.MAJOR);
-        } 
+        }
     }
 
     public ContentStream getContentStream(String fileName, String content) throws Exception
@@ -409,10 +408,11 @@ public class DataContent extends TestData<DataContent>
         DataInputStream dataInputStream = new DataInputStream(stream);
         byteContent = new byte[content.length()];
         dataInputStream.readFully(byteContent);
+        ByteArrayInputStream bInput = new ByteArrayInputStream(byteContent);
+        ContentStream contentStream = new ContentStreamImpl(fileName, BigInteger.valueOf(byteContent.length), FileType.fromName(fileName).mimeType, bInput);
+        bInput.close();
         dataInputStream.close();
         stream.close();
-        ContentStream contentStream = new ContentStreamImpl(fileName, BigInteger.valueOf(byteContent.length), FileType.fromName(fileName).mimeType,
-                new ByteArrayInputStream(byteContent));
         return contentStream;
     }
 
@@ -447,7 +447,7 @@ public class DataContent extends TestData<DataContent>
         properties.put("cm:description", contentModel.getDescription());
         File fullPath = new File(String.format("%s/%s", getCurrentSpace(), contentModel.getName()));
         String parentFolder = Utility.convertBackslashToSlash(fullPath.getParent());
-        
+
         LOG.info("Creating custom Content Model {} in: {}", contentModel.toString(), fullPath.getPath());
         CmisObject parentCMISFolder = contentService.getCmisObject(getCurrentUser().getUsername(), getCurrentUser().getPassword(), parentFolder);
         if (parentCMISFolder instanceof Document)
@@ -482,99 +482,106 @@ public class DataContent extends TestData<DataContent>
         contentModel.setCmisLocation(fullPath.getPath());
         return contentModel;
     }
-    
+
     /**
      * Creates a tag for a content file
      * You must use this in correlation with {@link DataContent#usingResource(ContentModel)}
+     * 
      * @param fileModel
      * @param model tag model
-     * @throws TestConfigurationException 
+     * @throws TestConfigurationException
      */
     public void addTagToContent(TagModel model) throws TestConfigurationException
     {
         STEP(String.format("DATAPREP: Create '%s' tag to content %s", model.getTag()));
-        
+
         if (getLastResource() == null || getLastResource().isEmpty())
             throw new TestConfigurationException("You didn't specify your last resource in your tests. Please call usingResource(...) before adding a tag");
-        
+
         contentActions.addSingleTag(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getLastResource(), model.getTag());
     }
-    
+
     /**
      * Verify content has tag
+     * 
      * @param cmisObjectPath
      * @param model
      */
-    public void assertContentHasTag(String cmisObjectPath, TagModel model){
-        
+    public void assertContentHasTag(String cmisObjectPath, TagModel model)
+    {
+
         STEP(String.format("DATAPREP: Verify content %s has tag %s", cmisObjectPath, model.getTag()));
-        List<String> tags=  contentActions.getTagNamesFromContent(getCurrentUser().getUsername(), getCurrentUser().getPassword(), cmisObjectPath);
-       boolean found = false;
-        for(String tag:tags){
-            if(model != null && model.getTag() != null && model.getTag().equals(tag)){
+        List<String> tags = contentActions.getTagNamesFromContent(getCurrentUser().getUsername(), getCurrentUser().getPassword(), cmisObjectPath);
+        boolean found = false;
+        for (String tag : tags)
+        {
+            if (model != null && model.getTag() != null && model.getTag().equals(tag))
+            {
                 found = true;
                 break;
             }
         }
-        
+
         Assert.assertTrue(found, "content has tag");
     }
 
-    
     /**
      * @return nodeRef of the current resource used
-     * You can use this in correlation with {@link DataContent#usingResource(ContentModel)} and/or {@link DataContent#usingSite(SiteModel)}, etc.
+     *         You can use this in correlation with {@link DataContent#usingResource(ContentModel)} and/or {@link DataContent#usingSite(SiteModel)}, etc.
      */
     public String getNodeRef()
     {
         return contentService.getNodeRefByPath(getSession(), Utility.convertBackslashToSlash(getLastResource()));
     }
-    
+
     /**
      * Get the corresponding CMIS Document Object of a file using only the file path
+     * 
      * @param filePath
      * @return {@link Document}
      */
-    public Document getCMISDocument(String filePath) 
+    public Document getCMISDocument(String filePath)
     {
         return contentService.getDocumentObject(getSession(), filePath);
     }
-    
+
     /**
      * Get the corresponding CMIS Folder Object of a file using only the file path
+     * 
      * @param filePath
      * @return {@link Folder}
      */
-    public Folder getCMISFolder(String folderPath) 
+    public Folder getCMISFolder(String folderPath)
     {
         return contentService.getFolderObject(getSession(), folderPath);
     }
-    
+
     /**
      * Adding aspects to ContentModels
      * 
      * @param object
      */
     public void addAspect(List<XMLAspectData> aspects)
-    {   
+    {
         List<String> allAspectNames = new ArrayList<String>();
-        for(XMLAspectData aspect : aspects)
+        for (XMLAspectData aspect : aspects)
         {
             allAspectNames.add(aspect.getName());
         }
         contentAspect.addAspect(getSession(), getLastResource(), allAspectNames.toArray(new String[0]));
 
-        //now add the properies corelated to each aspect
-        for(XMLAspectData aspect : aspects)
+        // now add the properies corelated to each aspect
+        for (XMLAspectData aspect : aspects)
         {
-            if(aspect.hasProperties())
+            if (aspect.hasProperties())
             {
-                LOG.info("Preparing to apply {}",aspect.toString());
-                contentActions.addProperties(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getLastResource(), aspect.getPropertiesAsHashMap());
+                LOG.info("Preparing to apply {}", aspect.toString());
+                contentActions.addProperties(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getLastResource(),
+                        aspect.getPropertiesAsHashMap());
             }
         }
-    }   
-    
+    }
+
     /**
      * Add file to favorites
      *
@@ -583,7 +590,8 @@ public class DataContent extends TestData<DataContent>
     public void addFileToFavorites(FileModel file) throws DataPreparationException
     {
         STEP(String.format("DATAPREP: Add file %s.%s to Favorites", file.getName(), file.getFileType().extention));
-        contentActions.setFileAsFavorite(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getCurrentSite(), String.format("%s.%s",file.getName(), file.getFileType().extention));
+        contentActions.setFileAsFavorite(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getCurrentSite(),
+                String.format("%s.%s", file.getName(), file.getFileType().extention));
     }
 
     /**
@@ -596,19 +604,19 @@ public class DataContent extends TestData<DataContent>
         STEP(String.format("DATAPREP: Add folder %s to Favorites", folder.getName()));
         contentActions.setFolderAsFavorite(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getCurrentSite(), folder.getName());
     }
-    
+
     /**
      * Asserting the version of the content
      * 
      * @param version
      */
     public void assertContentVersionIs(String version)
-    {	
+    {
         STEP(String.format("DATAPREP: Asserting that the version of the '%s' content is %s", getLastResource(), version));
-    	String currentVersion = getCMISDocument(getLastResource()).getVersionLabel();
-    	Assert.assertEquals(currentVersion, version);
+        String currentVersion = getCMISDocument(getLastResource()).getVersionLabel();
+        Assert.assertEquals(currentVersion, version);
     }
-    
+
     /**
      * Check out document
      */
