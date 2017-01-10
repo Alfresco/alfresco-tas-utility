@@ -75,9 +75,7 @@ public class DataSite extends TestData<DataSite>
      */
     public SiteModel createModeratedRandomSite() throws DataPreparationException
     {
-        SiteModel randomSite = new SiteModel(RandomData.getRandomName("siteModerated"));
-
-        randomSite.setVisibility(Site.Visibility.MODERATED);
+        SiteModel randomSite = new SiteModel(RandomData.getRandomName("siteModerated"), Site.Visibility.MODERATED);
         return createSite(randomSite);
     }
     
@@ -89,9 +87,7 @@ public class DataSite extends TestData<DataSite>
      */
     public SiteModel createPrivateRandomSite() throws DataPreparationException
     {
-        SiteModel randomSite = new SiteModel(RandomData.getRandomName("sitePrivate"));
-
-        randomSite.setVisibility(Site.Visibility.PRIVATE);
+        SiteModel randomSite = new SiteModel(RandomData.getRandomName("sitePrivate"), Site.Visibility.PRIVATE);
         return createSite(randomSite);
     }
     
@@ -162,5 +158,17 @@ public class DataSite extends TestData<DataSite>
     {
         STEP(String.format("DATAPREP: Delete site %s", siteModel.getId()));
         siteService.delete(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getCurrentUser().getDomain(), siteModel.getId());
+    }
+
+    /**
+     * Change site visibility
+     * @param siteModel
+     * @param newVisibility
+     * @throws DataPreparationException
+     */
+    public void updateSiteVisibility(SiteModel siteModel, Site.Visibility newVisibility) throws DataPreparationException
+    {
+        STEP(String.format("DATAPREP: Change site %s visibility to %s", siteModel.getId(), newVisibility));
+        siteService.updateSiteVisibility(getCurrentUser().getUsername(), getCurrentUser().getPassword(), siteModel.getId(), newVisibility);
     }
 }
