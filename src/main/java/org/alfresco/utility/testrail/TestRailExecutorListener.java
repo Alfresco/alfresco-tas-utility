@@ -35,8 +35,7 @@ public class TestRailExecutorListener implements ITestListener
         
         if (justUpdateResults)
         {
-            LOG.info("'testManagement.updateTestExecutionResultsOnly' is set to 'true' in your {} file, so only the test execution status will be updated in TestRail.",
-                    Utility.getEnvironmentPropertyFile());
+            LOG.info("'testManagement.updateTestExecutionResultsOnly' is set to 'true' in your {} file, so only the test execution status will be updated in TestRail.", Utility.getEnvironmentPropertyFile());
         }
 
         testCaseUploader.addTestRailIfNotExist(result);

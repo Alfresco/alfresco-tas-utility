@@ -18,7 +18,6 @@ import java.util.Properties;
 
 import javax.xml.bind.DatatypeConverter;
 
-import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.Utility;
 import org.alfresco.utility.report.Bug;
 import org.alfresco.utility.testrail.annotation.TestRail;
@@ -28,6 +27,7 @@ import org.alfresco.utility.testrail.model.TestCase;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.ITestResult;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -42,7 +42,7 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
  */
 public class TestRailApi
 {
-    Logger LOG = LogFactory.getLogger();
+    static Logger LOG = LoggerFactory.getLogger("testrail");
 
     /*
      * Test Rail Template:
