@@ -10,7 +10,7 @@
 	<description>My Sample Project Consuming TAS.Utility</description>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<tas.utility.version>1.0-SNAPSHOT</tas.utility.version>
+		<tas.utility.version>1.0.8-SNAPSHOT</tas.utility.version>
 		<maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
 		<maven-jar-plugin.version>2.6</maven-jar-plugin.version>
 		<suiteXmlFile>src/main/resources/shared-resources/my-suites.xml</suiteXmlFile>
