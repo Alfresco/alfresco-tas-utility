@@ -20,8 +20,10 @@ public class TestRailExecutorListener implements ITestListener
 {
     static Logger LOG = LoggerFactory.getLogger("testrail");
     private static boolean isTestRailExecutorEnabled = isPropertyEnabled("testManagement.enabled");
-    private static boolean justUpdateResults = isPropertyEnabled("testManagement.updateTestExecutionResultsOnly");    
+    private static boolean justUpdateResults = isPropertyEnabled("testManagement.updateTestExecutionResultsOnly");
     private static TestCaseUploader testCaseUploader = new TestCaseUploader();
+    private static TestRailStatusUpdaterTask backgroundTestRailStatusUpdater = new TestRailStatusUpdaterTask(testCaseUploader.getTestRailApi());
+    private static Thread currentThread = new Thread(backgroundTestRailStatusUpdater);
 
     @Override
     public void onTestStart(ITestResult result)
@@ -32,11 +34,6 @@ public class TestRailExecutorListener implements ITestListener
                     Utility.getEnvironmentPropertyFile());
             return;
         }
-        
-        if (justUpdateResults)
-        {
-            LOG.info("'testManagement.updateTestExecutionResultsOnly' is set to 'true' in your {} file, so only the test execution status will be updated in TestRail.", Utility.getEnvironmentPropertyFile());
-        }
 
         testCaseUploader.addTestRailIfNotExist(result);
     }
@@ -46,8 +43,8 @@ public class TestRailExecutorListener implements ITestListener
     {
         if (!isTestRailExecutorEnabled)
             return;
-        
-        testCaseUploader.updateTestRailTestCase(result);
+
+        testCaseUploader.updateTestRailTestCase(result, backgroundTestRailStatusUpdater);
 
         // no need to update the content of the test case, we wanted just the results as updated above
         if (justUpdateResults)
@@ -75,7 +72,7 @@ public class TestRailExecutorListener implements ITestListener
     {
         if (!isTestRailExecutorEnabled)
             return;
-        testCaseUploader.updateTestRailTestCase(result);
+        testCaseUploader.updateTestRailTestCase(result, backgroundTestRailStatusUpdater);
 
         // no need to update the content of the test case, we wanted just the results as updated above
         if (justUpdateResults)
@@ -102,7 +99,7 @@ public class TestRailExecutorListener implements ITestListener
     {
         if (!isTestRailExecutorEnabled)
             return;
-        testCaseUploader.updateTestRailTestCase(result);
+        testCaseUploader.updateTestRailTestCase(result, backgroundTestRailStatusUpdater);
     }
 
     @Override
@@ -110,7 +107,7 @@ public class TestRailExecutorListener implements ITestListener
     {
         if (!isTestRailExecutorEnabled)
             return;
-        testCaseUploader.updateTestRailTestCase(result);
+        testCaseUploader.updateTestRailTestCase(result, backgroundTestRailStatusUpdater);
 
         // no need to update the content of the test case, we wanted just the results as updated above
         if (justUpdateResults)
@@ -153,6 +150,17 @@ public class TestRailExecutorListener implements ITestListener
         if (!isTestRailExecutorEnabled)
             return;
         testCaseUploader.showTestCasesNotUploaded();
+
+        if (backgroundTestRailStatusUpdater.weHaveItemsInList())
+        {
+            currentThread.start();
+        }
+        while (currentThread.isAlive())
+        {
+            Utility.waitToLoopTime(3);
+            LOG.info("Wait for TestRailStatusUpdaterBackgroundTask to complete his tasks. Remaining: {}",
+                    backgroundTestRailStatusUpdater.remainingTestsToUpdate());
+        }
     }
 
     private static boolean isPropertyEnabled(String propertyName)

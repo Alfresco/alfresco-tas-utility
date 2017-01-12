@@ -23,8 +23,9 @@ import org.testng.ITestResult;
  */
 public class TestCaseUploader
 {
+    public static String MULTIPLE_TESTRAIL_REQUESTS = "TestRail API return HTTP 429";
     static Logger LOG = LoggerFactory.getLogger("testrail");
-    TestRailApi testRail = new TestRailApi();
+    private TestRailApi testRail = new TestRailApi();
     private static Map<String, String> testCasesNotUploaded = new HashMap<String, String>();
 
     private Section testSection;
@@ -32,6 +33,11 @@ public class TestCaseUploader
 
     List<Section> allSections = new ArrayList<Section>();
     private Run currentTestRun = null;
+
+    public TestRailApi getTestRailApi()
+    {
+        return this.testRail;
+    }
 
     /**
      * Make just one call on this method when the tests will start.
@@ -151,14 +157,21 @@ public class TestCaseUploader
             testRail.addTestSteps(result, steps, testSection, annotation);
     }
 
-    public void updateTestRailTestCase(ITestResult result)
+    public void updateTestRailTestCase(ITestResult result, TestRailStatusUpdaterTask task)
     {
         if (testRail.hasConfigurationErrors())
             return;
 
         LOG.info("Update Test Rail execution status of test case: [{}]  ", result.getMethod().getMethodName());
-
-        testRail.updateTestCaseResult(result, currentTestRun);
+        
+        Object response = testRail.updateTestCaseResult(result, currentTestRun);
+        if (response != null)
+        {
+            if (response.toString().contains(MULTIPLE_TESTRAIL_REQUESTS))
+            {
+                task.addToBackgroundJob(result, currentTestRun, testRail.getCurrentTestCase());
+            }
+        }
     }
 
     public void showTestCasesNotUploaded()

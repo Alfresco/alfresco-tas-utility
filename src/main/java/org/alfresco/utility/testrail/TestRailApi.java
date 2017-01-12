@@ -64,6 +64,16 @@ public class TestRailApi
 
     private TestCase tmpTestCase = null;
 
+    public TestCase getCurrentTestCase()
+    {
+        return tmpTestCase;
+    }
+
+    public void setCurrentTestCase(TestCase testCase)
+    {
+        this.tmpTestCase = testCase;
+    }
+
     /**
      * Setup configuration from property file
      */
@@ -350,7 +360,7 @@ public class TestRailApi
             data.put("custom_platform", 1);
 
             Object response = postRequest("add_case/" + section.getId(), data);
-            tmpTestCase = toClass(response, TestCase.class);
+            setCurrentTestCase(toClass(response, TestCase.class));
         }
         catch (Exception e)
         {
@@ -368,7 +378,7 @@ public class TestRailApi
             if (isAutomatedTestCaseInSection(result.getMethod().getMethodName(), section, annotation))
             {
                 Object response = postRequest("update_case/" + tmpTestCase.getId(), data);
-                tmpTestCase = toClass(response, TestCase.class);
+                setCurrentTestCase(toClass(response, TestCase.class));
             }
         }
         catch (Exception e)
@@ -390,7 +400,7 @@ public class TestRailApi
             {
                 if (tc.getTitle().equals(testName))
                 {
-                    tmpTestCase = tc;
+                    setCurrentTestCase(tc);
                     return true;
                 }
             }
@@ -403,10 +413,10 @@ public class TestRailApi
     }
 
     @SuppressWarnings("unchecked")
-    public void updateTestCaseResult(ITestResult result, Run run)
+    public Object updateTestCaseResult(ITestResult result, Run run)
     {
         if (tmpTestCase == null)
-            return;
+            return null;
         int status = 2; // blocked in Test Rail
 
         switch (result.getStatus())
@@ -462,7 +472,10 @@ public class TestRailApi
         catch (Exception e)
         {
             LOG.error("Cannot update Test Case status execution. Error: {}, Response: {}", e.getMessage(), response.toString());
+            return e.getMessage();
         }
+
+        return response;
     }
 
     /**
