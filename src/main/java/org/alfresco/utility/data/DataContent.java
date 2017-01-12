@@ -341,7 +341,7 @@ public class DataContent extends TestData<DataContent>
     }
 
     /**
-     * Delete entire childs of the FolderModel
+     * Delete parent folder along with all children in it
      * 
      * @param from
      */
@@ -494,7 +494,6 @@ public class DataContent extends TestData<DataContent>
     public void addTagToContent(TagModel model) throws TestConfigurationException
     {
         STEP(String.format("DATAPREP: Create '%s' tag to content %s", model.getTag()));
-
         if (getLastResource() == null || getLastResource().isEmpty())
             throw new TestConfigurationException("You didn't specify your last resource in your tests. Please call usingResource(...) before adding a tag");
 
@@ -509,7 +508,6 @@ public class DataContent extends TestData<DataContent>
      */
     public void assertContentHasTag(String cmisObjectPath, TagModel model)
     {
-
         STEP(String.format("DATAPREP: Verify content %s has tag %s", cmisObjectPath, model.getTag()));
         List<String> tags = contentActions.getTagNamesFromContent(getCurrentUser().getUsername(), getCurrentUser().getPassword(), cmisObjectPath);
         boolean found = false;
@@ -521,7 +519,6 @@ public class DataContent extends TestData<DataContent>
                 break;
             }
         }
-
         Assert.assertTrue(found, "content has tag");
     }
 
@@ -623,7 +620,7 @@ public class DataContent extends TestData<DataContent>
     public void checkOutDocument()
     {
         STEP(String.format("DATAPREP: Check out document %s", getLastResource()));
-        contentActions.checkOut(contentActions.getCMISSession(getCurrentUser().getUsername(), getCurrentUser().getPassword()), getLastResource());
+        contentActions.checkOut(getSession(), getLastResource());
     }
 
     /**
@@ -632,6 +629,31 @@ public class DataContent extends TestData<DataContent>
     public void cancelCheckOut()
     {
         STEP(String.format("DATAPREP: Cancel check out on document %s", getLastResource()));
-        contentActions.cancelCheckOut(contentActions.getCMISSession(getCurrentUser().getUsername(), getCurrentUser().getPassword()), getLastResource());
+        contentActions.cancelCheckOut(getSession(), getLastResource());
+    }
+    
+    /**
+     * Update document content
+     * @param newContent
+     */
+    public void updateContent(String newContent)
+    {
+        String path = getLastResource();
+        STEP(String.format("DATAPREP: Update content for document from %s", path));
+        contentService.updateDocumentContent(getCurrentUser().getUsername(), getCurrentUser().getPassword(), path, newContent);
+    }
+    
+    /**
+     * Check in document.
+     * 
+     * @param newContent
+     * @param majorVersion true to set major version(e.g. 2.0)
+     * @param checkInComment
+     */
+    public void checkIn(String newContent, boolean majorVersion, String checkInComment)
+    {
+        String docName = new File(getLastResource()).getName();
+        STEP(String.format("DATAPREP: Check in document %s", docName));
+        contentActions.checkIn(getSession(), getLastResource(), newContent, majorVersion, checkInComment);
     }
 }
