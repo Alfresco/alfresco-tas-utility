@@ -18,6 +18,7 @@ import java.util.Scanner;
 import org.alfresco.dataprep.CMISUtil.DocumentType;
 import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.exception.TestObjectNotDefinedException;
+import org.alfresco.utility.testrail.TestRailExecutorListener;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
@@ -211,6 +212,28 @@ public class Utility
         }
 
         return props;
+    }
+    
+    /**
+     * Check if property identified by key in *.properties file is enabled or not 
+     * @param key
+     * @return
+     */
+    public static boolean isPropertyEnabled(String key)
+    {
+        boolean isEnabled = false;
+        Properties properties = new Properties();
+        try
+        {
+            properties = Utility.getProperties(TestRailExecutorListener.class, Utility.getEnvironmentPropertyFile());
+            isEnabled = Boolean.valueOf(Utility.getSystemOrFileProperty(key, properties));
+        }
+        catch (TestConfigurationException e1)
+        {
+            System.err.println("Cannot read properties from '" + Utility.getEnvironmentPropertyFile() + "'. Error: " + e1.getMessage());
+        }
+
+        return isEnabled;
     }
 
     /**

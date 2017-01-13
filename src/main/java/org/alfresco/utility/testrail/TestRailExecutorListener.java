@@ -2,10 +2,8 @@ package org.alfresco.utility.testrail;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import org.alfresco.utility.Utility;
-import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.report.log.Step;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,8 +17,8 @@ import org.testng.ITestResult;
 public class TestRailExecutorListener implements ITestListener
 {
     static Logger LOG = LoggerFactory.getLogger("testrail");
-    private static boolean isTestRailExecutorEnabled = isPropertyEnabled("testManagement.enabled");
-    private static boolean justUpdateResults = isPropertyEnabled("testManagement.updateTestExecutionResultsOnly");
+    private static boolean isTestRailExecutorEnabled = Utility.isPropertyEnabled("testManagement.enabled");
+    private static boolean justUpdateResults = Utility.isPropertyEnabled("testManagement.updateTestExecutionResultsOnly");
     private static TestCaseUploader testCaseUploader = new TestCaseUploader();
     private static TestRailStatusUpdaterTask backgroundTestRailStatusUpdater = new TestRailStatusUpdaterTask(testCaseUploader.getTestRailApi());
     private static Thread currentThread = new Thread(backgroundTestRailStatusUpdater);
@@ -161,22 +159,5 @@ public class TestRailExecutorListener implements ITestListener
             LOG.info("Wait for TestRailStatusUpdaterBackgroundTask to complete his tasks. Remaining: {}",
                     backgroundTestRailStatusUpdater.remainingTestsToUpdate());
         }
-    }
-
-    private static boolean isPropertyEnabled(String propertyName)
-    {
-        boolean isEnabled = false;
-        Properties properties = new Properties();
-        try
-        {
-            properties = Utility.getProperties(TestRailExecutorListener.class, Utility.getEnvironmentPropertyFile());
-            isEnabled = Boolean.valueOf(Utility.getSystemOrFileProperty(propertyName, properties));
-        }
-        catch (TestConfigurationException e1)
-        {
-            System.err.println("Cannot read properties from '" + Utility.getEnvironmentPropertyFile() + "'. Error: " + e1.getMessage());
-        }
-
-        return isEnabled;
     }
 }
