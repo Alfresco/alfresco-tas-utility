@@ -47,5 +47,7 @@ public @interface TestGroup
     public static String INTEGRATION = "integration";
     public static String CONTENT = "content";
     public static String PREUPGRADE = "pre-upgrade";
-    public static String POSTUPGRADE = "post-upgrade";    
+    public static String POSTUPGRADE = "post-upgrade";  
+
+    public static String WONT_FIX = "wont-fix";
 }
