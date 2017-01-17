@@ -1,5 +1,8 @@
 package org.alfresco.utility.testrail.model;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 /**
  * Represents a Section from TestRail
  * {
@@ -92,4 +95,10 @@ public class Section
 
     private int display_order;
     private int depth;
+
+    @Override
+    public String toString()
+    {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+    }
 }

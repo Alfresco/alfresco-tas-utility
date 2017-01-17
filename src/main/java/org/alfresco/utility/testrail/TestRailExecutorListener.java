@@ -4,160 +4,114 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.alfresco.utility.Utility;
-import org.alfresco.utility.report.log.Step;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.alfresco.utility.testrail.core.TestCaseDetail;
+import org.alfresco.utility.testrail.core.TestRailExecutor;
+import org.testng.ISuite;
+import org.testng.ISuiteListener;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 
 /**
- * Listen for all test cases created and update them accordingly
+ * Listen for all test cases created and update them accordingly in Test Rail (configured based on *.properties file)
+ * This is the seconds approach of updating TestRail test cases based on test execution.
+ * The initial approach was to perform queries and update test cases as we go. Running many tests in parallel or multiple suites will throw
+ * "HTTP 429 (No additional error message received)" from the server {@link http://docs.gurock.com/testrail-api2/introduction}
+ * -
+ * In order to bypass this, before we start the suite of test we query the list of test cases from current project specified in default.properties and save it
+ * in memory.
+ * - when the test is executed if the test is not in temporary collection we add it (make a post request to /add_case)
+ * - after test execution, for our test object we define the status and other details from ITestResult
+ * - after the entire tests are executed, we traverse the list of all tests executed and bulk upload their results in TestRail with just one query command.
+ * 
+ * @author Paul Brodner
  */
-public class TestRailExecutorListener implements ITestListener
+public class TestRailExecutorListener implements ISuiteListener, ITestListener
 {
-    static Logger LOG = LoggerFactory.getLogger("testrail");
-    private static boolean isTestRailExecutorEnabled = Utility.isPropertyEnabled("testManagement.enabled");
-    private static boolean justUpdateResults = Utility.isPropertyEnabled("testManagement.updateTestExecutionResultsOnly");
-    private static TestCaseUploader testCaseUploader = new TestCaseUploader();
-    private static TestRailStatusUpdaterTask backgroundTestRailStatusUpdater = new TestRailStatusUpdaterTask(testCaseUploader.getTestRailApi());
-    private static Thread currentThread = new Thread(backgroundTestRailStatusUpdater);
+    private static TestRailExecutor testRailExecutor = new TestRailExecutor();
+    private static List<TestCaseDetail> currentTestCases = new ArrayList<TestCaseDetail>();
 
     @Override
-    public void onTestStart(ITestResult result)
+    public void onStart(ISuite suite)
     {
-        if (!isTestRailExecutorEnabled)
+        if (testRailExecutor.isEnabled())
         {
-            LOG.info("'TestRailExecutorListener' is added in your suite.xml file, but the property: testManagement.enabled is set to 'false' in your {} file",
-                    Utility.getEnvironmentPropertyFile());
-            return;
+            /*
+             * get the list of sections
+             * get the current run object
+             * get list of all test cases
+             */
+            testRailExecutor.prepareCurrentSuiteRun();            
         }
+        else
+        {
+            TestRailExecutor.LOG.info(
+                    "'TestRailExecutorListener' is added in your suite.xml file, but the property: testManagement.enabled is set to 'false' in your {} file",
+                    Utility.getEnvironmentPropertyFile());
+        }
+    }
 
-        testCaseUploader.addTestRailIfNotExist(result);
+    @Override
+    public void onFinish(ISuite suite)
+    {
+        try
+        {
+            testRailExecutor.addResultsForCases(currentTestCases);
+        }
+        catch (Exception e)
+        {
+            TestRailExecutor.LOG.error("CANNOT UPDATE TestCases in TestRail: {}", e.getMessage());
+        }
+    }
+
+    @Override
+    public void onTestStart(ITestResult currentTest)
+    {
+        // nothing to do here
     }
 
     @Override
     public void onTestSuccess(ITestResult result)
     {
-        if (!isTestRailExecutorEnabled)
-            return;
-
-        testCaseUploader.updateTestRailTestCase(result, backgroundTestRailStatusUpdater);
-
-        // no need to update the content of the test case, we wanted just the results as updated above
-        if (justUpdateResults)
-            return;
-
-        List<String> stepsToBeUpdated = new ArrayList<String>();
-
-        if (Step.testSteps.get(result.getTestClass().getName()) != null)
+        if (testRailExecutor.isEnabled())
         {
-            stepsToBeUpdated.add("---START DATAPREP -----");
-            stepsToBeUpdated.addAll(Step.testSteps.get(result.getTestClass().getName()));
-            stepsToBeUpdated.add("---END DATAPREP -----");
-
+            currentTestCases.add(testRailExecutor.uploadTestCase(result));
         }
-        if (Step.testSteps.get(result.getMethod().getMethodName()) != null)
-        {
-            stepsToBeUpdated.addAll(Step.testSteps.get(result.getMethod().getMethodName()));
-
-        }
-        testCaseUploader.updateTestRailTestSteps(result, String.join(System.lineSeparator(), stepsToBeUpdated));
     }
 
     @Override
     public void onTestFailure(ITestResult result)
     {
-        if (!isTestRailExecutorEnabled)
-            return;
-        testCaseUploader.updateTestRailTestCase(result, backgroundTestRailStatusUpdater);
-
-        // no need to update the content of the test case, we wanted just the results as updated above
-        if (justUpdateResults)
-            return;
-
-        List<String> stepsToBeUpdated = new ArrayList<String>();
-
-        if (Step.testSteps.get(result.getTestClass().getName()) != null)
+        if (testRailExecutor.isEnabled())
         {
-            stepsToBeUpdated.add("---START DATAPREP -----");
-            stepsToBeUpdated.addAll(Step.testSteps.get(result.getTestClass().getName()));
-            stepsToBeUpdated.add("---END DATAPREP -----");
-
+            currentTestCases.add(testRailExecutor.uploadTestCase(result));
         }
-        if (Step.testSteps.get(result.getMethod().getMethodName()) != null)
-        {
-            stepsToBeUpdated.addAll(Step.testSteps.get(result.getMethod().getMethodName()));
-        }
-        testCaseUploader.updateTestRailTestSteps(result, String.join(System.lineSeparator(), stepsToBeUpdated));
     }
 
     @Override
     public void onTestSkipped(ITestResult result)
     {
-        if (!isTestRailExecutorEnabled)
-            return;
-        testCaseUploader.updateTestRailTestCase(result, backgroundTestRailStatusUpdater);
+        if (testRailExecutor.isEnabled())
+        {
+            currentTestCases.add(testRailExecutor.uploadTestCase(result));
+        }
     }
 
     @Override
     public void onTestFailedButWithinSuccessPercentage(ITestResult result)
     {
-        if (!isTestRailExecutorEnabled)
-            return;
-        testCaseUploader.updateTestRailTestCase(result, backgroundTestRailStatusUpdater);
-
-        // no need to update the content of the test case, we wanted just the results as updated above
-        if (justUpdateResults)
-            return;
-
-        List<String> stepsToBeUpdated = new ArrayList<String>();
-
-        if (Step.testSteps.get(result.getTestClass().getName()) != null)
-        {
-            stepsToBeUpdated.add("---START DATAPREP -----");
-            stepsToBeUpdated.addAll(Step.testSteps.get(result.getTestClass().getName()));
-            stepsToBeUpdated.add("---END DATAPREP -----");
-
-        }
-        if (Step.testSteps.get(result.getMethod().getMethodName()) != null)
-        {
-            stepsToBeUpdated.addAll(Step.testSteps.get(result.getMethod().getMethodName()));
-        }
-        testCaseUploader.updateTestRailTestSteps(result, String.join(System.lineSeparator(), stepsToBeUpdated));
+        // nothing to do here
     }
 
     @Override
     public void onStart(ITestContext context)
     {
-        if (!isTestRailExecutorEnabled)
-            return;
-        testCaseUploader.oneTimeUpdateFromTestRail();
-
-        // no need to update the content of the test case, we wanted just the results as updated above
-        if (justUpdateResults)
-            return;
-
-        Step.testSteps.clear();
-
+        // nothing to do here
     }
 
     @Override
     public void onFinish(ITestContext context)
     {
-        if (!isTestRailExecutorEnabled)
-            return;
-        testCaseUploader.showTestCasesNotUploaded();
-
-        if (backgroundTestRailStatusUpdater.weHaveItemsInList())
-        {
-            currentThread.start();
-        }
-        while (currentThread.isAlive())
-        {
-            Utility.waitToLoopTime(3);
-            LOG.info("Wait for TestRailStatusUpdaterBackgroundTask to complete his tasks. Remaining: {}",
-                    backgroundTestRailStatusUpdater.remainingTestsToUpdate());
-        }
+        // nothing to do here
     }
 }
