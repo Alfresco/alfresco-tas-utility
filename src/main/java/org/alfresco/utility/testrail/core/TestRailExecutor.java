@@ -17,7 +17,7 @@ public class TestRailExecutor
 {
     public static Logger LOG = LoggerFactory.getLogger("testrail");
 
-    private boolean isEnabled = Utility.isPropertyEnabled("testManagement.enabled"); 
+    private boolean isEnabled = Utility.isPropertyEnabled("testManagement.enabled");
     private boolean includeAllTestsInRun = Utility.isPropertyEnabled("testManagement.includeAllTests");
 
     private static TestRailAPI testRailAPI = new TestRailAPI();
@@ -25,15 +25,40 @@ public class TestRailExecutor
     /*
      * all section from current project
      */
-    private List<Section> allServerSections = new ArrayList<Section>();
-    private List<TestCase> allServerTestCases = new ArrayList<TestCase>();
+    private static List<Section> allServerSections = new ArrayList<Section>();
+    private static List<TestCase> allServerTestCases = new ArrayList<TestCase>();
 
-    public List<Section> getAllSection()
+    public static List<Section> getAllSection()
     {
         return allServerSections;
     }
 
-    public List<TestCase> getAllTestCases()
+    public static boolean existsInAllSection(Section section)
+    {
+        boolean exist = false;
+
+        for (Section oldS : getAllSection())
+        {
+            if (section.getName().equals(oldS.getName()) && section.getParent_id() == oldS.getParent_id())
+            {
+                exist = true;
+                break;
+            }
+
+        }
+        return exist;
+    }
+
+    public static void addSections(List<Section> sections)
+    {
+        for (Section s : sections)
+        {
+            if (!existsInAllSection(s))
+                getAllSection().add(s);
+        }
+    }
+
+    public static List<TestCase> getAllTestCases()
     {
         return allServerTestCases;
     }
@@ -59,9 +84,9 @@ public class TestRailExecutor
          */
         TestCaseDetail currentTestCase = new TestCaseDetail(currentTest);
 
-        if (!currentTestCase.hasSectionCreatedIn(allServerSections) && currentTestCase.isMarkForUpload())
+        if (!currentTestCase.hasSectionCreatedIn(getAllSection()) && currentTestCase.isMarkForUpload())
         {
-            testRailAPI.createNewSection(currentTestCase, allServerSections);
+            testRailAPI.createNewSection(currentTestCase, getAllSection());
         }
 
         // check from already queried test cases
@@ -99,8 +124,8 @@ public class TestRailExecutor
      */
     public void prepareCurrentSuiteRun()
     {
-        this.allServerSections = testRailAPI.getSectionsOfCurrentProject();
-        this.allServerTestCases = testRailAPI.getAllTestCasesFromCurrentProject();
+        TestRailExecutor.addSections(testRailAPI.getSectionsOfCurrentProject());
+        TestRailExecutor.allServerTestCases = testRailAPI.getAllTestCasesFromCurrentProject();
         testRailAPI.getRunOfCurrentProject();
     }
 
