@@ -241,9 +241,9 @@ public class Utility
      * 
      * @param seconds
      */
-    public static void waitToLoopTime(int seconds)
+    public static void waitToLoopTime(int seconds, String... info)
     {
-        LOG.info("Waiting (in loops) for: {} second(s).", seconds);
+        LOG.info("Wait until {} second(s) are passed. {}", seconds, StringUtils.join(info, ' '));
         long currentTime;
         long endTime;
         currentTime = System.currentTimeMillis();
