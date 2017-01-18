@@ -17,8 +17,7 @@ public class TestRailExecutor
 {
     public static Logger LOG = LoggerFactory.getLogger("testrail");
 
-    private boolean isEnabled = Utility.isPropertyEnabled("testManagement.enabled");
-    private boolean updateTestExecutionResultsOnly = Utility.isPropertyEnabled("testManagement.updateTestExecutionResultsOnly");
+    private boolean isEnabled = Utility.isPropertyEnabled("testManagement.enabled"); 
     private boolean includeAllTestsInRun = Utility.isPropertyEnabled("testManagement.includeAllTests");
 
     private static TestRailAPI testRailAPI = new TestRailAPI();
@@ -45,14 +44,6 @@ public class TestRailExecutor
     public boolean isEnabled()
     {
         return isEnabled;
-    }
-
-    /**
-     * @return boolean value if only the test result is uploaded (i.e. testManagement.updateTestExecutionResultsOnly=true)
-     */
-    public boolean updateTestExecutionResultsOnly()
-    {
-        return updateTestExecutionResultsOnly;
     }
 
     public TestCaseDetail uploadTestCase(ITestResult currentTest)

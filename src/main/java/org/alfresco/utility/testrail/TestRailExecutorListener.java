@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.alfresco.utility.Utility;
+import org.alfresco.utility.report.log.Step;
 import org.alfresco.utility.testrail.core.TestCaseDetail;
 import org.alfresco.utility.testrail.core.TestRailExecutor;
 import org.testng.ISuite;
@@ -106,7 +107,7 @@ public class TestRailExecutorListener implements ISuiteListener, ITestListener
     @Override
     public void onStart(ITestContext context)
     {
-        // nothing to do here
+        Step.testSteps.clear();
     }
 
     @Override

@@ -3,6 +3,7 @@ package org.alfresco.utility.testrail.core;
 import java.util.List;
 
 import org.alfresco.utility.report.Bug;
+import org.alfresco.utility.report.log.Step;
 import org.alfresco.utility.testrail.annotation.TestRail;
 import org.alfresco.utility.testrail.model.Section;
 import org.alfresco.utility.testrail.model.TestCase;
@@ -22,8 +23,17 @@ public class TestCaseDetail
     private ITestResult result;
     private long elapsed;
 
+    /* this are the actual test steps */
+    private String notes = "";
+
+    public String getNotes()
+    {
+        return notes;
+    }
+
     public TestCaseDetail(ITestResult currentTest)
     {
+        setResult(currentTest);
         id = String.format("%s#%s", currentTest.getInstanceName(), currentTest.getMethod().getMethodName());
         name = currentTest.getMethod().getMethodName();
 
@@ -32,6 +42,18 @@ public class TestCaseDetail
 
         testCaseDestination.fromAnnotation(annotation);
         setElapsed(currentTest.getEndMillis() - currentTest.getStartMillis());
+
+        StringBuilder notesSB = new StringBuilder("");
+        if (Step.testSteps.get(getResult().getTestClass().getName()) != null)
+        {
+            notesSB.append("Dataprep\n========\n* ").append(String.join("\n* ", Step.testSteps.get(result.getTestClass().getName())));
+        }
+
+        if (Step.testSteps.get(result.getMethod().getMethodName()) != null)
+        {
+            notesSB.append("\n\nTestCase Steps\n=========\n* ").append(String.join("\n* ", Step.testSteps.get(result.getMethod().getMethodName())));
+        }
+        notes = notesSB.toString();
     }
 
     public Bug getBugDetails()

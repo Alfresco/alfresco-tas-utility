@@ -20,6 +20,7 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.alfresco.utility.Utility;
 import org.alfresco.utility.testrail.ExecutionType;
+import org.alfresco.utility.testrail.model.Result;
 import org.alfresco.utility.testrail.model.Run;
 import org.alfresco.utility.testrail.model.RunTestCase;
 import org.alfresco.utility.testrail.model.Section;
@@ -427,18 +428,21 @@ public class TestRailAPI
             cases.add(runCase.getCase_id());
         }
 
-//        /*
-//         * 2. save first the results that already exists in current test run
-//         */
-//        response = getRequest("get_results_for_run/" + currentRun.getId());
-//        List<Result> results = toCollection(response, Result.class);
-//        if (!results.isEmpty())
-//        {
-//            for (Result result : results)
-//            {
-//                cases.add(result.getTest_id());
-//            }
-//        }
+        /*
+         * 2. save first the results that already exists in current test run
+         */
+        if (!runCases.isEmpty())
+        {
+            response = getRequest("get_results_for_run/" + currentRun.getId());
+            List<Result> results = toCollection(response, Result.class);
+            if (!results.isEmpty())
+            {
+                for (Result result : results)
+                {
+                    cases.add(result.getTest_id());
+                }
+            }
+        }
 
         /*
          * 3. now update the test run with ONLY the test cases that are executed in this run
@@ -561,6 +565,7 @@ public class TestRailAPI
             // data.put("custom_steps", annotation.description());
             data.put("custom_auto_ref", currentTest.getId());
             data.put("custom_executiontype", new Boolean(true)); // always automated
+            data.put("custom_test_notes", currentTest.getNotes());
 
             // holds Sanity, Smoke, Regression, etc
             List<Integer> executionTypeList = new ArrayList<Integer>();
