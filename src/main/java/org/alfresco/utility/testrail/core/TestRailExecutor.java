@@ -18,7 +18,7 @@ public class TestRailExecutor
     public static Logger LOG = LoggerFactory.getLogger("testrail");
 
     private boolean isEnabled = Utility.isPropertyEnabled("testManagement.enabled");
-    private boolean includeAllTestsInRun = Utility.isPropertyEnabled("testManagement.includeAllTests");
+    private boolean includeOnlyTestCasesExecuted = Utility.isPropertyEnabled("testManagement.includeOnlyTestCasesExecuted");
 
     private static TestRailAPI testRailAPI = new TestRailAPI();
 
@@ -131,7 +131,7 @@ public class TestRailExecutor
 
     public Object addResultsForCases(List<TestCaseDetail> currentTestCases) throws Exception
     {
-        if (!includeAllTestsInRun)
+        if (includeOnlyTestCasesExecuted)
         {
             // then we update the current test run and add ONLY the tests that were executed in this run.
             testRailAPI.updateTestRunWithSelectedTestCases(currentTestCases);

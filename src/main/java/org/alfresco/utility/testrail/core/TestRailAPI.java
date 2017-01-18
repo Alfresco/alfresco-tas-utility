@@ -333,7 +333,7 @@ public class TestRailAPI
             Map data = new HashMap();
             data.put("suite_id", currentSuiteID);
             data.put("name", currentTestRunName);
-            data.put("include_all", Utility.isPropertyEnabled("testManagement.includeAllTests"));
+            data.put("include_all", !Utility.isPropertyEnabled("testManagement.includeOnlyTestCasesExecuted"));
             data.put("description", "**Server:** " + serverUrl);
 
             LOG.info("Add new RUN [{}]", currentTestRunName);
@@ -415,7 +415,7 @@ public class TestRailAPI
     public void updateTestRunWithSelectedTestCases(List<TestCaseDetail> currentTestCases) throws Exception
     {
         Map testCasesData = new HashMap();
-        testCasesData.put("include_all", false);
+        testCasesData.put("include_all", false); //we don't want to include all tests from Test Run, just the ones that we run now
         List cases = new ArrayList();
 
         /*
