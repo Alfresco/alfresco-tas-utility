@@ -39,7 +39,7 @@ public class TestRailExecutor
 
         for (Section oldS : getAllSection())
         {
-            if (section.getName().equals(oldS.getName()) && section.getParent_id() == oldS.getParent_id())
+            if (section.getId() == oldS.getId())
             {
                 exist = true;
                 break;

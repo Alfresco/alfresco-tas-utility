@@ -29,7 +29,7 @@ public class RunTestRailIntegrationTest extends AbstractTestNGSpringContextTests
     
     @Test(groups = "sample-tests")
     @TestRail(section = { "demo", "a", "b1", "c" }, description = "My Awesome test 100", executionType = ExecutionType.SMOKE)
-    public void ThisIsSomethingNew2()
+    public void ThisIsSomethingNew3333()
     {
         Step.STEP("step11");
         Step.STEP("step22");
@@ -38,6 +38,22 @@ public class RunTestRailIntegrationTest extends AbstractTestNGSpringContextTests
     @Test(groups = "sample-tests")
     @TestRail(section = { "demo", "a", "b1", "c" }, description = "My Awesome test 100", executionType = ExecutionType.SMOKE)
     public void ThisIsSomethingNew3()
+    {
+        Step.STEP("step11");
+        Step.STEP("step22");
+    }
+    
+    @Test(groups = "sample-tests")
+    @TestRail(section = { "demo", "a", "b1", "c1" }, description = "My Awesome test 100", executionType = ExecutionType.SMOKE)
+    public void ThisIsSomethingNew4()
+    {
+        Step.STEP("step11");
+        Step.STEP("step22");
+    }
+    
+    @Test(groups = "sample-tests")
+    @TestRail(section = { "demo", "a", "b2", "c1" }, description = "My Awesome test 100", executionType = ExecutionType.SMOKE)
+    public void ThisIsSomethingNew5()
     {
         Step.STEP("step11");
         Step.STEP("step22");
