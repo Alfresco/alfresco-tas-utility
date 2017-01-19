@@ -611,6 +611,8 @@ public class TestRailAPI
                 allSections.add(child);
                 parent = child;
                 currentTestCase.getTestCaseDestination().setDestination(child);
+            }else{
+                parent = getSectionInList(depth, parent.getId(), childSection, allSections);
             }
         }
 
@@ -627,6 +629,17 @@ public class TestRailAPI
             }
         }
         return exists;
+    }
+    
+    private Section getSectionInList(int depth, int parent_id, String name, List<Section> allSections){
+        for (Section s : allSections)
+        {
+            if (s.getName().equals(name) && s.getDepth() == depth && s.getParent_id() == parent_id)
+            {
+                return s;
+            }
+        }
+        return null;
     }
 
 }
