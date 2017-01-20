@@ -131,7 +131,14 @@ public class HtmlReportListener implements IReporter
                     test = extent.startTest(String.format("%s # %s (BUG: %s)", result.getInstance().getClass().getSimpleName(),
                             result.getMethod().getMethodName(), trackerUrl(bugAnnotated.id())));
                     test.assignCategory("BUGS");
-                    test.log(status, String.format("This test is failing due to this issue %s ", trackerUrl(bugAnnotated.id())));
+                    if (bugAnnotated.description().isEmpty())
+                    {
+                        test.log(status, String.format("This test is failing due to this issue %s", trackerUrl(bugAnnotated.id())));
+                    }
+                    else
+                    {
+                        test.log(status, String.format("This test is failing due to this issue %s. <b>Description:</b> %s", trackerUrl(bugAnnotated.id()), bugAnnotated.description()));
+                    }
                 }
                 else
                 {
