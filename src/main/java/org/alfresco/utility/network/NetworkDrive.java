@@ -1,17 +1,16 @@
 package org.alfresco.utility.network;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 
 import org.alfresco.utility.LogFactory;
+import org.alfresco.utility.Utility;
 import org.alfresco.utility.data.DataValue;
 import org.alfresco.utility.model.UserModel;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.testng.Assert;
 
@@ -69,22 +68,14 @@ public abstract class NetworkDrive
 
     protected void runCommand(String command, Object... arguments) throws Exception
     {
-        String cmdWithArgs = String.format(command, arguments);
-        LOG.info("Running command [{}]", cmdWithArgs);
-        Process process = Runtime.getRuntime().exec(cmdWithArgs);
-        InputStream s = process.getInputStream();
-        BufferedReader in = new BufferedReader(new InputStreamReader(s));
-
-        String temp;
-        StringBuilder info = new StringBuilder();
-        while ((temp = in.readLine()) != null)
+        if (SystemUtils.IS_OS_LINUX || SystemUtils.IS_OS_MAC)
         {
-            info.append(temp);
+            Utility.executeOnUnix(String.format(command, arguments));
         }
-        in.close();
-        s.close();
-        LOG.info(info.toString());
-        process.waitFor();
+        else
+        {
+            Utility.executeOnWin(String.format(command, arguments));
+        }
     }
 
     public String getLocalVolumePath()
@@ -111,13 +102,13 @@ public abstract class NetworkDrive
     {
         long counter = 0;
         File mountedDrive = Paths.get(getLocalVolumePath()).toFile();
-        
+
         while (counter < 20 && !mountedDrive.exists())
         {
             TimeUnit.MILLISECONDS.sleep(200);
             counter++;
         }
-        
+
         LOG.info("Verify network mounted drive : {}, Mounted: {} ", getLocalVolumePath(), mountedDrive.exists());
         return mountedDrive.exists();
     }

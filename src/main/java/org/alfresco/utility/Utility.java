@@ -1,14 +1,17 @@
 package org.alfresco.utility;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -213,9 +216,10 @@ public class Utility
 
         return props;
     }
-    
+
     /**
-     * Check if property identified by key in *.properties file is enabled or not 
+     * Check if property identified by key in *.properties file is enabled or not
+     * 
      * @param key
      * @return
      */
@@ -397,5 +401,81 @@ public class Utility
         }
         else
             return value;
+    }
+
+    /**
+     * Execute any Terminal commands
+     * 
+     * Example:
+     * executeOnWin("ls -la")
+     * @param command
+     * @return
+     */
+    public static String executeOnUnix(String command)
+    {
+        LOG.info("On Unix execute command: [{}]", command);
+
+        StringBuilder sb = new StringBuilder();
+        String[] commands = new String[] { "/bin/sh", "-c", command };
+        try
+        {
+            Process proc = new ProcessBuilder(commands).start();
+            BufferedReader stdInput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+
+            BufferedReader stdError = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
+
+            String s = null;
+            while ((s = stdInput.readLine()) != null)
+            {
+                sb.append(s);
+                sb.append("\n");
+            }
+
+            while ((s = stdError.readLine()) != null)
+            {
+                sb.append(s);
+                sb.append("\n");
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Example:
+     * executeOnWin("mkdir 'a'")
+     * @param command
+     * @return the List of lines returned by command
+     */
+    public static String executeOnWin(String command)
+    {
+        LOG.info("On Windows execute command: [{}]", command);
+        
+        List<String> lines = new ArrayList<String>();
+        try
+        {
+            Process p = Runtime.getRuntime().exec("cmd /c " + command);
+            p.waitFor();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+            String line;
+            while ((line = reader.readLine()) != null)
+            {
+                if (!line.startsWith(" Volume"))
+                {
+                    lines.add(line);
+                }
+            }
+        }
+        catch (IOException e1)
+        {
+        }
+        catch (InterruptedException e2)
+        {
+        }
+        return Arrays.toString(lines.toArray());
     }
 }
