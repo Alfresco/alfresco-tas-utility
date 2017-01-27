@@ -5,8 +5,40 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## [[v1.0.8] - NOT-YET-RELEASED](/tas/alfresco-tas-tester/commits/v1.0.8)
-### TBD
+## [[v1.0.8] - 2017-01-27](/tas/alfresco-tas-tester/commits/v1.0.8)
+### Added
+- add executeOnUnix(String command) and executeOnWin(String command)        
+- added description in the report in case @Bug has one
+- cleanup credentials        
+- 'TestRail refactor TestRailExecutorListener to bulk update all test
+  cases at the end of test suite run using #add_results_for_cases TestRail
+  api method. The TestRailExecutor will now be able to: - create new test
+  runs if not exists (including all or ONLY the automated test cases that
+  are executed see default.properties file) - upload test cases taking in
+  consideration one default RateLimit timer (defined in default.properties)
+  to not overload TestRail server - more TestTypes added'
+- added public static boolean isPropertyEnabled(String key) to Utility
+- update dataprep to 1.22. Add method to update content and check in document        
+- refactor TestRail logs
+- added updateSiteVisibility method
+- add methods to verify contents in trash can.
+- split generic log from testrail log
+- update log definition on serverHealth showTenant option
+- 'fix: update method setRandomValuesForAllFields for entry case'
+- 'DataUser: remove duplicated STEP'
+- 'DataSite: when random name is used, added site type in name'
+- set testrailexecutor log to debug status
+- default alfresco.server to localhost
+- add option to show or now if tenant users are visible on server
+- added method to setRandomValuesForAllFields of a TestModel
+- fix log info on testRailExecutorListener            
+- based on TestGroup.<name> added possibility to create new sections in TestRail
+  if not already created manually
+- added  static ContentModel for -my- added Nodes test group fix imports on
+  tenantConsole
+- 'updated TestCountListener to display the tests that doesn''t have groups:
+  sanity, full, core'        
+- log status of mounted drive
 
 ## [[v1.0.7] - 2016-12-21](/tas/alfresco-tas-tester/commits/v1.0.7)
 ### Added
