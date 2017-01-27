@@ -12,7 +12,7 @@ public abstract class DSLProtocolWithNetworkDrive<Client> extends DSLProtocol<Cl
 {
     private boolean actionExecutedOnMappedDrive = false;
 
-    protected boolean isActionExecutedOnMappedDrive()
+    public boolean isActionExecutedOnMappedDrive()
     {
         return actionExecutedOnMappedDrive;
     }
