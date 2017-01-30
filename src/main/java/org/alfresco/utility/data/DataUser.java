@@ -285,4 +285,21 @@ public class DataUser extends TestData<DataUser>
             Assert.assertTrue(matches.isEmpty(), String.format("Item %s found in trash can", content.getName()));
         }
     }
+    
+    /**
+     * Set user quota in MB
+     * 
+     * @param userToModify
+     * @param quota
+     * @throws DataPreparationException
+     */
+    public void setUserQuota(UserModel userToModify, int quota) throws DataPreparationException
+    {
+        STEP(String.format("DATAPREP: Set %d MB quota to %s user", quota, userToModify.getUsername()));
+        boolean status = userService.setUserQuota(getCurrentUser().getUsername(), getCurrentUser().getPassword(), userToModify.getUsername(), quota);
+        if (!status)
+        {
+            throw new DataPreparationException(String.format("Failed to set quota to user '%s'.", userToModify.getUsername()));
+        }
+    }
 }
