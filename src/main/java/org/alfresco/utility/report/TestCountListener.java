@@ -10,13 +10,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.utility.model.TestGroup;
-import org.testng.IInvokedMethod;
-import org.testng.IInvokedMethodListener;
 import org.testng.ISuite;
 import org.testng.ISuiteListener;
 import org.testng.ITestNGMethod;
-import org.testng.ITestResult;
-import org.testng.SkipException;
 import org.testng.internal.TestNGMethod;
 
 public class TestCountListener implements ISuiteListener
