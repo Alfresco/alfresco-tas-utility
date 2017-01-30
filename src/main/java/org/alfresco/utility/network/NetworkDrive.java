@@ -1,7 +1,6 @@
 package org.alfresco.utility.network;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 
@@ -10,6 +9,7 @@ import org.alfresco.utility.Utility;
 import org.alfresco.utility.data.DataValue;
 import org.alfresco.utility.model.UserModel;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.testng.Assert;
@@ -125,15 +125,26 @@ public abstract class NetworkDrive
 
     public File createFile(String relativePathToLocalVolumePath) throws IOException
     {
-        File newFile = Paths.get(getLocalVolumePath().toString(), relativePathToLocalVolumePath).toFile();
+        File newFile = Paths.get(getLocalVolumePath(), relativePathToLocalVolumePath).toFile();
         LOG.info("Create a new file {}, in mapped network drive", newFile.getPath());
         newFile.createNewFile();
         return newFile;
     }
 
+    public File createFile(String relativePathToLocalVolumePath, FileInputStream fileInputStream) throws IOException
+    {
+        File newFile = Paths.get(getLocalVolumePath(), relativePathToLocalVolumePath).toFile();
+        LOG.info("Create a new file {}, in mapped network drive", newFile.getPath());
+        newFile.createNewFile();
+        FileOutputStream fileOutputStream = new FileOutputStream(newFile);
+        IOUtils.copy(fileInputStream, fileOutputStream);
+        fileOutputStream.close();
+        return newFile;
+    }
+
     public File createFolder(String relativePathToLocalVolumePath) throws IOException
     {
-        File newFolder = Paths.get(getLocalVolumePath().toString(), relativePathToLocalVolumePath).toFile();
+        File newFolder = Paths.get(getLocalVolumePath(), relativePathToLocalVolumePath).toFile();
         LOG.info("Create a new folder {}, in mapped network drive", newFolder.getPath());
         newFolder.mkdir();
         return newFolder;
@@ -141,15 +152,24 @@ public abstract class NetworkDrive
 
     public void deleteContent(String relativePathToLocalVolumePath) throws IOException
     {
-        File newFile = Paths.get(getLocalVolumePath().toString(), relativePathToLocalVolumePath).toFile();
+        File newFile = Paths.get(getLocalVolumePath(), relativePathToLocalVolumePath).toFile();
         LOG.info("Delete content {} from mapped network drive", newFile.getPath());
         newFile.delete();
     }
 
+    public File updateContent(String relativePathToLocalVolumePath, ByteArrayInputStream byteArrayInputStream) throws IOException
+    {
+        File newFile = Paths.get(getLocalVolumePath(), relativePathToLocalVolumePath).toFile();
+        FileOutputStream fileOutputStream = new FileOutputStream(newFile);
+        IOUtils.copy(byteArrayInputStream, fileOutputStream);
+        fileOutputStream.close();
+        return newFile;
+    }
+
     public File renameContent(String originalRelativePath, String renamedRelativePath) throws IOException
     {
-        File originalFile = Paths.get(originalRelativePath).toFile();
-        File renamedFile = Paths.get(getLocalVolumePath().toString(), renamedRelativePath).toFile();
+        File originalFile = Paths.get(getLocalVolumePath(), originalRelativePath).toFile();
+        File renamedFile = Paths.get(getLocalVolumePath(), renamedRelativePath).toFile();
         LOG.info("Rename content {} as {}, in mapped network drive", originalFile.getPath(), renamedFile.getPath());
         originalFile.renameTo(renamedFile);
         return renamedFile;
@@ -157,9 +177,8 @@ public abstract class NetworkDrive
 
     public File copyFile(String sourceRelativePath, String destinationRelativePath) throws IOException
     {
-        File sourceContent = Paths.get(getLocalVolumePath().toString(), sourceRelativePath).toFile();
-        File destinationContent = Paths.get(getLocalVolumePath().toString(), destinationRelativePath).toFile();
-
+        File sourceContent = Paths.get(getLocalVolumePath(), sourceRelativePath).toFile();
+        File destinationContent = Paths.get(getLocalVolumePath(), destinationRelativePath, sourceRelativePath).toFile();
         LOG.info("Copy file {} to {}, in mapped network drive", sourceContent.getPath(), destinationContent.getPath());
         FileUtils.copyFile(sourceContent, destinationContent);
         return destinationContent;
@@ -167,8 +186,8 @@ public abstract class NetworkDrive
 
     public File copyFolder(String sourceRelativePath, String destinationRelativePath) throws IOException
     {
-        File sourceContent = Paths.get(getLocalVolumePath().toString(), sourceRelativePath).toFile();
-        File destinationContent = Paths.get(getLocalVolumePath().toString(), destinationRelativePath).toFile();
+        File sourceContent = Paths.get(getLocalVolumePath(), sourceRelativePath).toFile();
+        File destinationContent = Paths.get(getLocalVolumePath(), destinationRelativePath).toFile();
 
         LOG.info("Copy folder {} to {}, in mapped network drive", sourceContent.getPath(), destinationContent.getPath());
         FileUtils.copyDirectory(sourceContent, destinationContent);
@@ -177,8 +196,8 @@ public abstract class NetworkDrive
 
     public File moveFile(String sourceRelativePath, String destinationRelativePath) throws IOException
     {
-        File sourceContent = Paths.get(getLocalVolumePath().toString(), sourceRelativePath).toFile();
-        File destinationContent = Paths.get(getLocalVolumePath().toString(), destinationRelativePath).toFile();
+        File sourceContent = Paths.get(getLocalVolumePath(), sourceRelativePath).toFile();
+        File destinationContent = Paths.get(getLocalVolumePath(), destinationRelativePath).toFile();
 
         LOG.info("Move file from {} to {}, in mapped network drive", sourceContent.getPath(), destinationContent.getPath());
         FileUtils.moveFile(sourceContent, destinationContent);
@@ -187,8 +206,8 @@ public abstract class NetworkDrive
 
     public File moveFolder(String sourceRelativePath, String destinationRelativePath) throws IOException
     {
-        File sourceContent = Paths.get(getLocalVolumePath().toString(), sourceRelativePath).toFile();
-        File destinationContent = Paths.get(getLocalVolumePath().toString(), destinationRelativePath).toFile();
+        File sourceContent = Paths.get(getLocalVolumePath(), sourceRelativePath).toFile();
+        File destinationContent = Paths.get(getLocalVolumePath(), destinationRelativePath).toFile();
 
         LOG.info("Move folder from {} to {}, in mapped network drive", sourceContent.getPath(), destinationContent.getPath());
         FileUtils.moveDirectory(sourceContent, destinationContent);
