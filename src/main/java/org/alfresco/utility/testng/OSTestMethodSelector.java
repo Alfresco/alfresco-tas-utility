@@ -52,14 +52,14 @@ public class OSTestMethodSelector implements IInvokedMethodListener
 
             List<String> groups = Arrays.asList(testClass.groups());
 
-            if (groups != null)
+            if (groups != null) 
             {
                 if (groups.contains(TestGroup.OS_UNIX) || groups.contains(TestGroup.OS_WIN))
                 {
                     if (SystemUtils.IS_OS_UNIX && !groups.contains(TestGroup.OS_UNIX))
                     {
                         throw new SkipException(
-                                String.format("This test was skipped because it was marked only for this Operating Systems: %s ", String.valueOf(groups)));
+                                String.format("This test was skipped because it was marked only with this groups: %s, test was executed on: %s", String.valueOf(groups), System.getProperty("os.name")));
                     }
 
                 }
