@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.alfresco.utility.model.TestGroup;
+import org.alfresco.utility.report.Bug;
 import org.apache.commons.lang.SystemUtils;
 import org.testng.IInvokedMethod;
 import org.testng.IInvokedMethodListener;
@@ -45,23 +46,37 @@ public class OSTestMethodSelector implements IInvokedMethodListener
     {
         ConstructorOrMethod contructorOrMethod = testNGmethod.getTestMethod().getConstructorOrMethod();
         Method method = contructorOrMethod.getMethod();
-        if (method != null && method.isAnnotationPresent(Test.class))
+        if (method != null)
         {
-
-            Test testClass = method.getAnnotation(Test.class);
-
-            List<String> groups = Arrays.asList(testClass.groups());
-
-            if (groups != null) 
+            if (method.isAnnotationPresent(Test.class))
             {
-                if (groups.contains(TestGroup.OS_UNIX) || groups.contains(TestGroup.OS_WIN))
-                {
-                    if (SystemUtils.IS_OS_UNIX && !groups.contains(TestGroup.OS_UNIX))
-                    {
-                        throw new SkipException(
-                                String.format("This test was skipped because it was marked only with this groups: %s, test was executed on: %s", String.valueOf(groups), System.getProperty("os.name")));
-                    }
+                Test testClass = method.getAnnotation(Test.class);
 
+                String runBugs = System.getProperty("runBugs");
+                if (runBugs!=null && runBugs.equals("false"))
+                {
+                    if (method.isAnnotationPresent(Bug.class))
+                    {
+                        Bug bug = method.getAnnotation(Bug.class);
+                        throw new SkipException(
+                                String.format("This test was skiped because was marked as BUG: {[id='%s', description='%s']}", bug.id(), bug.description()));
+                    }
+                }
+
+                List<String> groups = Arrays.asList(testClass.groups());
+
+                if (groups != null)
+                {
+                    if (groups.contains(TestGroup.OS_UNIX) || groups.contains(TestGroup.OS_WIN))
+                    {
+                        if (SystemUtils.IS_OS_UNIX && !groups.contains(TestGroup.OS_UNIX))
+                        {
+                            throw new SkipException(
+                                    String.format("This test was skipped because it was marked with OS specific group. All groups used: %s. Test was executed on: %s",
+                                            String.valueOf(groups), System.getProperty("os.name")));
+                        }
+
+                    }
                 }
             }
         }
@@ -69,8 +84,8 @@ public class OSTestMethodSelector implements IInvokedMethodListener
     }
 
     @Override
-    public void afterInvocation(IInvokedMethod method, ITestResult testResult)
-    {      
+    public void afterInvocation(IInvokedMethod testNGmethod, ITestResult testResult)
+    {       
     }
 
 }
