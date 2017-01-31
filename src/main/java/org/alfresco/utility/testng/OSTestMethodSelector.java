@@ -67,14 +67,31 @@ public class OSTestMethodSelector implements IInvokedMethodListener
 
                 if (groups != null)
                 {
-                    if (groups.contains(TestGroup.OS_UNIX) || groups.contains(TestGroup.OS_WIN))
+                    if (groups.contains(TestGroup.OS_LINUX) || groups.contains(TestGroup.OS_WIN))
                     {
-                        if (SystemUtils.IS_OS_UNIX && !groups.contains(TestGroup.OS_UNIX))
+                        if (SystemUtils.IS_OS_LINUX && !groups.contains(TestGroup.OS_LINUX))
                         {
                             throw new SkipException(
-                                    String.format("This test was skipped because it was marked with OS specific group. All groups used: %s. Test was executed on: %s",
+                                    String.format("This test was skipped because it was marked to be executed on Linux. Groups used: %s and was executed on: %s",
                                             String.valueOf(groups), System.getProperty("os.name")));
                         }
+                        
+                        else if (SystemUtils.IS_OS_MAC && !groups.contains(TestGroup.OS_MAC))
+                        {
+                            throw new SkipException(
+                                    String.format("This test was skipped because it was marked to be executed on Mac OS. Groups used: %s and was executed on: %s",
+                                            String.valueOf(groups), System.getProperty("os.name")));
+                        }
+                        
+                        else if (SystemUtils.IS_OS_WINDOWS && !groups.contains(TestGroup.OS_WIN))
+                        {
+                            throw new SkipException(
+                                    String.format("This test was skipped because it was marked to be executed on Windows OS. Groups used: %s and was executed on: %s",
+                                            String.valueOf(groups), System.getProperty("os.name")));
+                        }
+
+                        
+                        
 
                     }
                 }

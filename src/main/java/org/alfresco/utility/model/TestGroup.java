@@ -51,5 +51,6 @@ public @interface TestGroup
 
     public static String WONT_FIX = "wont-fix";
     public static String OS_WIN = "windows"; //this will mark tests that needs to be executed ONLY on Windows
-    public static String OS_UNIX = "unix"; //this will mark tests that needs to be executed ONLY on Unix    
+    public static String OS_LINUX = "linux"; //this will mark tests that needs to be executed ONLY on Unix    
+    public static String OS_MAC = "mac"; //this will mark tests that needs to be executed ONLY on Unix
 }
