@@ -50,6 +50,6 @@ public @interface TestGroup
     public static String POSTUPGRADE = "post-upgrade";  
 
     public static String WONT_FIX = "wont-fix";
-    public static String OS_WIN = "Windows"; //this will mark tests that needs to be executed ONLY on Windows
-    public static String OS_UNIX = "Unix"; //this will mark tests that needs to be executed ONLY on Unix    
+    public static String OS_WIN = "windows"; //this will mark tests that needs to be executed ONLY on Windows
+    public static String OS_UNIX = "unix"; //this will mark tests that needs to be executed ONLY on Unix    
 }
