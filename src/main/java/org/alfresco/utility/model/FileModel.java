@@ -133,7 +133,7 @@ public class FileModel extends ContentModel
      *
      * e.g.: getFileModelWithContentSizeOfxMB(1) will return a FileModel with a content of 1 MB
      */
-    public FileModel getFileModelWithContentSizeOfxMB(int size) throws Exception
+    public static FileModel getFileModelWithContentSizeOfxMB(int size) throws Exception
     {
         FileModel contentModel = new FileModel(RandomData.getRandomName("file"));
         contentModel.setContent(new String(new char[1024 * 1024 * size]));
