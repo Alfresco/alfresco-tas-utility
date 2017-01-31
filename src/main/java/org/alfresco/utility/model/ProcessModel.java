@@ -15,11 +15,11 @@ public class ProcessModel extends TestModel
     @JsonProperty(required = true)
     private String id;
     
-    private List<TaskModel> tasks = new ArrayList<TaskModel>();
+    private List<TaskModel> tasks = null;
     
     public List<TaskModel> getTasks()
     {
-        return tasks;
+        return tasks= new ArrayList<TaskModel>();
     }
 
     public void addTaskToList(TaskModel task)
