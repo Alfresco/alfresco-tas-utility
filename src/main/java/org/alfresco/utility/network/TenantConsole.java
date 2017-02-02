@@ -1,5 +1,6 @@
 package org.alfresco.utility.network;
 
+import org.alfresco.utility.TasProperties;
 import org.alfresco.utility.model.UserModel;
 import org.apache.http.message.BasicNameValuePair;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,20 @@ public class TenantConsole extends HttpConsoleOperation
     public boolean tenantExist() throws Exception
     {
         return execute(new BasicNameValuePair("tenant-cmd", "show tenants")).toString().contains("tenant");
+    }
+    
+    /**
+     * Helper method that can be executed if TenantConsole is not initialized by @Autowired spring keyword
+     */
+    public boolean tenantExist(String scheme, String server, int port, String adminUserName, String adminPassword) throws Exception
+    {
+        properties = new TasProperties();
+        properties.setScheme(scheme);
+        properties.setServer(server);
+        properties.setPort(port);
+        properties.setAdminPassword(adminUserName);
+        properties.setAdminUserName(adminUserName);
+        return execute(new BasicNameValuePair("tenant-cmd", "show tenants")).toString().contains("tenant"); 
     }
     
     
