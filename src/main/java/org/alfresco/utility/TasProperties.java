@@ -25,19 +25,19 @@ public class TasProperties
     @Autowired
     Environment env;
 
-    @Value("${admin.user}")
+    @Value("${admin.user:admin}")
     private String adminUserName;
 
-    @Value("${admin.password}")
+    @Value("${admin.password:admin}")
     private String adminPassword;
 
-    @Value("${alfresco.scheme}")
+    @Value("${alfresco.scheme:http}")
     private String scheme;
 
-    @Value("${alfresco.server}")
+    @Value("${alfresco.server:localhost}")
     private String server;
 
-    @Value("${alfresco.port}")
+    @Value("${alfresco.port:8070}")
     private int port;
 
     @Value("${jmx.user:controlRole}")
@@ -52,13 +52,13 @@ public class TasProperties
     @Value("${jmx.useJolokiaAgent:true}")
     private Boolean useJolokiaJmxAgent;
 
-    @Value("${db.url}")
+    @Value("${db.url:not-set}")
     private String dbUrl;
 
-    @Value("${db.username}")
+    @Value("${db.username:alfresco}")
     private String dbUsername;
 
-    @Value("${db.password}")
+    @Value("${db.password:alfresco}")
     private String dbPassword;
     
     @Value("${serverHealth.showTenants:true}")
