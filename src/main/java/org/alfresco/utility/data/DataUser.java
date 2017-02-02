@@ -302,4 +302,26 @@ public class DataUser extends TestData<DataUser>
             throw new DataPreparationException(String.format("Failed to set quota to user '%s'.", userToModify.getUsername()));
         }
     }
+    
+    /**
+     * Verify if user is authorized
+     * 
+     * @param userToVerify {@link UserModel}
+     */
+    public void assertUserIsAuthorized(UserModel userToVerify)
+    {
+        STEP(String.format("DATAPREP: Verify that user %s is authorized", userToVerify.getUsername()));
+        Assert.assertTrue(userService.isUserAuthorized(getCurrentUser().getUsername(), getCurrentUser().getPassword(), userToVerify.getUsername()));
+    }
+    
+    /**
+     * Verify if user is not authorized
+     * 
+     * @param userToVerify {@link UserModel}
+     */
+    public void assertUserIsNotAuthorized(UserModel userToVerify)
+    {
+        STEP(String.format("DATAPREP: Verify that user %s is not authorized", userToVerify.getUsername()));
+        Assert.assertFalse(userService.isUserAuthorized(getCurrentUser().getUsername(), getCurrentUser().getPassword(), userToVerify.getUsername()));
+    }
 }
