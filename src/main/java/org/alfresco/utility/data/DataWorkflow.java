@@ -62,7 +62,7 @@ public class DataWorkflow extends TestData<DataWorkflow>
                                                          taskModel.getPriority(), 
                                                          getCurrentSite(),
                                                          Arrays.asList(new File(getLastResource()).getName()), taskModel.getSendEmail());
-        taskModel.setNodeRef(workflowId);
+        taskModel.setProcessId(workflowId);
         if(taskModel.getAssignee().equals(getAdminUser().getUsername()))
         {
             taskModel.setId(workflowService.getTaskId(taskModel.getAssignee(), getAdminUser().getPassword(), workflowId));
@@ -97,7 +97,7 @@ public class DataWorkflow extends TestData<DataWorkflow>
                                                               taskModel.getPriority(), 
                                                               getCurrentSite(),
                                                               Arrays.asList(new File(getLastResource()).getName()), taskModel.getSendEmail());
-        taskModel.setNodeRef(workflowId);
+        taskModel.setProcessId(workflowId);
         taskModel.setId(workflowService.getTaskId(getCurrentUser().getUsername(), getCurrentUser().getPassword(), workflowId));
         return taskModel;
     }
@@ -105,7 +105,7 @@ public class DataWorkflow extends TestData<DataWorkflow>
     public TaskModel claimTask(TaskModel taskModel)
     {
         STEP(String.format("DATAPREP: User %s claims task %s", getCurrentUser().getUsername(), taskModel.getMessage()));
-        workflowService.claimTask(getCurrentUser().getUsername(), getCurrentUser().getPassword(), taskModel.getNodeRef());
+        workflowService.claimTask(getCurrentUser().getUsername(), getCurrentUser().getPassword(), taskModel.getProcessId());
         return taskModel;
     }
 
@@ -223,7 +223,7 @@ public class DataWorkflow extends TestData<DataWorkflow>
     public TaskModel taskDone(TaskModel taskModel)
     {
         STEP(String.format("DATAPREP: User %s completes task %s", getCurrentUser().getUsername(), taskModel.getId()));
-        workflowService.taskDone(getCurrentUser().getUsername(), getCurrentUser().getPassword(), taskModel.getNodeRef(), TaskStatus.COMPLETED, "complete task");
+        workflowService.taskDone(getCurrentUser().getUsername(), getCurrentUser().getPassword(), taskModel.getProcessId(), TaskStatus.COMPLETED, "complete task");
         return taskModel;
     }
     

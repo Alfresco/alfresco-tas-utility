@@ -8,7 +8,7 @@ import org.joda.time.DateTime;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class TaskModel extends RepoTestModel
+public class TaskModel extends TestModel
 {
     @JsonProperty(required = true)
     private String id;
@@ -20,7 +20,9 @@ public class TaskModel extends RepoTestModel
     private Date dueDate;
     private String assignee;
     private Priority priority;
-    private boolean sendEmail;
+    private Boolean sendEmail;
+    
+    private String processId;
 
     public TaskModel()
     {
@@ -86,13 +88,24 @@ public class TaskModel extends RepoTestModel
         this.priority = priority;
     }
 
-    public boolean getSendEmail()
+    public Boolean getSendEmail()
     {
         return sendEmail;
     }
 
-    public void setSendEmail(boolean sendEmail)
+    public void setSendEmail(Boolean sendEmail)
     {
         this.sendEmail = sendEmail;
+    }
+    
+
+    public String getProcessId()
+    {
+        return processId;
+    }
+
+    public void setProcessId(String processId)
+    {
+        this.processId = processId;
     }
 }
