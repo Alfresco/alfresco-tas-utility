@@ -139,6 +139,12 @@ public class DataUser extends TestData<DataUser>
         userModel.setUserRole(role);
     }
 
+    public void removeUserFromSite(UserModel userModel, SiteModel siteModel)
+    {
+        STEP(String.format("DATAPREP: Removing user [%s] from site [%s]", userModel.getUsername(), siteModel.getId()));
+        userService.removeSiteMembership(getCurrentUser().getUsername(), getCurrentUser().getPassword(), userModel.getUsername(), siteModel.getId());
+    }
+
     public ListUserWithRoles addUsersWithRolesToSite(SiteModel siteModel, UserRole... roles) throws DataPreparationException
     {
         ListUserWithRoles usersWithRoles = new ListUserWithRoles();
