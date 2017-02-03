@@ -59,7 +59,7 @@ public class OSTestMethodSelector implements IInvokedMethodListener
                     {
                         Bug bug = method.getAnnotation(Bug.class);
                         throw new SkipException(
-                                String.format("This test was skiped because was marked as BUG: {[id='%s', description='%s']}", bug.id(), bug.description()));
+                                String.format("This test was skiped because was marked as BUG: {[id='%s', description='%s']}.(info: you can run tests marked with bugs, passing -DrunBugs=true)", bug.id(), bug.description()));
                     }
                 }
 
@@ -72,21 +72,21 @@ public class OSTestMethodSelector implements IInvokedMethodListener
                         if (SystemUtils.IS_OS_LINUX && !groups.contains(TestGroup.OS_LINUX))
                         {
                             throw new SkipException(
-                                    String.format("This test was skipped because it was marked to be executed on Linux. Groups used: %s and was executed on: %s",
+                                    String.format("This test was skipped because it was marked to be executed on differed operating system(s). Groups used: %s and was executed on: %s",
                                             String.valueOf(groups), System.getProperty("os.name")));
                         }
                         
                         else if (SystemUtils.IS_OS_MAC && !groups.contains(TestGroup.OS_MAC))
                         {
                             throw new SkipException(
-                                    String.format("This test was skipped because it was marked to be executed on Mac OS. Groups used: %s and was executed on: %s",
+                                    String.format("This test was skipped because it was marked to be executed on differed operating system(s). Groups used: %s and was executed on: %s",
                                             String.valueOf(groups), System.getProperty("os.name")));
                         }
                         
                         else if (SystemUtils.IS_OS_WINDOWS && !groups.contains(TestGroup.OS_WIN))
                         {
                             throw new SkipException(
-                                    String.format("This test was skipped because it was marked to be executed on Windows OS. Groups used: %s and was executed on: %s",
+                                    String.format("This test was skipped because it was marked to be executed on differed operating system(s). Groups used: %s and was executed on: %s",
                                             String.valueOf(groups), System.getProperty("os.name")));
                         }
 
