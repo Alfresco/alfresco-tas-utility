@@ -24,6 +24,10 @@ public class ProcessModel extends TestModel
 
     public void addTaskToList(TaskModel task)
     {
+        if(tasks == null)
+        {
+            tasks= new ArrayList<TaskModel>();
+        }
         this.tasks.add(task);
     }
 
