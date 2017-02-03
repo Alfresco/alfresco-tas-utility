@@ -41,6 +41,21 @@ public class DataWorkflow extends TestData<DataWorkflow>
     {
         return createNewTask(new TaskModel(userModel.getUsername()));
     }
+    
+    /**
+     * Example of usage:
+     * dataWorkflow.usingUser(userWhoStartsTask).usingSite(siteModel).usingResource(document).createNewTaskAndAssignTo(assignee, "@newtenant@activitiAdhoc:1:4888");
+     * Note: The process definition id is dynamic in case of an evironment with tenants
+     * 
+     * @param userModel
+     * @param processDefId id of a process definition
+     * @return
+     * @throws Exception
+     */
+    public TaskModel createTaskWithProcessDefAndAssignTo(String processDefId, UserModel userModel) throws Exception
+    {
+        return createTaskWithProcessDefId(new TaskModel(userModel.getUsername()), processDefId);
+    }
 
     /**
      * Creates a new {@link TaskModel}
@@ -70,6 +85,39 @@ public class DataWorkflow extends TestData<DataWorkflow>
         else
         {
             taskModel.setId(workflowService.getTaskId(taskModel.getAssignee(), getCurrentUser().getPassword(), workflowId));
+        }
+        return taskModel;
+    }
+    
+    /**
+     * Creates a new {@link TaskModel}
+     * 
+     * @param taskModel
+     * @return
+     * @throws Exception
+     */
+    public TaskModel createTaskWithProcessDefId(TaskModel taskModel, String processDefId) throws Exception
+    {
+        STEP(String.format("DATAPREP: User %s creates new task %s with and assigns it to user %s", getCurrentUser().getUsername(), taskModel.getMessage(),
+                taskModel.getAssignee()));
+
+        String processId = workflowService.startProcessWithDefinitionId(processDefId,
+                                                         getCurrentUser().getUsername(), 
+                                                         getCurrentUser().getPassword(), 
+                                                         taskModel.getMessage(),
+                                                         taskModel.getDueDate(), 
+                                                         taskModel.getAssignee(), 
+                                                         taskModel.getPriority(), 
+                                                         getCurrentSite(),
+                                                         Arrays.asList(new File(getLastResource()).getName()), taskModel.getSendEmail());
+        taskModel.setProcessId(processId);
+        if(taskModel.getAssignee().equals(getAdminUser().getUsername()))
+        {
+            taskModel.setId(workflowService.getTaskId(taskModel.getAssignee(), getAdminUser().getPassword(), processId));
+        }
+        else
+        {
+            taskModel.setId(workflowService.getTaskId(taskModel.getAssignee(), getCurrentUser().getPassword(), processId));
         }
         return taskModel;
     }
