@@ -178,7 +178,7 @@ public abstract class NetworkDrive
     public File copyFile(String sourceRelativePath, String destinationRelativePath) throws IOException
     {
         File sourceContent = Paths.get(getLocalVolumePath(), sourceRelativePath).toFile();
-        File destinationContent = Paths.get(getLocalVolumePath(), destinationRelativePath, sourceRelativePath).toFile();
+        File destinationContent = Paths.get(getLocalVolumePath(), destinationRelativePath).toFile();
         LOG.info("Copy file {} to {}, in mapped network drive", sourceContent.getPath(), destinationContent.getPath());
         FileUtils.copyFile(sourceContent, destinationContent);
         return destinationContent;
