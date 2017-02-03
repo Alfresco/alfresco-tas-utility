@@ -4,6 +4,8 @@
 
 # Change Log
 All notable changes to this project will be documented in this file.
+## [[v1.0.8] - TBD](/tas/alfresco-tas-tester/commits/v1.0.9)
+### TBD
 
 ## [[v1.0.8] - 2017-01-27](/tas/alfresco-tas-tester/commits/v1.0.8)
 ### Added
