@@ -141,8 +141,9 @@ public class HtmlReportListener implements IReporter
                     }
                 }
                 else
-                {
-                    test = extent.startTest(String.format("%s # %s", result.getInstance().getClass().getSimpleName(), result.getMethod().getMethodName()));
+                {                   
+                    test = extent.startTest(String.format("%s # %s", result.getInstance().getClass().getSimpleName(), result.getMethod().getMethodName()));                   
+                    test.assignCategory("ALL");                    
                 }
 
                 test.setStartedTime(getTime(result.getStartMillis()));
