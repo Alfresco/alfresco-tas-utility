@@ -57,7 +57,6 @@ public class HtmlReportListener implements IReporter
     @Override
     public void generateReport(List<XmlSuite> xmlSuites, List<ISuite> suites, String outputDirectory)
     {
-
         try
         {
             log4jProperties = Utility.getProperties(HtmlReportListener.class, "log4j.properties");
@@ -77,23 +76,23 @@ public class HtmlReportListener implements IReporter
             for (ISuiteResult r : result.values())
             {
                 ITestContext context = r.getTestContext();
-
+                //buildTestNodes(context.getSkippedConfigurations(), LogStatus.FATAL);
+                buildTestNodes(context.getFailedConfigurations(), LogStatus.FATAL);
                 buildTestNodes(context.getPassedTests(), LogStatus.PASS);
                 buildTestNodes(context.getFailedTests(), LogStatus.FAIL);
                 buildTestNodes(context.getSkippedTests(), LogStatus.SKIP);
-                buildTestNodes(context.getFailedConfigurations(), LogStatus.FATAL);
             }
         }
 
-        if(defaultProperties.getProperty("testManagement.enabled").equals("true"))
+        if (defaultProperties.getProperty("testManagement.enabled").equals("true"))
         {
             String contentTestRail = getLogsContent(getLogsLocation("log4j.appender.testrailLog.File", log4jProperties));
-            extent.setTestRunnerOutput(String.format("<pre>%s </pre>", contentTestRail));    
+            extent.setTestRunnerOutput(String.format("<pre>%s </pre>", contentTestRail));
         }
-        
+
         String content = getLogsContent(getLogsLocation("log4j.appender.file.File", log4jProperties));
         extent.setTestRunnerOutput(String.format("<pre>%s </pre>", content));
-        
+
         try
         {
             extent.flush();
@@ -131,19 +130,33 @@ public class HtmlReportListener implements IReporter
                     test = extent.startTest(String.format("%s # %s (BUG: %s)", result.getInstance().getClass().getSimpleName(),
                             result.getMethod().getMethodName(), trackerUrl(bugAnnotated.id())));
                     test.assignCategory("BUGS");
-                    if (bugAnnotated.description().isEmpty())
+                    if (bugAnnotated.description().isEmpty() && status != LogStatus.SKIP)
                     {
                         test.log(status, String.format("This test is failing due to this issue %s", trackerUrl(bugAnnotated.id())));
                     }
-                    else
+                    else if (!bugAnnotated.description().isEmpty() && status != LogStatus.SKIP)
                     {
-                        test.log(status, String.format("This test is failing due to this issue %s. <b>Description:</b> %s", trackerUrl(bugAnnotated.id()), bugAnnotated.description()));
+                        test.log(status, String.format("This test is failing due to this issue %s. <b>Description:</b> %s", trackerUrl(bugAnnotated.id()),
+                                bugAnnotated.description()));
                     }
+
+                    if (status == LogStatus.PASS)
+                    {
+                        test.assignCategory("FIXED-BUGS");
+                        test.log(status, "It seems this test was marked with @Bug annotation, but now is passing. Please remove @Bug annotation in code.");
+                    }
+
                 }
                 else
-                {                   
-                    test = extent.startTest(String.format("%s # %s", result.getInstance().getClass().getSimpleName(), result.getMethod().getMethodName()));                   
-                    test.assignCategory("ALL");                    
+                {
+                    test = extent.startTest(String.format("%s # %s", result.getInstance().getClass().getSimpleName(), result.getMethod().getMethodName()));
+                    test.assignCategory("ALL");
+                }
+
+                if (status == LogStatus.SKIP && result.getTestContext().getFailedConfigurations().size() > 0)
+                {
+                    test.log(status,
+                            "Test is skiped due to a configuration test method like a @BeforeClass method. Filter the tests by 'FATAL' error to analyze the root cause.");
                 }
 
                 test.setStartedTime(getTime(result.getStartMillis()));
