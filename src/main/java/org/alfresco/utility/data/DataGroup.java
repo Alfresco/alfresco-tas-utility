@@ -3,6 +3,7 @@ package org.alfresco.utility.data;
 import static org.alfresco.utility.report.log.Step.STEP;
 
 import org.alfresco.dataprep.GroupService;
+import org.alfresco.utility.exception.DataPreparationException;
 import org.alfresco.utility.model.GroupModel;
 import org.alfresco.utility.model.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,14 +31,14 @@ public class DataGroup extends TestData<DataGroup>
     {
         String groupName = RandomData.getRandomName("Group");
         STEP(String.format("DATAPREP: Creating group %s with admin", groupName));
-        
+
         GroupModel groupModel = new GroupModel(groupName);
-        
+
         groupModel = createGroup(groupModel);
 
         return groupModel;
     }
-    
+
     /**
      * Creates a new group with admin user based on a group model
      * 
@@ -62,12 +63,11 @@ public class DataGroup extends TestData<DataGroup>
     {
         STEP(String.format("DATAPREP: Add user %s to group %s", getCurrentUser().getUsername(), groupModel.getDisplayName()));
 
-        groupService.addUserToGroup(getAdminUser().getUsername(), getAdminUser().getPassword(), groupModel.getDisplayName(), 
-                getCurrentUser().getUsername());
-        
+        groupService.addUserToGroup(getAdminUser().getUsername(), getAdminUser().getPassword(), groupModel.getDisplayName(), getCurrentUser().getUsername());
+
         return groupModel;
     }
-    
+
     /**
      * Adds list of users to the specified group
      * 
@@ -75,15 +75,46 @@ public class DataGroup extends TestData<DataGroup>
      * @param users
      * @return
      */
-    public GroupModel addListOfUsersToGroup(GroupModel groupModel, UserModel...users)
+    public GroupModel addListOfUsersToGroup(GroupModel groupModel, UserModel... users)
     {
-        for(UserModel userModel: users)
-        {     
-                STEP(String.format("DATAPREP: Add user %s to group %s", getCurrentUser().getUsername(), groupModel.getDisplayName()));
-                usingUser(userModel).addUserToGroup(groupModel);
+        for (UserModel userModel : users)
+        {
+            STEP(String.format("DATAPREP: Add user %s to group %s", getCurrentUser().getUsername(), groupModel.getDisplayName()));
+            usingUser(userModel).addUserToGroup(groupModel);
         }
-        
+
         return groupModel;
     }
 
+    /**
+     * Delete group
+     * 
+     * @param groupModel GroupModel group to delete
+     * @throws DataPreparationException
+     */
+    public void deleteGroup(GroupModel groupModel) throws DataPreparationException
+    {
+        STEP(String.format("DATAPREP: Deleting %s group", groupModel.getGroupIdentifier()));
+        boolean deleted = groupService.removeGroup(getAdminUser().getUsername(), getAdminUser().getPassword(), groupModel.getGroupIdentifier());
+        if (!deleted)
+        {
+            throw new DataPreparationException(String.format("Failed to delete group '%s'.", groupModel.getGroupIdentifier()));
+        }
+    }
+
+    /**
+     * @param groupModel {@link GroupModel}
+     * @param userToRemove {@link UserModel}
+     */
+    public void removeUserFromGroup(GroupModel groupModel, UserModel userToRemove) throws DataPreparationException
+    {
+        STEP(String.format("DATAPREP: Remove user %s from group %s", userToRemove.getUsername(), groupModel.getGroupIdentifier()));
+        boolean removed = groupService.removeUserFromGroup(getAdminUser().getUsername(), getAdminUser().getPassword(), groupModel.getGroupIdentifier(),
+                userToRemove.getUsername());
+        if (!removed)
+        {
+            throw new DataPreparationException(
+                    String.format("Failed to remove %s from '%s' group.", userToRemove.getUsername(), groupModel.getGroupIdentifier()));
+        }
+    }
 }
