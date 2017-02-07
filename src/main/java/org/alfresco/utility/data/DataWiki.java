@@ -25,7 +25,6 @@ public class DataWiki extends TestData<DataWiki>
         String wikiContent = RandomData.getRandomName("Wiki_");
         List<String> tags = Arrays.asList(RandomData.getRandomName("tag"), RandomData.getRandomName("tag"));
         sitePagesService.createWiki(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getCurrentSite(), wikiTitle, wikiContent, tags);
-        String nodeRef =  sitePagesService.getLinkNodeRef(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getCurrentSite(), wikiTitle);
-        return new WikiModel(wikiTitle, wikiContent, tags, nodeRef);
+        return new WikiModel(wikiTitle, wikiContent, tags);
     }
 }
