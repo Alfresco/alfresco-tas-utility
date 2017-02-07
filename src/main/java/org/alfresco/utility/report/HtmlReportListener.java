@@ -150,7 +150,7 @@ public class HtmlReportListener implements IReporter
                 else
                 {
                     test = extent.startTest(String.format("%s # %s", result.getInstance().getClass().getSimpleName(), result.getMethod().getMethodName()));
-                    test.assignCategory("ALL");
+                    test.assignCategory("WITHOUT-BUGS");
                 }
 
                 if (status == LogStatus.SKIP && result.getTestContext().getFailedConfigurations().size() > 0)
