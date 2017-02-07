@@ -9,7 +9,7 @@
 * [Prerequisite](#prerequisite)
 * [Installation](#installation-if-you-want-to-contribute-or-run-tests-from-your-local-machine)
 * [Package Presentation](#package-presentation)
-* [High Level Concepts](#high-level-concepts)
+* [High Level Concepts](#high-level-con with this report, yocepts)
     * [DSL](#dsl)
     * [Models](#models)
     * [Protocol(s)](#protocol-s)
@@ -455,6 +455,16 @@ Please read the following [Wiki](https://gitlab.alfresco.com/tas/alfresco-tas-te
     * search tests cases by name
     * filter test cases by errors, labels, groups, test types, date when it was executed, protocol used, etc.
     * view overall pass/fail metrics of current test suite, history of tests execution, etc.
+    
+  Starting from utility 1.0.9 you are able to:
+  
+  * see why some tests are skipped. Maybe to environment test configuration.
+ 
+     ![](docs/pics/skipped-test.png)
+     Each test skipped has a proper message displayed.
+  
+  * filter tests that are failing with BUGS label, or the tests that are failing and are not annotated with BUGS (in the report first select the Fail tests, then select group ALL). Each test has this "ALL" group defined.
+    
 
 **[Back to Top ^](#table-of-contents)**
 
