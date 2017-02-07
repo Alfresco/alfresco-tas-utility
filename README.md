@@ -456,7 +456,7 @@ Please read the following [Wiki](https://gitlab.alfresco.com/tas/alfresco-tas-te
     * filter test cases by errors, labels, groups, test types, date when it was executed, protocol used, etc.
     * view overall pass/fail metrics of current test suite, history of tests execution, etc.
     
-  Starting from utility 1.0.9 you are able to:
+  Starting from utility [1.0.9](commits/v1.0.9) you are able to:
   
   * see why some tests are skipped. Maybe to environment test configuration.
  
