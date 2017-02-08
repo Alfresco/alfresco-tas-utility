@@ -120,6 +120,17 @@ public class DataSite extends TestData<DataSite>
     }
 
     /**
+     * Unset current site as IMAP favorite
+     *
+     * @throws DataPreparationException
+     */
+    public void unsetIMAPFavorite() throws DataPreparationException
+    {
+        STEP(String.format("DATAPREP: Unset site %s as IMAP Favorite", getCurrentSite()));
+        siteService.removeIMAPFavorite(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getCurrentSite());
+    }
+
+    /**
      * Add current site to favorites
      * 
      * @return current site model
