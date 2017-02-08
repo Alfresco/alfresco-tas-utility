@@ -88,7 +88,7 @@ public class DataContent extends TestData<DataContent>
     {
         currentUser = user;
         session = contentService.getCMISSession(user.getUsername(), user.getPassword());
-        return (DataContent) this;
+        return this;
     }
 
     @Override
@@ -493,7 +493,7 @@ public class DataContent extends TestData<DataContent>
      */
     public void addTagToContent(TagModel model) throws TestConfigurationException
     {
-        STEP(String.format("DATAPREP: Create '%s' tag to content %s", model.getTag()));
+        STEP(String.format("DATAPREP: Create '%s' tag ", model.getTag()));
         if (getLastResource() == null || getLastResource().isEmpty())
             throw new TestConfigurationException("You didn't specify your last resource in your tests. Please call usingResource(...) before adding a tag");
 
