@@ -32,9 +32,8 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
      * file/folders created via each protocols
      */
     private ResourceContent lastResource = new ResourceContent(this);
+    private ContentModel lastContentModel = new ContentModel();
     
-    private String fileContent ="";
-
     @Override
     @SuppressWarnings("unchecked")
     public Client usingUser(UserModel user) throws Exception
@@ -283,15 +282,17 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
         return Utility.convertBackslashToSlash(Utility.buildPath(parent, paths)).replace("//", "/");
     }
     
-    @SuppressWarnings("unchecked")
-    public Client usingFileContent(String content)
+    public ContentModel getLastContentModel()
     {
-        this.fileContent = content;
-        return (Client) this;
+        return lastContentModel;
     }
-    
-    protected String getFileContent()
+
+    /**
+     * The last ContentModel tested from {@link #usingResource(ContentModel)}
+     * @param lastContentModel
+     */
+    public void setLastContentModel(ContentModel lastContentModel)
     {
-        return fileContent;
+        this.lastContentModel = lastContentModel;
     }    
 }
