@@ -45,6 +45,13 @@ public class FileModel extends ContentModel
         this(name, title, description, fileType);
         setContent(content);
     }
+    
+    public FileModel(FileModel originalFile)
+    {
+        this(originalFile.getName(), originalFile.getTitle(), originalFile.getDescription(), originalFile.getFileType(), originalFile.getContent());
+        setCmisLocation(originalFile.getCmisLocation());
+        setProtocolLocation(originalFile.getProtocolLocation());
+    }
 
     public String getContent()
     {

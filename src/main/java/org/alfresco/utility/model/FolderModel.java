@@ -25,6 +25,13 @@ public class FolderModel extends ContentModel
     {
         super(name, title, description);
     }
+    
+    public FolderModel(FolderModel originalFolder)
+    {
+        this(originalFolder.getName(), originalFolder.getTitle(), originalFolder.getDescription());
+        setCmisLocation(originalFolder.getCmisLocation());
+        setProtocolLocation(originalFolder.getProtocolLocation());
+    }
 
     @XmlElement(name = "file")
     public List<FileModel> getFiles()
