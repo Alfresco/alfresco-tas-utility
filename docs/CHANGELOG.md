@@ -4,8 +4,51 @@
 
 # Change Log
 All notable changes to this project will be documented in this file.
-## [[v1.0.8] - TBD](/tas/alfresco-tas-tester/commits/v1.0.9)
-### TBD
+
+## [[v1.0.9] - TBD](/tas/alfresco-tas-tester/commits/v1.0.9)
+### Added
+- added constructor based on existing model
+- add lastContentModel
+- add Share group to TestGroup
+- Reduced time from 10 seconds to 1 second for waitUntilContentIsDeleted
+- added method to unset IMAP Favorite
+- fix DataContent format issue on addTagToContent
+- added DataBlogPost and DataCalendarEvent; Removed noderef from DataWiki
+- update label from "ALL" to "WITHOUT-BUGS"
+- added activity types
+- add methods to delete groups and remove users from group
+- added link to 1.0.9
+- added skipped tests pics
+- ability to filter test in html report by BUGS, by failed with no bugs
+- TAS-3072 show detailed for skipped test but also if there is a test configuration
+  error
+- increase extent report to 2.41.2 version
+- update info on OSTestMethodSelector
+- Fix copy file in network drive
+- update dataprep version and added 2 methods to createTaskWithProcessDef
+- fix method addTaskToList
+- Added method to remove user from site
+- added processId field in TaskModel and refactor
+- added tenantExist method that can be called from non-spring environments
+- added default values to TASProperties
+- Add method to verify user authorization status
+- update TestGroups to include OS names (linux, windows, mac) update OSTestMethod
+  to take in consideration these OS
+- use small letters for testgroups
+- update OSTestMethodSelector to ignore tests marked with BUGs if runBugs
+  environment is set to true
+- Made getFileModelWithContentSizeOfxMB static
+- add current OS name where the test was executed
+- Moved getFileModelWithContentSizeOfxMB from DataContent to FileModel
+- 'core: added method to generate a file model with a content size of x MB'
+- 'fixed: move the instantiation of list of tasks to getTasks'
+- added OSTestMethodListener (ability to automatically exclude tests based
+  on executor's OS type)
+- fix imports on TestCountListener
+- add OS_WIN, OS_UNIX groups
+- 'core: Updated NetworkDrive'
+- update dataprep to 1.23. Add method to set user quota
+- 'core: Changed isActionExecutedOnMappedDrive access from protected to public'
 
 ## [[v1.0.8] - 2017-01-27](/tas/alfresco-tas-tester/commits/v1.0.8)
 ### Added
