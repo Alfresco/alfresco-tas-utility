@@ -54,10 +54,7 @@ public class DataUser extends TestData<DataUser>
      */
     public UserModel createUser(UserModel user) throws DataPreparationException
     {
-        if (user.getDomain() != null)
-            return createUserWithCustomDomain(user.getUsername().split("@")[0], user.getPassword(), user.getDomain());
-        else
-            return createUser(user.getUsername(), user.getPassword());
+        return createUser(user.getUsername(), user.getPassword());
     }
 
     /**
@@ -84,8 +81,10 @@ public class DataUser extends TestData<DataUser>
         return newUser;
     }
 
-
-    public UserModel createUserWithCustomDomain(String userName, String password, String domain) throws DataPreparationException
+    /**
+     * Creates a new random user with a specific username, password and e-mail address on the test server defined in {@link TasProperties}
+     */
+    public UserModel createUserWithCustomEmailAddressInAlfresco(String userName, String password, String domain) throws DataPreparationException
     {
         UserModel newUser = new UserModel(userName, password);
         STEP(String.format("DATAPREP: Creating %s user", newUser.getUsername()));
@@ -96,7 +95,6 @@ public class DataUser extends TestData<DataUser>
         if (!created)
             throw new DataPreparationException(String.format(USER_NOT_CREATED, newUser.toString()));
 
-        newUser.setDomain(getCurrentUser().getDomain());
         return newUser;
     }
 
