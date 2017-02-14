@@ -54,7 +54,10 @@ public class DataUser extends TestData<DataUser>
      */
     public UserModel createUser(UserModel user) throws DataPreparationException
     {
-        return createUser(user.getUsername(), user.getPassword());
+        if (user.getDomain() != null)
+            return createUserWithCustomDomain(user.getUsername().split("@")[0], user.getPassword(), user.getDomain());
+        else
+            return createUser(user.getUsername(), user.getPassword());
     }
 
     /**
@@ -74,6 +77,22 @@ public class DataUser extends TestData<DataUser>
 
         Boolean created = userService.create(getAdminUser().getUsername(), getAdminUser().getPassword(), userName, password, String.format(EMAIL, userName),
                 String.format("%s FirstName", userName), String.format("LN-%s", userName));
+        if (!created)
+            throw new DataPreparationException(String.format(USER_NOT_CREATED, newUser.toString()));
+
+        newUser.setDomain(getCurrentUser().getDomain());
+        return newUser;
+    }
+
+
+    public UserModel createUserWithCustomDomain(String userName, String password, String domain) throws DataPreparationException
+    {
+        UserModel newUser = new UserModel(userName, password);
+        STEP(String.format("DATAPREP: Creating %s user", newUser.getUsername()));
+        LOG.info("Create user {}", newUser.toString());
+
+        Boolean created = userService.create(getAdminUser().getUsername(), getAdminUser().getPassword(), userName, password, String.format("%s@%s", userName, domain),
+                    String.format("%s FirstName", userName), String.format("LN-%s", userName));
         if (!created)
             throw new DataPreparationException(String.format(USER_NOT_CREATED, newUser.toString()));
 

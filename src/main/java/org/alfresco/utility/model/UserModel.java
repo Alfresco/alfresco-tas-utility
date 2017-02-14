@@ -27,6 +27,13 @@ public class UserModel extends TestModel
         this.setPassword(password);
     }
 
+    public UserModel(String username, String password, String domain)
+    {
+        this.setUsername(username);
+        this.setPassword(password);
+        this.setDomain(domain);
+    }
+
     public String getPassword()
     {
         return password;
