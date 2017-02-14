@@ -7,8 +7,13 @@ import org.springframework.stereotype.Service;
 import org.testng.Assert;
 
 import javax.mail.*;
+import javax.mail.internet.MimeMessage;
+import javax.mail.search.AndTerm;
+import javax.mail.search.FlagTerm;
 import javax.mail.search.SearchTerm;
+import java.util.ArrayList;
 import java.util.Properties;
+import java.util.Vector;
 
 import static org.alfresco.utility.report.log.Step.STEP;
 
@@ -45,21 +50,26 @@ public class DataEmail extends TestData<DataEmail>
      */
     private Message[] findMessagesBySubject(String subject) throws Exception
     {
-        SearchTerm searchTerm = new SearchTerm() {
+        SearchTerm subjectSearchTerm = new SearchTerm()
+        {
             @Override
-            public boolean match(Message message) {
-                try {
-                    if (message.getSubject().equals(subject)) {
+            public boolean match(Message message)
+            {
+                try
+                {
+                    if (message.getSubject().equals(subject))
                         return true;
-                    }
-                } catch (MessagingException ex) {
-                    ex.printStackTrace();
+                } catch (MessagingException me)
+                {
+                    me.printStackTrace();
                 }
                 return false;
             }
         };
 
-        return folder.search(searchTerm);
+        FlagTerm unseenFlagTerm = new FlagTerm(new Flags(Flags.Flag.SEEN), false);
+
+        return folder.search(new AndTerm(subjectSearchTerm, unseenFlagTerm));
     }
 
     /**
@@ -119,7 +129,14 @@ public class DataEmail extends TestData<DataEmail>
 
             Assert.assertTrue(found, String.format("Message with subject '%s' has not been found", subject));
 
-            return messages;
+            ArrayList<Message> messageArrayList = new ArrayList<>();
+            for (Message message:messages)
+            {
+                Message copyOfMessage = new MimeMessage((MimeMessage) message);
+                messageArrayList.add(copyOfMessage);
+            }
+
+            return messageArrayList.toArray(messages);
         }
         finally
         {
