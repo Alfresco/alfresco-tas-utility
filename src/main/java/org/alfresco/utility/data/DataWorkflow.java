@@ -286,4 +286,16 @@ public class DataWorkflow extends TestData<DataWorkflow>
         workflowService.deleteWorkflow(getCurrentUser().getUsername(), getCurrentUser().getPassword(), processModel.getId());
         return processModel;
     }
+
+    /**
+     * Cancel process
+     * @param processModel {@link ProcessModel}
+     * @return
+     */
+    public ProcessModel cancelProcess(ProcessModel processModel)
+    {
+        STEP(String.format("DATAPREP: User %s - cancel process %s", getCurrentUser().getUsername(), processModel.getId()));
+        workflowService.cancelWorkflow(getCurrentUser().getUsername(), getCurrentUser().getPassword(), processModel.getId());
+        return processModel;
+    }
 }
