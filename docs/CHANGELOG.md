@@ -4,8 +4,12 @@
 
 # Change Log
 All notable changes to this project will be documented in this file.
+## [[v1.0.10] - 2017-02-14](/tas/alfresco-tas-tester/commits/v1.0.10)
+### Added
+- added doc on DataListItemModel
+- add DataList models
 
-## [[v1.0.9] - TBD](/tas/alfresco-tas-tester/commits/v1.0.9)
+## [[v1.0.9] - 2017-02-10](/tas/alfresco-tas-tester/commits/v1.0.9)
 ### Added
 - added constructor based on existing model
 - add lastContentModel
