@@ -1,21 +1,24 @@
 package org.alfresco.utility.data;
 
+import java.util.ArrayList;
+import java.util.Properties;
+
+import javax.mail.Flags;
+import javax.mail.Folder;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Store;
+import javax.mail.internet.MimeMessage;
+import javax.mail.search.AndTerm;
+import javax.mail.search.FlagTerm;
+import javax.mail.search.SearchTerm;
+
 import org.alfresco.utility.Utility;
 import org.alfresco.utility.model.UserModel;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.testng.Assert;
-
-import javax.mail.*;
-import javax.mail.internet.MimeMessage;
-import javax.mail.search.AndTerm;
-import javax.mail.search.FlagTerm;
-import javax.mail.search.SearchTerm;
-import java.util.ArrayList;
-import java.util.Properties;
-import java.util.Vector;
-
-import static org.alfresco.utility.report.log.Step.STEP;
 
 @Service
 @Scope(value = "prototype")
@@ -29,14 +32,14 @@ public class DataEmail extends TestData<DataEmail>
     /**
      * Helper method that connects to a IMAPS host {@code host} with the credentials from {@code userModel}
      */
-    private void connectToHost(UserModel userModel, String host) throws Exception
+    private void connectToHost(UserModel userModel, String host, String protocol) throws Exception
     {
         Properties props = new Properties();
-        props.setProperty("mail.store.protocol", "imaps");
+        props.setProperty("mail.store.protocol", protocol);
 
         Session session = Session.getDefaultInstance(props, null);
 
-        store = session.getStore("imaps");
+        store = session.getStore(protocol);
         store.connect(host, userModel.getUsername(), userModel.getPassword());
 
         folder = store.getFolder("inbox");
@@ -103,7 +106,7 @@ public class DataEmail extends TestData<DataEmail>
      * the username and password from userModel, will search for a message with the subject "messageSubject", assert that it exists
      * and return the message
      */
-    public Message[] assertEmailHasBeenReceived(UserModel userModel, String host, String subject) throws Exception
+    public Message[] assertEmailHasBeenReceived(UserModel userModel, String host, String subject, String protocol) throws Exception
     {
         ArrayList<Message> messageArrayList = new ArrayList<>();
 
@@ -111,7 +114,7 @@ public class DataEmail extends TestData<DataEmail>
         {
             int retry = 0;
 
-            connectToHost(userModel, host);
+            connectToHost(userModel, host, protocol);
 
             while (retry < 15)
             {
