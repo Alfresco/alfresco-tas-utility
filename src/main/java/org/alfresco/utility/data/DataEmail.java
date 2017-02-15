@@ -105,6 +105,8 @@ public class DataEmail extends TestData<DataEmail>
      */
     public Message[] assertEmailHasBeenReceived(UserModel userModel, String host, String subject) throws Exception
     {
+        ArrayList<Message> messageArrayList = new ArrayList<>();
+
         try
         {
             int retry = 0;
@@ -129,7 +131,6 @@ public class DataEmail extends TestData<DataEmail>
 
             Assert.assertTrue(found, String.format("Message with subject '%s' has not been found", subject));
 
-            ArrayList<Message> messageArrayList = new ArrayList<>();
             for (Message message:messages)
             {
                 Message copyOfMessage = new MimeMessage((MimeMessage) message);
@@ -140,7 +141,7 @@ public class DataEmail extends TestData<DataEmail>
         }
         finally
         {
-            deleteMessages(messages);
+            deleteMessages(messageArrayList.toArray(messages));
             closeResources();
         }
     }
