@@ -27,7 +27,6 @@ public class DataEmail extends TestData<DataEmail>
     private boolean found = false;
     private Folder folder = null;
     private Store store = null;
-    private Message[] messages;
 
     /**
      * Helper method that connects to a IMAPS host {@code host} with the credentials from {@code userModel}
@@ -62,7 +61,8 @@ public class DataEmail extends TestData<DataEmail>
                 {
                     if (message.getSubject().equals(subject))
                         return true;
-                } catch (MessagingException me)
+                }
+                catch (MessagingException me)
                 {
                     me.printStackTrace();
                 }
@@ -78,9 +78,9 @@ public class DataEmail extends TestData<DataEmail>
     /**
      * Helper method that deletes the messages provided
      */
-    private void deleteMessages(Message[] messages) throws Exception
+    private void deleteMessages() throws Exception
     {
-        for (Message message : messages)
+        for (Message message : folder.getMessages())
             message.setFlag(Flags.Flag.DELETED, true);
 
         folder.close(true);
@@ -102,12 +102,13 @@ public class DataEmail extends TestData<DataEmail>
     /**
      * Assert that a message with subject {@code @subject} has been received and returns the message
      *
-     * e.g. assertEmailHasBeenReceived(userModel, "imap.gmail.com", "messageSubject") will conect to "imap.gmail.com" with
+     * e.g. assertEmailHasBeenReceived(userModel, "imap.gmail.com", "imaps", messageSubject") will connect to "imap.gmail.com" with
      * the username and password from userModel, will search for a message with the subject "messageSubject", assert that it exists
      * and return the message
      */
-    public Message[] assertEmailHasBeenReceived(UserModel userModel, String host, String subject, String protocol) throws Exception
+    public Message[] assertEmailHasBeenReceived(UserModel userModel, String host, String protocol, String subject) throws Exception
     {
+        Message[] messages = null;
         ArrayList<Message> messageArrayList = new ArrayList<>();
 
         try
@@ -144,7 +145,7 @@ public class DataEmail extends TestData<DataEmail>
         }
         finally
         {
-            deleteMessages(messageArrayList.toArray(messages));
+            deleteMessages();
             closeResources();
         }
     }
