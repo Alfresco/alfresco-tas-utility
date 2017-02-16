@@ -15,10 +15,13 @@ import javax.mail.search.FlagTerm;
 import javax.mail.search.SearchTerm;
 
 import org.alfresco.utility.Utility;
+import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.model.UserModel;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.testng.Assert;
+
+import static org.alfresco.utility.report.log.Step.STEP;
 
 @Service
 @Scope(value = "prototype")
@@ -31,15 +34,26 @@ public class DataEmail extends TestData<DataEmail>
     /**
      * Helper method that connects to a IMAPS host {@code host} with the credentials from {@code userModel}
      */
-    private void connectToHost(UserModel userModel, String host, String protocol) throws Exception
+    private void connectToHost(UserModel userModel, String host, int port, String protocol) throws Exception
     {
+        STEP(String.format("DATAEMAIL: Connect to IMAP with %s/%s using port %d and host %s", userModel.getUsername(), userModel.getPassword(), port, host));
+
         Properties props = new Properties();
         props.setProperty("mail.store.protocol", protocol);
 
         Session session = Session.getDefaultInstance(props, null);
 
         store = session.getStore(protocol);
-        store.connect(host, userModel.getUsername(), userModel.getPassword());
+
+        try
+        {
+            store.connect(host, port, userModel.getUsername(), userModel.getPassword());
+        }
+        catch (MessagingException authEx)
+        {
+            LOG.info("User failed to connect to IMAP Server [{}], port [{}]", host, port);
+            throw new TestConfigurationException(String.format("User failed to connect to IMAP server %s", authEx.getMessage()));
+        }
 
         folder = store.getFolder("inbox");
 
@@ -52,6 +66,8 @@ public class DataEmail extends TestData<DataEmail>
      */
     private Message[] findMessagesBySubject(String subject) throws Exception
     {
+        STEP(String.format("DATAEMAIL: Search for messages with subject '%s' in folder '%s'", subject, folder.getName()));
+
         SearchTerm subjectSearchTerm = new SearchTerm()
         {
             @Override
@@ -80,6 +96,8 @@ public class DataEmail extends TestData<DataEmail>
      */
     private void deleteMessages() throws Exception
     {
+        STEP(String.format("DATAEMAIL: Delete all messages from folder %s", folder.getName()));
+
         for (Message message : folder.getMessages())
             message.setFlag(Flags.Flag.DELETED, true);
 
@@ -106,7 +124,7 @@ public class DataEmail extends TestData<DataEmail>
      * the username and password from userModel, will search for a message with the subject "messageSubject", assert that it exists
      * and return the message
      */
-    public Message[] assertEmailHasBeenReceived(UserModel userModel, String host, String protocol, String subject) throws Exception
+    public Message[] assertEmailHasBeenReceived(UserModel userModel, String host, int port, String protocol, String subject) throws Exception
     {
         Message[] messages = null;
         ArrayList<Message> messageArrayList = new ArrayList<>();
@@ -115,7 +133,7 @@ public class DataEmail extends TestData<DataEmail>
         {
             int retry = 0;
 
-            connectToHost(userModel, host, protocol);
+            connectToHost(userModel, host, port, protocol);
 
             while (retry < 15)
             {
