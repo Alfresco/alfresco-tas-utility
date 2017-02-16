@@ -1,5 +1,7 @@
 package org.alfresco.utility.data;
 
+import static org.alfresco.utility.report.log.Step.STEP;
+
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -20,8 +22,6 @@ import org.alfresco.utility.model.UserModel;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.testng.Assert;
-
-import static org.alfresco.utility.report.log.Step.STEP;
 
 @Service
 @Scope(value = "prototype")
@@ -70,6 +70,11 @@ public class DataEmail extends TestData<DataEmail>
 
         SearchTerm subjectSearchTerm = new SearchTerm()
         {
+            /**
+             * 
+             */
+            private static final long serialVersionUID = 1L;
+
             @Override
             public boolean match(Message message)
             {
