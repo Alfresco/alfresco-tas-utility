@@ -35,6 +35,7 @@ public @interface TestGroup
     public static String EXTENTION_POINTS = "extention-points";
     public static String NODES = "nodes";
     public static String AUTH = "auth";
+    public static String SEARCH = "search";
     
     public static String IMAP = "imap";
     public static String SMTP = "smtp";
