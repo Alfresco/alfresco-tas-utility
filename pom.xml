@@ -4,7 +4,7 @@
 	<groupId>org.alfresco.tas</groupId>
 	<artifactId>utility</artifactId>
 	<name>alfresco-tas-utility</name>
-	<version>1.0.12</version>
+	<version>1.0.13-SNAPSHOT</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -27,7 +27,7 @@
 		<connection>scm:git:https://gitlab.alfresco.com/tas/alfresco-tas-tester.git</connection>
 		<developerConnection>scm:git:https://gitlab.alfresco.com/tas/alfresco-tas-tester.git</developerConnection>
 		<url>https://gitlab.alfresco.com/tas/alfresco-tas-tester</url>
-		<tag>v1.0.12</tag>
+		<tag>HEAD</tag>
 	</scm>
 	
 	<issueManagement>
