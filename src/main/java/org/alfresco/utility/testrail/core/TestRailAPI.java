@@ -602,17 +602,24 @@ public class TestRailAPI
 
         int depth = 0;
         Section parent = currentTestCase.getTestCaseDestination().getRootSection();
-        for (String childSection : currentTestCase.getTestCaseDestination().getChildDestinationSection())
+        if(currentTestCase.getTestCaseDestination().getChildDestinationSection().size() == 0)
         {
-            depth += 1;
-            if (!isSectionInList(depth, parent.getId(), childSection, allSections))
+            currentTestCase.getTestCaseDestination().setDestination(parent);
+        } else {
+            for (String childSection : currentTestCase.getTestCaseDestination().getChildDestinationSection())
             {
-                Section child = addNewSection(childSection, parent.getId(), currentProjectID, currentSuiteID);
-                allSections.add(child);
-                parent = child;
-                currentTestCase.getTestCaseDestination().setDestination(child);
-            }else{
-                parent = getSectionInList(depth, parent.getId(), childSection, allSections);
+                depth += 1;
+                if (!isSectionInList(depth, parent.getId(), childSection, allSections))
+                {
+                    Section child = addNewSection(childSection, parent.getId(), currentProjectID, currentSuiteID);
+                    allSections.add(child);
+                    parent = child;
+                    currentTestCase.getTestCaseDestination().setDestination(child);
+                }
+                else
+                {
+                    parent = getSectionInList(depth, parent.getId(), childSection, allSections);
+                }
             }
         }
 
