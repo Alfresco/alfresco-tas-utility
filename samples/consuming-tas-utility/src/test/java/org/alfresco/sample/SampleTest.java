@@ -33,8 +33,8 @@ public class SampleTest extends AbstractTestNGSpringContextTests
     @BeforeClass(alwaysRun = true)
     public void setupEnvironment() throws Exception
     {
-        serverHealth.assertServerIsOnline();
-        testSite = dataSite.createPublicRandomSite();
+//        serverHealth.assertServerIsOnline();
+//        testSite = dataSite.createPublicRandomSite();
         folderModel = FolderModel.getRandomFolderModel();
     }
 
@@ -48,6 +48,6 @@ public class SampleTest extends AbstractTestNGSpringContextTests
          */
         FolderModel myFolder = dataContent.usingSite(testSite).createFolder(folderModel);
 
-        //dataContent.assertContentExist(myFolder);
+        dataContent.usingResource(myFolder).assertContentExist();
     }
 }
