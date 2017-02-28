@@ -35,11 +35,20 @@ public class TestCaseDetail
     {
         setResult(currentTest);
         id = String.format("%s#%s", currentTest.getInstanceName(), currentTest.getMethod().getMethodName());
-        name = currentTest.getMethod().getMethodName();
+        Object[] objs = currentTest.getParameters();
+        if(objs.length > 0)
+        {
+            // test has @DataProvider
+            name = objs[0].toString();
+        }
+        else
+        {
+            name = currentTest.getMethod().getMethodName();
+        }
 
         annotation = currentTest.getMethod().getConstructorOrMethod().getMethod().getAnnotation(TestRail.class);
         bugAnnotated = currentTest.getMethod().getConstructorOrMethod().getMethod().getAnnotation(Bug.class);
-
+        
         testCaseDestination.fromAnnotation(annotation);
         setElapsed(currentTest.getEndMillis() - currentTest.getStartMillis());
 

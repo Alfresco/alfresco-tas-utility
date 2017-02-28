@@ -42,7 +42,7 @@ public class TestRailExecutorListener implements ISuiteListener, ITestListener
              * get the current run object
              * get list of all test cases
              */
-            testRailExecutor.prepareCurrentSuiteRun();            
+            testRailExecutor.prepareCurrentSuiteRun();
         }
         else
         {
@@ -68,7 +68,7 @@ public class TestRailExecutorListener implements ISuiteListener, ITestListener
     @Override
     public void onTestStart(ITestResult currentTest)
     {
-        // nothing to do here
+        Step.testSteps.clear();
     }
 
     @Override

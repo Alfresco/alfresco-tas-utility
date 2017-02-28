@@ -45,7 +45,11 @@ public class TestCaseDestination
 
     public String getRootSectionName()
     {
-        return getDestinationSections().get(0);
+        if(!getDestinationSections().isEmpty())
+        {
+            return getDestinationSections().get(0);
+        }
+        return "UNDEFINED";
     }
 
     public List<String> getDestinationSections()
