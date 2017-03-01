@@ -34,15 +34,16 @@ public class TestCaseDetail
     public TestCaseDetail(ITestResult currentTest)
     {
         setResult(currentTest);
-        id = String.format("%s#%s", currentTest.getInstanceName(), currentTest.getMethod().getMethodName());
         Object[] objs = currentTest.getParameters();
         if(objs.length > 0)
         {
             // test has @DataProvider
             name = objs[0].toString();
+            id = String.format("%s#%s", currentTest.getInstanceName(), name);
         }
         else
         {
+            id = String.format("%s#%s", currentTest.getInstanceName(), currentTest.getMethod().getMethodName());
             name = currentTest.getMethod().getMethodName();
         }
 

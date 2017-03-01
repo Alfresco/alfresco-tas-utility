@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.alfresco.utility.Utility;
 import org.alfresco.utility.report.log.Step;
+import org.alfresco.utility.testrail.annotation.TestRail;
 import org.alfresco.utility.testrail.core.TestCaseDetail;
 import org.alfresco.utility.testrail.core.TestRailExecutor;
 import org.testng.ISuite;
@@ -74,28 +75,19 @@ public class TestRailExecutorListener implements ISuiteListener, ITestListener
     @Override
     public void onTestSuccess(ITestResult result)
     {
-        if (testRailExecutor.isEnabled())
-        {
-            currentTestCases.add(testRailExecutor.uploadTestCase(result));
-        }
+        uploadTestCase(result);
     }
 
     @Override
     public void onTestFailure(ITestResult result)
     {
-        if (testRailExecutor.isEnabled())
-        {
-            currentTestCases.add(testRailExecutor.uploadTestCase(result));
-        }
+        uploadTestCase(result);
     }
 
     @Override
     public void onTestSkipped(ITestResult result)
     {
-        if (testRailExecutor.isEnabled())
-        {
-            currentTestCases.add(testRailExecutor.uploadTestCase(result));
-        }
+        uploadTestCase(result);
     }
 
     @Override
@@ -114,5 +106,17 @@ public class TestRailExecutorListener implements ISuiteListener, ITestListener
     public void onFinish(ITestContext context)
     {
         // nothing to do here
+    }
+
+    private void uploadTestCase(ITestResult result)
+    {
+        TestRail annotation = result.getMethod().getConstructorOrMethod().getMethod().getAnnotation(TestRail.class);
+        if (annotation != null)
+        {
+            if (testRailExecutor.isEnabled())
+            {
+                currentTestCases.add(testRailExecutor.uploadTestCase(result));
+            }
+        }
     }
 }
