@@ -124,11 +124,22 @@ public class HtmlReportListener implements IReporter
                  * BUG section, taking in consideration TestNG tests that are marked with @Bug annotation
                  */
                 Bug bugAnnotated = result.getMethod().getConstructorOrMethod().getMethod().getAnnotation(Bug.class);
+                String testName = "";
+                Object[] objs = result.getParameters();
+                if(objs.length > 0)
+                {
+                    // test has @DataProvider
+                    testName = objs[0].toString();
+                }
+                else
+                {
+                    testName = result.getMethod().getMethodName();
+                }
 
                 if (bugAnnotated != null)
                 {
                     test = extent.startTest(String.format("%s # %s (BUG: %s)", result.getInstance().getClass().getSimpleName(),
-                            result.getMethod().getMethodName(), trackerUrl(bugAnnotated.id())));
+                            testName, trackerUrl(bugAnnotated.id())));
                     test.assignCategory("BUGS");
                     if (bugAnnotated.description().isEmpty() && status != LogStatus.SKIP)
                     {
@@ -149,7 +160,7 @@ public class HtmlReportListener implements IReporter
                 }
                 else
                 {
-                    test = extent.startTest(String.format("%s # %s", result.getInstance().getClass().getSimpleName(), result.getMethod().getMethodName()));
+                    test = extent.startTest(String.format("%s # %s", result.getInstance().getClass().getSimpleName(), testName));
                     test.assignCategory("WITHOUT-BUGS");
                 }
 
