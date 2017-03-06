@@ -513,7 +513,7 @@ public class DataContent extends TestData<DataContent>
         boolean found = false;
         for (String tag : tags)
         {
-            if (model != null && model.getTag() != null && model.getTag().equals(tag))
+            if (model != null && model.getTag() != null && tag.equals(model.getTag().toLowerCase()))
             {
                 found = true;
                 break;
