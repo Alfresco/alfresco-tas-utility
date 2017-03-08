@@ -110,8 +110,10 @@ public class FileModel extends ContentModel
      */
     public static FileModel getFileModelBasedOnTestDataFile(String resourceDataFile) throws Exception
     {
-        FileModel testFile = new FileModel(Utility.getResourceTestDataFile(resourceDataFile).toString());
-        String content = Files.readFile(testFile.toFile()).replace("\n", "");
+        File tmp = Utility.getResourceTestDataFile(resourceDataFile);        
+        FileModel testFile = new FileModel(tmp.getPath(), FileType.fromName(tmp.getName()));
+        testFile.setCmisLocation(tmp.getName());
+        String content = Files.readFile(tmp).replace("\n", "");
         testFile.setContent(content);
 
         return testFile;

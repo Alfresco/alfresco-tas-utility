@@ -56,4 +56,5 @@ public @interface TestGroup
     public static String OS_WIN = "windows"; //this will mark tests that needs to be executed ONLY on Windows
     public static String OS_LINUX = "linux"; //this will mark tests that needs to be executed ONLY on Unix    
     public static String OS_MAC = "mac"; //this will mark tests that needs to be executed ONLY on Unix
+    public static String ASS_1 = "ASS_1.0.0"; //Alfresco Search Services 1.0
 }
