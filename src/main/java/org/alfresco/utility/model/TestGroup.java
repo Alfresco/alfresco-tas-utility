@@ -13,6 +13,7 @@ public @interface TestGroup
     public static String CORE = "core";
     public static String FULL = "full";
     public static String PROTOCOLS = "protocols";
+    public static String SSO = "sso";
 
     /*
      * Used in Rest api mostly
