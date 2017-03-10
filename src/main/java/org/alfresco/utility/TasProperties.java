@@ -1,5 +1,10 @@
 package org.alfresco.utility;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Paths;
+
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,11 +13,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
-
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.file.Paths;
 
 /**
  * Generic Properties class that will load and override properties based on
@@ -57,7 +57,7 @@ public class TasProperties
     @Value("${jmx.useJolokiaAgent:true}")
     private Boolean useJolokiaJmxAgent;
 
-    @Value("${db.url:not-set}")
+    @Value("${db.url:localhost}")
     private String dbUrl;
 
     @Value("${db.username:alfresco}")
@@ -90,7 +90,7 @@ public class TasProperties
     @Value("${env.platform:WINDOWS}")
     private String envPlatformName;
 
-    @Value("${share.url:not-set}")
+    @Value("${share.url:http://localhost}")
     private URL shareUrl;
 
     public Boolean showTenantsOnServerHealth()
