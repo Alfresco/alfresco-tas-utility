@@ -2,7 +2,7 @@ package org.alfresco.utility.web;
 
 import org.alfresco.utility.TasProperties;
 import org.alfresco.utility.web.annotation.RenderWebElement;
-import org.alfresco.utility.web.browser.WebBrowser;
+import org.alfresco.utility.web.browser.WebDriverAware;
 import org.alfresco.utility.web.renderer.Renderer;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.FindAll;
@@ -10,11 +10,9 @@ import org.openqa.selenium.support.FindBy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,16 +21,12 @@ import java.util.List;
  *
  * @author Paul.Brodner
  */
-public abstract class HtmlPage
+public abstract class HtmlPage extends WebDriverAware
 {
     protected final Logger LOG = LoggerFactory.getLogger(HtmlPage.class);
 
     @Autowired
     protected TasProperties properties;
-
-    @Autowired
-    @Qualifier("webBrowserInstance")
-    protected WebBrowser browser;
 
     public HtmlPage renderedPage()
     {
@@ -72,30 +66,6 @@ public abstract class HtmlPage
             }
         }
         return this;
-    }
-
-    /**
-     * Backtrack algorithm to gather all declared fields within SuperClasse-es
-     * but stopping on HtmlPage.class
-     *
-     * @param fields
-     * @param type
-     * @return
-     */
-    private List<Field> getAllDeclaredFields(List<Field> fields, Class<?> type)
-    {
-        if (type.isAssignableFrom(HtmlPage.class))
-        {
-            return fields;
-        }
-
-        fields.addAll(Arrays.asList(type.getDeclaredFields()));
-
-        if (type.getSuperclass() != null)
-        {
-            fields = getAllDeclaredFields(fields, type.getSuperclass());
-        }
-        return fields;
     }
 
     /**

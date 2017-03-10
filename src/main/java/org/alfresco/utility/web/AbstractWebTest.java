@@ -5,10 +5,15 @@ import org.alfresco.utility.web.browser.WebBrowser;
 import org.alfresco.utility.web.browser.WebBrowserFactory;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
+import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeSuite;
+
+import java.util.Set;
 
 /**
  * Created by Claudia Agache on 3/9/2017.
@@ -51,5 +56,35 @@ public abstract class AbstractWebTest extends AbstractTestNGSpringContextTests
         return browserThread.get();
     }
 
-    abstract void initializeBrowser();
+    private void initializeBrowser() throws ClassNotFoundException
+    {
+        /* get all autowired annotated children of this class */
+        ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(true);
+        provider.addIncludeFilter(new AssignableTypeFilter(this.getClass()));
+
+        Set<BeanDefinition> components = provider.findCandidateComponents(getPageObjectRootPackage());
+        for (BeanDefinition component : components)
+        {
+            @SuppressWarnings("rawtypes")
+            Class pageObject = Class.forName(component.getBeanClassName());
+
+            //System.out.println("Page Object: " + pageObject.getName());
+            /*
+             * only for HtmlPage base classes
+             */
+            if (pageObject.getClass().isInstance(HtmlPage.class))
+            {
+                @SuppressWarnings("unchecked")
+                Object bean = applicationContext.getBean(pageObject);
+                if (bean instanceof HtmlPage)
+                {
+                    HtmlPage page = (HtmlPage) bean;
+                    page.setBrowser(getBrowser());
+                }
+            }
+
+        }
+    }
+
+    public abstract String getPageObjectRootPackage();
 }

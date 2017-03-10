@@ -1,12 +1,24 @@
 package org.alfresco.utility.testng;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 
+import org.alfresco.utility.Utility;
+import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.model.TestGroup;
 import org.alfresco.utility.report.Bug;
+import org.alfresco.utility.web.AbstractWebTest;
+import org.alfresco.utility.web.browser.WebBrowser;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.SystemUtils;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.IInvokedMethod;
 import org.testng.IInvokedMethodListener;
 import org.testng.ITestResult;
@@ -41,6 +53,10 @@ import org.testng.internal.ConstructorOrMethod;
  */
 public class OSTestMethodSelector implements IInvokedMethodListener
 {
+    private WebBrowser browser;
+    private static final Logger LOG = LoggerFactory.getLogger(OSTestMethodSelector.class);
+    static Properties defaultProperties;
+
     @Override
     public void beforeInvocation(IInvokedMethod testNGmethod, ITestResult testResult)
     {
@@ -111,7 +127,36 @@ public class OSTestMethodSelector implements IInvokedMethodListener
 
     @Override
     public void afterInvocation(IInvokedMethod testNGmethod, ITestResult testResult)
-    {       
+    {
+        if(!testResult.isSuccess())
+        {
+            if(testResult.getInstance() instanceof AbstractWebTest)
+            {
+                this.browser = ((AbstractWebTest) testResult.getInstance()).getBrowser();
+
+                File screenshot = ((TakesScreenshot) browser).getScreenshotAs(OutputType.FILE);
+
+                try
+                {
+                    defaultProperties = Utility.getProperties(OSTestMethodSelector.class, Utility.getEnvironmentPropertyFile());
+                }
+                catch (TestConfigurationException e)
+                {
+                    LOG.error("Could not get default properties: " + e.getMessage());
+                }
+
+                String screenshotsPath = defaultProperties.getProperty("reports.path") + File.separator + defaultProperties.getProperty("screenshots.dir");
+                File saved = new File(screenshotsPath, testResult.getMethod().getMethodName() + ".png");
+                try
+                {
+                    FileUtils.copyFile(screenshot, saved);
+                }
+                catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
 }

@@ -1,10 +1,12 @@
 package org.alfresco.utility.report;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -17,6 +19,7 @@ import java.util.stream.Collectors;
 import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.Utility;
 import org.alfresco.utility.exception.TestConfigurationException;
+import org.alfresco.utility.web.AbstractWebTest;
 import org.slf4j.Logger;
 import org.testng.IReporter;
 import org.testng.IResultMap;
@@ -167,7 +170,7 @@ public class HtmlReportListener implements IReporter
                 if (status == LogStatus.SKIP && result.getTestContext().getFailedConfigurations().size() > 0)
                 {
                     test.log(status,
-                            "Test is skiped due to a configuration test method like a @BeforeClass method. Filter the tests by 'FATAL' error to analyze the root cause.");
+                            "Test is skipped due to a configuration test method like a @BeforeClass method. Filter the tests by 'FATAL' error to analyze the root cause.");
                 }
 
                 test.setStartedTime(getTime(result.getStartMillis()));
@@ -179,6 +182,15 @@ public class HtmlReportListener implements IReporter
                 if (result.getThrowable() != null)
                 {
                     test.log(status, result.getThrowable());
+
+                    if(result.getInstance() instanceof AbstractWebTest)
+                    {
+                        String screenshotsDir = defaultProperties.getProperty("screenshots.dir");
+                        String screenshotsPath = Paths.get(defaultProperties.getProperty("reports.path"), screenshotsDir).toString();
+                        File screenshot = Paths.get(screenshotsPath, testName + ".png").toFile();
+                        if(screenshot.exists())
+                            test.log(status, String.format("Screenshot below: %s", test.addScreenCapture(screenshot.getPath())));
+                    }
                 }
                 else
                 {
