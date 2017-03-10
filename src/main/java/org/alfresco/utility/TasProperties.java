@@ -9,6 +9,11 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Paths;
+
 /**
  * Generic Properties class that will load and override properties based on
  * environment defined For "test" environment just define {code}
@@ -63,6 +68,30 @@ public class TasProperties
     
     @Value("${serverHealth.showTenants:true}")
     private Boolean showTenantsOnServerHealth;
+
+    @Value("${browser.name}")
+    private String browserName;
+
+    @Value("${browser.version}")
+    private String browserVersion;
+
+    @Value("${browser.implicitWait}")
+    private long implicitWait;
+
+    @Value("${grid.url}")
+    private String gridUrl;
+
+    @Value("${grid.enabled}")
+    private boolean gridEnabled;
+
+    @Value("${screenshots.dir}")
+    private File screenshotsDir;
+
+    @Value("${env.platform}")
+    private String envPlatformName;
+
+    @Value("${share.url}")
+    private URL shareUrl;
 
     public Boolean showTenantsOnServerHealth()
     {
@@ -220,4 +249,92 @@ public class TasProperties
         this.dbPassword = dbPassword;
     }
 
+    public String getBrowserName()
+    {
+        return browserName;
+    }
+
+    public void setBrowserName(String browserName)
+    {
+        this.browserName = browserName;
+    }
+
+    public String getBrowserVersion()
+    {
+        return browserVersion;
+    }
+
+    public void setBrowserVersion(String browserVersion)
+    {
+        this.browserVersion = browserVersion;
+    }
+
+    public long getImplicitWait()
+    {
+        return implicitWait;
+    }
+
+    public void setImplicitWait(long implicitWait)
+    {
+        this.implicitWait = implicitWait;
+    }
+
+    public URL getGridUrl() throws MalformedURLException
+    {
+        return new URL(gridUrl);
+    }
+
+    public void setGridUrl(String gridUrl)
+    {
+        this.gridUrl = gridUrl;
+    }
+
+    public boolean isGridEnabled()
+    {
+        return gridEnabled;
+    }
+
+    public void setGridEnabled(boolean gridEnabled)
+    {
+        this.gridEnabled = gridEnabled;
+    }
+
+    public File getScreenshotsDir()
+    {
+        return screenshotsDir;
+    }
+
+    public void setScreenshotsDir(String screenshotsDir)
+    {
+        File f = Paths.get(screenshotsDir).toFile();
+        if (f.isFile() && !f.exists())
+        {
+            f.getParentFile().mkdirs();
+        }
+        else if (!f.exists())
+        {
+            f.mkdirs();
+        }
+        this.screenshotsDir = f;
+    }
+
+    public String getEnvPlatformName()
+    {
+        return envPlatformName;
+    }
+
+    public void setEnvPlatformName(String envPlatformName)
+    {
+        this.envPlatformName = envPlatformName;
+    }
+
+    public URL getShareUrl()
+    {
+        return shareUrl;
+    }
+
+    public void setShareUrl(URL shareUrl)
+    {
+        this.shareUrl = shareUrl;
+    }
 }
