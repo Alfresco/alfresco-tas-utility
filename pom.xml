@@ -22,6 +22,7 @@
 		<org.jvnet.version>0.6.5</org.jvnet.version>
 		<javax.mail.version>1.5.1</javax.mail.version>
 		<seleniumjava.version>2.46.0</seleniumjava.version>
+		<yandex.qatools.version>1.15</yandex.qatools.version>
 	</properties>
 	
 	<scm>
@@ -257,5 +258,13 @@
 			<artifactId>selenium-java</artifactId>
 			<version>${seleniumjava.version}</version>
 		</dependency>
+
+		<!-- yandex -->
+		<dependency>
+			<groupId>ru.yandex.qatools.htmlelements</groupId>
+			<artifactId>htmlelements-java</artifactId>
+			<version>${yandex.qatools.version}</version>
+		</dependency>
 	</dependencies>
+
 </project>
