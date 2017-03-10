@@ -69,28 +69,28 @@ public class TasProperties
     @Value("${serverHealth.showTenants:true}")
     private Boolean showTenantsOnServerHealth;
 
-    @Value("${browser.name}")
+    @Value("${browser.name:Firefox}")
     private String browserName;
 
-    @Value("${browser.version}")
+    @Value("${browser.version:41}")
     private String browserVersion;
 
-    @Value("${browser.implicitWait}")
+    @Value("${browser.implicitWait:30}")
     private long implicitWait;
 
-    @Value("${grid.url}")
+    @Value("${grid.url:not-set}")
     private String gridUrl;
 
-    @Value("${grid.enabled}")
+    @Value("${grid.enabled:false}")
     private boolean gridEnabled;
 
-    @Value("${screenshots.dir}")
+    @Value("${screenshots.dir:screenshots}")
     private File screenshotsDir;
 
-    @Value("${env.platform}")
+    @Value("${env.platform:WINDOWS}")
     private String envPlatformName;
 
-    @Value("${share.url}")
+    @Value("${share.url:not-set}")
     private URL shareUrl;
 
     public Boolean showTenantsOnServerHealth()
