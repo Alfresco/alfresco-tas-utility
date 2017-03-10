@@ -53,13 +53,22 @@ public class OSTestMethodSelector implements IInvokedMethodListener
                 Test testClass = method.getAnnotation(Test.class);
 
                 String runBugs = System.getProperty("runBugs");
-                if (runBugs!=null && runBugs.equals("false"))
+                if ("false".equals(runBugs))
                 {
                     if (method.isAnnotationPresent(Bug.class))
                     {
                         Bug bug = method.getAnnotation(Bug.class);
-                        throw new SkipException(
-                                String.format("This test was skiped because was marked as BUG: {[id='%s', description='%s']}.(info: you can run tests marked with bugs, passing -DrunBugs=true)", bug.id(), bug.description()));
+                        switch (bug.status())
+                        {
+                        case FIXED:
+                            break;
+                        case OPENED:
+                            throw new SkipException(
+                                    String.format("This test is skipped because it is marked as OPENED BUG: {[id='%s', description='%s', status='%s']}.(info: you can run tests marked as opened bugs, passing -DrunBugs=true)", bug.id(), bug.description(), bug.status()));
+                        default:
+                             throw new IllegalArgumentException();
+                        }
+                        
                     }
                 }
 
