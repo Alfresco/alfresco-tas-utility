@@ -9,27 +9,24 @@ import java.util.List;
 import org.alfresco.utility.web.HtmlPage;
 import org.openqa.selenium.support.PageFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import ru.yandex.qatools.htmlelements.loader.decorator.HtmlElementDecorator;
 import ru.yandex.qatools.htmlelements.loader.decorator.HtmlElementLocatorFactory;
 
 public abstract class WebDriverAware
 {
-    @Autowired
-    @Qualifier("webBrowserInstance")
     protected WebBrowser browser;
 
-    public void setBrowser(WebBrowser browser)
+    public void setBrowser(WebBrowser webBrowser)
     {
-        if (this.browser.equals(browser))
+        if (webBrowser.equals(this.browser))
         {
             //System.out.println("Already initialized browser for: " + this.getClass().getName());
             return;
         }
 
-        this.browser = browser;
-        PageFactory.initElements(new HtmlElementDecorator(new HtmlElementLocatorFactory(browser)), this);
+        this.browser = webBrowser;
+        PageFactory.initElements(new HtmlElementDecorator(new HtmlElementLocatorFactory(webBrowser)), this);
 
         List<Field> allFields = getAllDeclaredFields(new LinkedList<Field>(), this.getClass());
         for (Field field : allFields)

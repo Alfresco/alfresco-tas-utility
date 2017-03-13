@@ -25,7 +25,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * A wrapper around an arbitrary WebDriver instance which supports registering
@@ -36,14 +35,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class WebBrowser extends EventFiringWebDriver
 {
     protected static final Logger LOG = LoggerFactory.getLogger(WebBrowser.class);
-    @Autowired
-    TasProperties properties;
+    protected TasProperties properties;
 
     String mainWindow;
 
-    public WebBrowser(WebDriver driver)
+    public WebBrowser(WebDriver driver, TasProperties properties)
     {
         super(driver);
+        this.properties = properties;
         LOG.info("Initialising driver '{}'", driver.toString());
     }
 

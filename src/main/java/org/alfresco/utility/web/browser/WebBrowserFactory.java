@@ -33,11 +33,11 @@ public class WebBrowserFactory implements FactoryBean<WebBrowser>
 
         if (properties.isGridEnabled())
         {
-            webbrowser = new WebBrowser(getRemoteWebDriver(properties));
+            webbrowser = new WebBrowser(getRemoteWebDriver(properties), properties);
         }
         else
         {
-            webbrowser = new WebBrowser(Browser.fromProperties(properties));
+            webbrowser = new WebBrowser(Browser.fromProperties(properties), properties);
         }
 
         //EventWebBrowserListener listener = new EventWebBrowserListener();
