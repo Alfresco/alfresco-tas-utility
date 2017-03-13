@@ -3,16 +3,17 @@ package org.alfresco.utility.web;
 import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.web.browser.WebBrowser;
 import org.alfresco.utility.web.browser.WebBrowserFactory;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeSuite;
+import org.testng.ITestResult;
+import org.testng.annotations.*;
 
+import java.lang.reflect.Method;
 import java.util.Set;
 
 /**
@@ -23,7 +24,7 @@ public abstract class AbstractWebTest extends AbstractTestNGSpringContextTests
     @Autowired
     WebBrowserFactory browserFactory;
 
-    private static final ThreadLocal<WebBrowser> browserThread = new ThreadLocal<WebBrowser>();
+    protected static final ThreadLocal<WebBrowser> browserThread = new ThreadLocal<WebBrowser>();
 
     protected Logger LOG = LogFactory.getLogger();
 
@@ -51,8 +52,27 @@ public abstract class AbstractWebTest extends AbstractTestNGSpringContextTests
         }
     }
 
+    @BeforeMethod(alwaysRun = true)
+    public void startTest(final Method method) throws Exception {
+        LOG.info("***************************************************************************************************");
+        DateTime now = new DateTime();
+        LOG.info("*** {} ***  Starting test {}:{} ", now.toString("HH:mm:ss"), method.getDeclaringClass().getSimpleName(), method.getName());
+        LOG.info("***************************************************************************************************");
+    }
+
+    @AfterMethod(alwaysRun = true)
+    public void endTest(final Method method, final ITestResult result) throws Exception {
+        LOG.info("***************************************************************************************************");
+        DateTime now = new DateTime();
+        LOG.info("*** {} ***   Ending test {}:{} {} ({} s.)", now.toString("HH:mm:ss"), method.getDeclaringClass().getSimpleName(), method.getName(),
+                result.isSuccess() ? "SUCCESS" : "!!! FAILURE !!!",
+                (result.getEndMillis() - result.getStartMillis()) / 1000);
+        LOG.info("***************************************************************************************************");
+    }
+
     public static WebBrowser getBrowser()
     {
+
         return browserThread.get();
     }
 
