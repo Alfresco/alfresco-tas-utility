@@ -259,6 +259,97 @@ public class DataUser extends TestData<DataUser>
     }
 
     /**
+     * Disable user
+     *
+     * @param userToDisable
+     * @throws DataPreparationException
+     */
+    public void disableUser(UserModel userToDisable) throws DataPreparationException
+    {
+        STEP(String.format("DATAPREP: Disable %s user",userToDisable.getUsername()));
+        boolean disabled = userService.disableUser(getCurrentUser().getUsername(), getCurrentUser().getPassword(), userToDisable.getUsername(), true);
+        if (!disabled)
+        {
+            throw new DataPreparationException(String.format("Failed to disable user '%s'.", userToDisable.getUsername()));
+        }
+    }
+
+    /**
+     * Verify if content exists in trash can
+     *
+     * @param content {@link ContentModel} content to verify
+     */
+    public void assertTrashCanHasContent(ContentModel... contents)
+    {
+        List<String> nodes = userService.getItemsNodeRefFromTrashcan(getCurrentUser().getUsername(),getCurrentUser().getPassword());
+        List<String> matches = new ArrayList<String>();
+        for(ContentModel content: contents)
+        {
+            matches.clear();
+            STEP(String.format("DATAPREP: Verify if %s is in trash can", content.getName()));
+            matches = nodes.stream().filter(it -> it.contains(content.getNodeRef().split(";")[0])).collect(Collectors.toList());
+            Assert.assertFalse(matches.isEmpty(), String.format("Item %s found in trash can", content.getName()));
+        }
+    }
+
+    /**
+     * Verify that content does not exist in trash can
+     *
+     * @param content {@link ContentModel} content to verify
+     */
+    public void assertTrashCanDoesNotHaveContent(ContentModel... contents)
+    {
+        List<String> nodes = userService.getItemsNodeRefFromTrashcan(getCurrentUser().getUsername(),getCurrentUser().getPassword());
+        List<String> matches = new ArrayList<String>();
+        for(ContentModel content: contents)
+        {
+            matches.clear();
+            STEP(String.format("DATAPREP: Verify if %s is not in trash can", content.getName()));
+            matches = nodes.stream().filter(it -> it.contains(content.getNodeRef().split(";")[0])).collect(Collectors.toList());
+            Assert.assertTrue(matches.isEmpty(), String.format("Item %s found in trash can", content.getName()));
+        }
+    }
+
+    /**
+     * Set user quota in MB
+     *
+     * @param userToModify
+     * @param quota
+     * @throws DataPreparationException
+     */
+    public void setUserQuota(UserModel userToModify, int quota) throws DataPreparationException
+    {
+        STEP(String.format("DATAPREP: Set %d MB quota to %s user", quota, userToModify.getUsername()));
+        boolean status = userService.setUserQuota(getCurrentUser().getUsername(), getCurrentUser().getPassword(), userToModify.getUsername(), quota);
+        if (!status)
+        {
+            throw new DataPreparationException(String.format("Failed to set quota to user '%s'.", userToModify.getUsername()));
+        }
+    }
+
+    /**
+     * Verify if user is authorized
+     *
+     * @param userToVerify {@link UserModel}
+     */
+    public void assertUserIsAuthorized(UserModel userToVerify)
+    {
+        STEP(String.format("DATAPREP: Verify that user %s is authorized", userToVerify.getUsername()));
+        Assert.assertTrue(userService.isUserAuthorized(getCurrentUser().getUsername(), getCurrentUser().getPassword(), userToVerify.getUsername()));
+    }
+
+    /**
+     * Verify if user is not authorized
+     *
+     * @param userToVerify {@link UserModel}
+     */
+    public void assertUserIsNotAuthorized(UserModel userToVerify)
+    {
+        STEP(String.format("DATAPREP: Verify that user %s is not authorized", userToVerify.getUsername()));
+        Assert.assertFalse(userService.isUserAuthorized(getCurrentUser().getUsername(), getCurrentUser().getPassword(), userToVerify.getUsername()));
+    }
+
+    /**
     * Just authenticate using <username> and <password> provided as parameters
     */
     public HttpState login(UserModel testUser)
