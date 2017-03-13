@@ -28,8 +28,7 @@ import org.testng.internal.ConstructorOrMethod;
 
 /**
  * Use this listener if you want to exclude automatically tests based on your operating system.
- * Example:
- * <code>
+ * Example: <code>
  * &#64;Test(groups = { TestGroup.OS_WIN })
  * public void testA()
  * {
@@ -76,15 +75,17 @@ public class OSTestMethodSelector implements IInvokedMethodListener
                         Bug bug = method.getAnnotation(Bug.class);
                         switch (bug.status())
                         {
-                        case FIXED:
-                            break;
-                        case OPENED:
-                            throw new SkipException(
-                                    String.format("This test is skipped because it is marked as OPENED BUG: {[id='%s', description='%s', status='%s']}.(info: you can run tests marked as opened bugs, passing -DrunBugs=true)", bug.id(), bug.description(), bug.status()));
-                        default:
-                             throw new IllegalArgumentException();
+                            case FIXED:
+                                break;
+                            case OPENED:
+                                throw new SkipException(
+                                        String.format(
+                                                "This test is skipped because it is marked as OPENED BUG: {[id='%s', description='%s', status='%s']}.(info: you can run tests marked as opened bugs, passing -DrunBugs=true)",
+                                                bug.id(), bug.description(), bug.status()));
+                            default:
+                                throw new IllegalArgumentException();
                         }
-                        
+
                     }
                 }
 
@@ -97,26 +98,26 @@ public class OSTestMethodSelector implements IInvokedMethodListener
                         if (SystemUtils.IS_OS_LINUX && !groups.contains(TestGroup.OS_LINUX))
                         {
                             throw new SkipException(
-                                    String.format("This test was skipped because it was marked to be executed on differed operating system(s). Groups used: %s and was executed on: %s",
-                                            String.valueOf(groups), System.getProperty("os.name")));
-                        }
-                        
-                        else if (SystemUtils.IS_OS_MAC && !groups.contains(TestGroup.OS_MAC))
-                        {
-                            throw new SkipException(
-                                    String.format("This test was skipped because it was marked to be executed on differed operating system(s). Groups used: %s and was executed on: %s",
-                                            String.valueOf(groups), System.getProperty("os.name")));
-                        }
-                        
-                        else if (SystemUtils.IS_OS_WINDOWS && !groups.contains(TestGroup.OS_WIN))
-                        {
-                            throw new SkipException(
-                                    String.format("This test was skipped because it was marked to be executed on differed operating system(s). Groups used: %s and was executed on: %s",
+                                    String.format(
+                                            "This test was skipped because it was marked to be executed on differed operating system(s). Groups used: %s and was executed on: %s",
                                             String.valueOf(groups), System.getProperty("os.name")));
                         }
 
-                        
-                        
+                        else if (SystemUtils.IS_OS_MAC && !groups.contains(TestGroup.OS_MAC))
+                        {
+                            throw new SkipException(
+                                    String.format(
+                                            "This test was skipped because it was marked to be executed on differed operating system(s). Groups used: %s and was executed on: %s",
+                                            String.valueOf(groups), System.getProperty("os.name")));
+                        }
+
+                        else if (SystemUtils.IS_OS_WINDOWS && !groups.contains(TestGroup.OS_WIN))
+                        {
+                            throw new SkipException(
+                                    String.format(
+                                            "This test was skipped because it was marked to be executed on differed operating system(s). Groups used: %s and was executed on: %s",
+                                            String.valueOf(groups), System.getProperty("os.name")));
+                        }
 
                     }
                 }
@@ -128,9 +129,9 @@ public class OSTestMethodSelector implements IInvokedMethodListener
     @Override
     public void afterInvocation(IInvokedMethod testNGmethod, ITestResult testResult)
     {
-        if(!testResult.isSuccess())
+        if (!testResult.isSuccess())
         {
-            if(testResult.getInstance() instanceof AbstractWebTest)
+            if (testResult.getInstance() instanceof AbstractWebTest)
             {
                 this.browser = ((AbstractWebTest) testResult.getInstance()).getBrowser();
 

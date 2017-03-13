@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -19,6 +18,7 @@ import java.util.stream.Collectors;
 import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.Utility;
 import org.alfresco.utility.exception.TestConfigurationException;
+import org.alfresco.utility.report.Bug.Status;
 import org.alfresco.utility.web.AbstractWebTest;
 import org.slf4j.Logger;
 import org.testng.IReporter;
@@ -79,7 +79,7 @@ public class HtmlReportListener implements IReporter
             for (ISuiteResult r : result.values())
             {
                 ITestContext context = r.getTestContext();
-                //buildTestNodes(context.getSkippedConfigurations(), LogStatus.FATAL);
+                // buildTestNodes(context.getSkippedConfigurations(), LogStatus.FATAL);
                 buildTestNodes(context.getFailedConfigurations(), LogStatus.FATAL);
                 buildTestNodes(context.getPassedTests(), LogStatus.PASS);
                 buildTestNodes(context.getFailedTests(), LogStatus.FAIL);
@@ -129,7 +129,7 @@ public class HtmlReportListener implements IReporter
                 Bug bugAnnotated = result.getMethod().getConstructorOrMethod().getMethod().getAnnotation(Bug.class);
                 String testName = "";
                 Object[] objs = result.getParameters();
-                if(objs.length > 0)
+                if (objs.length > 0)
                 {
                     // test has @DataProvider
                     testName = objs[0].toString();
@@ -141,23 +141,32 @@ public class HtmlReportListener implements IReporter
 
                 if (bugAnnotated != null)
                 {
-                    test = extent.startTest(String.format("%s # %s (BUG: %s)", result.getInstance().getClass().getSimpleName(),
-                            testName, trackerUrl(bugAnnotated.id())));
-                    test.assignCategory("BUGS");
-                    if (bugAnnotated.description().isEmpty() && status != LogStatus.SKIP)
+                    test = extent.startTest(String.format("%s # %s (BUG: %s)", result.getInstance().getClass().getSimpleName(), testName,
+                            trackerUrl(bugAnnotated.id())));  
+                    if (bugAnnotated.status().equals(Status.OPENED))
                     {
-                        test.log(status, String.format("This test is failing due to this issue %s", trackerUrl(bugAnnotated.id())));
+                        test.assignCategory("BUGS");
+                        if (bugAnnotated.description().isEmpty() && status != LogStatus.SKIP)
+                        {
+                            test.log(status, String.format("This test is failing due to this issue %s", trackerUrl(bugAnnotated.id())));
+                        }
+                        else if (!bugAnnotated.description().isEmpty() && status != LogStatus.SKIP)
+                        {
+                            test.log(status, String.format("This test is failing due to this issue %s. <b>Description:</b> %s", trackerUrl(bugAnnotated.id()),
+                                    bugAnnotated.description()));
+                        }
+                        if (status == LogStatus.PASS)
+                        {
+                            test.log(status, String.format("Currently, test with opened bug %s is passed. Please check if this issue is passed and update the @Bug status to FIXED.", trackerUrl(bugAnnotated.id())));
+                        }
                     }
-                    else if (!bugAnnotated.description().isEmpty() && status != LogStatus.SKIP)
+                    else
                     {
-                        test.log(status, String.format("This test is failing due to this issue %s. <b>Description:</b> %s", trackerUrl(bugAnnotated.id()),
-                                bugAnnotated.description()));
-                    }
-
-                    if (status == LogStatus.PASS)
-                    {
-                        test.assignCategory("FIXED-BUGS");
-                        test.log(status, "It seems this test was marked with @Bug annotation, but now is passing. Please remove @Bug annotation in code.");
+                        if (status == LogStatus.PASS)
+                        {
+                            test.assignCategory("FIXED-BUGS");
+                            test.log(status, String.format("Currently, test passed. But it failed in a regression due to this issue %s", trackerUrl(bugAnnotated.id())));
+                        }
                     }
 
                 }
@@ -183,13 +192,16 @@ public class HtmlReportListener implements IReporter
                 {
                     test.log(status, result.getThrowable());
 
-                    if(result.getInstance() instanceof AbstractWebTest)
+                    if (result.getInstance() instanceof AbstractWebTest)
                     {
                         String screenshotsDir = defaultProperties.getProperty("screenshots.dir");
                         String screenshotsPath = Paths.get(defaultProperties.getProperty("reports.path"), screenshotsDir).toString();
                         File screenshot = Paths.get(screenshotsPath, testName + ".png").toFile();
-                        if(screenshot.exists())
-                            test.log(status, String.format("Screenshot below: %s", test.addScreenCapture(Paths.get(screenshotsDir, testName + ".png").toFile().getPath())));
+                        if (screenshot.exists())
+                            test.log(
+                                    status,
+                                    String.format("Screenshot below: %s",
+                                            test.addScreenCapture(Paths.get(screenshotsDir, testName + ".png").toFile().getPath())));
                     }
                 }
                 else
