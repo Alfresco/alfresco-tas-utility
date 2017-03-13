@@ -189,7 +189,7 @@ public class HtmlReportListener implements IReporter
                         String screenshotsPath = Paths.get(defaultProperties.getProperty("reports.path"), screenshotsDir).toString();
                         File screenshot = Paths.get(screenshotsPath, testName + ".png").toFile();
                         if(screenshot.exists())
-                            test.log(status, String.format("Screenshot below: %s", test.addScreenCapture(screenshot.getPath())));
+                            test.log(status, String.format("Screenshot below: %s", test.addScreenCapture(Paths.get(screenshotsDir, testName + ".png").toFile().getPath())));
                     }
                 }
                 else
