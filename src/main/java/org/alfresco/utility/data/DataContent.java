@@ -264,12 +264,14 @@ public class DataContent extends TestData<DataContent>
      */
     public void assertContentExist() throws TestConfigurationException
     {
+        STEP(String.format("DATAPREP: Check that content %s exists.", getLastResource()));
         boolean contentExist = checkContent(getLastResource(), getCurrentUser());
         Assert.assertTrue(contentExist, String.format("Content {%s} was found in repository", getLastResource()));
     }
 
     public void assertContentDoesNotExist() throws TestConfigurationException
     {
+        STEP(String.format("DATAPREP: Check that content does not %s exist.", getLastResource()));
         boolean contentDoesNotExist = checkContent(getLastResource(), getCurrentUser());
         Assert.assertFalse(contentDoesNotExist, String.format("Content {%s} was NOT found in repository", getLastResource()));
     }
