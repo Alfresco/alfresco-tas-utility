@@ -10,6 +10,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,6 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
+import org.testng.Assert;
 
 public class Utility
 {
@@ -477,5 +479,35 @@ public class Utility
         {
         }
         return Arrays.toString(lines.toArray());
+    }
+
+    /**
+     * Verify file from specified filePath exists
+     * 
+     * @param filePath full path of the file
+     * @return File new file object found
+     */
+    public static File assertFileExists(String filePath)
+    {
+        LOG.info("Verify file {} exists", filePath);
+        File file = Paths.get(filePath).toFile();
+        Assert.assertTrue(file.exists(), String.format("File with path %s was not found.", filePath));
+        return file;
+        
+    }
+
+    /**
+     * Verify file from specified filePath doesn't exist
+     * 
+     * @param filePath full path of the file
+     * @return File new file object
+     */
+    public static File assertFileDoesNotExist(String filePath)
+    {
+        LOG.info("Verify file {} does not exist", filePath);
+        File file = Paths.get(filePath).toFile();
+        Assert.assertFalse(file.exists(), String.format("File with path %s was found.", filePath));
+        return file;
+        
     }
 }
