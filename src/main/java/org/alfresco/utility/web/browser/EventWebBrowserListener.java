@@ -137,4 +137,15 @@ public class EventWebBrowserListener implements WebDriverEventListener
         return "unknown";
     }
 
+    @Override
+    public void beforeNavigateRefresh(WebDriver driver)
+    {
+
+    }
+
+    @Override
+    public void afterNavigateRefresh(WebDriver driver)
+    {
+
+    }
 }

@@ -132,7 +132,6 @@ public class WebBrowser extends EventFiringWebDriver
      * Helper method to find and return a slow loading collection of {@link WebElement}.
      * 
      * @param criteria {@link By} search criteria
-     * @param waitTime milliseconds to wait
      * @return Collection of {@link WebElement} HTML elements
      */
     public List<WebElement> waitUntilElementsVisible(By locator)
@@ -140,6 +139,18 @@ public class WebBrowser extends EventFiringWebDriver
         Parameter.checkIsMandotary("Locator", locator);
         WebDriverWait wait = new WebDriverWait(this, properties.getImplicitWait());
         return wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(locator));
+    }
+
+    /**
+     * Helper method to find and return a slow loading collection of {@link WebElement}.
+     * 
+     * @param elements {@link WebElement} search criteria
+     * @return Collection of {@link WebElement} HTML elements
+     */
+    public List<WebElement> waitUntilElementsVisible(List<WebElement> elements)
+    {
+        WebDriverWait wait = new WebDriverWait(this, properties.getImplicitWait());
+        return wait.until(ExpectedConditions.visibilityOfAllElements(elements));
     }
 
     /**
@@ -246,6 +257,17 @@ public class WebBrowser extends EventFiringWebDriver
                 counter++;
             }
         }
+    }
+
+    /**
+     * Wait until the Clickable of given Element for given seconds.
+     *
+     * @param element WebElement
+     */
+    public WebElement waitUntilElementClickable(WebElement element)
+    {
+        WebDriverWait wait = new WebDriverWait(this, properties.getImplicitWait());
+        return wait.until(ExpectedConditions.elementToBeClickable(element));
     }
 
     /**
@@ -495,30 +517,30 @@ public class WebBrowser extends EventFiringWebDriver
 
     public void closeWindowAndSwitchBackParametrized(String windowToSwitchTo, String windowToClose)
     {
-        String currentWindow= this.getWindowHandle();
+        String currentWindow = this.getWindowHandle();
 
-        if(currentWindow.equals(windowToClose))
+        if (currentWindow.equals(windowToClose))
         {
             this.close();
             this.switchToWindow(windowToSwitchTo);
         }
         else
         {
-            LOG.info("You are not on the expected page, you are on: "+ this.getCurrentUrl());
+            LOG.info("You are not on the expected page, you are on: " + this.getCurrentUrl());
         }
     }
 
     /**
      * Closes the window opened leaving the browser session opened
      */
-    
+
     public void closeWindowAcceptingModalDialog()
     {
         this.close();
         Alert alert = this.switchTo().alert();
         String alertText = alert.getText().trim();
         LOG.info("Alert data: " + alertText);
-        alert.accept(); 
+        alert.accept();
         this.switchToWindow(mainWindow);
     }
 
@@ -656,7 +678,7 @@ public class WebBrowser extends EventFiringWebDriver
     public WebElement findFirstDisplayedElement(By locator)
     {
         List<WebElement> elementList = waitUntilElementsVisible(locator);
-        if(elementList.size() != 0)
+        if (elementList.size() != 0)
             return elementList.get(0);
         else
             return null;
@@ -709,7 +731,7 @@ public class WebBrowser extends EventFiringWebDriver
             if (element.getText().equals(value))
                 return element;
         }
-      return null;
+        return null;
     }
 
     /**
@@ -754,7 +776,6 @@ public class WebBrowser extends EventFiringWebDriver
 
     /*
      * Method returns if the specified option is selected for Alfresco "dropdown" (the button element with an arrow)
-     *
      * @param myActivitiesOption String
      * @return boolean
      */
@@ -812,6 +833,30 @@ public class WebBrowser extends EventFiringWebDriver
         {
             ((JavascriptExecutor) this).executeScript(command);
         }
+    }
+
+    /**
+     * Execute Javascript command with {@link WebElement}
+     * 
+     * @param command
+     * @param element {@link WebElement}
+     */
+    public void executeJavaScript(String command, WebElement element)
+    {
+        if (this instanceof JavascriptExecutor)
+        {
+            ((JavascriptExecutor) this).executeScript(command, element);
+        }
+    }
+
+    /**
+     * Click {@link WebElement} with JavaScript command
+     * 
+     * @param elementToClick
+     */
+    public void clickJS(WebElement elementToClick)
+    {
+        executeJavaScript("arguments[0].click();", elementToClick);
     }
 
     public void handleModalDialogAcceptingAlert()
