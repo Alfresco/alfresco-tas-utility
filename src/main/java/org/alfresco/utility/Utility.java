@@ -491,6 +491,14 @@ public class Utility
     {
         LOG.info("Verify file {} exists", filePath);
         File file = Paths.get(filePath).toFile();
+        int retry = 0;
+        boolean exists = file.exists();
+        while (!exists && retry < Utility.retryCountSeconds - 10)
+        {
+            Utility.waitToLoopTime(1);
+            exists = file.exists();
+            retry++;
+        }
         Assert.assertTrue(file.exists(), String.format("File with path %s was not found.", filePath));
         return file;
         
@@ -506,6 +514,14 @@ public class Utility
     {
         LOG.info("Verify file {} does not exist", filePath);
         File file = Paths.get(filePath).toFile();
+        int retry = 0;
+        boolean exists = file.exists();
+        while (!exists && retry < Utility.retryCountSeconds - 10)
+        {
+            Utility.waitToLoopTime(1);
+            exists = file.exists();
+            retry++;
+        }
         Assert.assertFalse(file.exists(), String.format("File with path %s was found.", filePath));
         return file;
         
