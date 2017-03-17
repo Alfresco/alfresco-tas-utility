@@ -52,6 +52,7 @@ public @interface TestGroup
     public static String PREUPGRADE = "pre-upgrade";
     public static String POSTUPGRADE = "post-upgrade";  
     public static String SHARE = "share";
+    public static String BROWSER = "browser";    
 
     public static String WONT_FIX = "wont-fix";
     public static String OS_WIN = "windows"; //this will mark tests that needs to be executed ONLY on Windows
