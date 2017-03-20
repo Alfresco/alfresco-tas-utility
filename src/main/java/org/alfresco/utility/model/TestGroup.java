@@ -38,7 +38,7 @@ public @interface TestGroup
     public static String AUTH = "auth";
     public static String SEARCH = "search";
     public static String RENDITIONS = "renditions";
-    
+    public static String AUDIT = "audit";
     public static String IMAP = "imap";
     public static String SMTP = "smtp";
     public static String CIFS = "cifs";
