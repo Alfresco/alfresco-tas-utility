@@ -63,7 +63,7 @@ public @interface TestGroup
     /*
     * Used in Share-PO
      */
-    public static String ALFRESCO_CONTENT = "content";
+    public static String SITES_FEATURES = "sites-features";
     public static String ADMIN_TOOLS = "admin-tools";
     public static String USER_DASHBOARD = "user-dashboard";
     public static String USER = "user";
