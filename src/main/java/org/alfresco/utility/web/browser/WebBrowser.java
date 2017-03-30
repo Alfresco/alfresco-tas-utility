@@ -501,6 +501,22 @@ public class WebBrowser extends EventFiringWebDriver
         windows.remove(mainWindow);
         this.switchToWindow(windows.iterator().next());
     }
+    
+    /**
+     * Switches to window with specified url.
+     */
+    public void switchWindow(String winHandler)
+    {
+        mainWindow = this.getWindowHandle();
+        for (String winHandle : this.getWindowHandles()) {
+            this.switchTo().window(winHandle);
+            if (this.getCurrentUrl().contains(winHandler)) {
+                break;
+            } else {
+                this.switchTo().window(mainWindow);
+            }
+        }
+    }
 
     /**
      * Closes the newly created win and swithes back to main
