@@ -326,13 +326,11 @@ public class WebBrowser extends EventFiringWebDriver
      * 
      * @param locator
      *            - CSS Locator
-     * @param timeOutInSeconds
-     *            - Timeout In Seconds
      */
-    public void waitUntilElementDeletedFromDom(By locator, long timeOutInSeconds)
+    public void waitUntilElementDeletedFromDom(By locator)
     {
         Parameter.checkIsMandotary("Locator", locator);
-        WebDriverWait wait = new WebDriverWait(this, timeOutInSeconds);
+        WebDriverWait wait = new WebDriverWait(this, properties.getImplicitWait());
         try
         {
             wait.until(ExpectedConditions.stalenessOf(this.findElement(locator)));

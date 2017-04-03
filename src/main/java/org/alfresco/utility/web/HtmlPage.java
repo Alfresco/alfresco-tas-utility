@@ -83,7 +83,7 @@ public abstract class HtmlPage extends WebDriverAware
      */
     public void waitUntilMessageDisappears()
     {
-        browser.waitUntilElementDeletedFromDom(By.cssSelector("div[id='message_c'] span[class='message']"), 15);
+        browser.waitUntilElementDeletedFromDom(By.cssSelector("div[id='message_c'] span[class='message']"));
     }
 
     public void refresh(){ browser.refresh();}
