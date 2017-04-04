@@ -163,7 +163,7 @@ public class WebBrowser extends EventFiringWebDriver
     {
         Parameter.checkIsMandotary("Locator", locator);
         int counter = 1;
-        int retryRefreshCount = 5;
+        int retryRefreshCount = 3;
         while (counter <= retryRefreshCount)
         {
             if (isElementDisplayed(locator))
@@ -189,7 +189,7 @@ public class WebBrowser extends EventFiringWebDriver
     {
         Parameter.checkIsMandotary("Locator", locator);
         int counter = 1;
-        int retryRefreshCount = 5;
+        int retryRefreshCount = 3;
         while (counter <= retryRefreshCount)
         {
             if (isElementDisplayed(locator))
@@ -199,8 +199,8 @@ public class WebBrowser extends EventFiringWebDriver
             else
             {
                 LOG.info("Wait for element " + secondsToWait + " seconds");
-                waitInSeconds(secondsToWait);
                 refresh();
+                waitInSeconds(secondsToWait);
                 counter++;
             }
         }
@@ -216,7 +216,7 @@ public class WebBrowser extends EventFiringWebDriver
         Parameter.checkIsMandotary("WebElement", webElement);
 
         int counter = 1;
-        int retryRefreshCount = 5;
+        int retryRefreshCount = 3;
         while (counter <= retryRefreshCount)
         {
             if (isElementDisplayed(webElement))
@@ -242,7 +242,7 @@ public class WebBrowser extends EventFiringWebDriver
     {
         Parameter.checkIsMandotary("WebElement", webElement);
         int counter = 1;
-        int retryRefreshCount = 7;
+        int retryRefreshCount = 3;
         while (counter <= retryRefreshCount)
         {
             if (isElementDisplayed(webElement))
@@ -252,8 +252,8 @@ public class WebBrowser extends EventFiringWebDriver
             else
             {
                 LOG.info("Wait for element " + secondsToWait);
-                waitInSeconds(secondsToWait);
                 refresh();
+                waitInSeconds(secondsToWait);
                 counter++;
             }
         }
