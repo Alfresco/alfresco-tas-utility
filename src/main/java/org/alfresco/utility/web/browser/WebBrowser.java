@@ -104,6 +104,18 @@ public class WebBrowser extends EventFiringWebDriver
     }
 
     /**
+     * Wait until the element has attribute for the specified amount of time.
+     *
+     * @param element
+     */
+    public void waitUntilElementHasAttribute(WebElement element, String attribute, String value)
+    {
+        Parameter.checkIsMandotary("Element", element);
+        WebDriverWait wait = new WebDriverWait(this, properties.getImplicitWait());
+        wait.until(ExpectedConditions.attributeContains(element, attribute, value));
+    }
+
+    /**
      * Wait until the element is visible for the specified amount of time.
      * 
      * @param locator
