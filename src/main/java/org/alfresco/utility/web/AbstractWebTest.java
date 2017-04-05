@@ -1,20 +1,21 @@
 package org.alfresco.utility.web;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+
 import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.web.browser.WebBrowser;
 import org.alfresco.utility.web.browser.WebBrowserFactory;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
-import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.ITestResult;
-import org.testng.annotations.*;
-
-import java.lang.reflect.Method;
-import java.util.Set;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
 
 /**
  * Created by Claudia Agache on 3/9/2017.
@@ -76,35 +77,19 @@ public abstract class AbstractWebTest extends AbstractTestNGSpringContextTests
         return browserThread.get();
     }
 
-    private void initializeBrowser() throws ClassNotFoundException
+    private void initializeBrowser() throws Exception
     {
-        /* get all autowired annotated children of this class */
-        ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(true);
-        provider.addIncludeFilter(new AssignableTypeFilter(this.getClass()));
-
-        Set<BeanDefinition> components = provider.findCandidateComponents(getPageObjectRootPackage());
-        for (BeanDefinition component : components)
-        {
-            @SuppressWarnings("rawtypes")
-            Class pageObject = Class.forName(component.getBeanClassName());
-
-            //System.out.println("Page Object: " + pageObject.getName());
-            /*
-             * only for HtmlPage base classes
-             */
-            if (pageObject.getClass().isInstance(HtmlPage.class))
+        Field[] fields = this.getClass().getDeclaredFields();
+        for(Field field : fields)
+        {          
+            field.setAccessible(true);
+            Object pageObject = field.get(this);
+            if(pageObject instanceof HtmlPage)
             {
-                @SuppressWarnings("unchecked")
-                Object bean = applicationContext.getBean(pageObject);
-                if (bean instanceof HtmlPage)
-                {
-                    HtmlPage page = (HtmlPage) bean;
-                    page.setBrowser(getBrowser());
-                }
-            }
-
+                HtmlPage page = (HtmlPage) pageObject;
+                page.setBrowser(getBrowser());
+                field.set(this, page);
+            }            
         }
-    }
-
-    public abstract String getPageObjectRootPackage();
+    }    
 }
