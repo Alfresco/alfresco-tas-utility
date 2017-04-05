@@ -822,13 +822,23 @@ public class WebBrowser extends EventFiringWebDriver
     }
 
     /**
-     * Scrool to WebElement
+     * Scroll to WebElement
      * 
      * @param element WebElement
      */
-    public void scroolToElement(WebElement element)
+    public void scrollToElement(WebElement element)
     {
         executeJavaScript(String.format("window.scrollTo(0, '%s')", element.getLocation().getY()));
+    }
+
+    /**
+     * Scroll to WebElement
+     *
+     * @param element WebElement
+     */
+    public void scrollIntoView(WebElement element)
+    {
+        executeJavaScript(String.format("arguments[0].scrollIntoView(true);", element));
     }
 
     /**
