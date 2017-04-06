@@ -196,7 +196,7 @@ public class WebBrowser extends EventFiringWebDriver
             }
             else
             {
-                LOG.info("Wait for element after refresh: " + counter);
+                LOG.info(String.format("Wait for element %s seconds after refresh: %s", secondsToWait, counter));
                 refresh();
                 waitInSeconds(secondsToWait);               
                 counter++;
@@ -225,7 +225,7 @@ public class WebBrowser extends EventFiringWebDriver
                 }
                 else
                 {
-                    LOG.info("Wait for element " + secondsToWait + " seconds");
+                    LOG.info(String.format("Wait for element %s seconds after refresh: %s", secondsToWait, counter));
                     refresh();
                     waitInSeconds(secondsToWait);
                     counter++;
@@ -242,23 +242,7 @@ public class WebBrowser extends EventFiringWebDriver
      */
     public void waitUntilWebElementIsDisplayedWithRetry(WebElement webElement)
     {
-        Parameter.checkIsMandotary("WebElement", webElement);
-
-        int counter = 1;
-        int retryRefreshCount = 3;
-        while (counter <= retryRefreshCount)
-        {
-            if (isElementDisplayed(webElement))
-            {
-                break;
-            }
-            else
-            {
-                LOG.info("Wait for element after refresh: " + counter);
-                refresh();
-                counter++;
-            }
-        }
+        waitUntilWebElementIsDisplayedWithRetry(webElement, 0);
     }
 
     /**
@@ -280,7 +264,7 @@ public class WebBrowser extends EventFiringWebDriver
             }
             else
             {
-                LOG.info("Wait for element " + secondsToWait);
+                LOG.info(String.format("Wait for web element %s seconds after refresh: %s", secondsToWait, counter));
                 refresh();
                 waitInSeconds(secondsToWait);
                 counter++;
