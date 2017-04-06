@@ -75,9 +75,12 @@ public class TasProperties
     @Value("${browser.version:41}")
     private String browserVersion;
 
-    @Value("${browser.implicitWait:30}")
+    @Value("${browser.implicitWait:10}")
     private long implicitWait;
 
+    @Value("${browser.explicitWait:30}")
+    private long explicitWait;
+    
     @Value("${grid.url:not-set}")
     private String gridUrl;
 
@@ -277,6 +280,16 @@ public class TasProperties
     public void setImplicitWait(long implicitWait)
     {
         this.implicitWait = implicitWait;
+    }
+    
+    public long getExplicitWait()
+    {
+        return explicitWait;
+    }
+
+    public void setExplicitWait(long explicitWait)
+    {
+        this.explicitWait = explicitWait;
     }
 
     public URL getGridUrl() throws MalformedURLException

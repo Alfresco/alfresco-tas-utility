@@ -1,6 +1,7 @@
 package org.alfresco.utility.web.browser;
 
 import java.net.MalformedURLException;
+import java.util.concurrent.TimeUnit;
 
 import org.alfresco.utility.TasProperties;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -43,8 +44,8 @@ public class WebBrowserFactory implements FactoryBean<WebBrowser>
         //EventWebBrowserListener listener = new EventWebBrowserListener();
         //webbrowser.register(listener);
 
-        /*long default_wait = Long.valueOf(properties.getImplicitWait());
-        webbrowser.manage().timeouts().implicitlyWait(default_wait, TimeUnit.SECONDS);*/
+        long default_wait = Long.valueOf(properties.getImplicitWait());
+        webbrowser.manage().timeouts().implicitlyWait(default_wait, TimeUnit.SECONDS);
         webbrowser.maximize();
 
         return webbrowser;

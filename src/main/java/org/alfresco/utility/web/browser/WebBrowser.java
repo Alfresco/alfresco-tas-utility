@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.alfresco.utility.TasProperties;
-import org.alfresco.utility.web.common.Parameter;
 import org.alfresco.utility.exception.PageOperationException;
+import org.alfresco.utility.web.common.Parameter;
 import org.apache.commons.httpclient.HttpState;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
@@ -111,7 +111,7 @@ public class WebBrowser extends EventFiringWebDriver
     public void waitUntilElementHasAttribute(WebElement element, String attribute, String value)
     {
         Parameter.checkIsMandotary("Element", element);
-        WebDriverWait wait = new WebDriverWait(this, properties.getImplicitWait());
+        WebDriverWait wait = new WebDriverWait(this, properties.getExplicitWait());
         wait.until(ExpectedConditions.attributeContains(element, attribute, value));
     }
 
@@ -124,7 +124,7 @@ public class WebBrowser extends EventFiringWebDriver
     public WebElement waitUntilElementVisible(By locator)
     {
         Parameter.checkIsMandotary("Locator", locator);
-        WebDriverWait wait = new WebDriverWait(this, properties.getImplicitWait());
+        WebDriverWait wait = new WebDriverWait(this, properties.getExplicitWait());
         return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
 
@@ -136,7 +136,7 @@ public class WebBrowser extends EventFiringWebDriver
     public WebElement waitUntilElementVisible(WebElement element)
     {
         Parameter.checkIsMandotary("Element", element);
-        WebDriverWait wait = new WebDriverWait(this, properties.getImplicitWait());
+        WebDriverWait wait = new WebDriverWait(this, properties.getExplicitWait());
         return wait.until(ExpectedConditions.visibilityOf(element));
     }
 
@@ -149,7 +149,7 @@ public class WebBrowser extends EventFiringWebDriver
     public List<WebElement> waitUntilElementsVisible(By locator)
     {
         Parameter.checkIsMandotary("Locator", locator);
-        WebDriverWait wait = new WebDriverWait(this, properties.getImplicitWait());
+        WebDriverWait wait = new WebDriverWait(this, properties.getExplicitWait());
         return wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(locator));
     }
 
@@ -161,7 +161,7 @@ public class WebBrowser extends EventFiringWebDriver
      */
     public List<WebElement> waitUntilElementsVisible(List<WebElement> elements)
     {
-        WebDriverWait wait = new WebDriverWait(this, properties.getImplicitWait());
+        WebDriverWait wait = new WebDriverWait(this, properties.getExplicitWait());
         return wait.until(ExpectedConditions.visibilityOfAllElements(elements));
     }
 
@@ -173,22 +173,7 @@ public class WebBrowser extends EventFiringWebDriver
      */
     public void waitUntilElementIsDisplayedWithRetry(By locator)
     {
-        Parameter.checkIsMandotary("Locator", locator);
-        int counter = 1;
-        int retryRefreshCount = 3;
-        while (counter <= retryRefreshCount)
-        {
-            if (isElementDisplayed(locator))
-            {
-                break;
-            }
-            else
-            {
-                LOG.info("Wait for element after refresh: " + counter);
-                refresh();
-                counter++;
-            }
-        }
+        waitUntilElementIsDisplayedWithRetry(locator, 0);
     }
 
     /**
@@ -202,6 +187,7 @@ public class WebBrowser extends EventFiringWebDriver
         Parameter.checkIsMandotary("Locator", locator);
         int counter = 1;
         int retryRefreshCount = 3;
+        
         while (counter <= retryRefreshCount)
         {
             if (isElementDisplayed(locator))
@@ -210,10 +196,41 @@ public class WebBrowser extends EventFiringWebDriver
             }
             else
             {
-                LOG.info("Wait for element " + secondsToWait + " seconds");
+                LOG.info("Wait for element after refresh: " + counter);
                 refresh();
-                waitInSeconds(secondsToWait);
+                waitInSeconds(secondsToWait);               
                 counter++;
+            }
+        }
+    }
+    
+    /**
+     * Wait the element to disappear by refreshing the page
+     * 
+     * @param locator {@link By} query
+     * @param secondsToWait
+     */
+    public void waitUntilElementDisappearsWithRetry(By locator, int secondsToWait)
+    {
+        Parameter.checkIsMandotary("Locator", locator);
+        int counter = 1;
+        int retryRefreshCount = 3;
+        while (counter <= retryRefreshCount)
+        {
+            while (counter <= retryRefreshCount)
+            {
+                if (!isElementDisplayed(locator))
+                {
+                    break;
+                }
+                else
+                {
+                    LOG.info("Wait for element " + secondsToWait + " seconds");
+                    refresh();
+                    waitInSeconds(secondsToWait);
+                    counter++;
+                }
+
             }
         }
     }
@@ -278,7 +295,7 @@ public class WebBrowser extends EventFiringWebDriver
      */
     public WebElement waitUntilElementClickable(WebElement element)
     {
-        WebDriverWait wait = new WebDriverWait(this, properties.getImplicitWait());
+        WebDriverWait wait = new WebDriverWait(this, properties.getExplicitWait());
         return wait.until(ExpectedConditions.elementToBeClickable(element));
     }
 
@@ -316,7 +333,7 @@ public class WebBrowser extends EventFiringWebDriver
     public void waitUntilElementContainsText(WebElement element, String text)
     {
         Parameter.checkIsMandotary("Element", element);
-        WebDriverWait wait = new WebDriverWait(this, properties.getImplicitWait());
+        WebDriverWait wait = new WebDriverWait(this, properties.getExplicitWait());
         wait.until(ExpectedConditions.textToBePresentInElement(element, text));
     }
 
@@ -342,7 +359,7 @@ public class WebBrowser extends EventFiringWebDriver
     public void waitUntilElementDeletedFromDom(By locator)
     {
         Parameter.checkIsMandotary("Locator", locator);
-        WebDriverWait wait = new WebDriverWait(this, properties.getImplicitWait());
+        WebDriverWait wait = new WebDriverWait(this, properties.getExplicitWait());
         try
         {
             wait.until(ExpectedConditions.stalenessOf(this.findElement(locator)));
@@ -510,6 +527,37 @@ public class WebBrowser extends EventFiringWebDriver
         Set<String> windows = this.getWindowHandles();
         windows.remove(mainWindow);
         this.switchToWindow(windows.iterator().next());
+    }
+    
+    /**
+     * Waits and switches to window based on index
+     */
+    public void switchWindow(int windowIndex)
+    {
+        
+        mainWindow = this.getWindowHandle();
+        Set<String> windows = this.getWindowHandles();
+        int count = windows.size();
+        int counter = 1;
+        int retryRefreshCount = 5;
+        
+        while (counter <= retryRefreshCount)
+        {
+            if (count == windowIndex + 1 )
+            {
+                windows.remove(mainWindow);
+                this.switchToWindow(windows.iterator().next());
+                break;
+            }
+            else
+            {
+                LOG.info("Wait for window: " + counter);
+                waitInSeconds(1);
+                counter = this.getWindowHandles().size();
+                counter++;
+            }
+        }
+        
     }
     
     /**
@@ -703,7 +751,7 @@ public class WebBrowser extends EventFiringWebDriver
      */
     public WebElement findFirstDisplayedElement(By locator)
     {
-        List<WebElement> elementList = waitUntilElementsVisible(locator);
+        List<WebElement> elementList = findDisplayedElementsFromLocator(locator);
         if (elementList.size() != 0)
             return elementList.get(0);
         else
@@ -910,4 +958,30 @@ public class WebBrowser extends EventFiringWebDriver
         LOG.info("Alert data: " + alertText);
         alert.dismiss();
     }
+    
+/*    private boolean isDisplayedBasedOnLocator(By locator)
+    {
+        try
+        {
+            this.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
+            return this.findElement(locator).isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+            // no log needed due to negative cases.
+        }
+        catch (TimeoutException toe)
+        {
+            // no log needed due to negative cases.
+        }
+        catch (StaleElementReferenceException ste)
+        {
+            // no log needed due to negative cases.
+        }
+        finally
+        {
+            this.manage().timeouts().implicitlyWait(Long.valueOf(properties.getImplicitWait()), TimeUnit.SECONDS);
+        }
+        return false;
+    }*/
 }
