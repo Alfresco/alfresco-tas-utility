@@ -838,7 +838,7 @@ public class WebBrowser extends EventFiringWebDriver
      */
     public void scrollIntoView(WebElement element)
     {
-        executeJavaScript(String.format("arguments[0].scrollIntoView(true);", element));
+        executeJavaScript("arguments[0].scrollIntoView(true);", element);
     }
 
     /**
