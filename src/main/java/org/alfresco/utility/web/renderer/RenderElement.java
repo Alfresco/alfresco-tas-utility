@@ -75,7 +75,7 @@ public abstract class RenderElement implements Renderer
         LOG.info("Waiting to render element {} using {} worker", locator.toString(), this.getClass().getSimpleName());
         try
         {
-            doWork(locator, browser, properties.getImplicitWait());
+            doWork(locator, browser, properties.getExplicitWait());
         }
         catch (TimeoutException | NoSuchElementException e)
         {
