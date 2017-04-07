@@ -34,8 +34,11 @@ public class ReportManager
             String reportHtmlPath = properties.getProperty("reports.path");
             if (StringUtils.isEmpty(reportHtmlPath))
                 reportHtmlPath = "./target/reports";
-            reportHtmlPath = Paths.get(reportHtmlPath, "report.html").toFile().getPath();
-
+            
+            String reportPrefix = properties.getProperty("reports.prefix");
+            String reportName = (reportPrefix==null || reportPrefix.isEmpty()) ? "report.html" : String.format("%s-report.html", reportPrefix);            
+            reportHtmlPath = Paths.get(reportHtmlPath, reportName).toFile().getPath();
+            
             extent = new ExtentReports(reportHtmlPath, true);
             LOG.info("Initializing ReportManager to generate HTML report at:{}", reportHtmlPath);
 
