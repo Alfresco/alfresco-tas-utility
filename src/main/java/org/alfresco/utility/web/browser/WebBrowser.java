@@ -215,23 +215,12 @@ public class WebBrowser extends EventFiringWebDriver
         Parameter.checkIsMandotary("Locator", locator);
         int counter = 1;
         int retryRefreshCount = 3;
-        while (counter <= retryRefreshCount)
+        while (counter <= retryRefreshCount && isElementDisplayed(locator))
         {
-            while (counter <= retryRefreshCount)
-            {
-                if (!isElementDisplayed(locator))
-                {
-                    break;
-                }
-                else
-                {
-                    LOG.info(String.format("Wait for element %s seconds after refresh: %s", secondsToWait, counter));
-                    refresh();
-                    waitInSeconds(secondsToWait);
-                    counter++;
-                }
-
-            }
+            LOG.info(String.format("Wait for element %s seconds after refresh: %s", secondsToWait, counter));
+            refresh();
+            waitInSeconds(secondsToWait);
+            counter++;
         }
     }
 
