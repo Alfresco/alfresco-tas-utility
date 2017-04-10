@@ -16,7 +16,12 @@ import ru.yandex.qatools.htmlelements.loader.decorator.HtmlElementLocatorFactory
 public abstract class WebDriverAware
 {
     protected WebBrowser browser;
-
+    
+    public WebBrowser getBrowser()
+    {
+        return browser;                
+    }
+    
     public void setBrowser(WebBrowser webBrowser)
     {
         if (webBrowser.equals(this.browser))
