@@ -510,25 +510,22 @@ public class WebBrowser extends EventFiringWebDriver
         
         mainWindow = this.getWindowHandle();
         Set<String> windows = this.getWindowHandles();
-        int count = windows.size();
+        int windowsNumber = windows.size();
         int counter = 1;
         int retryRefreshCount = 5;
         
         while (counter <= retryRefreshCount)
         {
-            if (count == windowIndex + 1 )
+            if (windowsNumber == windowIndex + 1 )
             {
                 windows.remove(mainWindow);
                 this.switchToWindow(windows.iterator().next());
                 break;
             }
-            else
-            {
-                LOG.info("Wait for window: " + counter);
-                waitInSeconds(1);
-                counter = this.getWindowHandles().size();
-                counter++;
-            }
+            LOG.info("Wait for window: " + counter);
+            waitInSeconds(2);
+            windowsNumber = this.getWindowHandles().size();
+            counter++;
         }
         
     }
