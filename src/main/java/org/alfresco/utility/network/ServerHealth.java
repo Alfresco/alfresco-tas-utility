@@ -23,12 +23,18 @@ public class ServerHealth
 {
     private Logger LOG = LogFactory.getLogger();
     private static final String SERVER_VERSION_PATH = "/alfresco/service/api/server";
+    private String alfrescoEdition;
 
     @Autowired
     protected TasProperties properties;
 
     @Autowired
     private TenantConsole tenantConsole;
+
+    public String getAlfrescoEdition()
+    {
+        return alfrescoEdition;
+    }
 
     public boolean isServerReachable(String server, int port)
     {        
@@ -86,6 +92,8 @@ public class ServerHealth
 
             get.releaseConnection();
             isAlfrescoRunning = response.contains("version");
+            String responseEdition = response.split("\",")[0];
+            alfrescoEdition = responseEdition.substring(responseEdition.lastIndexOf("\"") + 1);
         }
         catch (Exception ex)
         {
