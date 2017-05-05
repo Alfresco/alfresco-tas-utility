@@ -67,6 +67,7 @@ public @interface TestGroup
     public static String SITES_FEATURES = "sites-features";
     public static String ADMIN_TOOLS = "admin-tools";
     public static String USER_DASHBOARD = "user-dashboard";
+    public static String GOOGLE_DOCS = "google-docs";
     public static String USER = "user";
     
 }
