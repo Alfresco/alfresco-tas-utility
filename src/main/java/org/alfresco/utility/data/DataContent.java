@@ -615,6 +615,19 @@ public class DataContent extends TestData<DataContent>
         String currentVersion = getCMISDocument(getLastResource()).getVersionLabel();
         Assert.assertEquals(currentVersion, version);
     }
+    
+    /**
+     * Asserting the size of the content
+     * 
+     * @param sizeInBytes size in bytes
+     */
+    public void assertContentSizeIs(long sizeInBytes)
+    {
+        STEP(String.format("DATAPREP: Asserting that the size of the '%s' content is %s", getLastResource(), sizeInBytes));
+        Document lastVersionDocument = getCMISDocument(getLastResource());
+        lastVersionDocument.refresh();
+        Assert.assertEquals(lastVersionDocument.getContentStreamLength(), sizeInBytes, "The size of the content is not as expected.");
+    }
 
     /**
      * Check out document

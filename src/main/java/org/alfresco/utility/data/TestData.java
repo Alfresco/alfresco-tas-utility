@@ -14,6 +14,7 @@ import org.alfresco.utility.dsl.DSL;
 import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.model.ContentModel;
 import org.alfresco.utility.model.FileModel;
+import org.alfresco.utility.model.FileType;
 import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.UserModel;
@@ -21,6 +22,7 @@ import org.alfresco.utility.network.JmxBuilder;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.slf4j.Logger;
@@ -156,7 +158,14 @@ public abstract class TestData<Data> implements DSL<Data>
             else if (model instanceof FileModel)
             {
                 FileModel fileModel = (FileModel) model;
-                location = Utility.buildPath(getLastResource(), String.format("%s.%s", model.getName(), fileModel.getFileType().extention));
+                if(FilenameUtils.getExtension(model.getName()).length() == 0)
+                {
+                    location = Utility.buildPath(getLastResource(), String.format("%s.%s", model.getName(), fileModel.getFileType().extention));
+                }
+                else 
+                {
+                    location = Utility.buildPath(getLastResource(), model.getName());
+                }
             }
 
             location = Utility.removeLastSlash(location);
