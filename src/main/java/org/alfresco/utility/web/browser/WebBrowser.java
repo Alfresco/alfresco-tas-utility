@@ -299,6 +299,18 @@ public class WebBrowser extends EventFiringWebDriver
     }
 
     /**
+     * Wait until the element located by locator is present on page
+     *
+     * @param locator CSS Locator
+     */
+    public WebElement waitUntilElementPresent(By locator)
+    {
+        Parameter.checkIsMandotary("Locator", locator);
+        WebDriverWait wait = new WebDriverWait(this, properties.getExplicitWait());
+        return wait.until(ExpectedConditions.presenceOfElementLocated(locator));
+    }
+
+    /**
      * Wait until the given text is present in the given Element
      *
      * @param element WebElement
@@ -308,6 +320,18 @@ public class WebBrowser extends EventFiringWebDriver
         Parameter.checkIsMandotary("Element", element);
         WebDriverWait wait = new WebDriverWait(this, properties.getExplicitWait());
         wait.until(ExpectedConditions.textToBePresentInElement(element, text));
+    }
+
+    /**
+     * Wait until the given text is not present in the given Element
+     *
+     * @param element WebElement
+     */
+    public void waitUntilElementDoesNotContainText(WebElement element, String text)
+    {
+        Parameter.checkIsMandotary("Element", element);
+        WebDriverWait wait = new WebDriverWait(this, properties.getExplicitWait());
+        wait.until(ExpectedConditions.not(ExpectedConditions.textToBePresentInElement(element, text)));
     }
 
     /**
