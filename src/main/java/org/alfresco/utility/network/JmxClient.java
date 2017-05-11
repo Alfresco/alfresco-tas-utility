@@ -75,14 +75,14 @@ public class JmxClient implements Jmx
      * @return
      */
     @Override
-    public Object writeProperty(String objectName, String attributeName, String attributeValue) throws Exception
+    public Object writeProperty(String objectName, String attributeName, Object attributeValue) throws Exception
     {
         JMXConnector connector = createJmxConnection();
         MBeanServerConnection mBSC = connector.getMBeanServerConnection();
         ObjectName objectJmx = new ObjectName(objectName);
 
         mBSC.setAttribute(ObjectName.getInstance(objectName), new Attribute(attributeName, attributeValue));
-        LOG.info("Updating objectName {}.{} with value {} via JmxClient", objectName, attributeName, attributeValue);
+        LOG.info("Updating object [{}.{}] with value [{}] via JmxClient", objectName, attributeName, attributeValue);
         
         refreshServerProperty(objectName, JmxPropertyOperation.stop);
         refreshServerProperty(objectName, JmxPropertyOperation.start);
@@ -155,8 +155,16 @@ public class JmxClient implements Jmx
         JMXConnector connector = createJmxConnection();
         MBeanServerConnection mBSC = connector.getMBeanServerConnection();
         ObjectName objectJmx = new ObjectName(objectName);
-        
-        mBSC.invoke(objectJmx, operation.toString(), new Object[] {}, new String[] {});
+
+        try
+        {
+            mBSC.invoke(objectJmx, operation.toString(), new Object[] {}, new String[] {});
+        }
+        catch(Exception e)
+        {
+            LOG.error(String.format("Object [%s] does not have operation [%s]", objectJmx, operation.toString()));
+        }
+
     }
 
     @Override

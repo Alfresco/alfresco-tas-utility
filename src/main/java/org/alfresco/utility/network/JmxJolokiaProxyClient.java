@@ -44,7 +44,7 @@ public class JmxJolokiaProxyClient implements Jmx
     }
 
     @Override
-    public Object writeProperty(String objectName, String attributeName, String attributeValue) throws Exception
+    public Object writeProperty(String objectName, String attributeName, Object attributeValue) throws Exception
     {
         J4pWriteRequest requestW = new J4pWriteRequest(objectName, attributeName, attributeValue, "");
         J4pResponse<J4pWriteRequest> response = getClient().execute(requestW);
