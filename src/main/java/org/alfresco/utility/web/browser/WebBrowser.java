@@ -12,6 +12,7 @@ import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
@@ -341,6 +342,16 @@ public class WebBrowser extends EventFiringWebDriver
         {
             /* if element already not in DOM! */}
     }
+    
+    /**
+     * Wait until the invisibility of given Element for given seconds.
+     * 
+     * @param locator CSS Locator
+     */
+    public void waitUntilElementDisappears(By locator)
+    {
+        waitUntilElementDisappears(locator, properties.getExplicitWait());
+    }
 
     /**
      * Wait until the invisibility of given Element for given seconds.
@@ -507,7 +518,6 @@ public class WebBrowser extends EventFiringWebDriver
      */
     public void switchWindow(int windowIndex)
     {
-        
         mainWindow = this.getWindowHandle();
         Set<String> windows = this.getWindowHandles();
         int windowsNumber = windows.size();
@@ -527,7 +537,6 @@ public class WebBrowser extends EventFiringWebDriver
             windowsNumber = this.getWindowHandles().size();
             counter++;
         }
-        
     }
     
     /**
@@ -927,6 +936,11 @@ public class WebBrowser extends EventFiringWebDriver
         String alertText = alert.getText().trim();
         LOG.info("Alert data: " + alertText);
         alert.dismiss();
+    }
+    
+    public void focusOnWebElement(WebElement webElement)
+    {
+        webElement.sendKeys(Keys.TAB);
     }
     
 /*    private boolean isDisplayedBasedOnLocator(By locator)
