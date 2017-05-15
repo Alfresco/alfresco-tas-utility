@@ -69,5 +69,12 @@ public @interface TestGroup
     public static String USER_DASHBOARD = "user-dashboard";
     public static String GOOGLE_DOCS = "google-docs";
     public static String USER = "user";
-    
+
+      /*
+    * Used in Admin Console
+     */
+    public static String TENANT_CONSOLE = "tenant-console";
+    public static String WORKFLOW_CONSOLE = "workflow-console";
+    public static String GOOGLE_DOCS_CONSOLE = "google-docs-console";
+    public static String MODEL_MSG_CONSOLE = "model-messages-console";
 }
