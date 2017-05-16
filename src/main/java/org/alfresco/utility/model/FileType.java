@@ -13,11 +13,11 @@ public enum FileType
     HTML("text/html", "html"),
     PDF("application/pdf", "pdf"),
     MSWORD("application/msword", "doc"),
-    MSWORD2007("application/msword", "docx"),
+    MSWORD2007("application/vnd.openxmlformats-officedocument.wordprocessingml.document", "docx"),
     MSEXCEL("application/vnd.ms-excel", "xls"),
-    MSEXCEL2007("application/vnd.ms-excel", "xlsx"),
+    MSEXCEL2007("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "xlsx"),
     MSPOWERPOINT("application/vnd.ms-powerpoint", "ppt"),
-    MSPOWERPOINT2007("application/vnd.ms-powerpoint", "pptx");
+    MSPOWERPOINT2007("application/vnd.openxmlformats-officedocument.presentationml.presentation", "pptx");
 
     public final String mimeType;
     public final String extention;
