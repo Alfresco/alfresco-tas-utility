@@ -393,6 +393,28 @@ public class WebBrowser extends EventFiringWebDriver
     }
 
     /**
+     * Wait until element is visible with retry
+     * @param webElement
+     * @param secondsToWait
+     */
+    public void waitUntilElementVisibleWithRetry(WebElement webElement, int secondsToWait) {
+        Parameter.checkIsMandotary("WebElement", webElement);
+        int counter = 1;
+        int retryCount = 3;
+        WebDriverWait wait = new WebDriverWait(this, secondsToWait);
+        while(counter <= retryCount)
+        {
+            try {
+                wait.until(ExpectedConditions.visibilityOf(webElement));
+            }
+            catch(NoSuchElementException e) {
+                LOG.info(String.format("Wait for element %s seconds: %s", secondsToWait, counter));
+            }
+            counter++;
+        }
+    }
+    
+    /**
      * Returns true if the element is displayed else false.
      * 
      * @param locator
