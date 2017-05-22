@@ -144,7 +144,7 @@ public class WebBrowser extends EventFiringWebDriver
     /**
      * Helper method to find and return a slow loading collection of {@link WebElement}.
      * 
-     * @param criteria {@link By} search criteria
+     * @param locator {@link By} search criteria
      * @return Collection of {@link WebElement} HTML elements
      */
     public List<WebElement> waitUntilElementsVisible(By locator)
@@ -390,6 +390,22 @@ public class WebBrowser extends EventFiringWebDriver
         Parameter.checkIsMandotary("Locator", locator);
         WebDriverWait wait = new WebDriverWait(this, timeOutInSeconds);
         wait.until(ExpectedConditions.invisibilityOfElementLocated(locator));
+    }
+
+    /**
+     * Wait until element is visible with retry
+     * @param locator
+     * @param retryCount
+     */
+    public void waitUntilElementIsVisibleWithRetry(By locator, int retryCount) {
+        Parameter.checkIsMandotary("Locator", locator);
+        int counter = 0;
+
+        while(!isElementDisplayed(locator)&& counter <= retryCount)
+        {
+            waitInSeconds(2);
+            counter++;
+        }
     }
 
     /**
