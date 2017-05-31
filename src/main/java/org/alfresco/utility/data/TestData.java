@@ -14,7 +14,6 @@ import org.alfresco.utility.dsl.DSL;
 import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.model.ContentModel;
 import org.alfresco.utility.model.FileModel;
-import org.alfresco.utility.model.FileType;
 import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.UserModel;
@@ -272,8 +271,7 @@ public abstract class TestData<Data> implements DSL<Data>
 
         this.serverLogUrl = tasProperties.getFullServerUrl() + "/alfresco/s/tas/log";
 
-        String baseDir = (String) jmxBuilder.getJmxClient().readProperty("Alfresco:Name=SystemProperties", "alfresco.home");
-        STEP(String.format("Log API: jmx alfresco.home", baseDir));
+        String baseDir = getAlfrescoHome();
         String logFile = (String) jmxBuilder.getJmxClient().readProperty("log4j:appender=File", "file");
         STEP(String.format("Log API: jmx log4j:appender=File", logFile));
 
@@ -335,5 +333,18 @@ public abstract class TestData<Data> implements DSL<Data>
             }
         }
         Assert.assertEquals(findModule, true, "Alfresco AMP module :" + moduleId + " is not installed");
+    }
+    
+    /**
+     * Returns Alfresco Content Services Home (Alfresco root) directory using JMX property
+     * 
+     * @return Alfresco Content Services Home (Alfresco root) directory
+     * @throws Exception
+     */
+    public String getAlfrescoHome() throws Exception
+    {
+        String alfrescoHome = (String) jmxBuilder.getJmxClient().readProperty("Alfresco:Name=SystemProperties", "alfresco.home");
+        STEP(String.format("Log API: jmx alfresco.home" + alfrescoHome));
+        return alfrescoHome;
     }
 }
