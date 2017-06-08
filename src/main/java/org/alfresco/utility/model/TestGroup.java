@@ -69,6 +69,7 @@ public @interface TestGroup
     public static String USER_DASHBOARD = "user-dashboard";
     public static String GOOGLE_DOCS = "google-docs";
     public static String USER = "user";
+    public static String MANAGE_INVITES = "manage-invites"
 
       /*
     * Used in Admin Console
