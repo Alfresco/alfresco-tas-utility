@@ -354,10 +354,10 @@ public class WebBrowser extends EventFiringWebDriver
      * @param locator
      *            - CSS Locator
      */
-    public void waitUntilElementDeletedFromDom(By locator)
+    public void waitUntilElementDeletedFromDom(By locator, long timeOutInSeconds)
     {
         Parameter.checkIsMandotary("Locator", locator);
-        WebDriverWait wait = new WebDriverWait(this, properties.getExplicitWait());
+        WebDriverWait wait = new WebDriverWait(this, timeOutInSeconds);
         try
         {
             wait.until(ExpectedConditions.stalenessOf(this.findElement(locator)));
@@ -365,6 +365,11 @@ public class WebBrowser extends EventFiringWebDriver
         catch (NoSuchElementException e)
         {
             /* if element already not in DOM! */}
+    }
+    
+    public void waitUntilElementDeletedFromDom(By locator)
+    {
+        waitUntilElementDeletedFromDom(locator, properties.getExplicitWait());
     }
     
     /**
