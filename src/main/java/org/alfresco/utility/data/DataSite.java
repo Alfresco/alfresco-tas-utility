@@ -3,6 +3,7 @@ package org.alfresco.utility.data;
 import static org.alfresco.utility.report.log.Step.STEP;
 
 import org.alfresco.dataprep.SiteService;
+import org.alfresco.dataprep.SiteService.RMSiteCompliance;
 import org.alfresco.utility.TasProperties;
 import org.alfresco.utility.exception.DataPreparationException;
 import org.alfresco.utility.model.SiteModel;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.social.alfresco.api.entities.Site;
 import org.springframework.stereotype.Service;
+import org.testng.Assert;
 
 
 /**
@@ -182,5 +184,31 @@ public class DataSite extends TestData<DataSite>
     {
         STEP(String.format("DATAPREP: Change site %s visibility to %s", siteModel.getId(), newVisibility));
         siteService.updateSiteVisibility(getCurrentUser().getUsername(), getCurrentUser().getPassword(), siteModel.getId(), newVisibility);
+    }
+    
+    /**
+     * Create a new RM Site
+     * Using {@link #assertExtensionAmpExists} we assert if the RM AMP is first applied on the test server.
+     * @throws Exception 
+     * 
+     */
+    public synchronized SiteModel createRMSite(RMSiteCompliance compliance) throws Exception
+    {
+        String rmSiteName = "rm";
+        boolean rmCreated =siteService.createRMSite(getCurrentUser().getUsername(), getCurrentUser().getPassword(), rmSiteName, "create by TAS -> createRMSite method", compliance);        
+        Assert.assertTrue(rmCreated,"RM Site created Successfully.");
+        
+        /*
+         * We want to be sure that the RM was created
+         */
+        String rmSiteNodeRef = siteService.getSiteNodeRef(getCurrentUser().getUsername(), getCurrentUser().getPassword(), rmSiteName);
+        Assert.assertNotNull(rmSiteNodeRef,"RM Site created Successfully. Site Node Ref captured.");
+        
+        /*
+         * let's return the same SiteModel so we can use it in tests.
+         */
+        SiteModel rmSite = new SiteModel(rmSiteName);
+        rmSite.setGuid(rmSiteNodeRef);
+        return rmSite;
     }
 }
