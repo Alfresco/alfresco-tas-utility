@@ -194,17 +194,7 @@ public class DataSite extends TestData<DataSite>
      */
     public synchronized SiteModel createRMSite(RMSiteCompliance compliance) throws Exception
     {
-        //TODO @Meenal - please test this method and add appropriate code.
-        
-        /*
-         * with this methods we will verify if the "alfresco-rm-amp" is applied to test server 
-         */
-        assertExtensionAmpExists("alfresco-rm<or-what-is-called>");
-        
-        /*
-         * @Meenal this is the standard RM Site name ?
-         */
-        String rmSiteName = "Records Management";
+        String rmSiteName = "rm";
         boolean rmCreated =siteService.createRMSite(getCurrentUser().getUsername(), getCurrentUser().getPassword(), rmSiteName, "create by TAS -> createRMSite method", compliance);        
         Assert.assertTrue(rmCreated,"RM Site created Successfully.");
         
