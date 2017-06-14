@@ -126,7 +126,7 @@ public class WebBrowser extends EventFiringWebDriver
     {
         Parameter.checkIsMandotary("Locator", locator);
         WebDriverWait wait = new WebDriverWait(this, properties.getExplicitWait());
-        return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(locator)); 
     }
 
     /**

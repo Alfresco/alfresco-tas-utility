@@ -1,7 +1,6 @@
 package org.alfresco.utility.web.browser;
 
 import java.net.MalformedURLException;
-import java.util.concurrent.TimeUnit;
 
 import org.alfresco.utility.TasProperties;
 import org.openqa.selenium.remote.DesiredCapabilities;

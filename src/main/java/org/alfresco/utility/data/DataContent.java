@@ -671,4 +671,11 @@ public class DataContent extends TestData<DataContent>
         STEP(String.format("DATAPREP: Check in document %s", docName));
         contentActions.checkIn(getSession(), getLastResource(), newContent, majorVersion, checkInComment);
     }
+    
+    public void setInheritPermissions(boolean inheritPermissions)
+    {
+        String contentPath = getLastResource();
+        STEP(String.format("DATAPREP: Set inherit permissions to %s for %s", inheritPermissions, contentPath));
+        contentActions.setInheritPermissions(getCurrentUser().getUsername(),  getCurrentUser().getPassword(), contentPath, inheritPermissions);
+    }
 }
