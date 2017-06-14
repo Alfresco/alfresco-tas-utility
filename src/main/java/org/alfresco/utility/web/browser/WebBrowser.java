@@ -124,8 +124,19 @@ public class WebBrowser extends EventFiringWebDriver
      */
     public WebElement waitUntilElementVisible(By locator)
     {
+        return waitUntilElementVisible(locator, properties.getExplicitWait());
+    }
+    
+    /**
+     * Wait until the element is visible for the specified amount of time.
+     * 
+     * @param locator
+     * @param timeOutInSeconds
+     */
+    public WebElement waitUntilElementVisible(By locator, long timeOutInSeconds)
+    {
         Parameter.checkIsMandotary("Locator", locator);
-        WebDriverWait wait = new WebDriverWait(this, properties.getExplicitWait());
+        WebDriverWait wait = new WebDriverWait(this, timeOutInSeconds);
         return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
 
@@ -136,8 +147,19 @@ public class WebBrowser extends EventFiringWebDriver
      */
     public WebElement waitUntilElementVisible(WebElement element)
     {
+        return waitUntilElementVisible(element, properties.getExplicitWait());
+    }
+    
+    /**
+     * Wait until the element is visible for the specified amount of time.
+     *
+     * @param element
+     * @param secondsToWait
+     */
+    public WebElement waitUntilElementVisible(WebElement element, long timeOutInSeconds)
+    {
         Parameter.checkIsMandotary("Element", element);
-        WebDriverWait wait = new WebDriverWait(this, properties.getExplicitWait());
+        WebDriverWait wait = new WebDriverWait(this, timeOutInSeconds);
         return wait.until(ExpectedConditions.visibilityOf(element));
     }
 
