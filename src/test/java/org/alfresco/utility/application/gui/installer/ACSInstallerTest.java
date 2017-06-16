@@ -33,7 +33,7 @@ public class ACSInstallerTest extends AbstractTestNGSpringContextTests
          
          installer.onSetup().clickNext();
 
-        installer.onSelectComponentsPage()
+         installer.onSelectComponentsPage()
                     .checkLibreOffice()
                     .checkJava().checkPostgreSQL();
     }

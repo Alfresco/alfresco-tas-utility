@@ -2,6 +2,7 @@ package org.alfresco.utility;
 
 import org.alfresco.dataprep.CMISUtil.DocumentType;
 import org.alfresco.dataprep.UserService;
+import org.alfresco.utility.application.gui.installer.ACSInstallerProperties;
 import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.DataSite;
 import org.alfresco.utility.data.DataUser;
@@ -48,23 +49,26 @@ public class BeansTest extends AbstractTestNGSpringContextTests
 
     @Autowired
     protected ServerHealth serverHealth;
-    
+
     @Autowired
     TenantConsole alfrescoTenantConsole;
-    
+
     @Autowired
-    WorkflowConsole  workflowConsole;
-    
+    WorkflowConsole workflowConsole;
+
     @Autowired
     ModelAndMessagesConsole modelAndMessagesConsole;
+
+    @Autowired
+    ACSInstallerProperties installerProperties;
 
     SiteModel siteModel;
 
     @BeforeClass
     public void checkServerHealth() throws Exception
     {
-//        serverHealth.assertServerIsOnline();
-//        siteModel = dataSite.createPublicRandomSite();
+        // serverHealth.assertServerIsOnline();
+        // siteModel = dataSite.createPublicRandomSite();
     }
 
     @Test
@@ -115,14 +119,14 @@ public class BeansTest extends AbstractTestNGSpringContextTests
         UserModel newUser = dataUser.createRandomTestUser();
         newFolder = dataContent.usingUser(newUser).usingUserHome().createFolder();
         dataContent.usingResource(newFolder).assertContentExist();
-    }     
-    
+    }
+
     @Test
     public void testServerlogs() throws Exception
     {
         dataUser.usingLastServerLogLines(100).assertLogLineIs("DEBUG");
     }
-    
+
     @Test
     public void testConsole() throws Exception
     {
@@ -130,5 +134,16 @@ public class BeansTest extends AbstractTestNGSpringContextTests
         System.out.println(workflowConsole.user());
         System.out.println(modelAndMessagesConsole.showModels());
     }
-    
+
+    @Test
+    public void installerProperties()
+    {
+        Assert.assertNotNull(installerProperties);
+        Assert.assertNotNull(installerProperties.getInstallerSourcePath().getPath());
+        Assert.assertNotNull(installerProperties.getInstallerDestinationPath().getPath());
+        Assert.assertNotNull(installerProperties.getInstallerOptionFile().getPath());
+        
+        installerProperties.assertExpectedFilesAreInstalled();
+    }
+
 }
