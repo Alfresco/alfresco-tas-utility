@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.alfresco.tas</groupId>
 	<artifactId>utility</artifactId>
@@ -22,16 +23,16 @@
 		<org.jvnet.version>0.6.5</org.jvnet.version>
 		<javax.mail.version>1.5.1</javax.mail.version>
 		<seleniumjava.version>2.53.1</seleniumjava.version>
-		<yandex.qatools.version>1.15</yandex.qatools.version>
+		<yandex.qatools.version>1.15</yandex.qatools.version>		
 	</properties>
-	
+
 	<scm>
 		<connection>scm:git:https://gitlab.alfresco.com/tas/alfresco-tas-tester.git</connection>
 		<developerConnection>scm:git:https://gitlab.alfresco.com/tas/alfresco-tas-tester.git</developerConnection>
 		<url>https://gitlab.alfresco.com/tas/alfresco-tas-tester</url>
 		<tag>HEAD</tag>
 	</scm>
-	
+
 	<issueManagement>
 		<system>JIRA</system>
 		<url>https://issues.alfresco.com/jira/browse/</url>
@@ -264,6 +265,23 @@
 			<groupId>ru.yandex.qatools.htmlelements</groupId>
 			<artifactId>htmlelements-java</artifactId>
 			<version>${yandex.qatools.version}</version>
+		</dependency>
+
+		<!-- GUI Sikuli -->
+		<dependency>
+			<groupId>org.sikuli</groupId>
+			<artifactId>sikuli-api</artifactId>
+			<version>1.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sikuli</groupId>
+			<artifactId>sikuli-core</artifactId>
+			<version>1.2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sikuli</groupId>
+			<artifactId>sikulix-api</artifactId>
+			<version>1.1.0</version>
 		</dependency>
 	</dependencies>
 
