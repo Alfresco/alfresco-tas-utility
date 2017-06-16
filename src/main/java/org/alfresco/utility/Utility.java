@@ -405,11 +405,17 @@ public class Utility
             return value;
     }
 
+    public static void executeOnUnixNoWait(String command) throws IOException
+    {
+        String[] com = { "/bin/sh", "-c", command + " &" };
+        Runtime.getRuntime().exec(com);
+    }
+
     /**
      * Execute any Terminal commands
-     * 
      * Example:
      * executeOnWin("ls -la")
+     * 
      * @param command
      * @return
      */
@@ -449,13 +455,14 @@ public class Utility
     /**
      * Example:
      * executeOnWin("mkdir 'a'")
+     * 
      * @param command
      * @return the List of lines returned by command
      */
     public static String executeOnWin(String command)
     {
         LOG.info("On Windows execute command: [{}]", command);
-        
+
         List<String> lines = new ArrayList<String>();
         try
         {
@@ -501,7 +508,7 @@ public class Utility
         }
         Assert.assertTrue(file.exists(), String.format("File with path %s was not found.", filePath));
         return file;
-        
+
     }
 
     /**
@@ -524,6 +531,65 @@ public class Utility
         }
         Assert.assertFalse(file.exists(), String.format("File with path %s was found.", filePath));
         return file;
-        
+
+    }
+
+    /**
+     * Kill a process using it's name.
+     * 
+     * @param processName
+     * @throws IOException
+     */
+    public static void killProcessName(String processName) throws IOException
+    {
+        if (SystemUtils.IS_OS_WINDOWS)
+        {
+            Runtime.getRuntime().exec(new String[] { "taskkill", "/F", "/IM", processName });
+        }
+        else
+        {
+            executeOnUnix("kill `ps ax | grep \"" + processName + "\" | awk '{print $1}'`");
+        }
+    }
+
+    /**
+     * Check if process identified by <processName> is currently running
+     * 
+     * @param processName
+     * @return
+     */
+    public static boolean isProcessRunning(String processName)
+    {
+        processName = processName.toLowerCase();
+        LOG.info("process name :" + processName);
+        Process p = null;
+        try
+        {
+            if (SystemUtils.IS_OS_MAC)
+            {
+                p = Runtime.getRuntime().exec("ps -ef");
+            }
+            else if (SystemUtils.IS_OS_WINDOWS)
+            {
+                p = Runtime.getRuntime().exec(new String[] { "cmd", "/c", "tasklist" });
+            }
+            InputStream inputStream = p.getInputStream();
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            BufferedReader bufferReader = new BufferedReader(inputStreamReader);
+            String line;
+            while ((line = bufferReader.readLine()) != null)
+            {
+                if (line.toLowerCase().contains(processName))
+                    return true;
+            }
+            inputStream.close();
+            inputStreamReader.close();
+            bufferReader.close();
+        }
+        catch (Exception err)
+        {
+            err.printStackTrace();
+        }
+        return false;
     }
 }
