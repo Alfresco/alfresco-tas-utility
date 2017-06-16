@@ -66,6 +66,15 @@ public class ACSInstallerProperties
     {
         return Paths.get(getProperty("installer.destination")).toFile();
     }
+    
+    /**
+     * Return the installer.mountLocation path as defined in installer.properties file
+     * for your MacOS/Unix OS
+     */
+    public File getInstallerMountLocation()
+    {
+        return Paths.get(getProperty("installer.mountLocation").replaceAll(" ", "\\\\ ")).toFile();
+    }
 
     /**
      * Return the installer.optionsFile path as defined in installer.properties file

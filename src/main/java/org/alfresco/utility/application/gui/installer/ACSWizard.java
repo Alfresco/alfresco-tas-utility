@@ -6,27 +6,57 @@ import java.nio.file.Paths;
 import org.alfresco.utility.Utility;
 import org.alfresco.utility.application.Applicationable;
 import org.alfresco.utility.application.gui.GuiScreen;
+import org.apache.commons.lang.SystemUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class ACSWizard extends GuiScreen implements Applicationable
 {
+    @Autowired
+    ACSInstallerProperties installerProperties;
 
     @Override
     public ACSWizard open() throws Exception
     {
-        File mountDefaultLocation = Paths.get("/Volumes/Alfresco Content Services/".replaceAll(" ", "\\\\ ")).toFile();
+        if (SystemUtils.IS_OS_WINDOWS)
+        {
+            throw new Exception("Please add code for this method on Windows");
+        }
+        else
+        {
+            /* mount dmg file to mount point */
+            Utility.executeOnUnixNoWait("open " + installerProperties.getInstallerSourcePath().getPath());
+            Thread.sleep(2000);
 
-        Utility.executeOnUnixNoWait(
-                mountDefaultLocation.getPath() + "/alfresco-content-services-installer-5.2.1-SNAPSHOT-osx-x64.app/Contents/MacOS/installbuilder.sh");
+            /*
+             * start the installbuilder.sh from mounted volume
+             * "/Volumes/Alfresco Content Service/alfresco-content-services-installer-5.2.1-SNAPSHOT-osx-x64.app/Contents/MacOS/installbuilder.sh"
+             **/
+            File installBuilderSh = Paths
+                    .get(String.format("%s/Contents/MacOS/installbuilder.sh", Utility.getMountedApp(installerProperties.getInstallerMountLocation()))).toFile();
 
-        Thread.sleep(5000);
+            if (!installBuilderSh.exists())
+                throw new Exception("Cannot mount Alfresco Installer to:" + installerProperties.getInstallerMountLocation().getPath());
+
+            Utility.executeOnUnixNoWait("sh " + installBuilderSh.getPath());
+            Thread.sleep(5000);
+        }
+
         return this;
     }
 
     @Override
     public ACSWizard close() throws Exception
     {
-        // TODO Auto-generated method stub
-        return null;
+        if (SystemUtils.IS_OS_MAC)
+        {
+            Utility.executeOnUnix(String.format("hdiutil detach %s -force", installerProperties.getInstallerMountLocation().getPath()));
+        }
+        else
+        {
+            throw new Exception("Please add code for this method for Windows");
+        }
+
+        return this;
     }
 
     @Override

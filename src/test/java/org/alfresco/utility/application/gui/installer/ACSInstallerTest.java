@@ -15,7 +15,7 @@ public class ACSInstallerTest extends AbstractTestNGSpringContextTests
     @Test(groups={"demo"})
     public void testInstallerInMAC() throws Exception
     {
-         installer.open();
+         //installer.open();
          installer.waitForInstallerToOpen()
                   .clickOK()
                   .clickCancel();
@@ -36,5 +36,10 @@ public class ACSInstallerTest extends AbstractTestNGSpringContextTests
          installer.onSelectComponentsPage()
                     .checkLibreOffice()
                     .checkJava().checkPostgreSQL();
+         
+         installer.onSetup().clickCancel();
+         installer.onDialog().clickYes();
+         
+         installer.close();
     }
 }
