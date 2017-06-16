@@ -42,4 +42,23 @@ public class ACSInstallerTest extends AbstractTestNGSpringContextTests
          
          installer.close();
     }
+    
+    @Test(groups={"demo"})
+    public void testInstallerInWindows() throws Exception
+    {
+        //installer.open();
+        //installer.waitForInstallerToOpen().clickOK();        
+        installer.onSetup().clickNext();
+        installer.onLicensePage().acceptTheAggreement();
+        installer.onSetup().clickNext();             
+        
+        installer.onInstallationTypePage().chooseAdvancedInstall().chooseEasyInstall();
+        installer.onSetup().clickNext();
+        
+        installer.onInstallationFolderPage().setDestination();        
+        installer.onSetup().clickNext();
+        
+        installer.onDatabaseParametersPage().setPort();
+        installer.onSetup().clickNext();
+    }
 }

@@ -41,6 +41,16 @@ public class ACSInstaller extends ACSWizard implements Installable
     {
         return new InstallationType();
     }
+    
+    public InstallationFolder onInstallationFolderPage() throws Exception
+    {
+        return new InstallationFolder();
+    }
+    
+    public DatabaseParameters onDatabaseParametersPage() throws Exception
+    {
+        return new DatabaseParameters();
+    }
 
     public SelectComponents onSelectComponentsPage() throws Exception
     {
@@ -132,7 +142,6 @@ public class ACSInstaller extends ACSWizard implements Installable
             clickOn("license/iacceptagreement");
             return this;
         }
-
     }
 
     /*
@@ -197,6 +206,33 @@ public class ACSInstaller extends ACSWizard implements Installable
             return this;
         }
     }
+    
+    /**
+     * If easy installation type is selected, this page will be available
+     *
+     */
+    public class InstallationFolder implements Focusable<InstallationFolder>
+    {
+        public InstallationFolder() throws Exception
+        {
+            waitOn("installationFolder/title");
+        }
+
+        @Override
+        public InstallationFolder focus() throws Exception
+        {
+            clickOn("installationFolder/title");
+            return this;
+        }
+
+        public InstallationFolder setDestination() throws CouldNotFindApplicationActionImage
+        {            
+            //clickOn("installationFolder/folderLocation");
+            type(Key.DELETE);
+            type(installerProperties.getInstallerDestinationPath().getPath());
+            return this;
+        }
+    }
 
     /**
      * If advanced installation type is selected, this page will be visible
@@ -230,6 +266,28 @@ public class ACSInstaller extends ACSWizard implements Installable
         public SelectComponents checkPostgreSQL() throws CouldNotFindApplicationActionImage
         {
             checkOn("selectComponents/postgreSQL");
+            return this;
+        }
+    }
+    
+    public class DatabaseParameters implements Focusable<DatabaseParameters>
+    {
+        public DatabaseParameters() throws Exception
+        {
+            waitOn("database/title");
+        }
+
+        @Override
+        public DatabaseParameters focus() throws Exception
+        {
+            clickOn("database/title");
+            return this;
+        }
+
+        public DatabaseParameters setPort() throws CouldNotFindApplicationActionImage
+        {            
+            type(Key.DELETE);
+            type(installerProperties.getProperty("win.db.port"));
             return this;
         }
     }

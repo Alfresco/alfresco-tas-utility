@@ -19,7 +19,7 @@ public abstract class ACSWizard extends GuiScreen implements Applicationable
     {
         if (SystemUtils.IS_OS_WINDOWS)
         {
-            throw new Exception("Please add code for this method on Windows");
+            Utility.executeOnWin(installerProperties.getInstallerSourcePath().getPath());
         }
         else
         {
