@@ -2,6 +2,7 @@ package org.alfresco.utility;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -591,5 +592,33 @@ public class Utility
             err.printStackTrace();
         }
         return false;
+    }
+    
+    /**
+     * @param fromLocation
+     * @return {@link File} mounted on <fromLocation>
+     * @throws TestConfigurationException 
+     */
+    public static File getMountedApp(File fromLocation) throws TestConfigurationException
+    {
+        File[] filesInMountedDrive = fromLocation.listFiles(new FilenameFilter()
+        {
+            @Override
+            public boolean accept(File dir, String name)
+            {
+                return name.toLowerCase().endsWith(".app");
+            }
+        });
+        
+        if (filesInMountedDrive == null)
+            throw new TestConfigurationException("It seems there is not mounted App on location: " + fromLocation.getPath());
+
+        if (filesInMountedDrive.length > 0)
+        {
+            LOG.info("Found executable binary:  [{}] ", filesInMountedDrive[0].getPath());
+            return filesInMountedDrive[0];
+        }
+        else
+            return null;
     }
 }
