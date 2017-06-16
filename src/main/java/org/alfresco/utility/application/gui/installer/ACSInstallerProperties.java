@@ -73,7 +73,7 @@ public class ACSInstallerProperties
      */
     public File getInstallerMountLocation()
     {
-        return Paths.get(getProperty("installer.mountLocation").replaceAll(" ", "\\\\ ")).toFile();
+        return Paths.get(getProperty("installer.mountLocation")).toFile();
     }
 
     /**

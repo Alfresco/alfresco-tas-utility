@@ -15,7 +15,7 @@ public class ACSInstallerTest extends AbstractTestNGSpringContextTests
     @Test(groups={"demo"})
     public void testInstallerInMAC() throws Exception
     {
-         //installer.open();
+         installer.open();
          installer.waitForInstallerToOpen()
                   .clickOK()
                   .clickCancel();

@@ -37,7 +37,7 @@ public abstract class ACSWizard extends GuiScreen implements Applicationable
             if (!installBuilderSh.exists())
                 throw new Exception("Cannot mount Alfresco Installer to:" + installerProperties.getInstallerMountLocation().getPath());
 
-            Utility.executeOnUnixNoWait("sh " + installBuilderSh.getPath());
+            Utility.executeOnUnixNoWait("sh " + installBuilderSh.getPath().replaceAll(" ", "\\\\ "));
             Thread.sleep(5000);
         }
 
