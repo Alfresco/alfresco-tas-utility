@@ -460,33 +460,10 @@ public class Utility
      * @param command
      * @return the List of lines returned by command
      */
-    public static String executeOnWin(String command)
+    public static void executeOnWin(String command) throws IOException
     {
         LOG.info("On Windows execute command: [{}]", command);
-
-        List<String> lines = new ArrayList<String>();
-        try
-        {
-            Process p = Runtime.getRuntime().exec("cmd /c " + command);
-            p.waitFor();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-
-            String line;
-            while ((line = reader.readLine()) != null)
-            {
-                if (!line.startsWith(" Volume"))
-                {
-                    lines.add(line);
-                }
-            }
-        }
-        catch (IOException e1)
-        {
-        }
-        catch (InterruptedException e2)
-        {
-        }
-        return Arrays.toString(lines.toArray());
+        Runtime.getRuntime().exec("cmd /c " + command);
     }
 
     /**

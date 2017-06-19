@@ -9,7 +9,7 @@ import org.alfresco.utility.application.gui.GuiScreen;
 import org.apache.commons.lang.SystemUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public abstract class ACSWizard extends GuiScreen implements Applicationable
+public abstract class ACSWizard extends GuiScreen
 {
     @Autowired
     ACSInstallerProperties installerProperties;
@@ -19,7 +19,8 @@ public abstract class ACSWizard extends GuiScreen implements Applicationable
     {
         if (SystemUtils.IS_OS_WINDOWS)
         {
-            Utility.executeOnWin(installerProperties.getInstallerSourcePath().getPath());
+            Utility.executeOnWin(String.format("\"%s\"", installerProperties.getInstallerSourcePath().getPath()));
+            Thread.sleep(5000);
         }
         else
         {
