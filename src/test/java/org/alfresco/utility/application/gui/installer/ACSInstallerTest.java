@@ -15,30 +15,52 @@ public class ACSInstallerTest extends AbstractTestNGSpringContextTests
     @Test(groups={"demo"})
     public void testInstallerInMAC() throws Exception
     {
-         installer.open();
-         installer.waitForInstallerToOpen()
-                  .clickOK()
-                  .clickCancel();
+//        installer.open();
+//        installer.waitForInstallerToOpen()
+//                .clickCancel();
+//
+//        installer.open();
+//        installer.waitForInstallerToOpen()
+//                  .clickOK()
+//                  .clickCancel();
+//        installer.onDialog().clickYes();
+
+        installer.open();
+        installer.waitForInstallerToOpen()
+                .clickOK()
+                .clickCancel();
+        installer.onDialog().clickNo();
+        installer.onSetup().clickNext();
          
-         installer.onDialog()
-                     .clickNo();
-         installer.onSetup().clickNext();
-         
-         installer.onLicensePage().acceptTheAggreement();
-         installer.onSetup().clickNext();
+//        installer.onLicensePage().doNotAcceptTheAgreement();
+//        installer.onSetup().clickNext();
+//        installer.onDialog().clickNo();
+
+        installer.onLicensePage().acceptTheAgreement();
+        installer.onSetup().clickNext();
          
          installer.onInstallationTypePage()
-                     .chooseEasyInstall()
-                     .chooseAdvancedInstall();
-         
+                     .chooseEasyInstall();
          installer.onSetup().clickNext();
 
-         installer.onSelectComponentsPage()
-                    .checkLibreOffice()
-                    .checkJava().checkPostgreSQL();
-         
-         installer.onSetup().clickCancel();
-         installer.onDialog().clickYes();
+         installer.onInstallationFolderPage()
+                .setDestination();
+         installer.onSetup().clickNext();
+
+         installer.onAdminPasswordPage()
+                .setAdminPassword()
+                .setRepeatPassword();
+
+         installer.onSetup().clickNext();
+
+         installer.onSetup().clickNext();
+
+//         installer.onSelectComponentsPage()
+//                    .checkLibreOffice()
+//                    .checkJava().checkPostgreSQL();
+//
+//         installer.onSetup().clickCancel();
+//         installer.onDialog().clickYes();
          
          installer.close();
     }
@@ -49,7 +71,7 @@ public class ACSInstallerTest extends AbstractTestNGSpringContextTests
         //installer.open();
         //installer.waitForInstallerToOpen().clickOK();        
         installer.onSetup().clickNext();
-        installer.onLicensePage().acceptTheAggreement();
+        installer.onLicensePage().acceptTheAgreement();
         installer.onSetup().clickNext();             
         
         installer.onInstallationTypePage().chooseAdvancedInstall().chooseEasyInstall();

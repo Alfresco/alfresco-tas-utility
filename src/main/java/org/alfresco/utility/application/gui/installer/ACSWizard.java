@@ -20,7 +20,7 @@ public abstract class ACSWizard extends GuiScreen
         if (SystemUtils.IS_OS_WINDOWS)
         {
             Utility.executeOnWin(String.format("\"%s\"", installerProperties.getInstallerSourcePath().getPath()));
-            Thread.sleep(5000);
+            Thread.sleep(7000);
         }
         else
         {

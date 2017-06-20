@@ -49,6 +49,11 @@ public class ACSInstallerProperties
         return getEnv().getProperty(String.format("%s.%s", osName, key));
     }
 
+    public String getAdminPassword()
+    {
+        return getEnv().getProperty("admin.password");
+    }
+
     /**
      * Return the installer.source path as defined in installer.properties file
      * for your OS
