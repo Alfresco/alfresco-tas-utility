@@ -20,7 +20,7 @@ public abstract class ACSWizard extends GuiScreen
         if (SystemUtils.IS_OS_WINDOWS)
         {
             Utility.executeOnWin(String.format("\"%s\"", installerProperties.getInstallerSourcePath().getPath()));
-            Thread.sleep(7000);
+            Thread.sleep(5000);
         }
         else
         {
@@ -54,7 +54,7 @@ public abstract class ACSWizard extends GuiScreen
         }
         else
         {
-            throw new Exception("Please add code for this method for Windows");
+            Utility.executeOnWin(String.format("taskkill /F /IM \"%s\"", installerProperties.getProperty("installer.name")));
         }
 
         return this;
