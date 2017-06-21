@@ -52,6 +52,11 @@ public class ACSInstaller extends ACSWizard implements Installable
         return new DatabaseParameters();
     }
 
+    public DatabaseConfiguration onDatabaseConfigurationPage() throws Exception
+    {
+        return new DatabaseConfiguration();
+    }
+
     public SelectComponents onSelectComponentsPage() throws Exception
     {
         return new SelectComponents();
@@ -314,26 +319,93 @@ public class ACSInstaller extends ACSWizard implements Installable
             checkOn("selectComponents/postgreSQL");
             return this;
         }
+
+        public SelectComponents checkSolr1() throws CouldNotFindApplicationActionImage
+        {
+            checkOn("selectComponents/solr1");
+            return this;
+        }
+
+        public SelectComponents checkSolr4() throws CouldNotFindApplicationActionImage
+        {
+            checkOn("selectComponents/solr4");
+            return this;
+        }
+
+        public SelectComponents checkAlfrescoOfficeServices() throws CouldNotFindApplicationActionImage
+        {
+            checkOn("selectComponents/alfrescoOfficeServices");
+            return this;
+        }
+
+        public SelectComponents checkWebQuickStart() throws CouldNotFindApplicationActionImage
+        {
+            checkOn("selectComponents/webQuickStart");
+            return this;
+        }
+
+        public SelectComponents checkGoogleDocsIntegration() throws CouldNotFindApplicationActionImage
+        {
+            checkOn("selectComponents/googleDocsIntegration");
+            return this;
+        }
     }
     
     public class DatabaseParameters implements Focusable<DatabaseParameters>
     {
         public DatabaseParameters() throws Exception
         {
-            waitOn("database/title");
+            waitOn("databaseParameters/title");
         }
 
         @Override
         public DatabaseParameters focus() throws Exception
         {
-            clickOn("database/title");
+            clickOn("databaseParameters/title");
             return this;
         }
 
         public DatabaseParameters setPort() throws CouldNotFindApplicationActionImage
         {            
             type(Key.DELETE);
-            type(installerProperties.getProperty("win.db.port"));
+            type(installerProperties.getProperty("db.port"));
+            return this;
+        }
+    }
+
+    public class DatabaseConfiguration implements Focusable<DatabaseConfiguration>
+    {
+        public DatabaseConfiguration() throws Exception
+        {
+            waitOn("databaseConfiguration/title");
+        }
+
+        @Override
+        public DatabaseConfiguration focus() throws Exception
+        {
+            clickOn("databaseConfiguration/title");
+            return this;
+        }
+
+        public DatabaseConfiguration setUsername() throws CouldNotFindApplicationActionImage
+        {
+            clickOn("databaseConfiguration/username");
+            type(installerProperties.getProperty("db.username"));
+            return this;
+        }
+
+        public DatabaseConfiguration setPassword() throws CouldNotFindApplicationActionImage
+        {
+            clickOn("databaseConfiguration/password");
+            type(installerProperties.getProperty("db.password"));
+            return this;
+        }
+
+        public DatabaseConfiguration verifyPassword() throws CouldNotFindApplicationActionImage
+        {
+            clickOn("databaseConfiguration/verify");
+            type(installerProperties.getProperty("db.password"));
+            System.out.println("windbpass" + installerProperties.getProperty("win.db.password"));
             return this;
         }
     }

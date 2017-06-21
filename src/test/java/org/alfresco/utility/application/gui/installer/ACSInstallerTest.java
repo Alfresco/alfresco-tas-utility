@@ -39,6 +39,17 @@ public class ACSInstallerTest extends AbstractTestNGSpringContextTests
         installer.onLicensePage().acceptTheAgreement();
         installer.onSetup().clickNext();
          
+         installer.onDialog()
+                     .clickNo();
+         installer.onSetup().clickNext();
+         
+//        installer.onLicensePage().doNotAcceptTheAgreement();
+//        installer.onSetup().clickNext();
+//        installer.onDialog().clickNo();
+
+        installer.onLicensePage().acceptTheAgreement();
+        installer.onSetup().clickNext();
+         
          installer.onInstallationTypePage()
                      .chooseEasyInstall();
          installer.onSetup().clickNext();
@@ -74,13 +85,24 @@ public class ACSInstallerTest extends AbstractTestNGSpringContextTests
         installer.onLicensePage().acceptTheAgreement();
         installer.onSetup().clickNext();             
         
-        installer.onInstallationTypePage().chooseAdvancedInstall().chooseEasyInstall();
+        installer.onInstallationTypePage().chooseAdvancedInstall().chooseEasyInstall().chooseAdvancedInstall();
         installer.onSetup().clickNext();
-        
-        installer.onInstallationFolderPage().setDestination();        
+
+        installer.onSelectComponentsPage().checkJava()
+                .checkLibreOffice()
+                .checkPostgreSQL()
+                .checkSolr1()
+                .checkSolr4()
+                .checkAlfrescoOfficeServices()
+                .checkWebQuickStart()
+                .checkGoogleDocsIntegration();
         installer.onSetup().clickNext();
-        
-        installer.onDatabaseParametersPage().setPort();
+
+        installer.onInstallationFolderPage().setDestination();
+        installer.onSetup().clickNext();
+
+        installer.onDatabaseConfigurationPage().setUsername()
+                .setPassword().verifyPassword();
         installer.onSetup().clickNext();
     }
 }
