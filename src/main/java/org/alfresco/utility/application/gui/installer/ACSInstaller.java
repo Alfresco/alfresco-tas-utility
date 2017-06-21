@@ -27,7 +27,7 @@ public class ACSInstaller extends ACSWizard implements Installable
         return new Dialog();
     }
 
-    public Setup onSetup() throws FindFailed, Exception
+    public Setup onSetup() throws Exception
     {
         return new Setup();
     }
@@ -52,9 +52,19 @@ public class ACSInstaller extends ACSWizard implements Installable
         return new DatabaseParameters();
     }
 
+    public DatabaseConfiguration onDatabaseConfigurationPage() throws Exception
+    {
+        return new DatabaseConfiguration();
+    }
+
     public SelectComponents onSelectComponentsPage() throws Exception
     {
         return new SelectComponents();
+    }
+
+    public AdminPassword onAdminPasswordPage() throws Exception
+    {
+        return new AdminPassword();
     }
 
     /**
@@ -62,7 +72,7 @@ public class ACSInstaller extends ACSWizard implements Installable
      */
     public class LanguageSelection implements Focusable<LanguageSelection>
     {
-        public LanguageSelection() throws FindFailed, Exception
+        public LanguageSelection() throws Exception
         {
             waitOn("languageSelection/dialog");
         }
@@ -74,10 +84,16 @@ public class ACSInstaller extends ACSWizard implements Installable
             return new Setup();
         }
 
+        public void clickCancel() throws Exception
+        {
+            focus();
+            clickOn("cancel");
+        }
+
         @Override
         public LanguageSelection focus() throws Exception
         {
-            clickOn("languageSelection/dialog");
+            clickOn("languageSelection/title");
             return this;
         }
     }
@@ -99,17 +115,11 @@ public class ACSInstaller extends ACSWizard implements Installable
             return this;
         }
 
-        public Setup clickCancel() throws Exception
+        public Dialog clickCancel() throws Exception
         {
             focus();
             clickOn("cancel");
-            return this;
-        }
-
-        public Setup clickYes() throws FindFailed, Exception
-        {
-            clickOn("setup").clickOn("yes");
-            return this;
+            return new Dialog();
         }
 
         public Setup clickNext() throws Exception
@@ -137,9 +147,15 @@ public class ACSInstaller extends ACSWizard implements Installable
             return this;
         }
 
-        public LicensePage acceptTheAggreement() throws CouldNotFindApplicationActionImage
+        public LicensePage acceptTheAgreement() throws CouldNotFindApplicationActionImage
         {
             clickOn("license/iacceptagreement");
+            return this;
+        }
+
+        public LicensePage doNotAcceptTheAgreement() throws Exception
+        {
+            clickOn("license/notacceptagreement");
             return this;
         }
     }
@@ -151,34 +167,34 @@ public class ACSInstaller extends ACSWizard implements Installable
     {
         public Dialog() throws Exception
         {
-            waitOn("dialog/doYouWantToAbord");
+            waitOn("dialog/doYouWantToAbort");
             focus();
         }
 
         public void clickYes() throws Exception
         {
             focus();
-            type(Key.ENTER);
+//            type(Key.ENTER);
+            clickOn("dialog/yes");
         }
 
         public void clickNo() throws Exception
         {
             focus();
-            type(Key.ESC);
+//            type(Key.ESC);
+            clickOn("dialog/no");
         }
 
         @Override
-        public Dialog focus() throws Exception
+        public Dialog focus() throws CouldNotFindApplicationActionImage
         {
-            clickOn("dialog/doYouWantToAbord");
+            clickOn("dialog/doYouWantToAbort");
             return this;
         }
     }
 
     /**
-     * 
-     *
-     *
+     * Installation Type -4th Page
      */
     public class InstallationType implements Focusable<InstallationType>
     {
@@ -235,6 +251,41 @@ public class ACSInstaller extends ACSWizard implements Installable
     }
 
     /**
+     * If easy installation type is selected, this page will be available
+     *
+     */
+    public class AdminPassword implements Focusable<AdminPassword>
+    {
+        public AdminPassword() throws Exception
+        {
+            waitOn("adminPassword/adminPassword");
+        }
+
+        @Override
+        public AdminPassword focus() throws Exception
+        {
+            clickOn("adminPassword/adminPassword");
+            return this;
+        }
+
+        public AdminPassword setAdminPassword() throws CouldNotFindApplicationActionImage
+        {
+            clickOn("adminPassword/password");
+            type(Key.DELETE);
+            type(installerProperties.getAdminPassword());
+            return this;
+        }
+
+        public AdminPassword setRepeatPassword() throws CouldNotFindApplicationActionImage
+        {
+            clickOn("adminPassword/repeatPassword");
+            type(Key.DELETE);
+            type(installerProperties.getAdminPassword());
+            return this;
+        }
+    }
+
+    /**
      * If advanced installation type is selected, this page will be visible
      */
     public class SelectComponents implements Focusable<SelectComponents>
@@ -268,26 +319,93 @@ public class ACSInstaller extends ACSWizard implements Installable
             checkOn("selectComponents/postgreSQL");
             return this;
         }
+
+        public SelectComponents checkSolr1() throws CouldNotFindApplicationActionImage
+        {
+            checkOn("selectComponents/solr1");
+            return this;
+        }
+
+        public SelectComponents checkSolr4() throws CouldNotFindApplicationActionImage
+        {
+            checkOn("selectComponents/solr4");
+            return this;
+        }
+
+        public SelectComponents checkAlfrescoOfficeServices() throws CouldNotFindApplicationActionImage
+        {
+            checkOn("selectComponents/alfrescoOfficeServices");
+            return this;
+        }
+
+        public SelectComponents checkWebQuickStart() throws CouldNotFindApplicationActionImage
+        {
+            checkOn("selectComponents/webQuickStart");
+            return this;
+        }
+
+        public SelectComponents checkGoogleDocsIntegration() throws CouldNotFindApplicationActionImage
+        {
+            checkOn("selectComponents/googleDocsIntegration");
+            return this;
+        }
     }
     
     public class DatabaseParameters implements Focusable<DatabaseParameters>
     {
         public DatabaseParameters() throws Exception
         {
-            waitOn("database/title");
+            waitOn("databaseParameters/title");
         }
 
         @Override
         public DatabaseParameters focus() throws Exception
         {
-            clickOn("database/title");
+            clickOn("databaseParameters/title");
             return this;
         }
 
         public DatabaseParameters setPort() throws CouldNotFindApplicationActionImage
         {            
             type(Key.DELETE);
-            type(installerProperties.getProperty("win.db.port"));
+            type(installerProperties.getProperty("db.port"));
+            return this;
+        }
+    }
+
+    public class DatabaseConfiguration implements Focusable<DatabaseConfiguration>
+    {
+        public DatabaseConfiguration() throws Exception
+        {
+            waitOn("databaseConfiguration/title");
+        }
+
+        @Override
+        public DatabaseConfiguration focus() throws Exception
+        {
+            clickOn("databaseConfiguration/title");
+            return this;
+        }
+
+        public DatabaseConfiguration setUsername() throws CouldNotFindApplicationActionImage
+        {
+            clickOn("databaseConfiguration/username");
+            type(installerProperties.getProperty("db.username"));
+            return this;
+        }
+
+        public DatabaseConfiguration setPassword() throws CouldNotFindApplicationActionImage
+        {
+            clickOn("databaseConfiguration/password");
+            type(installerProperties.getProperty("db.password"));
+            return this;
+        }
+
+        public DatabaseConfiguration verifyPassword() throws CouldNotFindApplicationActionImage
+        {
+            clickOn("databaseConfiguration/verify");
+            type(installerProperties.getProperty("db.password"));
+            System.out.println("windbpass" + installerProperties.getProperty("win.db.password"));
             return this;
         }
     }
