@@ -119,40 +119,41 @@ public class WebBrowser extends EventFiringWebDriver
     /**
      * Wait until the element is visible for the specified amount of time.
      * 
-     * @param locator CSS Locator
+     * @param locator {@link By} locator
      */
     public WebElement waitUntilElementVisible(By locator)
     {
         return waitUntilElementVisible(locator, properties.getExplicitWait());
     }
-    
+
     /**
      * Wait until the element is visible for the specified amount of time.
      * 
-     * @param locator CSS Locator
+     * @param locator {@link By} locator
+     * @param timeOutInSeconds timeout in seconds
      */
     public WebElement waitUntilElementVisible(By locator, long timeOutInSeconds)
     {
         Parameter.checkIsMandotary("Locator", locator);
         WebDriverWait wait = new WebDriverWait(this, timeOutInSeconds);
-        return wait.until(ExpectedConditions.visibilityOfElementLocated(locator)); 
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
 
     /**
      * Wait until the element is visible for the specified amount of time.
      *
-     * @param element
+     * @param element {@link WebElement} web element
      */
     public WebElement waitUntilElementVisible(WebElement element)
     {
         return waitUntilElementVisible(element, properties.getExplicitWait());
     }
-    
+
     /**
      * Wait until the element is visible for the specified amount of time.
      *
-     * @param element
-     * @param timeOutInSeconds
+     * @param element {@link WebElement} web element
+     * @param timeOutInSeconds timeout in seconds
      */
     public WebElement waitUntilElementVisible(WebElement element, long timeOutInSeconds)
     {
@@ -208,7 +209,7 @@ public class WebBrowser extends EventFiringWebDriver
         Parameter.checkIsMandotary("Locator", locator);
         int counter = 1;
         int retryRefreshCount = 3;
-        
+
         while (counter <= retryRefreshCount)
         {
             if (isElementDisplayed(locator))
@@ -219,12 +220,12 @@ public class WebBrowser extends EventFiringWebDriver
             {
                 LOG.info(String.format("Wait for element %s seconds after refresh: %s", secondsToWait, counter));
                 refresh();
-                waitInSeconds(secondsToWait);               
+                waitInSeconds(secondsToWait);
                 counter++;
             }
         }
     }
-    
+
     /**
      * Wait the element to disappear by refreshing the page
      * 
@@ -347,13 +348,23 @@ public class WebBrowser extends EventFiringWebDriver
     /**
      * Wait Until element successfully deleting from DOM.
      * 
-     * @param locator
-     *            - CSS Locator
+     * @param locator {@link By} locator
      */
     public void waitUntilElementDeletedFromDom(By locator)
     {
+        waitUntilElementDeletedFromDom(locator, properties.getExplicitWait());
+    }
+
+    /**
+     * Wait Until element successfully deleting from DOM.
+     * 
+     * @param locator {@link By} locator
+     * @param timeOutInSeconds time to wait
+     */
+    public void waitUntilElementDeletedFromDom(By locator, long timeOutInSeconds)
+    {
         Parameter.checkIsMandotary("Locator", locator);
-        WebDriverWait wait = new WebDriverWait(this, properties.getExplicitWait());
+        WebDriverWait wait = new WebDriverWait(this, timeOutInSeconds);
         try
         {
             wait.until(ExpectedConditions.stalenessOf(this.findElement(locator)));
@@ -362,7 +373,7 @@ public class WebBrowser extends EventFiringWebDriver
         {
             /* if element already not in DOM! */}
     }
-    
+
     /**
      * Wait until the invisibility of given Element for given seconds.
      * 
@@ -376,10 +387,8 @@ public class WebBrowser extends EventFiringWebDriver
     /**
      * Wait until the invisibility of given Element for given seconds.
      * 
-     * @param locator
-     *            CSS Locator
-     * @param timeOutInSeconds
-     *            Timeout In Seconds
+     * @param locator {@link By} Locator
+     * @param timeOutInSeconds timeout In Seconds
      */
     public void waitUntilElementDisappears(By locator, long timeOutInSeconds)
     {
@@ -532,7 +541,7 @@ public class WebBrowser extends EventFiringWebDriver
         windows.remove(mainWindow);
         this.switchToWindow(windows.iterator().next());
     }
-    
+
     /**
      * Waits and switches to window based on index
      */
@@ -543,10 +552,10 @@ public class WebBrowser extends EventFiringWebDriver
         int windowsNumber = windows.size();
         int counter = 1;
         int retryRefreshCount = 5;
-        
+
         while (counter <= retryRefreshCount)
         {
-            if (windowsNumber == windowIndex + 1 )
+            if (windowsNumber == windowIndex + 1)
             {
                 windows.remove(mainWindow);
                 this.switchToWindow(windows.iterator().next());
@@ -558,18 +567,22 @@ public class WebBrowser extends EventFiringWebDriver
             counter++;
         }
     }
-    
+
     /**
      * Switches to window with specified url.
      */
     public void switchWindow(String winHandler)
     {
         mainWindow = this.getWindowHandle();
-        for (String winHandle : this.getWindowHandles()) {
+        for (String winHandle : this.getWindowHandles())
+        {
             this.switchTo().window(winHandle);
-            if (this.getCurrentUrl().contains(winHandler)) {
+            if (this.getCurrentUrl().contains(winHandler))
+            {
                 break;
-            } else {
+            }
+            else
+            {
                 this.switchTo().window(mainWindow);
             }
         }
@@ -957,35 +970,37 @@ public class WebBrowser extends EventFiringWebDriver
         LOG.info("Alert data: " + alertText);
         alert.dismiss();
     }
-    
+
     public void focusOnWebElement(WebElement webElement)
     {
         webElement.sendKeys(Keys.TAB);
     }
-    
-/*    private boolean isDisplayedBasedOnLocator(By locator)
-    {
-        try
-        {
-            this.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
-            return this.findElement(locator).isDisplayed();
-        }
-        catch (NoSuchElementException nse)
-        {
-            // no log needed due to negative cases.
-        }
-        catch (TimeoutException toe)
-        {
-            // no log needed due to negative cases.
-        }
-        catch (StaleElementReferenceException ste)
-        {
-            // no log needed due to negative cases.
-        }
-        finally
-        {
-            this.manage().timeouts().implicitlyWait(Long.valueOf(properties.getImplicitWait()), TimeUnit.SECONDS);
-        }
-        return false;
-    }*/
+
+    /*
+     * private boolean isDisplayedBasedOnLocator(By locator)
+     * {
+     * try
+     * {
+     * this.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
+     * return this.findElement(locator).isDisplayed();
+     * }
+     * catch (NoSuchElementException nse)
+     * {
+     * // no log needed due to negative cases.
+     * }
+     * catch (TimeoutException toe)
+     * {
+     * // no log needed due to negative cases.
+     * }
+     * catch (StaleElementReferenceException ste)
+     * {
+     * // no log needed due to negative cases.
+     * }
+     * finally
+     * {
+     * this.manage().timeouts().implicitlyWait(Long.valueOf(properties.getImplicitWait()), TimeUnit.SECONDS);
+     * }
+     * return false;
+     * }
+     */
 }
