@@ -5,6 +5,7 @@ import org.alfresco.utility.web.browser.WebBrowser;
 import org.alfresco.utility.web.browser.WebBrowserFactory;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
@@ -94,12 +95,19 @@ public abstract class AbstractWebTest extends AbstractTestNGSpringContextTests
              */
             if (pageObject.getClass().isInstance(HtmlPage.class))
             {
-                @SuppressWarnings("unchecked")
-                Object bean = applicationContext.getBean(pageObject);
-                if (bean instanceof HtmlPage)
+                try
                 {
-                    HtmlPage page = (HtmlPage) bean;
-                    page.setBrowser(getBrowser());
+                    @SuppressWarnings("unchecked")
+                    Object bean = applicationContext.getBean(pageObject);
+                    if (bean instanceof HtmlPage)
+                    {
+                        HtmlPage page = (HtmlPage) bean;
+                        page.setBrowser(getBrowser());
+                    }
+                }
+                catch (NoSuchBeanDefinitionException e)
+                {
+                    continue;
                 }
             }
 
