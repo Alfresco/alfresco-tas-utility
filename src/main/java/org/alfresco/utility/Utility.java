@@ -2,14 +2,17 @@ package org.alfresco.utility;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.charset.Charset;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,6 +25,7 @@ import java.util.Scanner;
 import org.alfresco.dataprep.CMISUtil.DocumentType;
 import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.exception.TestObjectNotDefinedException;
+import org.alfresco.utility.model.FileModel;
 import org.alfresco.utility.testrail.TestRailExecutorListener;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -524,6 +528,34 @@ public class Utility
         }
         Assert.assertFalse(file.exists(), String.format("File with path %s was found.", filePath));
         return file;
-        
+    }
+    
+    /**
+     * Get new {@link File} with content based on file model.
+     * The new file will be deleted in the end.
+     * 
+     * @param fileModel {@link FileModel}
+     * @return  new {@link File} 
+     */
+    public static File setNewFile(FileModel fileModel)
+    {
+        File newFile = new File(fileModel.getName());
+        try
+        {
+            newFile.createNewFile();
+            if (!StringUtils.isEmpty(fileModel.getContent()))
+            {
+                OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(newFile), Charset.forName("UTF-8").newEncoder());
+                writer.write(fileModel.getContent());
+                writer.flush();
+                writer.close();
+            }
+        }
+        catch (IOException e)
+        {
+            LOG.error(String.format("Failed to load file %s", fileModel.getName()));
+        }
+        newFile.deleteOnExit();
+        return newFile;
     }
 }
