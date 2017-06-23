@@ -81,7 +81,7 @@ public class ACSInstallerTest extends AbstractTestNGSpringContextTests
     {
         //installer.open();
         //installer.waitForInstallerToOpen().clickOK();        
-        installer.onSetup().clickNext();
+       /* installer.onSetup().clickNext();
         installer.onLicensePage().acceptTheAgreement();
         installer.onSetup().clickNext();             
         
@@ -104,5 +104,28 @@ public class ACSInstallerTest extends AbstractTestNGSpringContextTests
         installer.onDatabaseConfigurationPage().setUsername()
                 .setPassword().verifyPassword();
         installer.onSetup().clickNext();
+
+       installer.onTomcatPortConfigurationPage()
+               .setWebServerDomain()
+               .setTomcatServerPort()
+               .setTomcatShutdownPort()
+               .setTomcatSSLPort()
+               .setTomcatAJPPort();
+
+       installer.onShardedSolrInstallationPage().setYes().setNo().setYes();
+       installer.onSetup().clickNext();
+
+       installer.onFtpPortPage().setFtpPort();
+       installer.onSetup().clickNext();
+       installer.onRmiPortPage().setRmiPort();
+       installer.onSetup().clickNext();
+       installer.onServiceStartupConfigurationPage().setAuto().setManual().setAuto().setManual();
+       installer.onSetup().clickNext();
+
+       installer.onLibreOfficeServerPortPage().setRmiPort();
+       installer.onSetup().clickNext();
+
+       installer.onRemoteSolrConfigurationPage().setRemoteSolrHost().setRemoteSolrSSLPort();
+       installer.onSetup().clickNext(); */
     }
 }

@@ -57,6 +57,41 @@ public class ACSInstaller extends ACSWizard implements Installable
         return new DatabaseConfiguration();
     }
 
+    public TomcatConfigurationPage onTomcatPortConfigurationPage() throws Exception
+    {
+        return new TomcatConfigurationPage();
+    }
+
+    public ShardedSolrPage onShardedSolrInstallationPage() throws Exception
+    {
+        return new ShardedSolrPage();
+    }
+
+    public FtpPortPage onFtpPortPage() throws Exception
+    {
+        return new FtpPortPage();
+    }
+
+    public RmiPortPage onRmiPortPage() throws Exception
+    {
+        return new RmiPortPage();
+    }
+
+    public LibreOfficeServerPortPage onLibreOfficeServerPortPage() throws Exception
+    {
+        return new LibreOfficeServerPortPage();
+    }
+
+    public RemoteSolrConfigurationPage onRemoteSolrConfigurationPage() throws Exception
+    {
+        return new RemoteSolrConfigurationPage();
+    }
+
+    public ServiceStartupConfigurationPage onServiceStartupConfigurationPage() throws Exception
+    {
+        return new ServiceStartupConfigurationPage();
+    }
+
     public SelectComponents onSelectComponentsPage() throws Exception
     {
         return new SelectComponents();
@@ -65,6 +100,11 @@ public class ACSInstaller extends ACSWizard implements Installable
     public AdminPassword onAdminPasswordPage() throws Exception
     {
         return new AdminPassword();
+    }
+
+    public ReadyToInstallPage onReadyToInstallPage() throws Exception
+    {
+        return new ReadyToInstallPage();
     }
 
     /**
@@ -405,7 +445,229 @@ public class ACSInstaller extends ACSWizard implements Installable
         {
             clickOn("databaseConfiguration/verify");
             type(installerProperties.getProperty("db.password"));
-            System.out.println("windbpass" + installerProperties.getProperty("win.db.password"));
+            return this;
+        }
+    }
+
+    public class TomcatConfigurationPage implements Focusable<TomcatConfigurationPage>
+    {
+        public TomcatConfigurationPage() throws Exception
+        {
+            waitOn("tomcat/title");
+        }
+
+        @Override
+        public TomcatConfigurationPage focus() throws Exception
+        {
+            clickOn("tomcat/title");
+            return this;
+        }
+
+        public TomcatConfigurationPage setWebServerDomain() throws CouldNotFindApplicationActionImage
+        {
+            type("a", Key.CTRL);
+            type(installerProperties.getProperty("web.server.domain"));
+            return this;
+        }
+
+        public TomcatConfigurationPage setTomcatServerPort() throws CouldNotFindApplicationActionImage
+        {
+            clickOn("tomcat/tomcatServerPort");
+            type("a", Key.CTRL);
+            type(installerProperties.getProperty("tomcat.server.port"));
+            return this;
+        }
+
+        public TomcatConfigurationPage setTomcatShutdownPort() throws CouldNotFindApplicationActionImage
+        {
+            clickOn("tomcat/tomcatShutdownPort");
+            type("a", Key.CTRL);
+            type(installerProperties.getProperty("tomcat.shutdown.port"));
+            return this;
+        }
+
+        public TomcatConfigurationPage setTomcatSSLPort() throws CouldNotFindApplicationActionImage
+        {
+            clickOn("tomcat/tomcatSSLPort");
+            type("a", Key.CTRL);
+            type(installerProperties.getProperty("tomcat.ssl.port"));
+            return this;
+        }
+
+        public TomcatConfigurationPage setTomcatAJPPort() throws CouldNotFindApplicationActionImage
+        {
+            clickOn("tomcat/tomcatAJPPort");
+            type("a", Key.CTRL);
+            type(installerProperties.getProperty("tomcat.ajp.port"));
+            return this;
+        }
+    }
+
+    public class ShardedSolrPage implements Focusable<ShardedSolrPage>
+    {
+        public ShardedSolrPage() throws Exception
+        {
+            waitOn("shardedSolr/title");
+        }
+
+        @Override
+        public ShardedSolrPage focus() throws Exception
+        {
+            clickOn("shardedSolr/title");
+            return this;
+        }
+
+        public ShardedSolrPage setYes() throws CouldNotFindApplicationActionImage
+        {
+            clickOn("shardedSolr/yes");
+            return this;
+        }
+
+        public ShardedSolrPage setNo() throws CouldNotFindApplicationActionImage
+        {
+            clickOn("shardedSolr/no");
+            return this;
+        }
+    }
+
+    public class FtpPortPage implements Focusable<FtpPortPage>
+    {
+        public FtpPortPage() throws Exception
+        {
+            waitOn("ftp/title");
+        }
+
+        @Override
+        public FtpPortPage focus() throws Exception
+        {
+            clickOn("ftp/title");
+            return this;
+        }
+
+        public FtpPortPage setFtpPort() throws CouldNotFindApplicationActionImage
+        {
+            clickOn("ftp/ftpPort");
+            type("a", Key.CTRL);
+            type(installerProperties.getProperty("ftp.port"));
+            return this;
+        }
+    }
+
+    public class RmiPortPage implements Focusable<RmiPortPage>
+    {
+        public RmiPortPage() throws Exception
+        {
+            waitOn("rmi/title");
+        }
+
+        @Override
+        public RmiPortPage focus() throws Exception
+        {
+            clickOn("rmi/title");
+            return this;
+        }
+
+        public RmiPortPage setRmiPort() throws CouldNotFindApplicationActionImage
+        {
+            clickOn("rmi/rmiPort");
+            type("a", Key.CTRL);
+            type(installerProperties.getProperty("rmi.port"));
+            return this;
+        }
+    }
+
+    public class ServiceStartupConfigurationPage implements Focusable<ServiceStartupConfigurationPage>
+    {
+        public ServiceStartupConfigurationPage() throws Exception
+        {
+            waitOn("serviceStartup/title");
+        }
+
+        @Override
+        public ServiceStartupConfigurationPage focus() throws Exception
+        {
+            clickOn("serviceStartup/title");
+            return this;
+        }
+
+        public ServiceStartupConfigurationPage setManual() throws CouldNotFindApplicationActionImage
+        {
+            clickOn("serviceStartup/manual");
+            return this;
+        }
+
+        public ServiceStartupConfigurationPage setAuto() throws CouldNotFindApplicationActionImage
+        {
+            clickOn("serviceStartup/auto");
+            return this;
+        }
+    }
+
+    public class LibreOfficeServerPortPage implements Focusable<LibreOfficeServerPortPage>
+    {
+        public LibreOfficeServerPortPage() throws Exception
+        {
+            waitOn("libreOffice/title");
+        }
+
+        @Override
+        public LibreOfficeServerPortPage focus() throws Exception
+        {
+            clickOn("libreOffice/title");
+            return this;
+        }
+
+        public LibreOfficeServerPortPage setRmiPort() throws CouldNotFindApplicationActionImage
+        {
+            clickOn("libreOffice/libreOfficeServerPort");
+            type("a", Key.CTRL);
+            type(installerProperties.getProperty("libre.office.server.port"));
+            return this;
+        }
+    }
+
+    public class RemoteSolrConfigurationPage implements Focusable<RemoteSolrConfigurationPage>
+    {
+        public RemoteSolrConfigurationPage() throws Exception
+        {
+            waitOn("remoteSolr/title");
+        }
+
+        @Override
+        public RemoteSolrConfigurationPage focus() throws Exception
+        {
+            clickOn("remoteSolr/title");
+            return this;
+        }
+
+        public RemoteSolrConfigurationPage setRemoteSolrHost() throws CouldNotFindApplicationActionImage
+        {
+            clickOn("remoteSolr/remoteSolrHost");
+            type("a", Key.CTRL);
+            type(installerProperties.getProperty("remote.solr.host"));
+            return this;
+        }
+
+        public RemoteSolrConfigurationPage setRemoteSolrSSLPort() throws CouldNotFindApplicationActionImage
+        {
+            clickOn("remoteSolr/remoteSolrSSLPort");
+            type("a", Key.CTRL);
+            type(installerProperties.getProperty("remote.solr.ssl.port"));
+            return this;
+        }
+    }
+
+    public class ReadyToInstallPage implements Focusable<ReadyToInstallPage>
+    {
+        public ReadyToInstallPage() throws Exception
+        {
+            waitOn("ready/title");
+        }
+
+        @Override
+        public ReadyToInstallPage focus() throws Exception
+        {
+            clickOn("ready/title");
             return this;
         }
     }
