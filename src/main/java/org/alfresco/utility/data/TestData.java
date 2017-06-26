@@ -27,7 +27,6 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jmx.support.JmxUtils;
 import org.testng.Assert;
 
 import com.google.common.io.Files;

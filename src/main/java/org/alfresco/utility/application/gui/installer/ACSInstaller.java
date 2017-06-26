@@ -7,7 +7,7 @@ import org.sikuli.script.FindFailed;
 import org.springframework.stereotype.Component;
 
 /**
- * Sikulli approach of interacting with Alfresco Installer.
+ * Sikuli approach of interacting with Alfresco Installer.
  * Following a Wizard base design pattern
  * 
  * @author Paul Brodner

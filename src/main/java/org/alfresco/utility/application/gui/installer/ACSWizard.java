@@ -4,7 +4,6 @@ import java.io.File;
 import java.nio.file.Paths;
 
 import org.alfresco.utility.Utility;
-import org.alfresco.utility.application.Applicationable;
 import org.alfresco.utility.application.gui.GuiScreen;
 import org.apache.commons.lang.SystemUtils;
 import org.springframework.beans.factory.annotation.Autowired;
