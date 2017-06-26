@@ -138,6 +138,93 @@ public class WebBrowser extends EventFiringWebDriver
         WebDriverWait wait = new WebDriverWait(this, timeOutInSeconds);
         return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
+    
+    /**
+     * Wait until element is present on the DOM of a page.
+     * 
+     * @param locator {@link By} locator
+     * @param timeOutInSeconds seconds to wait
+     * @return {@link WebElement} 
+     */
+    public WebElement waitUntilElementIsPresent(By locator, long timeOutInSeconds)
+    {
+        Parameter.checkIsMandotary("Locator", locator);
+        WebDriverWait wait = new WebDriverWait(this, timeOutInSeconds);
+        return wait.until(ExpectedConditions.presenceOfElementLocated(locator));
+    }
+    
+    /**
+     * Wait until element is present on the DOM of a page.
+     * 
+     * @param locator {@link By} locator
+     * @return {@link WebElement} 
+     */
+    public WebElement waitUntilElementIsPresent(By locator)
+    {
+        return waitUntilElementIsPresent(locator, properties.getExplicitWait());
+    }
+    
+    /**
+     * Wait for child WebElement as a part of parent element to present
+     * 
+     * @param parentLocator {@link By} parent locator
+     * @param childLocator {@link By} child locator
+     * @param timeOutInSeconds seconds to wait
+     * @return {@link WebElement} 
+     */
+    public WebElement waitUntilChildElementIsPresent(By parentLocator, By childLocator, long timeOutInSeconds)
+    {
+        Parameter.checkIsMandotary("Parent locator", parentLocator);
+        Parameter.checkIsMandotary("Child locator", childLocator);
+        WebDriverWait wait = new WebDriverWait(this, timeOutInSeconds);
+        return wait.until(ExpectedConditions.presenceOfNestedElementLocatedBy(parentLocator, childLocator));
+    }
+    
+    /**
+     * Wait for child WebElement as a part of parent element to present
+     * 
+     * @param parentLocator {@link By} parent locator
+     * @param childLocator {@link By} child locator
+     * @return {@link WebElement} 
+     */
+    public WebElement waitUntilChildElementIsPresent(By parentLocator, By childLocator)
+    {
+        Parameter.checkIsMandotary("Parent locator", parentLocator);
+        Parameter.checkIsMandotary("Child locator", childLocator);
+        WebDriverWait wait = new WebDriverWait(this, properties.getExplicitWait());
+        return wait.until(ExpectedConditions.presenceOfNestedElementLocatedBy(parentLocator, childLocator));
+    }
+    
+    /**
+     * Wait for child WebElement as a part of parent element to present
+     * 
+     * @param parentLocator {@link WebElement} parent locator
+     * @param childLocator {@link By} child locator
+     * @param timeOutInSeconds seconds to wait
+     * @return {@link WebElement} 
+     */
+    public WebElement waitUntilChildElementIsPresent(WebElement parentLocator, By childLocator, long timeOutInSeconds)
+    {
+        Parameter.checkIsMandotary("Parent locator", parentLocator);
+        Parameter.checkIsMandotary("Child locator", childLocator);
+        WebDriverWait wait = new WebDriverWait(this, timeOutInSeconds);
+        return wait.until(ExpectedConditions.presenceOfNestedElementLocatedBy(parentLocator, childLocator));
+    }
+    
+    /**
+     * Wait for child WebElement as a part of parent element to present
+     * 
+     * @param parentLocator {@link WebElement} parent locator
+     * @param childLocator {@link By} child locator
+     * @return {@link WebElement} 
+     */
+    public WebElement waitUntilChildElementIsPresent(WebElement parentLocator, By childLocator)
+    {
+        Parameter.checkIsMandotary("Parent locator", parentLocator);
+        Parameter.checkIsMandotary("Child locator", childLocator);
+        WebDriverWait wait = new WebDriverWait(this, properties.getExplicitWait());
+        return wait.until(ExpectedConditions.presenceOfNestedElementLocatedBy(parentLocator, childLocator));
+    }
 
     /**
      * Wait until the element is visible for the specified amount of time.
