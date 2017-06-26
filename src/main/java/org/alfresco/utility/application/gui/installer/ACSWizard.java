@@ -13,6 +13,11 @@ public abstract class ACSWizard extends GuiScreen
     @Autowired
     ACSInstallerProperties installerProperties;
 
+    public ACSInstallerProperties getFileProperties()
+    {
+        return installerProperties;
+    }
+    
     @Override
     public ACSWizard open() throws Exception
     {
@@ -53,7 +58,7 @@ public abstract class ACSWizard extends GuiScreen
         }
         else
         {
-            Utility.executeOnWin(String.format("taskkill /F /IM \"%s\"", installerProperties.getProperty("installer.name")));
+            Utility.executeOnWin(String.format("taskkill /F /IM \"%s\"", installerProperties.getOSProperty("installer.name")));
         }
 
         return this;

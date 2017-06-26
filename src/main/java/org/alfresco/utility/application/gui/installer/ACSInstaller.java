@@ -2,6 +2,7 @@ package org.alfresco.utility.application.gui.installer;
 
 import org.alfresco.utility.application.Focusable;
 import org.alfresco.utility.exception.CouldNotFindApplicationActionImage;
+import org.apache.commons.lang.SystemUtils;
 import org.sikuli.api.robot.Key;
 import org.sikuli.script.FindFailed;
 import org.springframework.stereotype.Component;
@@ -18,6 +19,11 @@ public class ACSInstaller extends ACSWizard implements Installable
     @SuppressWarnings("unchecked")
     @Override
     public LanguageSelection waitForInstallerToOpen() throws Exception
+    {
+        return new LanguageSelection();
+    }
+
+    public LanguageSelection onLanguageSelectionDialog() throws Exception
     {
         return new LanguageSelection();
     }
@@ -41,12 +47,12 @@ public class ACSInstaller extends ACSWizard implements Installable
     {
         return new InstallationType();
     }
-    
+
     public InstallationFolder onInstallationFolderPage() throws Exception
     {
         return new InstallationFolder();
     }
-    
+
     public DatabaseParameters onDatabaseParametersPage() throws Exception
     {
         return new DatabaseParameters();
@@ -187,14 +193,16 @@ public class ACSInstaller extends ACSWizard implements Installable
             return this;
         }
 
-        public LicensePage acceptTheAgreement() throws CouldNotFindApplicationActionImage
+        public LicensePage acceptTheAgreement() throws Exception
         {
+            focus();
             clickOn("license/iacceptagreement");
             return this;
         }
 
         public LicensePage doNotAcceptTheAgreement() throws Exception
         {
+            focus();
             clickOn("license/notacceptagreement");
             return this;
         }
@@ -214,15 +222,23 @@ public class ACSInstaller extends ACSWizard implements Installable
         public void clickYes() throws Exception
         {
             focus();
-//            type(Key.ENTER);
-            clickOn("dialog/yes");
+            if (SystemUtils.IS_OS_MAC)
+            {
+                type(Key.ENTER);
+            }
+            else
+                clickOn("dialog/yes");
         }
 
         public void clickNo() throws Exception
         {
             focus();
-//            type(Key.ESC);
-            clickOn("dialog/no");
+            if (SystemUtils.IS_OS_MAC)
+            {
+                type(Key.ESC);
+            }
+            else
+                clickOn("dialog/no");
         }
 
         @Override
@@ -250,22 +266,23 @@ public class ACSInstaller extends ACSWizard implements Installable
             return this;
         }
 
-        public InstallationType chooseEasyInstall() throws CouldNotFindApplicationActionImage
+        public InstallationType chooseEasyInstall() throws Exception
         {
+            focus();
             clickOn("installationType/easyInstall");
             return this;
         }
 
-        public InstallationType chooseAdvancedInstall() throws CouldNotFindApplicationActionImage
+        public InstallationType chooseAdvancedInstall() throws Exception
         {
+            focus();
             clickOn("installationType/advancedInstall");
             return this;
         }
     }
-    
+
     /**
      * If easy installation type is selected, this page will be available
-     *
      */
     public class InstallationFolder implements Focusable<InstallationFolder>
     {
@@ -281,46 +298,44 @@ public class ACSInstaller extends ACSWizard implements Installable
             return this;
         }
 
-        public InstallationFolder setDestination() throws CouldNotFindApplicationActionImage
-        {            
-            //clickOn("installationFolder/folderLocation");
-            type(Key.DELETE);
-            type(installerProperties.getInstallerDestinationPath().getPath());
+        public InstallationFolder setDestination(String destination) throws Exception
+        {
+            focus();            
+            clearAndType(destination);
             return this;
         }
     }
 
     /**
      * If easy installation type is selected, this page will be available
-     *
      */
     public class AdminPassword implements Focusable<AdminPassword>
     {
         public AdminPassword() throws Exception
         {
-            waitOn("adminPassword/adminPassword");
+            waitOn("adminPassword/title");
         }
 
         @Override
         public AdminPassword focus() throws Exception
         {
+            clickOn("adminPassword/title");
+            return this;
+        }
+
+        public AdminPassword setAdminPassword(String password) throws Exception
+        {
+            focus();
             clickOn("adminPassword/adminPassword");
+            clearAndType(installerProperties.getAdminPassword());
             return this;
         }
 
-        public AdminPassword setAdminPassword() throws CouldNotFindApplicationActionImage
+        public AdminPassword setRepeatAdminPassword(String password) throws Exception
         {
-            clickOn("adminPassword/password");
-            type(Key.DELETE);
-            type(installerProperties.getAdminPassword());
-            return this;
-        }
-
-        public AdminPassword setRepeatPassword() throws CouldNotFindApplicationActionImage
-        {
+            focus();
             clickOn("adminPassword/repeatPassword");
-            type(Key.DELETE);
-            type(installerProperties.getAdminPassword());
+            clearAndType(installerProperties.getAdminPassword());
             return this;
         }
     }
@@ -390,7 +405,7 @@ public class ACSInstaller extends ACSWizard implements Installable
             return this;
         }
     }
-    
+
     public class DatabaseParameters implements Focusable<DatabaseParameters>
     {
         public DatabaseParameters() throws Exception
@@ -405,10 +420,10 @@ public class ACSInstaller extends ACSWizard implements Installable
             return this;
         }
 
-        public DatabaseParameters setPort() throws CouldNotFindApplicationActionImage
-        {            
-            type(Key.DELETE);
-            type(installerProperties.getProperty("db.port"));
+        public DatabaseParameters setPort(String port) throws Exception
+        {
+            focus();
+            clearAndType(port);
             return this;
         }
     }
@@ -427,24 +442,24 @@ public class ACSInstaller extends ACSWizard implements Installable
             return this;
         }
 
-        public DatabaseConfiguration setUsername() throws CouldNotFindApplicationActionImage
+        public DatabaseConfiguration setUsername() throws Exception
         {
             clickOn("databaseConfiguration/username");
-            type(installerProperties.getProperty("db.username"));
+            clearAndType(installerProperties.getOSProperty("db.username"));
             return this;
         }
 
-        public DatabaseConfiguration setPassword() throws CouldNotFindApplicationActionImage
+        public DatabaseConfiguration setPassword() throws Exception
         {
             clickOn("databaseConfiguration/password");
-            type(installerProperties.getProperty("db.password"));
+            clearAndType(installerProperties.getOSProperty("db.password"));
             return this;
         }
 
-        public DatabaseConfiguration verifyPassword() throws CouldNotFindApplicationActionImage
+        public DatabaseConfiguration verifyPassword() throws Exception
         {
             clickOn("databaseConfiguration/verify");
-            type(installerProperties.getProperty("db.password"));
+            clearAndType(installerProperties.getOSProperty("db.password"));
             return this;
         }
     }
@@ -463,42 +478,37 @@ public class ACSInstaller extends ACSWizard implements Installable
             return this;
         }
 
-        public TomcatConfigurationPage setWebServerDomain() throws CouldNotFindApplicationActionImage
+        public TomcatConfigurationPage setWebServerDomain() throws Exception
         {
-            type("a", Key.CTRL);
-            type(installerProperties.getProperty("web.server.domain"));
+            clearAndType(installerProperties.getOSProperty("web.server.domain"));
             return this;
         }
 
-        public TomcatConfigurationPage setTomcatServerPort() throws CouldNotFindApplicationActionImage
+        public TomcatConfigurationPage setTomcatServerPort() throws Exception
         {
             clickOn("tomcat/tomcatServerPort");
-            type("a", Key.CTRL);
-            type(installerProperties.getProperty("tomcat.server.port"));
+            clearAndType(installerProperties.getOSProperty("tomcat.server.port"));
             return this;
         }
 
-        public TomcatConfigurationPage setTomcatShutdownPort() throws CouldNotFindApplicationActionImage
+        public TomcatConfigurationPage setTomcatShutdownPort() throws Exception
         {
             clickOn("tomcat/tomcatShutdownPort");
-            type("a", Key.CTRL);
-            type(installerProperties.getProperty("tomcat.shutdown.port"));
+            clearAndType(installerProperties.getOSProperty("tomcat.shutdown.port"));
             return this;
         }
 
-        public TomcatConfigurationPage setTomcatSSLPort() throws CouldNotFindApplicationActionImage
+        public TomcatConfigurationPage setTomcatSSLPort() throws Exception
         {
             clickOn("tomcat/tomcatSSLPort");
-            type("a", Key.CTRL);
-            type(installerProperties.getProperty("tomcat.ssl.port"));
+            clearAndType(installerProperties.getOSProperty("tomcat.ssl.port"));
             return this;
         }
 
-        public TomcatConfigurationPage setTomcatAJPPort() throws CouldNotFindApplicationActionImage
+        public TomcatConfigurationPage setTomcatAJPPort() throws Exception
         {
             clickOn("tomcat/tomcatAJPPort");
-            type("a", Key.CTRL);
-            type(installerProperties.getProperty("tomcat.ajp.port"));
+            clearAndType(installerProperties.getOSProperty("tomcat.ajp.port"));
             return this;
         }
     }
@@ -544,11 +554,10 @@ public class ACSInstaller extends ACSWizard implements Installable
             return this;
         }
 
-        public FtpPortPage setFtpPort() throws CouldNotFindApplicationActionImage
+        public FtpPortPage setFtpPort() throws Exception
         {
             clickOn("ftp/ftpPort");
-            type("a", Key.CTRL);
-            type(installerProperties.getProperty("ftp.port"));
+            clearAndType(installerProperties.getOSProperty("ftp.port"));
             return this;
         }
     }
@@ -567,11 +576,10 @@ public class ACSInstaller extends ACSWizard implements Installable
             return this;
         }
 
-        public RmiPortPage setRmiPort() throws CouldNotFindApplicationActionImage
+        public RmiPortPage setRmiPort() throws Exception
         {
             clickOn("rmi/rmiPort");
-            type("a", Key.CTRL);
-            type(installerProperties.getProperty("rmi.port"));
+            clearAndType(installerProperties.getOSProperty("rmi.port"));
             return this;
         }
     }
@@ -617,11 +625,10 @@ public class ACSInstaller extends ACSWizard implements Installable
             return this;
         }
 
-        public LibreOfficeServerPortPage setRmiPort() throws CouldNotFindApplicationActionImage
+        public LibreOfficeServerPortPage setRmiPort() throws Exception
         {
             clickOn("libreOffice/libreOfficeServerPort");
-            type("a", Key.CTRL);
-            type(installerProperties.getProperty("libre.office.server.port"));
+            clearAndType(installerProperties.getOSProperty("libre.office.server.port"));
             return this;
         }
     }
@@ -640,19 +647,17 @@ public class ACSInstaller extends ACSWizard implements Installable
             return this;
         }
 
-        public RemoteSolrConfigurationPage setRemoteSolrHost() throws CouldNotFindApplicationActionImage
+        public RemoteSolrConfigurationPage setRemoteSolrHost() throws Exception
         {
             clickOn("remoteSolr/remoteSolrHost");
-            type("a", Key.CTRL);
-            type(installerProperties.getProperty("remote.solr.host"));
+            clearAndType(installerProperties.getOSProperty("remote.solr.host"));
             return this;
         }
 
-        public RemoteSolrConfigurationPage setRemoteSolrSSLPort() throws CouldNotFindApplicationActionImage
+        public RemoteSolrConfigurationPage setRemoteSolrSSLPort() throws Exception
         {
             clickOn("remoteSolr/remoteSolrSSLPort");
-            type("a", Key.CTRL);
-            type(installerProperties.getProperty("remote.solr.ssl.port"));
+            clearAndType(installerProperties.getOSProperty("remote.solr.ssl.port"));
             return this;
         }
     }

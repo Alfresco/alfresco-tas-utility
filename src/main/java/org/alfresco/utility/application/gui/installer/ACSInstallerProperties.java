@@ -38,7 +38,7 @@ public class ACSInstallerProperties
      * @param key
      * @return
      */
-    public String getProperty(String key)
+    public String getOSProperty(String key)
     {
         String osName = "unix";
         if (SystemUtils.IS_OS_MAC)
@@ -54,13 +54,78 @@ public class ACSInstallerProperties
         return getEnv().getProperty("admin.password");
     }
 
+    public String getInstallerDBPort()
+    {
+        return getEnv().getProperty("installer.db.port");
+    }
+
+    public String getInstallerDBUsername()
+    {
+        return getEnv().getProperty("installer.db.username");
+    }
+
+    public String getInstallerDBPassword()
+    {
+        return getEnv().getProperty("installer.db.password");
+    }
+
+    public String getInstallerWebServerDomain()
+    {
+        return getEnv().getProperty("installer.web.server.domain");
+    }
+
+    public String getInstallerTomcatServerPort()
+    {
+        return getEnv().getProperty("installer.tomcat.serverPort");
+    }
+
+    public String getInstallerTomcatShutdownPort()
+    {
+        return getEnv().getProperty("installer.tomcat.shutdownPort");
+    }
+
+    public String getInstallerTomcatSSLPort()
+    {
+        return getEnv().getProperty("installer.tomcat.sslPort");
+    }
+
+    public String getInstallerTomcatAJPPort()
+    {
+        return getEnv().getProperty("installer.tomcat.ajpPort");
+    }
+
+    public String getInstallerFTPPort()
+    {
+        return getEnv().getProperty("installer.ftpPort");
+    }
+
+    public String getInstallerRMIPort()
+    {
+        return getEnv().getProperty("installer.rmiPort");
+    }
+
+    public String getInstallerLibreOfficeServerPort()
+    {
+        return getEnv().getProperty("installer.win.libre.office.serverPort");
+    }
+
+    public String getInstallerRemoteSolrHost()
+    {
+        return getEnv().getProperty("installer.win.remote.solr.host");
+    }
+
+    public String getInstallerRemoteSolrSSLPort()
+    {
+        return getEnv().getProperty("installer.win.remote.solr.sslPort");
+    }
+
     /**
      * Return the installer.source path as defined in installer.properties file
      * for your OS
      */
     public File getInstallerSourcePath()
     {
-        return Paths.get(getProperty("installer.source")).toFile();
+        return Paths.get(getOSProperty("installer.source")).toFile();
     }
 
     /**
@@ -69,16 +134,16 @@ public class ACSInstallerProperties
      */
     public File getInstallerDestinationPath()
     {
-        return Paths.get(getProperty("installer.destination")).toFile();
+        return Paths.get(getOSProperty("installer.destination")).toFile();
     }
-    
+
     /**
      * Return the installer.mountLocation path as defined in installer.properties file
      * for your MacOS/Unix OS
      */
     public File getInstallerMountLocation()
     {
-        return Paths.get(getProperty("installer.mountLocation")).toFile();
+        return Paths.get(getOSProperty("installer.mountLocation")).toFile();
     }
 
     /**
@@ -87,7 +152,7 @@ public class ACSInstallerProperties
      */
     public File getInstallerOptionFile()
     {
-        return Paths.get(getProperty("installer.optionsFile")).toFile();
+        return Paths.get(getOSProperty("installer.optionsFile")).toFile();
     }
 
     /**
@@ -131,7 +196,7 @@ public class ACSInstallerProperties
 
         String file = "";
 
-        for (int i = 1; (file = getProperty(String.format("%s.%s", propertyKey, i))) != null; i++)
+        for (int i = 1; (file = getOSProperty(String.format("%s.%s", propertyKey, i))) != null; i++)
         {
             list.add(file);
         }

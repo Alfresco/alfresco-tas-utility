@@ -2,17 +2,16 @@ package org.alfresco.utility.application.gui;
 
 import java.io.File;
 
-import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.Utility;
 import org.alfresco.utility.application.Applicationable;
 import org.alfresco.utility.application.Focusable;
 import org.alfresco.utility.exception.CouldNotFindApplicationActionImage;
 import org.alfresco.utility.exception.TestConfigurationException;
+import org.alfresco.utility.report.log.Step;
 import org.apache.commons.lang.SystemUtils;
 import org.sikuli.api.robot.Key;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Screen;
-import org.slf4j.Logger;
 
 /**
  * Inherit this class if you are dealing with GUI based application
@@ -21,7 +20,6 @@ import org.slf4j.Logger;
  */
 public abstract class GuiScreen extends Screen implements Applicationable, Focusable<GuiScreen>
 {
-    static Logger LOG = LogFactory.getLogger();
     static final Screen screenHelperInstance = new Screen();
 
     public static Screen getScreenHelper()
@@ -83,7 +81,7 @@ public abstract class GuiScreen extends Screen implements Applicationable, Focus
      */
     public GuiScreen waitOn(String imageAction) throws Exception
     {
-        LOG.info("Wait for: [{}]", imageAction);
+        Step.STEP(String.format("Wait for: [{}]", imageAction));
         wait(getImageActionRelatedToApp(imageAction));
         return this;
     }
@@ -104,7 +102,7 @@ public abstract class GuiScreen extends Screen implements Applicationable, Focus
      */
     public GuiScreen clickOn(String imageAction) throws CouldNotFindApplicationActionImage
     {
-        LOG.info("Click on: [{}]", imageAction);
+        Step.STEP(String.format("Click on: [{}]", imageAction));
         String location = "";
         try
         {
@@ -119,6 +117,27 @@ public abstract class GuiScreen extends Screen implements Applicationable, Focus
         {
             throw new CouldNotFindApplicationActionImage(location, getAppName(), e.getMessage());
         }
+        return this;
+    }
+
+    public GuiScreen clearAndType(String value) throws Exception
+    {
+        if (SystemUtils.IS_OS_MAC)
+        {
+            type("a", Key.CMD);
+            type(Key.DELETE);
+
+        }
+        else if (SystemUtils.IS_OS_WINDOWS)
+        {
+            type("a", Key.CTRL);
+            type(Key.DELETE);
+        }
+        else if (SystemUtils.IS_OS_LINUX)
+        {
+            throw new Exception("Please add code for Linux on this method");
+        }
+        type(value);
         return this;
     }
 
@@ -138,7 +157,7 @@ public abstract class GuiScreen extends Screen implements Applicationable, Focus
      */
     public GuiScreen checkOn(String imageAction) throws CouldNotFindApplicationActionImage
     {
-        LOG.info("Check on: [{}]", imageAction);
+        Step.STEP(String.format("Check on: [{}]", imageAction));
         String location = "";
         try
         {
