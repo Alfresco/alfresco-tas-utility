@@ -2,7 +2,11 @@ package org.alfresco.utility.network;
 
 import java.io.IOException;
 
-import javax.management.*;
+import javax.management.InstanceNotFoundException;
+import javax.management.MBeanException;
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
+import javax.management.ReflectionException;
 
 import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.TasProperties;
@@ -11,9 +15,16 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.CharEncoding;
 import org.jolokia.client.J4pClient;
 import org.jolokia.client.exception.J4pRemoteException;
-import org.jolokia.client.request.*;
+import org.jolokia.client.request.J4pExecRequest;
+import org.jolokia.client.request.J4pExecResponse;
+import org.jolokia.client.request.J4pReadRequest;
+import org.jolokia.client.request.J4pReadResponse;
+import org.jolokia.client.request.J4pRequest;
+import org.jolokia.client.request.J4pResponse;
+import org.jolokia.client.request.J4pWriteRequest;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -109,7 +120,7 @@ public class JmxJolokiaProxyClient implements Jmx
         try
         {
             client.executeMethod(get);
-            String response = IOUtils.toString(get.getResponseBodyAsStream());
+            String response = IOUtils.toString(get.getResponseBodyAsStream(), CharEncoding.UTF_8);
             isEnabled = response.contains("agentId");
         }
         catch (HttpException e)

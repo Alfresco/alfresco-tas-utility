@@ -338,7 +338,7 @@ public class DataContent extends TestData<DataContent>
         if (siteService.exists(site.getId(), getAdminUser().getUsername(), getAdminUser().getPassword()))
         {
             LOG.info("Deleting site {} with user {}", site.toString(), getCurrentUser().toString());
-            siteService.delete(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getCurrentUser().getDomain(), site.getId());
+            siteService.delete(getCurrentUser().getUsername(), getCurrentUser().getPassword(), site.getId());
         }
     }
 

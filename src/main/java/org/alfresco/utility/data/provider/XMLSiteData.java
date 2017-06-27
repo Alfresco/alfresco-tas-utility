@@ -8,8 +8,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
 
+import org.alfresco.dataprep.SiteService.Visibility;
 import org.alfresco.utility.model.SiteModel;
-import org.springframework.social.alfresco.api.entities.Site.Visibility;
 
 /**
  * <site name="site1" createdBy="admin">

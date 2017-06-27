@@ -14,6 +14,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.CharEncoding;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -86,7 +87,7 @@ public class ServerHealth
 
             get.getParams().setSoTimeout(5000);
             client.executeMethod(get);
-            response = IOUtils.toString(get.getResponseBodyAsStream());
+            response = IOUtils.toString(get.getResponseBodyAsStream(), CharEncoding.UTF_8);
 
             LOG.info(response.toString());
 

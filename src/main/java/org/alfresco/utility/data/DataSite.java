@@ -4,13 +4,12 @@ import static org.alfresco.utility.report.log.Step.STEP;
 
 import org.alfresco.dataprep.SiteService;
 import org.alfresco.dataprep.SiteService.RMSiteCompliance;
+import org.alfresco.dataprep.SiteService.Visibility;
 import org.alfresco.utility.TasProperties;
 import org.alfresco.utility.exception.DataPreparationException;
 import org.alfresco.utility.model.SiteModel;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.social.alfresco.api.entities.Site;
 import org.springframework.stereotype.Service;
 import org.testng.Assert;
 
@@ -47,7 +46,7 @@ public class DataSite extends TestData<DataSite>
         siteService.create(
                 getCurrentUser().getUsername(), 
                 getCurrentUser().getPassword(), 
-                String.format(RandomStringUtils.randomAlphanumeric(10), EMAIL),
+                "",
                 siteModel.getId(), 
                 siteModel.getTitle(), 
                 siteModel.getDescription(), 
@@ -55,7 +54,7 @@ public class DataSite extends TestData<DataSite>
 
         siteModel.setGuid(siteService.getSiteNodeRef(getCurrentUser().getUsername(), getCurrentUser().getPassword(), siteModel.getId()));
         return siteModel;
-    }    
+    }
 
     /**
      * Create public site immediately
@@ -66,7 +65,6 @@ public class DataSite extends TestData<DataSite>
     public SiteModel createPublicRandomSite() throws DataPreparationException
     {
         String randomSite = RandomData.getRandomName("sitePublic");
-
         return createSite(new SiteModel(randomSite));
     }
     
@@ -78,7 +76,7 @@ public class DataSite extends TestData<DataSite>
      */
     public SiteModel createModeratedRandomSite() throws DataPreparationException
     {
-        SiteModel randomSite = new SiteModel(RandomData.getRandomName("siteModerated"), Site.Visibility.MODERATED);
+        SiteModel randomSite = new SiteModel(RandomData.getRandomName("siteModerated"), Visibility.MODERATED);
         return createSite(randomSite);
     }
     
@@ -90,7 +88,7 @@ public class DataSite extends TestData<DataSite>
      */
     public SiteModel createPrivateRandomSite() throws DataPreparationException
     {
-        SiteModel randomSite = new SiteModel(RandomData.getRandomName("sitePrivate"), Site.Visibility.PRIVATE);
+        SiteModel randomSite = new SiteModel(RandomData.getRandomName("sitePrivate"), Visibility.PRIVATE);
         return createSite(randomSite);
     }
     
@@ -102,7 +100,7 @@ public class DataSite extends TestData<DataSite>
      */
     public SiteModel createIMAPSite() throws DataPreparationException
     {
-        String imapSite = RandomData.getRandomName("IMAPsite");       
+        String imapSite = RandomData.getRandomName("IMAPsite");
         STEP(String.format("Creating public site %s with user %s and setting as IMAP Favourite", imapSite, getCurrentUser().toString()));
 
         SiteModel siteModel = createSite(new SiteModel(imapSite));
@@ -171,7 +169,7 @@ public class DataSite extends TestData<DataSite>
     public void deleteSite(SiteModel siteModel) throws DataPreparationException
     {
         STEP(String.format("DATAPREP: Delete site %s", siteModel.getId()));
-        siteService.delete(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getCurrentUser().getDomain(), siteModel.getId());
+        siteService.delete(getCurrentUser().getUsername(), getCurrentUser().getPassword(), siteModel.getId());
     }
 
     /**
@@ -180,7 +178,7 @@ public class DataSite extends TestData<DataSite>
      * @param newVisibility
      * @throws DataPreparationException
      */
-    public void updateSiteVisibility(SiteModel siteModel, Site.Visibility newVisibility) throws DataPreparationException
+    public void updateSiteVisibility(SiteModel siteModel, Visibility newVisibility) throws DataPreparationException
     {
         STEP(String.format("DATAPREP: Change site %s visibility to %s", siteModel.getId(), newVisibility));
         siteService.updateSiteVisibility(getCurrentUser().getUsername(), getCurrentUser().getPassword(), siteModel.getId(), newVisibility);
