@@ -195,7 +195,12 @@ public class Utility
     {
         if (StringUtils.endsWith(sourcePath, "/"))
         {
-            return StringUtils.removeEnd(sourcePath, "/");
+            sourcePath = StringUtils.removeEnd(sourcePath, "/");
+        }
+        if(sourcePath.isEmpty())
+        {
+            // set root path (in CMIS root = '/')
+            sourcePath = "/";
         }
         return sourcePath;
     }
