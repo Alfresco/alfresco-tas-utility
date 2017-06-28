@@ -24,10 +24,10 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.CharEncoding;
 import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jmx.support.JmxUtils;
 import org.testng.Assert;
 
 import com.google.common.io.Files;
@@ -292,7 +292,7 @@ public abstract class TestData<Data> implements DSL<Data>
 
         get.getParams().setSoTimeout(5000);
         client.executeMethod(get);
-        logResponse = IOUtils.toString(get.getResponseBodyAsStream());
+        logResponse = IOUtils.toString(get.getResponseBodyAsStream(), CharEncoding.UTF_8);
         return (Data) this;
     }
 

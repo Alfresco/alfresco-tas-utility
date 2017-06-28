@@ -2,9 +2,9 @@ package org.alfresco.utility.model;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
+import org.alfresco.dataprep.SiteService.Visibility;
 import org.alfresco.utility.Utility;
 import org.alfresco.utility.data.RandomData;
-import org.springframework.social.alfresco.api.entities.Site.Visibility;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -118,5 +118,4 @@ public class SiteModel extends TestModel
         LOG.info("Generating new random Site Model: {}", siteName);
         return new SiteModel(siteName);
     }
-
 }
