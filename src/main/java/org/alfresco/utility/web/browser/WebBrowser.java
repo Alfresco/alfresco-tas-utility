@@ -1042,20 +1042,31 @@ public class WebBrowser extends EventFiringWebDriver
         executeJavaScript("arguments[0].click();", elementToClick);
     }
 
-    public void handleModalDialogAcceptingAlert()
-    {
-        Alert alert = this.switchTo().alert();
-        String alertText = alert.getText().trim();
-        LOG.info("Alert data: " + alertText);
-        alert.accept();
+    public boolean isAlertPresent() {
+        try {
+            this.switchTo().alert();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
-    public void handleModalDialogDismissingAlert()
-    {
-        Alert alert = this.switchTo().alert();
-        String alertText = alert.getText().trim();
-        LOG.info("Alert data: " + alertText);
-        alert.dismiss();
+    public void handleModalDialogAcceptingAlert() {
+        if (isAlertPresent()) {
+            Alert alert = this.switchTo().alert();
+            String alertText = alert.getText().trim();
+            LOG.info("Alert data: " + alertText);
+            alert.accept();
+        }
+    }
+
+    public void handleModalDialogDismissingAlert() {
+        if (isAlertPresent()) {
+            Alert alert = this.switchTo().alert();
+            String alertText = alert.getText().trim();
+            LOG.info("Alert data: " + alertText);
+            alert.dismiss();
+        }
     }
 
     public void focusOnWebElement(WebElement webElement)
