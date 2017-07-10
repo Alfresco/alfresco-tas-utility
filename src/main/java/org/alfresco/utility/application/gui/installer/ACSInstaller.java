@@ -7,6 +7,8 @@ import org.sikuli.api.robot.Key;
 import org.sikuli.script.FindFailed;
 import org.springframework.stereotype.Component;
 
+import static org.sikuli.script.Mouse.WHEEL_DOWN;
+
 /**
  * Sikuli approach of interacting with Alfresco Installer.
  * Following a Wizard base design pattern
@@ -40,6 +42,15 @@ public class ACSInstaller extends ACSWizard implements Installable
 
     public LicensePage onLicensePage() throws FindFailed, Exception
     {
+        return new LicensePage();
+    }
+
+    public LicensePage navigateToLicensePage() throws Exception
+    {
+        open();
+        waitForInstallerToOpen();
+        onLanguageSelectionDialog().clickOK();
+        onSetup().clickNext();
         return new LicensePage();
     }
 
@@ -174,6 +185,13 @@ public class ACSInstaller extends ACSWizard implements Installable
             clickOn("next");
             return this;
         }
+
+        public Setup clickBack() throws Exception
+        {
+            focus();
+            clickOn("back");
+            return this;
+        }
     }
 
     /**
@@ -204,6 +222,21 @@ public class ACSInstaller extends ACSWizard implements Installable
         {
             focus();
             clickOn("license/notacceptagreement");
+            return this;
+        }
+
+        public LicensePage scrollAgreement() throws Exception
+        {
+            focus();
+            wheel(WHEEL_DOWN, 30);
+            waitOn("license/scrolledBar");
+            return this;
+        }
+
+        public LicensePage noOptionIsSelected() throws Exception
+        {
+            waitOn("license/iacceptagreement");
+            waitOn("license/notacceptagreement");
             return this;
         }
     }

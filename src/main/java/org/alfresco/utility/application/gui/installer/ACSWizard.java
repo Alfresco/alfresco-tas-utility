@@ -70,4 +70,8 @@ public abstract class ACSWizard extends GuiScreen
         return "Alfresco Content Service";
     }
 
+    public boolean isProcessRunning()
+    {
+        return Utility.isProcessRunning(installerProperties.getOSProperty("installer.name"));
+    }
 }
