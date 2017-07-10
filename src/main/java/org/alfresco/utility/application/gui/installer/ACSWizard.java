@@ -67,11 +67,6 @@ public abstract class ACSWizard extends GuiScreen
     @Override
     public String getProcessName()
     {
-        return "Alfresco Content Service";
-    }
-
-    public boolean isProcessRunning()
-    {
-        return Utility.isProcessRunning(installerProperties.getOSProperty("installer.name"));
+        return "alfresco-content-services";
     }
 }
