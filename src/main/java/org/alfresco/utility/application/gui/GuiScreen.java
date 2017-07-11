@@ -81,7 +81,7 @@ public abstract class GuiScreen extends Screen implements Applicationable, Focus
      */
     public GuiScreen waitOn(String imageAction) throws Exception
     {
-        Step.STEP(String.format("Wait for: [{}]", imageAction));
+        Step.STEP(String.format("Wait for: [%s]", imageAction));
         wait(getImageActionRelatedToApp(imageAction));
         return this;
     }
@@ -102,7 +102,7 @@ public abstract class GuiScreen extends Screen implements Applicationable, Focus
      */
     public GuiScreen clickOn(String imageAction) throws CouldNotFindApplicationActionImage
     {
-        Step.STEP(String.format("Click on: [{}]", imageAction));
+        Step.STEP(String.format("Click on: [%s]", imageAction));
         String location = "";
         try
         {
@@ -170,7 +170,7 @@ public abstract class GuiScreen extends Screen implements Applicationable, Focus
      */
     public GuiScreen checkOn(String imageAction) throws CouldNotFindApplicationActionImage
     {
-        Step.STEP(String.format("Check on: [{}]", imageAction));
+        Step.STEP(String.format("Check on: [%s]", imageAction));
         String location = "";
         try
         {

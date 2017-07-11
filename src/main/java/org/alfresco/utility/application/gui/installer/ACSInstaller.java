@@ -45,7 +45,7 @@ public class ACSInstaller extends ACSWizard implements Installable
         return new LicensePage();
     }
 
-    public LicensePage navigateToLicensePage() throws Exception
+    public LicensePage navigateToLicenseForm() throws Exception
     {
         open();
         waitForInstallerToOpen();
@@ -56,6 +56,17 @@ public class ACSInstaller extends ACSWizard implements Installable
 
     public InstallationType onInstallationTypePage() throws Exception
     {
+        return new InstallationType();
+    }
+
+    public InstallationType navigateToInstallationTypeForm() throws Exception
+    {
+        open();
+        waitForInstallerToOpen();
+        onLanguageSelectionDialog().clickOK();
+        onSetup().clickNext();
+        onLicensePage().acceptTheAgreement();
+        onSetup().clickNext();
         return new InstallationType();
     }
 
@@ -190,6 +201,12 @@ public class ACSInstaller extends ACSWizard implements Installable
         {
             focus();
             clickOn("back");
+            return this;
+        }
+
+        public Setup checkSetupDescription() throws Exception
+        {
+            waitOn("setup/description");
             return this;
         }
     }
