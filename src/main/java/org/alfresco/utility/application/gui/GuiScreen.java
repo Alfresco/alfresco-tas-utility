@@ -187,7 +187,7 @@ public abstract class GuiScreen extends Screen implements Applicationable, Focus
     }
 
     /**
-     * This will kill the application based on the process name defined {@link getProcessName}
+     * This will kill the application based on the process name defined
      */
     @Override
     public Applicationable killProcess() throws Exception
@@ -197,7 +197,7 @@ public abstract class GuiScreen extends Screen implements Applicationable, Focus
     }
 
     /**
-     * Check if the process is running by process name defined {@link getProcessName}
+     * Check if the process is running by process name defined
      */
     @Override
     public boolean isRunning()

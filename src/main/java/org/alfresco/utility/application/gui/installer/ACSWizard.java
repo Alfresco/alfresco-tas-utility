@@ -3,13 +3,17 @@ package org.alfresco.utility.application.gui.installer;
 import java.io.File;
 import java.nio.file.Paths;
 
+import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.Utility;
 import org.alfresco.utility.application.gui.GuiScreen;
 import org.apache.commons.lang.SystemUtils;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class ACSWizard extends GuiScreen
 {
+    protected Logger LOG = LogFactory.getLogger();
+
     @Autowired
     ACSInstallerProperties installerProperties;
 
