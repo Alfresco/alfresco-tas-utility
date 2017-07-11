@@ -35,6 +35,11 @@ public class ACSInstaller extends ACSWizard implements Installable
         return new Dialog();
     }
 
+    public Warning onWarning() throws Exception
+    {
+        return new Warning();
+    }
+
     public Setup onSetup() throws Exception
     {
         return new Setup();
@@ -72,6 +77,19 @@ public class ACSInstaller extends ACSWizard implements Installable
 
     public InstallationFolder onInstallationFolderPage() throws Exception
     {
+        return new InstallationFolder();
+    }
+
+    public InstallationFolder navigateToInstallationFolderForm() throws Exception
+    {
+        open();
+        waitForInstallerToOpen();
+        onLanguageSelectionDialog().clickOK();
+        onSetup().clickNext();
+        onLicensePage().acceptTheAgreement();
+        onSetup().clickNext();
+        onInstallationTypePage().chooseEasyInstall();
+        onSetup().clickNext();
         return new InstallationFolder();
     }
 
@@ -124,6 +142,20 @@ public class ACSInstaller extends ACSWizard implements Installable
     {
         return new SelectComponents();
     }
+
+    public SelectComponents navigateToSelectComponentsForm() throws Exception
+    {
+        open();
+        waitForInstallerToOpen();
+        onLanguageSelectionDialog().clickOK();
+        onSetup().clickNext();
+        onLicensePage().acceptTheAgreement();
+        onSetup().clickNext();
+        onInstallationTypePage().chooseAdvancedInstall();
+        onSetup().clickNext();
+        return new SelectComponents();
+    }
+
 
     public AdminPassword onAdminPasswordPage() throws Exception
     {
@@ -299,6 +331,31 @@ public class ACSInstaller extends ACSWizard implements Installable
         }
     }
 
+    /*
+     * Generic warning
+     */
+    public class Warning implements Focusable<Warning>
+    {
+        public Warning() throws Exception
+        {
+            waitOn("warning/doYouWantToAbort");
+            focus();
+        }
+
+        public void clickOK() throws Exception
+        {
+            focus();
+            clickOn("warning/ok");
+        }
+
+        @Override
+        public Warning focus() throws CouldNotFindApplicationActionImage
+        {
+            clickOn("warning/title");
+            return this;
+        }
+    }
+
     /**
      * Installation Type -4th Page
      */
@@ -353,6 +410,11 @@ public class ACSInstaller extends ACSWizard implements Installable
             focus();            
             clearAndType(destination);
             return this;
+        }
+
+        public boolean isSelectedFolderNotEmptyWarningDisplayed() throws CouldNotFindApplicationActionImage
+        {
+            return isPopUpDisplayed("installationFolder/selectedFolderNotEmpty");
         }
     }
 

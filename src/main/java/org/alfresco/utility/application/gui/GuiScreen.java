@@ -120,6 +120,19 @@ public abstract class GuiScreen extends Screen implements Applicationable, Focus
         return this;
     }
 
+    protected boolean isPopUpDisplayed(String imageLocation) throws CouldNotFindApplicationActionImage
+    {
+        try
+        {
+            exists(imageLocation);
+            return true;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+    }
+
     public GuiScreen clearAndType(String value) throws Exception
     {
         if (SystemUtils.IS_OS_MAC)

@@ -26,7 +26,7 @@ public abstract class ACSWizard extends GuiScreen
             Utility.executeOnWin(String.format("\"%s\"", installerProperties.getInstallerSourcePath().getPath()));
             Thread.sleep(5000);
         }
-        else
+        else if (SystemUtils.IS_OS_MAC)
         {
             /* mount dmg file to mount point */
             Utility.executeOnUnixNoWait("open " + installerProperties.getInstallerSourcePath().getPath());
@@ -43,6 +43,11 @@ public abstract class ACSWizard extends GuiScreen
                 throw new Exception("Cannot mount Alfresco Installer to:" + installerProperties.getInstallerMountLocation().getPath());
 
             Utility.executeOnUnixNoWait("sh " + installBuilderSh.getPath().replaceAll(" ", "\\\\ "));
+            Thread.sleep(5000);
+        } else if (SystemUtils.IS_OS_LINUX)
+        {
+            Utility.executeOnUnixNoWait("chmod +x " + installerProperties.getInstallerSourcePath().getPath());
+            Utility.executeOnUnixNoWait(installerProperties.getInstallerSourcePath().getPath());
             Thread.sleep(5000);
         }
 
