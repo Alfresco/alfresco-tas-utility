@@ -5,7 +5,10 @@ import org.alfresco.utility.model.TestGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import static org.alfresco.utility.report.log.Step.STEP;
 
 @ContextConfiguration("classpath:alfresco-tester-context.xml")
 public class ACSEasyInstallTest extends AbstractTestNGSpringContextTests
@@ -13,7 +16,7 @@ public class ACSEasyInstallTest extends AbstractTestNGSpringContextTests
     @Autowired
     ACSInstaller installer;
 
-    @Test(groups={"demo", TestGroup.OS_MAC}, priority=0)
+    @Test(groups={"demo"}, priority=0)
     public void openAlfrescoInstallerWizard() throws Exception
     {
         installer.open();
@@ -60,7 +63,7 @@ public class ACSEasyInstallTest extends AbstractTestNGSpringContextTests
     }
     
     @Test(groups={"demo"}, priority=7)
-    public void setDabaseServerPort() throws CouldNotFindApplicationActionImage, Exception
+    public void setDatabaseServerPort() throws CouldNotFindApplicationActionImage, Exception
     {
         installer.onDatabaseParametersPage()
                  .setPort(installer.getFileProperties().getInstallerDBPort());
