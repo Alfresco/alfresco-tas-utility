@@ -120,7 +120,7 @@ public abstract class GuiScreen extends Screen implements Applicationable, Focus
         return this;
     }
 
-    public boolean isPopUpDisplayed(String imageLocation) throws CouldNotFindApplicationActionImage
+    protected boolean isPopUpDisplayed(String imageLocation) throws CouldNotFindApplicationActionImage
     {
         try
         {
