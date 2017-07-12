@@ -56,7 +56,7 @@ public abstract class GuiScreen extends Screen implements Applicationable, Focus
         }
         else if (SystemUtils.IS_OS_WINDOWS)
         {
-            os = "win";
+            os = "win8";
         }
 
         String location = String.format("shared-resources/gui/%s/%s/%s.png", os, getAppName(), action);

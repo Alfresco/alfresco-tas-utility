@@ -12,6 +12,7 @@ public class InstallerEndToEndTests extends InstallerTest
 {
     @Autowired
     ACSUninstaller uninstaller;
+    
     public void installationWithDefaultParameters()
     {
         //TODO
