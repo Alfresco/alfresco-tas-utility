@@ -2,6 +2,8 @@ package org.alfresco.utility.application.gui.installer;
 
 import org.alfresco.utility.Utility;
 import org.alfresco.utility.application.Focusable;
+import org.alfresco.utility.application.gui.installer.ACSInstallerProperties.DESCRIPTION;
+import org.alfresco.utility.application.gui.installer.ACSInstallerProperties.LANGUAGES;
 import org.alfresco.utility.exception.CouldNotFindApplicationActionImage;
 import org.apache.commons.lang.SystemUtils;
 import org.sikuli.api.robot.Key;
@@ -46,6 +48,11 @@ public class ACSInstaller extends ACSWizard implements Installable
     public Setup onSetup() throws Exception
     {
         return new Setup();
+    }
+    
+    public FrenchSetup onFrenchSetup() throws Exception
+    {
+        return new FrenchSetup();
     }
 
     public LicensePage onLicensePage() throws FindFailed, Exception
@@ -186,17 +193,37 @@ public class ACSInstaller extends ACSWizard implements Installable
             clickOn("languageSelection/ok");
             return new Setup();
         }
+        
+        public FrenchSetup startWithFrenchSetup() throws Exception
+        {
+            clickOn("languageSelection/title");
+            clickOn("languageSelection/ok");
+            return new FrenchSetup();
+        }
 
         public void clickCancel() throws Exception
         {
             focus();
             clickOn("cancel");
+            Utility.waitToLoopTime(WAIT_TIMEOUT);
         }
 
         @Override
         public LanguageSelection focus() throws Exception
         {
             clickOn("languageSelection/title");
+            return this;
+        }
+        
+        public LanguageSelection setLanguage(LANGUAGES language) throws CouldNotFindApplicationActionImage {
+        	clickOn("languageSelection/openLanguages");
+        	clickOn(language.toString());
+        	return this;
+        }
+        
+        public LanguageSelection assertSelectedLanguageIs(LANGUAGES language) throws Exception
+        {
+            waitOn(language.toString());
             return this;
         }
     }
@@ -244,6 +271,25 @@ public class ACSInstaller extends ACSWizard implements Installable
             waitOn("setup/description");
             return this;
         }
+    }
+    
+    public class FrenchSetup implements Focusable<FrenchSetup>
+    {
+        public FrenchSetup() throws FindFailed, Exception
+        {
+            waitOn("languageSelection/languages/french/setup");
+        }
+        
+        public FrenchSetup assertDescriptionIs(DESCRIPTION description) throws Exception {
+			waitOn(description.toString());
+        	return this;	
+        }
+
+		@Override
+		public FrenchSetup focus() throws Exception {
+			clickOn("languageSelection/languages/french/setup");
+			return this;
+		}
     }
 
     /**
@@ -805,6 +851,13 @@ public class ACSInstaller extends ACSWizard implements Installable
     {
         onSetup().focus();
         return this;
+    }
+
+    public LanguageSelection navigateToLanguageForm() throws Exception
+    {
+        open();
+        waitForInstallerToOpen();
+        return new LanguageSelection();
     }
 
 }

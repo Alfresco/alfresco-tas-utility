@@ -20,6 +20,24 @@ public class ACSInstallerProperties
 {
     @Autowired
     Environment env;
+    
+    public enum LANGUAGES {
+    	FRENCH { public String toString() { return "languageSelection/languages/french"; } },
+    	ENGLISH { public String toString() { return "languageSelection/languages/english"; } },
+    	SPANISH { public String toString() { return "languageSelection/languages/spanish"; } },
+    	ITALIAN { public String toString() { return "languageSelection/languages/italian"; } },
+    	GERMAN { public String toString() { return "languageSelection/languages/german"; } },
+    	JAPANESE { public String toString() { return "languageSelection/languages/japanese"; } },
+    	DUTCH { public String toString() { return "languageSelection/languages/dutch"; } },
+    	RUSSIAN { public String toString() { return "languageSelection/languages/russian"; } },
+    	CHINESE { public String toString() { return "languageSelection/languages/chinese"; } },
+    	NORWEGIAN { public String toString() { return "languageSelection/languages/norwegian"; } };
+    }
+    
+    public enum DESCRIPTION {
+    	FRENCH { public String toString() { return "languageSelection/languages/french/description"; } },
+    	ENGLISH { public String toString() { return "languageSelection/languages/english/description"; } };
+    }
 
     public Environment getEnv()
     {
