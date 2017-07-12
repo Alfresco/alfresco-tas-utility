@@ -1,12 +1,15 @@
 package org.alfresco.utility.application.gui.installer;
 
+import org.alfresco.utility.Utility;
 import org.alfresco.utility.application.Focusable;
 import org.alfresco.utility.exception.CouldNotFindApplicationActionImage;
 import org.apache.commons.lang.SystemUtils;
 import org.sikuli.api.robot.Key;
 import org.sikuli.script.FindFailed;
 import org.springframework.stereotype.Component;
+import org.testng.Assert;
 
+import static org.alfresco.utility.Utility.*;
 import static org.sikuli.script.Mouse.WHEEL_DOWN;
 
 /**
@@ -310,6 +313,7 @@ public class ACSInstaller extends ACSWizard implements Installable
             }
             else
                 clickOn("dialog/yes");
+            Utility.waitToLoopTime(WAIT_TIMEOUT);
         }
 
         public void clickNo() throws Exception
@@ -338,7 +342,7 @@ public class ACSInstaller extends ACSWizard implements Installable
     {
         public Warning() throws Exception
         {
-            waitOn("warning/doYouWantToAbort");
+            waitOn("warning/title");
             focus();
         }
 
@@ -415,6 +419,13 @@ public class ACSInstaller extends ACSWizard implements Installable
         public boolean isSelectedFolderNotEmptyWarningDisplayed() throws CouldNotFindApplicationActionImage
         {
             return isPopUpDisplayed("installationFolder/selectedFolderNotEmpty");
+        }
+
+        public InstallationFolder assertInstallationFolderIs(String expectedFolder) throws Exception
+        {
+            copyToClipboard();
+            Assert.assertEquals(getTextFromClipboard(), expectedFolder, "Installation folder is set.");
+            return this;
         }
     }
 

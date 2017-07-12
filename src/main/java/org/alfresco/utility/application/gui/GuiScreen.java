@@ -27,6 +27,8 @@ public abstract class GuiScreen extends Screen implements Applicationable, Focus
         return screenHelperInstance;
     }
 
+    public static final int WAIT_TIMEOUT = 5;
+
     /**
      * I assume the name of the app will be the name of the class.
      * We will look under share-resources/gui/<os-type>/<application-name> for all information
@@ -82,7 +84,7 @@ public abstract class GuiScreen extends Screen implements Applicationable, Focus
     public GuiScreen waitOn(String imageAction) throws Exception
     {
         Step.STEP(String.format("Wait for: [%s]", imageAction));
-        wait(getImageActionRelatedToApp(imageAction));
+        wait(getImageActionRelatedToApp(imageAction), WAIT_TIMEOUT);
         return this;
     }
 
@@ -124,7 +126,7 @@ public abstract class GuiScreen extends Screen implements Applicationable, Focus
     {
         try
         {
-            exists(imageLocation);
+            waitOn(imageLocation);
             return true;
         }
         catch (Exception e)
@@ -151,6 +153,23 @@ public abstract class GuiScreen extends Screen implements Applicationable, Focus
             throw new Exception("Please add code for Linux on this method");
         }
         type(value);
+        return this;
+    }
+
+    public GuiScreen copyToClipboard() throws Exception
+    {
+        if (SystemUtils.IS_OS_MAC)
+        {
+            type("c", Key.CMD);
+        }
+        else if (SystemUtils.IS_OS_WINDOWS)
+        {
+            type("c", Key.CTRL);
+        }
+        else if (SystemUtils.IS_OS_LINUX)
+        {
+            throw new Exception("Please add code for Linux on this method");
+        }
         return this;
     }
 

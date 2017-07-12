@@ -105,15 +105,56 @@ public class InstallerFormTests extends InstallerTest
         installer.onDialog().clickYes();
         Assert.assertFalse(installer.isRunning(), "The installer should be closed and the installation process is aborted.");
     }
-    
+
+    @Test()
     public void installationFolderForm() throws Exception
     {
-        //TODO
+        STEP("Precondition: Alfresco One installer is running in easy install mode - Installation Folder form is opened.");
+        installer.navigateToInstallationFolderForm();
+
+        STEP("1. Select a non-empty folder (e.g. /opt/temp) and click 'Next' button.");
+        String notEmptyFolder = createNotEmptyFolderInOS().getParent();
+        installer.onInstallationFolderPage().setDestination(notEmptyFolder);
+        installer.onSetup().clickNext();
+        Assert.assertTrue(installer.onInstallationFolderPage().isSelectedFolderNotEmptyWarningDisplayed(), "'The selected folder is not empty. Specify a different folder' warning is not displayed.");
+        installer.onWarning().clickOK();
+
+        STEP("2. Enter any random string to the 'Select a folder' field, click 'Forward' button and then click 'Back' button.");
+        installer.onInstallationFolderPage().setDestination("randomDir");
+        installer.onSetup().clickNext();
+        installer.onAdminPasswordPage();
+        installer.onSetup().clickBack();
+
+        //The path from where Alfresco One is launched is added automatically ahead of entered text.
+        String parent = installer.getFileProperties().getInstallerSourcePath().getParent();
+        String destinationFolder = String.format("%s\\randomDir", parent);
+        installer.onInstallationFolderPage().assertInstallationFolderIs(destinationFolder);
+
+        STEP("3. Select empty folder and click 'Forward' button.");
+        destinationFolder = installer.getFileProperties().getInstallerDestinationPath().getPath();
+        installer.onInstallationFolderPage().setDestination(destinationFolder);
+        installer.onSetup().clickNext();
+
+        STEP("4. Click 'Back' button until the 1st step will not be reached and then return to 'Installation Folder' form.");
+        installer.onSetup()
+                .clickBack()
+                .clickBack()
+                .clickNext();
+        installer.onInstallationFolderPage().assertInstallationFolderIs(destinationFolder);
+
+        STEP("5. Click 'Cancel' button ");
+        installer.onSetup().clickCancel();
+
+        STEP("6. Click 'Yes' button and verify <install dir>.");
+        installer.onDialog().clickYes();
+        Assert.assertFalse(installer.isRunning(), "The installer should be closed and the installation process is aborted.");
     }
 
+//    @Test()
     public void selectComponentsForm() throws Exception
     {
-        //TODO
+        STEP("Precondition: Alfresco One installer is running in advanced install mode - Select Components form is opened.");
+        installer.navigateToSelectComponentsForm();
     }
 
     public void adminPasswordForm() throws Exception
