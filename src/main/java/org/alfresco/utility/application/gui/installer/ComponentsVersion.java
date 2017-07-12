@@ -20,7 +20,7 @@ public class ComponentsVersion extends ACSWizard{
     @Autowired
     ACSInstallerProperties installerProperties;
 
-    public void assertJREVersion(String expectedVersion) throws IOException {
+    public void assertJREVersionIs(String expectedVersion) throws IOException {
         if (SystemUtils.IS_OS_WINDOWS) {
             LOG.info("Java actual version: "+ Utility.executeOnWin(String.format("%s\\%s", installerProperties.getInstallerDestinationPath().getPath(), "java\\bin\\java.exe -version")));
             Assert.assertTrue(Utility.executeOnWin(String.format("%s\\%s", installerProperties.getInstallerDestinationPath().getPath(), "java\\bin\\java.exe -version")).contains(expectedVersion), "Java version is not correct, expected: "+ expectedVersion);
@@ -32,7 +32,7 @@ public class ComponentsVersion extends ACSWizard{
         }
     }
 
-    public void assertTomcatVersion(String expectedVersion) throws Exception{
+    public void assertTomcatVersionIs(String expectedVersion) throws Exception{
         if(SystemUtils.IS_OS_WINDOWS){
             LOG.info("Tomcat actual version: "+ Utility.executeOnWin(String.format("%s\\%s", installerProperties.getInstallerDestinationPath(), "tomcat\\bin\\version.sh -version")));
             Assert.assertTrue(Utility.executeOnWin(String.format("%s\\%s", installerProperties.getInstallerDestinationPath(), "tomcat\\bin>version.sh -version")).contains(expectedVersion));
@@ -43,7 +43,7 @@ public class ComponentsVersion extends ACSWizard{
         }
     }
 
-    public void assertJDBC(String expectedJDBC) throws IOException {
+    public void assertJDBCIs(String expectedJDBC) throws IOException {
         if(SystemUtils.IS_OS_WINDOWS){
             Utility.assertFileExists(String.format("%s\\%s\\%s", installerProperties.getInstallerDestinationPath().getPath(),"tomcat\\lib",expectedJDBC));
         }
