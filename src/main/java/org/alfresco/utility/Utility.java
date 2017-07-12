@@ -1,5 +1,9 @@
 package org.alfresco.utility;
 
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FilenameFilter;
@@ -596,5 +600,18 @@ public class Utility
         }
         else
             return null;
+    }
+
+    /**
+     * Get text copied to System Clipboard
+     * @return
+     * @throws IOException
+     * @throws UnsupportedFlavorException
+     */
+    public static String getTextFromClipboard() throws IOException, UnsupportedFlavorException
+    {
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        Clipboard clipboard = toolkit.getSystemClipboard();
+        return (String) clipboard.getData(DataFlavor.stringFlavor);
     }
 }
