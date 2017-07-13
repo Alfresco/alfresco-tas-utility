@@ -28,7 +28,7 @@ public class InstallerFormTests extends InstallerTest
         installer.navigateToLanguageForm().focus();
         
         STEP("3. Select a language different than English and press OK");
-        installer.onLanguageSelectionDialog().setLanguage(LANGUAGES.FRENCH).clickOK();
+        installer.onLanguageSelectionDialog().setLanguage(LANGUAGES.FRENCH).startWithFrenchSetup();
         installer.onFrenchSetup().assertDescriptionIs(DESCRIPTION.FRENCH);
     }
 
