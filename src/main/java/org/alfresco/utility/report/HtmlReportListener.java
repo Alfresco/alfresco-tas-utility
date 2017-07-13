@@ -231,11 +231,14 @@ public class HtmlReportListener implements IReporter
                                 {
                                     FileUtils.copyFile(sourceFile, destinationFile);
                                     
-                                    String imageNotFound = destinationFile.getPath().split(defaultProperties.getProperty("reports.path"))[1];
-                                    imageNotFound = StringUtils.removeStart(imageNotFound, "/");
-                                    String imageNotFoundFormatted = String.format("<a href='%s' data-featherlight='image'><img class='report-img'src='%s'/></a>", imageNotFound, imageNotFound);
-                                   
-                                    test.log(status, String.format("GUI Image NOT found on screen: %s", imageNotFoundFormatted));
+                                    String[] imageNotFoundArr = destinationFile.getPath().split(defaultProperties.getProperty("reports.path"));
+                                    if(imageNotFoundArr.length>0)
+                                    {
+                                        String imageNotFound = StringUtils.removeStart(imageNotFoundArr[1], "/");
+                                        String imageNotFoundFormatted = String.format("<a href='%s' data-featherlight='image'><img class='report-img'src='%s'/></a>", imageNotFound, imageNotFound);
+                                       
+                                        test.log(status, String.format("GUI Image NOT found on screen: %s", imageNotFoundFormatted));    
+                                    }                                    
                                 }
                                 catch (IOException e)
                                 {                                    
