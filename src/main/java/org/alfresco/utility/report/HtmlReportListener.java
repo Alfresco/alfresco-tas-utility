@@ -23,7 +23,7 @@ import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.report.Bug.Status;
 import org.alfresco.utility.web.AbstractWebTest;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.sikuli.script.FindFailed;
 import org.slf4j.Logger;
 import org.testng.IReporter;
@@ -221,29 +221,37 @@ public class HtmlReportListener implements IReporter
                         {
                             FindFailed missingImage = (FindFailed) result.getThrowable();
                              
-                            String[] imageParsed = missingImage.getMessage().split(": "); 
-                           
-                            if (imageParsed.length>0)
+                            //message contains the full path of the image. We want to get the first part of the split - the file path
+                            String[] imageParsed = missingImage.getMessage().split(": ");          
+                            
+                            LOG.info("Missing Image: " + missingImage.getMessage());
+                            
+                            if (ArrayUtils.getLength(imageParsed)>0)
                             {  
-                                File sourceFile = Paths.get(imageParsed[0]).toFile();
-                                File destinationFile = Paths.get(String.format("%s/%s/%s", defaultProperties.getProperty("reports.path"), defaultProperties.getProperty("screenshots.dir"), sourceFile.getName())).toFile();
+                                String repoPath = defaultProperties.getProperty("reports.path");
+                                File sourceFile = Paths.get(imageParsed[0]).toFile();   
+                                File destinationFile = Paths.get(String.format("%s/%s/%s", 
+                                                                    repoPath, 
+                                                                    defaultProperties.getProperty("screenshots.dir"), 
+                                                                    sourceFile.getName()))
+                                                       .toFile();
+                                                                
                                 try
-                                {
+                                {                                   
                                     FileUtils.copyFile(sourceFile, destinationFile);
-                                    
-                                    String[] imageNotFoundArr = destinationFile.getPath().split(defaultProperties.getProperty("reports.path"));
-                                    if(imageNotFoundArr.length>0)
-                                    {
-                                        String imageNotFound = StringUtils.removeStart(imageNotFoundArr[1], "/");
-                                        String imageNotFoundFormatted = String.format("<a href='%s' data-featherlight='image'><img class='report-img'src='%s'/></a>", imageNotFound, imageNotFound);
+                                    String[] destFile = destinationFile.getPath().split(repoPath); 
+//                                    if(ArrayUtils.getLength(destFile)>0)
+//                                    {
+//                                        String destinationFilePath = Paths.get(StringUtils.removeStart(destFile[1],"/")).toString();
+//                                        String imageNotFoundFormatted = String.format("<a href='%s' data-featherlight='image'><img class='report-img'src='%s'/></a>", destinationFilePath, destinationFilePath);
+//                                        test.log(status, String.format("GUI Image NOT found on screen: %s", imageNotFoundFormatted));     
+//                                    }
                                        
-                                        test.log(status, String.format("GUI Image NOT found on screen: %s", imageNotFoundFormatted));    
-                                    }                                    
                                 }
                                 catch (IOException e)
-                                {                                    
+                                {
                                     LOG.error(e.getMessage());
-                                }                                                                    
+                                }                                                                                                                 
                             }                            
                         }
                     }
