@@ -127,10 +127,10 @@ public class ACSInstaller extends ACSWizard implements Installable
         onLicensePage().acceptTheAgreement();
         onSetup().clickNext();
         onInstallationTypePage().chooseAdvancedInstall();
-        onSetup().clickNext();
-        onSetup().clickNext();
-        onSetup().clickNext();
-        onSetup().clickNext();
+        onSetup().clickNext()
+                 .clickNext()
+                 .clickNext()
+                 .clickNext();
         return new TomcatConfigurationPage();
     }
 
@@ -153,13 +153,13 @@ public class ACSInstaller extends ACSWizard implements Installable
         onLicensePage().acceptTheAgreement();
         onSetup().clickNext();
         onInstallationTypePage().chooseAdvancedInstall();
-        onSetup().clickNext();
-        onSetup().clickNext();
-        onSetup().clickNext();
-        onSetup().clickNext();
-        onSetup().clickNext();
-        onSetup().clickNext();
-        onSetup().clickNext();
+        onSetup().clickNext()
+                 .clickNext()
+                 .clickNext()
+                 .clickNext()
+                 .clickNext()
+                 .clickNext()
+                 .clickNext();
         return new FtpPortPage();
     }
 
@@ -177,14 +177,14 @@ public class ACSInstaller extends ACSWizard implements Installable
         onLicensePage().acceptTheAgreement();
         onSetup().clickNext();
         onInstallationTypePage().chooseAdvancedInstall();
-        onSetup().clickNext();
-        onSetup().clickNext();
-        onSetup().clickNext();
-        onSetup().clickNext();
-        onSetup().clickNext();
-        onSetup().clickNext();
-        onSetup().clickNext();
-        onSetup().clickNext();
+        onSetup().clickNext()
+                 .clickNext()
+                 .clickNext()
+                 .clickNext()
+                 .clickNext()
+                 .clickNext()
+                 .clickNext()
+                 .clickNext();
         return new RmiPortPage();
     }
 
@@ -202,11 +202,11 @@ public class ACSInstaller extends ACSWizard implements Installable
         onLicensePage().acceptTheAgreement();
         onSetup().clickNext();
         onInstallationTypePage().chooseAdvancedInstall();
-        onSetup().clickNext();
-        onSetup().clickNext();
-        onSetup().clickNext();
-        onSetup().clickNext();
-        onSetup().clickNext();
+        onSetup().clickNext()
+                 .clickNext()
+                 .clickNext()
+                 .clickNext()
+                 .clickNext();
         return new LibreOfficeServerPortPage();
     }
 
