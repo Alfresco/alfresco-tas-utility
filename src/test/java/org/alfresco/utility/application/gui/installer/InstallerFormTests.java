@@ -165,6 +165,7 @@ public class InstallerFormTests extends InstallerTest
         STEP("6. Click 'Yes' button and verify <install dir>.");
         installer.onDialog().clickYes();
         Assert.assertFalse(installer.isRunning(), "The installer should be closed and the installation process is aborted.");
+        installer.assertInstallationFolderIsEmpty();
     }
 
 //    @Test()
