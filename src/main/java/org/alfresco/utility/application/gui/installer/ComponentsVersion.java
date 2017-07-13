@@ -19,13 +19,13 @@ import java.io.InputStreamReader;
 {
     @Autowired ACSInstallerProperties installerProperties;
 
-    public void assertJREVersionIs(String expectedVersion) throws IOException, InterruptedException
+    public void assertJREVersionIs(String expectedVersion) throws Exception
     {
         if (SystemUtils.IS_OS_WINDOWS)
         {
             String commandToExecute = String.format("%s\\%s", installerProperties.getInstallerDestinationPath().getPath(), "java\\bin\\java.exe -version");
-            LOG.info("Java actual version: " + Utility.getProcessOutputForWin(commandToExecute));
-            Assert.assertTrue(Utility.getProcessOutputForWin(commandToExecute).contains(expectedVersion), "Java version is not correct, expected: " + expectedVersion);
+            LOG.info("Java actual version: " + Utility.executeOnWinAndReturnOutput(commandToExecute));
+            Assert.assertTrue(Utility.executeOnWinAndReturnOutput(commandToExecute).contains(expectedVersion), "Java version is not correct, expected: " + expectedVersion);
         }
         else
         {
@@ -46,8 +46,8 @@ import java.io.InputStreamReader;
         if (SystemUtils.IS_OS_WINDOWS)
         {
             String commandToExecute = String.format("%s\\%s", installerProperties.getInstallerDestinationPath(), "tomcat\\bin\\version.sh -version");
-            LOG.info("Tomcat actual version: " + Utility.getProcessOutputForWin(commandToExecute));
-            Assert.assertTrue((Utility.getProcessOutputForWin(commandToExecute)).contains(expectedVersion));
+            LOG.info("Tomcat actual version: " + Utility.executeOnWinAndReturnOutput(commandToExecute));
+            Assert.assertTrue((Utility.executeOnWinAndReturnOutput(commandToExecute)).contains(expectedVersion));
         }
         else
         {
@@ -82,13 +82,13 @@ import java.io.InputStreamReader;
         }
     }
 
-    public void assertPsqlVersionIs(String expectedPsqlVersion) throws IOException, InterruptedException
+    public void assertPsqlVersionIs(String expectedPsqlVersion) throws Exception
     {
         if (SystemUtils.IS_OS_WINDOWS)
         {
             String commandToExecute = String.format("%s\\%s", installerProperties.getInstallerDestinationPath().getPath(), "postgresql\\bin\\psql --version");
-            LOG.info("psql version is: " + Utility.getProcessOutputForWin(commandToExecute));
-            Assert.assertTrue((Utility.getProcessOutputForWin(commandToExecute)).contains(expectedPsqlVersion));
+            LOG.info("psql version is: " + Utility.executeOnWinAndReturnOutput(commandToExecute));
+            Assert.assertTrue((Utility.executeOnWinAndReturnOutput(commandToExecute)).contains(expectedPsqlVersion));
         }
         else
         {
@@ -104,13 +104,13 @@ import java.io.InputStreamReader;
         }
     }
 
-    public void assertImageMagickVersionIs(String expectedImageMagickVersion) throws IOException, InterruptedException
+    public void assertImageMagickVersionIs(String expectedImageMagickVersion) throws Exception
     {
         if (SystemUtils.IS_OS_WINDOWS)
         {
             String commandToExecute = String.format("%s\\%s", installerProperties.getInstallerDestinationPath().getPath(), "imagemagick\\convert --version");
-            LOG.info("ImageMagick version is: " + Utility.getProcessOutputForWin(commandToExecute));
-            Assert.assertTrue((Utility.getProcessOutputForWin(commandToExecute)).contains(expectedImageMagickVersion));
+            LOG.info("ImageMagick version is: " + Utility.executeOnWinAndReturnOutput(commandToExecute));
+            Assert.assertTrue((Utility.executeOnWinAndReturnOutput(commandToExecute)).contains(expectedImageMagickVersion));
         }
         else
         {

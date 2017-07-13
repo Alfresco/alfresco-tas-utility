@@ -615,7 +615,13 @@ public class Utility
         return (String) clipboard.getData(DataFlavor.stringFlavor);
     }
 
-    public static String getProcessOutputForWin(String command) throws IOException, InterruptedException
+    /**
+     * Method to retrieve a process output as String
+     * @param command
+     * @return process output in String format
+     * @throws Exception
+     */
+    public static String executeOnWinAndReturnOutput(String command) throws Exception
     {
         StringBuilder sb = new StringBuilder();
         try
