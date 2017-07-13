@@ -3,7 +3,7 @@ package org.alfresco.utility.application.gui.installer;
 import org.alfresco.utility.Utility;
 import org.alfresco.utility.application.Focusable;
 import org.alfresco.utility.application.gui.GuiScreen;
-import org.alfresco.utility.exception.CouldNotFindApplicationActionImage;
+import org.alfresco.utility.exception.CouldNotFindImageOnScreen;
 import org.apache.commons.lang.SystemUtils;
 import org.springframework.stereotype.Component;
 import org.testng.Assert;
@@ -45,7 +45,7 @@ public class ACSUninstaller extends ACSWizard
         return new Setup();
     }
 
-    public void assertDialogIsClosed() throws CouldNotFindApplicationActionImage
+    public void assertDialogIsClosed() throws CouldNotFindImageOnScreen
     {
         Assert.assertFalse(isPopUpDisplayed("dialog"));
     }

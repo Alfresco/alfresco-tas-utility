@@ -1,18 +1,18 @@
 package org.alfresco.utility.application.gui.installer;
 
+import static org.alfresco.utility.Utility.getTextFromClipboard;
+import static org.sikuli.script.Mouse.WHEEL_DOWN;
+
 import org.alfresco.utility.Utility;
 import org.alfresco.utility.application.Focusable;
 import org.alfresco.utility.application.gui.installer.ACSInstallerProperties.DESCRIPTION;
 import org.alfresco.utility.application.gui.installer.ACSInstallerProperties.LANGUAGES;
-import org.alfresco.utility.exception.CouldNotFindApplicationActionImage;
+import org.alfresco.utility.exception.CouldNotFindImageOnScreen;
 import org.apache.commons.lang.SystemUtils;
 import org.sikuli.api.robot.Key;
 import org.sikuli.script.FindFailed;
 import org.springframework.stereotype.Component;
 import org.testng.Assert;
-
-import static org.alfresco.utility.Utility.*;
-import static org.sikuli.script.Mouse.WHEEL_DOWN;
 
 /**
  * Sikuli approach of interacting with Alfresco Installer.
@@ -287,7 +287,7 @@ public class ACSInstaller extends ACSWizard implements Installable
             return this;
         }
         
-        public LanguageSelection setLanguage(LANGUAGES language) throws CouldNotFindApplicationActionImage {
+        public LanguageSelection setLanguage(LANGUAGES language) throws CouldNotFindImageOnScreen {
         	clickOn("languageSelection/openLanguages");
         	clickOn(language.toString());
         	return this;
@@ -446,7 +446,7 @@ public class ACSInstaller extends ACSWizard implements Installable
         }
 
         @Override
-        public Dialog focus() throws CouldNotFindApplicationActionImage
+        public Dialog focus() throws CouldNotFindImageOnScreen
         {
             clickOn("dialog/doYouWantToAbort");
             return this;
@@ -471,7 +471,7 @@ public class ACSInstaller extends ACSWizard implements Installable
         }
 
         @Override
-        public Warning focus() throws CouldNotFindApplicationActionImage
+        public Warning focus() throws CouldNotFindImageOnScreen
         {
             clickOn("warning/title");
             return this;
@@ -534,7 +534,7 @@ public class ACSInstaller extends ACSWizard implements Installable
             return this;
         }
 
-        public boolean isSelectedFolderNotEmptyWarningDisplayed() throws CouldNotFindApplicationActionImage
+        public boolean isSelectedFolderNotEmptyWarningDisplayed() throws CouldNotFindImageOnScreen
         {
             return isPopUpDisplayed("installationFolder/selectedFolderNotEmpty");
         }
@@ -598,49 +598,49 @@ public class ACSInstaller extends ACSWizard implements Installable
             return this;
         }
 
-        public SelectComponents checkLibreOffice() throws CouldNotFindApplicationActionImage
+        public SelectComponents checkLibreOffice() throws CouldNotFindImageOnScreen
         {
             checkOn("selectComponents/libreOffice");
             return this;
         }
 
-        public SelectComponents checkJava() throws CouldNotFindApplicationActionImage
+        public SelectComponents checkJava() throws CouldNotFindImageOnScreen
         {
             checkOn("selectComponents/java");
             return this;
         }
 
-        public SelectComponents checkPostgreSQL() throws CouldNotFindApplicationActionImage
+        public SelectComponents checkPostgreSQL() throws CouldNotFindImageOnScreen
         {
             checkOn("selectComponents/postgreSQL");
             return this;
         }
 
-        public SelectComponents checkSolr1() throws CouldNotFindApplicationActionImage
+        public SelectComponents checkSolr1() throws CouldNotFindImageOnScreen
         {
             checkOn("selectComponents/solr1");
             return this;
         }
 
-        public SelectComponents checkSolr4() throws CouldNotFindApplicationActionImage
+        public SelectComponents checkSolr4() throws CouldNotFindImageOnScreen
         {
             checkOn("selectComponents/solr4");
             return this;
         }
 
-        public SelectComponents checkAlfrescoOfficeServices() throws CouldNotFindApplicationActionImage
+        public SelectComponents checkAlfrescoOfficeServices() throws CouldNotFindImageOnScreen
         {
             checkOn("selectComponents/alfrescoOfficeServices");
             return this;
         }
 
-        public SelectComponents checkWebQuickStart() throws CouldNotFindApplicationActionImage
+        public SelectComponents checkWebQuickStart() throws CouldNotFindImageOnScreen
         {
             checkOn("selectComponents/webQuickStart");
             return this;
         }
 
-        public SelectComponents checkGoogleDocsIntegration() throws CouldNotFindApplicationActionImage
+        public SelectComponents checkGoogleDocsIntegration() throws CouldNotFindImageOnScreen
         {
             checkOn("selectComponents/googleDocsIntegration");
             return this;
@@ -781,27 +781,27 @@ public class ACSInstaller extends ACSWizard implements Installable
             return this;
         }
 
-        public boolean isTomcatServerPortWarningMessageDisplayed() throws CouldNotFindApplicationActionImage
+        public boolean isTomcatServerPortWarningMessageDisplayed() throws CouldNotFindImageOnScreen
         {
             return isPopUpDisplayed("tomcat/tomcatServerPortWarning");
         }
 
-        public boolean isTomcatShutdownPortWarningMessageDisplayed() throws CouldNotFindApplicationActionImage
+        public boolean isTomcatShutdownPortWarningMessageDisplayed() throws CouldNotFindImageOnScreen
         {
             return isPopUpDisplayed("tomcat/tomcatShutdownPortWarning");
         }
 
-        public boolean isTomcatSSLPortWarningMessageDisplayed() throws CouldNotFindApplicationActionImage
+        public boolean isTomcatSSLPortWarningMessageDisplayed() throws CouldNotFindImageOnScreen
         {
             return isPopUpDisplayed("tomcat/tomcatSSLPortWarning");
         }
 
-        public boolean isTomcatAJPPortWarningMessageDisplayed() throws CouldNotFindApplicationActionImage
+        public boolean isTomcatAJPPortWarningMessageDisplayed() throws CouldNotFindImageOnScreen
         {
             return isPopUpDisplayed("tomcat/tomcatAJPPortWarning");
         }
 
-        public boolean isTomcatPortCharacterWarningMessageDisplayed() throws CouldNotFindApplicationActionImage
+        public boolean isTomcatPortCharacterWarningMessageDisplayed() throws CouldNotFindImageOnScreen
         {
             return isPopUpDisplayed("tomcat/charactersNotPermittedError");
         }
@@ -821,13 +821,13 @@ public class ACSInstaller extends ACSWizard implements Installable
             return this;
         }
 
-        public ShardedSolrPage setYes() throws CouldNotFindApplicationActionImage
+        public ShardedSolrPage setYes() throws CouldNotFindImageOnScreen
         {
             clickOn("shardedSolr/yes");
             return this;
         }
 
-        public ShardedSolrPage setNo() throws CouldNotFindApplicationActionImage
+        public ShardedSolrPage setNo() throws CouldNotFindImageOnScreen
         {
             clickOn("shardedSolr/no");
             return this;
@@ -862,12 +862,12 @@ public class ACSInstaller extends ACSWizard implements Installable
             return this;
         }
 
-        public boolean isFtpPortWarningMessageDisplayed() throws CouldNotFindApplicationActionImage
+        public boolean isFtpPortWarningMessageDisplayed() throws CouldNotFindImageOnScreen
         {
             return isPopUpDisplayed("ftp/ftpPortNotPermittedError");
         }
 
-        public boolean isFtpCharacterWarningMessageDisplayed() throws CouldNotFindApplicationActionImage
+        public boolean isFtpCharacterWarningMessageDisplayed() throws CouldNotFindImageOnScreen
         {
             return isPopUpDisplayed("ftp/charactersNotPermittedError");
         }
@@ -901,12 +901,12 @@ public class ACSInstaller extends ACSWizard implements Installable
             return this;
         }
 
-        public boolean isRmiPortWarningMessageDisplayed() throws CouldNotFindApplicationActionImage
+        public boolean isRmiPortWarningMessageDisplayed() throws CouldNotFindImageOnScreen
         {
             return isPopUpDisplayed("rmi/rmiPortNotPermittedError");
         }
 
-        public boolean isRmiCharacterWarningMessageDisplayed() throws CouldNotFindApplicationActionImage
+        public boolean isRmiCharacterWarningMessageDisplayed() throws CouldNotFindImageOnScreen
         {
             return isPopUpDisplayed("rmi/charactersNotPermittedError");
         }
@@ -926,13 +926,13 @@ public class ACSInstaller extends ACSWizard implements Installable
             return this;
         }
 
-        public ServiceStartupConfigurationPage setManual() throws CouldNotFindApplicationActionImage
+        public ServiceStartupConfigurationPage setManual() throws CouldNotFindImageOnScreen
         {
             clickOn("serviceStartup/manual");
             return this;
         }
 
-        public ServiceStartupConfigurationPage setAuto() throws CouldNotFindApplicationActionImage
+        public ServiceStartupConfigurationPage setAuto() throws CouldNotFindImageOnScreen
         {
             clickOn("serviceStartup/auto");
             return this;
@@ -967,12 +967,12 @@ public class ACSInstaller extends ACSWizard implements Installable
             return this;
         }
 
-        public boolean isLibreOfficePortWarningMessageDisplayed() throws CouldNotFindApplicationActionImage
+        public boolean isLibreOfficePortWarningMessageDisplayed() throws CouldNotFindImageOnScreen
         {
             return isPopUpDisplayed("libreOffice/libreOfficePortNotPermittedError");
         }
 
-        public boolean isLibreOfficeCharacterWarningMessageDisplayed() throws CouldNotFindApplicationActionImage
+        public boolean isLibreOfficeCharacterWarningMessageDisplayed() throws CouldNotFindImageOnScreen
         {
             return isPopUpDisplayed("libreOffice/charactersNotPermittedError");
         }
