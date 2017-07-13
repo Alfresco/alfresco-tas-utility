@@ -5,14 +5,31 @@ import org.testng.annotations.Test;
 
 import static org.alfresco.utility.report.log.Step.STEP;
 
+import org.alfresco.utility.application.gui.installer.ACSInstallerProperties.DESCRIPTION;
+import org.alfresco.utility.application.gui.installer.ACSInstallerProperties.LANGUAGES;
+
 /**
  * Created by Claudia Agache on 7/10/2017.
  */
 public class InstallerFormTests extends InstallerTest
 {
+	
+	@Test
     public void languageSelectionForm() throws Exception
     {
-        //TODO
+        STEP("Precondition: Alfresco One installer is started and navigated to Language Selection form");
+        installer.navigateToLanguageForm();
+        
+        STEP("1. Press Cancel button and check that installer is closed.");
+        installer.onLanguageSelectionDialog().clickCancel();
+        Assert.assertFalse(installer.isRunning(), "The installer should be closed.");
+        
+        STEP("2. Start installer again and check that Language Selection form is displayed");
+        installer.navigateToLanguageForm().focus();
+        
+        STEP("3. Select a language different than English and press OK");
+        installer.onLanguageSelectionDialog().setLanguage(LANGUAGES.FRENCH).clickOK();
+        installer.onFrenchSetup().assertDescriptionIs(DESCRIPTION.FRENCH);
     }
 
     public void welcomeForm() throws Exception
