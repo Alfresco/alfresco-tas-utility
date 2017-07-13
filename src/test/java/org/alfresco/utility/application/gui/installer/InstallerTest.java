@@ -27,4 +27,71 @@ public abstract class InstallerTest extends AbstractTestNGSpringContextTests
         }
         return f;
     }
+
+    public void navigateToLanguageForm() throws Exception
+    {
+        installer.open();
+        installer.waitForInstallerToOpen();
+    }
+
+    public void navigateToSetupForm() throws Exception
+    {
+        navigateToLanguageForm();
+        installer.onLanguageSelectionDialog().clickOK();
+    }
+
+    public void navigateToLicenseForm() throws Exception
+    {
+        navigateToSetupForm();
+        installer.onSetup().clickNext();
+    }
+
+    public void navigateToInstallationTypeForm() throws Exception
+    {
+        navigateToLicenseForm();
+        installer.onLicensePage().acceptTheAgreement();
+        installer.onSetup().clickNext();
+    }
+
+    public void navigateToInstallationFolderForm() throws Exception
+    {
+        navigateToInstallationTypeForm();
+        installer.onInstallationTypePage().chooseEasyInstall();
+        installer.onSetup().clickNext();
+    }
+
+    public void navigateToSelectComponentsForm() throws Exception
+    {
+        navigateToInstallationTypeForm();
+        installer.onInstallationTypePage().chooseAdvancedInstall();
+        installer.onSetup().clickNext();
+    }
+
+    public void navigateToTomcatPortConfigurationPage() throws Exception
+    {
+        navigateToSelectComponentsForm();
+        installer.onSetup().clickNext()
+                .clickNext()
+                .clickNext();
+    }
+
+    public void navigateToLibreOfficeServerPortPage() throws Exception
+    {
+        navigateToTomcatPortConfigurationPage();
+        installer.onSetup().clickNext();
+    }
+
+    public void navigateToFtpPortPage() throws Exception
+    {
+        navigateToLibreOfficeServerPortPage();
+        installer.onSetup().clickNext()
+                .clickNext();
+    }
+
+    public void navigateToRmiPortPage() throws Exception
+    {
+        navigateToFtpPortPage();
+        installer.onSetup().clickNext();
+    }
+
 }
