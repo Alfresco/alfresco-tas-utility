@@ -24,7 +24,6 @@ import org.alfresco.utility.report.Bug.Status;
 import org.alfresco.utility.web.AbstractWebTest;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.sikuli.script.FindFailed;
 import org.slf4j.Logger;
 import org.testng.IReporter;
@@ -241,12 +240,12 @@ public class HtmlReportListener implements IReporter
                                 {                                   
                                     FileUtils.copyFile(sourceFile, destinationFile);
                                     String[] destFile = destinationFile.getPath().split(repoPath); 
-                                    if(ArrayUtils.getLength(destFile)>0)
-                                    {
-                                        String destinationFilePath = Paths.get(StringUtils.removeStart(destFile[1],"/")).toString();
-                                        String imageNotFoundFormatted = String.format("<a href='%s' data-featherlight='image'><img class='report-img'src='%s'/></a>", destinationFilePath, destinationFilePath);
-                                        test.log(status, String.format("GUI Image NOT found on screen: %s", imageNotFoundFormatted));     
-                                    }
+//                                    if(ArrayUtils.getLength(destFile)>0)
+//                                    {
+//                                        String destinationFilePath = Paths.get(StringUtils.removeStart(destFile[1],"/")).toString();
+//                                        String imageNotFoundFormatted = String.format("<a href='%s' data-featherlight='image'><img class='report-img'src='%s'/></a>", destinationFilePath, destinationFilePath);
+//                                        test.log(status, String.format("GUI Image NOT found on screen: %s", imageNotFoundFormatted));     
+//                                    }
                                        
                                 }
                                 catch (IOException e)
