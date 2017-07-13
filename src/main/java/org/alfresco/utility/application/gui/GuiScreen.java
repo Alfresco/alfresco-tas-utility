@@ -5,7 +5,7 @@ import java.io.File;
 import org.alfresco.utility.Utility;
 import org.alfresco.utility.application.Applicationable;
 import org.alfresco.utility.application.Focusable;
-import org.alfresco.utility.exception.CouldNotFindApplicationActionImage;
+import org.alfresco.utility.exception.CouldNotFindImageOnScreen;
 import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.report.log.Step;
 import org.apache.commons.lang.SystemUtils;
@@ -45,7 +45,7 @@ public abstract class GuiScreen extends Screen implements Applicationable, Focus
      * 
      * @param action -> the the actual image found in the image resource folder. Add it without the "png" extention.
      * @throws TestConfigurationException
-     * @throws CouldNotFindApplicationActionImage
+     * @throws CouldNotFindImageOnScreen
      * @return the full string path of the image
      */
     protected String getImageActionRelatedToApp(String action) throws Exception
@@ -64,7 +64,7 @@ public abstract class GuiScreen extends Screen implements Applicationable, Focus
         String location = String.format("shared-resources/gui/%s/%s/%s.png", os, getAppName(), action);
         File imageFile = Utility.getTestResourceFile(location);
         if (!imageFile.exists())
-            throw new CouldNotFindApplicationActionImage(imageFile.getPath(), getAppName(), "Missing image in your local resource folder. ");
+            throw new CouldNotFindImageOnScreen(imageFile.getPath(), getAppName(), "Missing image in your local resource folder. ");
         return imageFile.getPath();
     }
 
@@ -79,9 +79,10 @@ public abstract class GuiScreen extends Screen implements Applicationable, Focus
      * "shared-resources/gui/win/windowsexplorer/title.png"
      * 
      * @return {@link GuiScreen}
+     * @throws FindFailed 
      * @throws Exception
      */
-    public GuiScreen waitOn(String imageAction) throws Exception
+    public GuiScreen waitOn(String imageAction) throws FindFailed, Exception
     {
         Step.STEP(String.format("Wait for: [%s]", imageAction));
         wait(getImageActionRelatedToApp(imageAction), WAIT_TIMEOUT);
@@ -100,9 +101,9 @@ public abstract class GuiScreen extends Screen implements Applicationable, Focus
      * 
      * @param imageAction
      * @return
-     * @throws CouldNotFindApplicationActionImage
+     * @throws CouldNotFindImageOnScreen
      */
-    public GuiScreen clickOn(String imageAction) throws CouldNotFindApplicationActionImage
+    public GuiScreen clickOn(String imageAction) throws CouldNotFindImageOnScreen
     {
         Step.STEP(String.format("Click on: [%s]", imageAction));
         String location = "";
@@ -113,16 +114,16 @@ public abstract class GuiScreen extends Screen implements Applicationable, Focus
         }
         catch (FindFailed e)
         {
-            throw new CouldNotFindApplicationActionImage(location, getAppName(), e.getMessage());
+            throw new CouldNotFindImageOnScreen(location, getAppName(), e.getMessage());
         }
         catch (Exception e)
         {
-            throw new CouldNotFindApplicationActionImage(location, getAppName(), e.getMessage());
+            throw new CouldNotFindImageOnScreen(location, getAppName(), e.getMessage());
         }
         return this;
     }
 
-    protected boolean isPopUpDisplayed(String imageLocation) throws CouldNotFindApplicationActionImage
+    protected boolean isPopUpDisplayed(String imageLocation) throws CouldNotFindImageOnScreen
     {
         try
         {
@@ -185,9 +186,9 @@ public abstract class GuiScreen extends Screen implements Applicationable, Focus
      * 
      * @param imageAction
      * @return
-     * @throws CouldNotFindApplicationActionImage
+     * @throws CouldNotFindImageOnScreen
      */
-    public GuiScreen checkOn(String imageAction) throws CouldNotFindApplicationActionImage
+    public GuiScreen checkOn(String imageAction) throws CouldNotFindImageOnScreen
     {
         Step.STEP(String.format("Check on: [%s]", imageAction));
         String location = "";
@@ -199,7 +200,7 @@ public abstract class GuiScreen extends Screen implements Applicationable, Focus
         }
         catch (Exception e)
         {
-            throw new CouldNotFindApplicationActionImage(location, getAppName(), e.getMessage());
+            throw new CouldNotFindImageOnScreen(location, getAppName(), e.getMessage());
         }
 
         return this;
