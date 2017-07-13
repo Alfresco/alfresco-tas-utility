@@ -185,26 +185,159 @@ public class InstallerFormTests extends InstallerTest
         //TODO
     }
 
+    @Test()
     public void tomcatPortConfigurationForm() throws Exception
     {
-        //TODO
+        STEP("Precondition: Alfresco One installer is started and navigated to Tomcat Port Configuration form");
+        installer.navigateToTomcatPortConfigurationPage();
+
+        STEP("1. For Tomcat Server Port enter incorrect port values instead of default values used by default. For example, 66000. Click Forward.");
+        installer.onTomcatPortConfigurationPage().setTomcatServerPort("66000");
+        installer.onSetup().clickNext();
+        Assert.assertTrue(installer.onTomcatPortConfigurationPage().isTomcatServerPortWarningMessageDisplayed(), "Select another LibreOffice Server Port message should be displayed.");
+        installer.onWarning().clickOK();
+
+        STEP("2. Enter incorrect symbolic port value, DF, for example. Click Forward");
+        installer.onTomcatPortConfigurationPage().setTomcatServerPort("DF");
+        installer.onSetup().clickNext();
+        Assert.assertTrue(installer.onTomcatPortConfigurationPage().isTomcatPortCharacterWarningMessageDisplayed(), "Use numbers only in the port configuration field message should be displayed.");
+        installer.onWarning().clickOK();
+
+        STEP("3. Enter correct port value, not used by another process (use netstat console utility to define of using ports). Click Forward.");
+        installer.onTomcatPortConfigurationPage().setTomcatServerPort();
+        installer.onSetup().clickNext();
+        installer.onLibreOfficeServerPortPage().focus();
+        installer.onSetup().clickBack();
+
+        STEP("4. For Tomcat Shutdown Port enter incorrect port values instead of default values used by default. For example, 66000. Click Forward.");
+        installer.onTomcatPortConfigurationPage().setTomcatShutdownPort("66000");
+        installer.onSetup().clickNext();
+        Assert.assertTrue(installer.onTomcatPortConfigurationPage().isTomcatShutdownPortWarningMessageDisplayed(), "Select another LibreOffice Server Port message should be displayed.");
+        installer.onWarning().clickOK();
+
+        STEP("5. Enter incorrect symbolic port value, DF, for example. Click Forward");
+        installer.onTomcatPortConfigurationPage().setTomcatShutdownPort("DF");
+        installer.onSetup().clickNext();
+        Assert.assertTrue(installer.onTomcatPortConfigurationPage().isTomcatPortCharacterWarningMessageDisplayed(), "Use numbers only in the port configuration field message should be displayed.");
+        installer.onWarning().clickOK();
+
+        STEP("6. Enter correct port value, not used by another process (use netstat console utility to define of using ports). Click Forward.");
+        installer.onTomcatPortConfigurationPage().setTomcatShutdownPort();
+        installer.onSetup().clickNext();
+        installer.onLibreOfficeServerPortPage().focus();
+        installer.onSetup().clickBack();
+
+        STEP("7. For Tomcat SSL Port enter incorrect port values instead of default values used by default. For example, 66000. Click Forward.");
+        installer.onTomcatPortConfigurationPage().setTomcatSSLPort("66000");
+        installer.onSetup().clickNext();
+        Assert.assertTrue(installer.onTomcatPortConfigurationPage().isTomcatSSLPortWarningMessageDisplayed(), "Select another LibreOffice Server Port message should be displayed.");
+        installer.onWarning().clickOK();
+
+        STEP("8. Enter incorrect symbolic port value, DF, for example. Click Forward");
+        installer.onTomcatPortConfigurationPage().setTomcatSSLPort("DF");
+        installer.onSetup().clickNext();
+        Assert.assertTrue(installer.onTomcatPortConfigurationPage().isTomcatPortCharacterWarningMessageDisplayed(), "Use numbers only in the port configuration field message should be displayed.");
+        installer.onWarning().clickOK();
+
+        STEP("9. Enter correct port value, not used by another process (use netstat console utility to define of using ports). Click Forward.");
+        installer.onTomcatPortConfigurationPage().setTomcatSSLPort();
+        installer.onSetup().clickNext();
+        installer.onLibreOfficeServerPortPage().focus();
+        installer.onSetup().clickBack();
+
+        STEP("10. For Tomcat AJP Port enter incorrect port values instead of default values used by default. For example, 66000. Click Forward.");
+        installer.onTomcatPortConfigurationPage().setTomcatAJPPort("66000");
+        installer.onSetup().clickNext();
+        Assert.assertTrue(installer.onTomcatPortConfigurationPage().isTomcatAJPPortWarningMessageDisplayed(), "Select another LibreOffice Server Port message should be displayed.");
+        installer.onWarning().clickOK();
+
+        STEP("11. Enter incorrect symbolic port value, DF, for example. Click Forward");
+        installer.onTomcatPortConfigurationPage().setTomcatAJPPort("DF");
+        installer.onSetup().clickNext();
+        Assert.assertTrue(installer.onTomcatPortConfigurationPage().isTomcatPortCharacterWarningMessageDisplayed(), "Use numbers only in the port configuration field message should be displayed.");
+        installer.onWarning().clickOK();
+
+        STEP("12. Enter correct port value, not used by another process (use netstat console utility to define of using ports). Click Forward.");
+        installer.onTomcatPortConfigurationPage().setTomcatAJPPort();
+        installer.onSetup().clickNext();
+        installer.onLibreOfficeServerPortPage().focus();
+
+        STEP("13. Click 'Cancel' button and select 'Yes'");
+        installer.onSetup().clickCancel();
+        installer.onDialog().clickYes();
+        Assert.assertFalse(installer.isRunning(), "The installer should be closed and the installation process is aborted.");
     }
 
-    public void LibreOfficeServerPortForm() throws Exception
+    /**
+     * AONE-18296 + AONE-18295 + AONE-18293
+     */
+    @Test()
+    public void verifyLibreOfficeFtpPortRmiPortForms() throws Exception
     {
-        //TODO
+        STEP("Precondition: Alfresco One installer is started and navigated to LibreOffice Server Port form");
+        installer.navigateToLibreOfficeServerPortPage();
+
+        STEP("1. To the 'LibreOffice Server port' enter any busy port (or leave busy 8100 port) and verify error message is displayed.");
+        installer.onLibreOfficeServerPortPage().setLibreOfficeServerPort("66000");
+        installer.onSetup().clickNext();
+        Assert.assertTrue(installer.onLibreOfficeServerPortPage().isLibreOfficePortWarningMessageDisplayed(), "Select another LibreOffice Server Port message should be displayed.");
+        installer.onWarning().clickOK();
+
+        STEP("2. To the 'Alfresco FTP port' enter any incorrect data, e.g. text click 'Next' button.");
+        installer.onLibreOfficeServerPortPage().setLibreOfficeServerPort("DF");
+        installer.onSetup().clickNext();
+        Assert.assertTrue(installer.onLibreOfficeServerPortPage().isLibreOfficeCharacterWarningMessageDisplayed(), "Use numbers only in the port configuration field message should be displayed.");
+        installer.onWarning().clickOK();
+
+        STEP("3. Enter correct port value, not used by another process (use netstat console utility to define of using ports). Click Forward.");
+        installer.onLibreOfficeServerPortPage().setLibreOfficeServerPort();
+        installer.onSetup().clickNext();
+
+        STEP("4. To the 'Alfresco FTP Port' enter any busy port (or leave busy 21 port) and verify error message is displayed.");
+        installer.onSetup().clickNext();
+        installer.onFtpPortPage().setFtpPort("66000");
+        installer.onSetup().clickNext();
+        Assert.assertTrue(installer.onFtpPortPage().isFtpPortWarningMessageDisplayed(), "Select another Ftp Port message should be displayed.");
+        installer.onWarning().clickOK();
+
+        STEP("5. To the 'Alfresco FTP port' enter any incorrect data, e.g. text click 'Next' button.");
+        installer.onFtpPortPage().setFtpPort("DF");
+        installer.onSetup().clickNext();
+        Assert.assertTrue(installer.onFtpPortPage().isFtpCharacterWarningMessageDisplayed(), "Use numbers only in the port configuration field message should be displayed.");
+        installer.onWarning().clickOK();
+
+        STEP("6. Enter correct port value, not used by another process (use netstat console utility to define of using ports). Click Forward.");
+        installer.onFtpPortPage().setFtpPort("21");
+        installer.onSetup().clickNext();
+
+        STEP("7. To the 'Alfresco RMI Port' enter any busy port (or leave busy 50500 port) and verify error message is displayed.");
+        installer.onRmiPortPage().setRmiPort("66000");
+        installer.onSetup().clickNext();
+        Assert.assertTrue(installer.onRmiPortPage().isRmiPortWarningMessageDisplayed(), "Select another RMI Port message should be displayed.");
+        installer.onWarning().clickOK();
+
+        STEP("8. To the 'Alfresco RMI port' enter any incorrect data, e.g. text click 'Next' button.");
+        installer.onRmiPortPage().setRmiPort("DF");
+        installer.onSetup().clickNext();
+        Assert.assertTrue(installer.onRmiPortPage().isRmiCharacterWarningMessageDisplayed(), "Use numbers only in the port configuration field message should be displayed.");
+        installer.onWarning().clickOK();
+
+        STEP("9. Enter correct port value, not used by another process (use netstat console utility to define of using ports). Click Forward.");
+        installer.onRmiPortPage().setRmiPort();
+        installer.onSetup().clickNext();
+
+        STEP("10. Install Alfresco.");
+        installer.onAdminPasswordPage().setAdminPassword(installer.installerProperties.getAdminPassword());
+        installer.onAdminPasswordPage().setRepeatAdminPassword(installer.installerProperties.getAdminPassword());
+        installer.onSetup().clickNext();
+        installer.onServiceStartupConfigurationPage().focus();
+        installer.onSetup().clickNext();
+        installer.onReadyToInstallPage().focus();
+        installer.onSetup().clickNext();
+        Assert.assertTrue(installer.isRunning(), "The installation process should be running.");
     }
 
     public void shardedSolrForm() throws Exception
-    {
-        //TODO
-    }
-
-    public void ftpPortForm() throws Exception
-    {
-        //TODO
-    }
-    public void rmiPortForm() throws Exception
     {
         //TODO
     }
