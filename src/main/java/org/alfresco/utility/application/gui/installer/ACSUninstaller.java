@@ -37,7 +37,8 @@ public class ACSUninstaller extends ACSWizard
         return new Setup();
     }
 
-    public void assertDialogIsClosed() throws CouldNotFindApplicationActionImage {
+    public void assertDialogIsClosed() throws CouldNotFindApplicationActionImage, InterruptedException {
+        Thread.sleep(2000);
         Assert.assertFalse(isPopUpDisplayed("dialog"));
     }
 
@@ -55,6 +56,7 @@ public class ACSUninstaller extends ACSWizard
     }
 
     public ACSUninstaller.ConfirmationDialog waitForConfirmationDialog() throws Exception {
+        Thread.sleep(50000);
         return new ConfirmationDialog();
     }
 
