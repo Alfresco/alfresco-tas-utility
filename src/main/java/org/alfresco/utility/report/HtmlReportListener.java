@@ -22,6 +22,7 @@ import org.alfresco.utility.exception.CouldNotFindImageOnScreen;
 import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.report.Bug.Status;
 import org.alfresco.utility.web.AbstractWebTest;
+import org.apache.commons.io.FileUtils;
 import org.sikuli.script.FindFailed;
 import org.slf4j.Logger;
 import org.testng.IReporter;
@@ -223,8 +224,17 @@ public class HtmlReportListener implements IReporter
                            
                             if (imageParsed.length>0)
                             {  
-                                String imagePath = String.format("../%s", imageParsed[0].split("target")[1]);
-                                test.log(status, String.format("GUI Image NOT found on screen: %s", test.addScreenCapture(imagePath)));                                    
+                                File sourceFile = Paths.get(imageParsed[0]).toFile();
+                                File destinationFile = Paths.get(String.format("%s/%s/%s", defaultProperties.getProperty("reports.path"), defaultProperties.getProperty("screenshots.dir"), sourceFile.getName())).toFile();
+                                try
+                                {
+                                    FileUtils.copyFile(sourceFile, destinationFile);
+                                    test.log(status, String.format("GUI Image NOT found on screen: %s", test.addScreenCapture(destinationFile.getPath())));
+                                }
+                                catch (IOException e)
+                                {                                    
+                                    LOG.error(e.getMessage());
+                                }                                                                    
                             }                            
                         }
                     }
