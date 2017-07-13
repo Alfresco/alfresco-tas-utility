@@ -220,10 +220,9 @@ public class HtmlReportListener implements IReporter
                         {
                             FindFailed missingImage = (FindFailed) result.getThrowable();
                              
-                            String[] imageParsed = missingImage.getMessage().split(": ("); 
+                            String[] imageParsed = missingImage.getMessage().split(": "); 
                             if (imageParsed.length>0)
-                            {
-                                LOG.info("Image Missing:" + missingImage.getMessage());                                                     
+                            {                                                                                    
                                 test.log(status, String.format("GUI Image NOT found on screen: %s", test.addScreenCapture(String.format("\"%s\"", imageParsed[0]))));                                    
                             }                            
                         }
