@@ -118,6 +118,22 @@ public class ACSInstaller extends ACSWizard implements Installable
         return new TomcatConfigurationPage();
     }
 
+    public TomcatConfigurationPage navigateToTomcatPortConfigurationPage() throws Exception
+    {
+        open();
+        waitForInstallerToOpen();
+        onLanguageSelectionDialog().clickOK();
+        onSetup().clickNext();
+        onLicensePage().acceptTheAgreement();
+        onSetup().clickNext();
+        onInstallationTypePage().chooseAdvancedInstall();
+        onSetup().clickNext();
+        onSetup().clickNext();
+        onSetup().clickNext();
+        onSetup().clickNext();
+        return new TomcatConfigurationPage();
+    }
+
     public ShardedSolrPage onShardedSolrInstallationPage() throws Exception
     {
         return new ShardedSolrPage();
@@ -128,13 +144,69 @@ public class ACSInstaller extends ACSWizard implements Installable
         return new FtpPortPage();
     }
 
+    public FtpPortPage navigateToFtpPortPage() throws Exception
+    {
+        open();
+        waitForInstallerToOpen();
+        onLanguageSelectionDialog().clickOK();
+        onSetup().clickNext();
+        onLicensePage().acceptTheAgreement();
+        onSetup().clickNext();
+        onInstallationTypePage().chooseAdvancedInstall();
+        onSetup().clickNext();
+        onSetup().clickNext();
+        onSetup().clickNext();
+        onSetup().clickNext();
+        onSetup().clickNext();
+        onSetup().clickNext();
+        onSetup().clickNext();
+        return new FtpPortPage();
+    }
+
     public RmiPortPage onRmiPortPage() throws Exception
     {
         return new RmiPortPage();
     }
 
+    public RmiPortPage navigateToRmiPortPage() throws Exception
+    {
+        open();
+        waitForInstallerToOpen();
+        onLanguageSelectionDialog().clickOK();
+        onSetup().clickNext();
+        onLicensePage().acceptTheAgreement();
+        onSetup().clickNext();
+        onInstallationTypePage().chooseAdvancedInstall();
+        onSetup().clickNext();
+        onSetup().clickNext();
+        onSetup().clickNext();
+        onSetup().clickNext();
+        onSetup().clickNext();
+        onSetup().clickNext();
+        onSetup().clickNext();
+        onSetup().clickNext();
+        return new RmiPortPage();
+    }
+
     public LibreOfficeServerPortPage onLibreOfficeServerPortPage() throws Exception
     {
+        return new LibreOfficeServerPortPage();
+    }
+
+    public LibreOfficeServerPortPage navigateToLibreOfficeServerPortPage() throws Exception
+    {
+        open();
+        waitForInstallerToOpen();
+        onLanguageSelectionDialog().clickOK();
+        onSetup().clickNext();
+        onLicensePage().acceptTheAgreement();
+        onSetup().clickNext();
+        onInstallationTypePage().chooseAdvancedInstall();
+        onSetup().clickNext();
+        onSetup().clickNext();
+        onSetup().clickNext();
+        onSetup().clickNext();
+        onSetup().clickNext();
         return new LibreOfficeServerPortPage();
     }
 
@@ -614,21 +686,21 @@ public class ACSInstaller extends ACSWizard implements Installable
         public DatabaseConfiguration setUsername() throws Exception
         {
             clickOn("databaseConfiguration/username");
-            clearAndType(installerProperties.getOSProperty("db.username"));
+            clearAndType(installerProperties.getInstallerDBUsername());
             return this;
         }
 
         public DatabaseConfiguration setPassword() throws Exception
         {
             clickOn("databaseConfiguration/password");
-            clearAndType(installerProperties.getOSProperty("db.password"));
+            clearAndType(installerProperties.getInstallerDBPassword());
             return this;
         }
 
         public DatabaseConfiguration verifyPassword() throws Exception
         {
             clickOn("databaseConfiguration/verify");
-            clearAndType(installerProperties.getOSProperty("db.password"));
+            clearAndType(installerProperties.getInstallerDBPassword());
             return this;
         }
     }
@@ -649,36 +721,89 @@ public class ACSInstaller extends ACSWizard implements Installable
 
         public TomcatConfigurationPage setWebServerDomain() throws Exception
         {
-            clearAndType(installerProperties.getOSProperty("web.server.domain"));
+            clearAndType(installerProperties.getInstallerWebServerDomain());
             return this;
         }
 
         public TomcatConfigurationPage setTomcatServerPort() throws Exception
         {
             clickOn("tomcat/tomcatServerPort");
-            clearAndType(installerProperties.getOSProperty("tomcat.server.port"));
+            clearAndType(installerProperties.getInstallerTomcatServerPort());
+            return this;
+        }
+
+        public TomcatConfigurationPage setTomcatServerPort(String portNumber) throws Exception
+        {
+            clickOn("tomcat/tomcatServerPort");
+            clearAndType(portNumber);
             return this;
         }
 
         public TomcatConfigurationPage setTomcatShutdownPort() throws Exception
         {
             clickOn("tomcat/tomcatShutdownPort");
-            clearAndType(installerProperties.getOSProperty("tomcat.shutdown.port"));
+            clearAndType(installerProperties.getInstallerTomcatShutdownPort());
+            return this;
+        }
+
+        public TomcatConfigurationPage setTomcatShutdownPort(String portNumber) throws Exception
+        {
+            clickOn("tomcat/tomcatShutdownPort");
+            clearAndType(portNumber);
             return this;
         }
 
         public TomcatConfigurationPage setTomcatSSLPort() throws Exception
         {
             clickOn("tomcat/tomcatSSLPort");
-            clearAndType(installerProperties.getOSProperty("tomcat.ssl.port"));
+            clearAndType(installerProperties.getInstallerTomcatSSLPort());
+            return this;
+        }
+
+        public TomcatConfigurationPage setTomcatSSLPort(String portNumber) throws Exception
+        {
+            clickOn("tomcat/tomcatSSLPort");
+            clearAndType(portNumber);
             return this;
         }
 
         public TomcatConfigurationPage setTomcatAJPPort() throws Exception
         {
             clickOn("tomcat/tomcatAJPPort");
-            clearAndType(installerProperties.getOSProperty("tomcat.ajp.port"));
+            clearAndType(installerProperties.getInstallerTomcatAJPPort());
             return this;
+        }
+
+        public TomcatConfigurationPage setTomcatAJPPort(String portNumber) throws Exception
+        {
+            clickOn("tomcat/tomcatAJPPort");
+            clearAndType(portNumber);
+            return this;
+        }
+
+        public boolean isTomcatServerPortWarningMessageDisplayed() throws CouldNotFindApplicationActionImage
+        {
+            return isPopUpDisplayed("tomcat/tomcatServerPortWarning");
+        }
+
+        public boolean isTomcatShutdownPortWarningMessageDisplayed() throws CouldNotFindApplicationActionImage
+        {
+            return isPopUpDisplayed("tomcat/tomcatShutdownPortWarning");
+        }
+
+        public boolean isTomcatSSLPortWarningMessageDisplayed() throws CouldNotFindApplicationActionImage
+        {
+            return isPopUpDisplayed("tomcat/tomcatSSLPortWarning");
+        }
+
+        public boolean isTomcatAJPPortWarningMessageDisplayed() throws CouldNotFindApplicationActionImage
+        {
+            return isPopUpDisplayed("tomcat/tomcatAJPPortWarning");
+        }
+
+        public boolean isTomcatPortCharacterWarningMessageDisplayed() throws CouldNotFindApplicationActionImage
+        {
+            return isPopUpDisplayed("tomcat/charactersNotPermittedError");
         }
     }
 
@@ -726,8 +851,25 @@ public class ACSInstaller extends ACSWizard implements Installable
         public FtpPortPage setFtpPort() throws Exception
         {
             clickOn("ftp/ftpPort");
-            clearAndType(installerProperties.getOSProperty("ftp.port"));
+            clearAndType(installerProperties.getInstallerFTPPort());
             return this;
+        }
+
+        public FtpPortPage setFtpPort(String portNumber) throws Exception
+        {
+            clickOn("ftp/ftpPort");
+            clearAndType(portNumber);
+            return this;
+        }
+
+        public boolean isFtpPortWarningMessageDisplayed() throws CouldNotFindApplicationActionImage
+        {
+            return isPopUpDisplayed("ftp/ftpPortNotPermittedError");
+        }
+
+        public boolean isFtpCharacterWarningMessageDisplayed() throws CouldNotFindApplicationActionImage
+        {
+            return isPopUpDisplayed("ftp/charactersNotPermittedError");
         }
     }
 
@@ -748,8 +890,25 @@ public class ACSInstaller extends ACSWizard implements Installable
         public RmiPortPage setRmiPort() throws Exception
         {
             clickOn("rmi/rmiPort");
-            clearAndType(installerProperties.getOSProperty("rmi.port"));
+            clearAndType(installerProperties.getInstallerRMIPort());
             return this;
+        }
+
+        public RmiPortPage setRmiPort(String portNumber) throws Exception
+        {
+            clickOn("rmi/rmiPort");
+            clearAndType(portNumber);
+            return this;
+        }
+
+        public boolean isRmiPortWarningMessageDisplayed() throws CouldNotFindApplicationActionImage
+        {
+            return isPopUpDisplayed("rmi/rmiPortNotPermittedError");
+        }
+
+        public boolean isRmiCharacterWarningMessageDisplayed() throws CouldNotFindApplicationActionImage
+        {
+            return isPopUpDisplayed("rmi/charactersNotPermittedError");
         }
     }
 
@@ -794,11 +953,28 @@ public class ACSInstaller extends ACSWizard implements Installable
             return this;
         }
 
-        public LibreOfficeServerPortPage setRmiPort() throws Exception
+        public LibreOfficeServerPortPage setLibreOfficeServerPort() throws Exception
         {
             clickOn("libreOffice/libreOfficeServerPort");
-            clearAndType(installerProperties.getOSProperty("libre.office.server.port"));
+            clearAndType(installerProperties.getInstallerLibreOfficeServerPort());
             return this;
+        }
+
+        public LibreOfficeServerPortPage setLibreOfficeServerPort(String portNumber) throws Exception
+        {
+            clickOn("libreOffice/libreOfficeServerPort");
+            clearAndType(portNumber);
+            return this;
+        }
+
+        public boolean isLibreOfficePortWarningMessageDisplayed() throws CouldNotFindApplicationActionImage
+        {
+            return isPopUpDisplayed("libreOffice/libreOfficePortNotPermittedError");
+        }
+
+        public boolean isLibreOfficeCharacterWarningMessageDisplayed() throws CouldNotFindApplicationActionImage
+        {
+            return isPopUpDisplayed("libreOffice/charactersNotPermittedError");
         }
     }
 
@@ -819,14 +995,14 @@ public class ACSInstaller extends ACSWizard implements Installable
         public RemoteSolrConfigurationPage setRemoteSolrHost() throws Exception
         {
             clickOn("remoteSolr/remoteSolrHost");
-            clearAndType(installerProperties.getOSProperty("remote.solr.host"));
+            clearAndType(installerProperties.getInstallerRemoteSolrHost());
             return this;
         }
 
         public RemoteSolrConfigurationPage setRemoteSolrSSLPort() throws Exception
         {
             clickOn("remoteSolr/remoteSolrSSLPort");
-            clearAndType(installerProperties.getOSProperty("remote.solr.ssl.port"));
+            clearAndType(installerProperties.getInstallerRemoteSolrSSLPort());
             return this;
         }
     }
