@@ -108,6 +108,21 @@ public class ACSInstaller extends ACSWizard implements Installable
         return new DatabaseParameters();
     }
 
+    public DatabaseConfiguration navigateToDatabaseServerParametersPage() throws Exception
+    {
+        open();
+        waitForInstallerToOpen();
+        onLanguageSelectionDialog().clickOK();
+        onSetup().clickNext();
+        onLicensePage().acceptTheAgreement();
+        onSetup().clickNext();
+        onInstallationTypePage().chooseAdvancedInstall();
+        onSetup().clickNext()
+                .clickNext()
+                .clickNext();
+        return new DatabaseConfiguration();
+    }
+
     public DatabaseConfiguration onDatabaseConfigurationPage() throws Exception
     {
         return new DatabaseConfiguration();
@@ -661,10 +676,29 @@ public class ACSInstaller extends ACSWizard implements Installable
             return this;
         }
 
+        public DatabaseParameters setPort() throws Exception
+        {
+            clickOn("databaseParameters/port");
+            clearAndType(installerProperties.getInstallerDBPort());
+            return this;
+        }
+
         public DatabaseParameters setPort(String port) throws Exception
         {
             focus();
             clearAndType(port);
+            return this;
+        }
+
+        public boolean isDatabaseServerPortWarningMessageDisplayed() throws CouldNotFindImageOnScreen
+        {
+            return isPopUpDisplayed("databaseParameters/databaseServerPortWarningMessage");
+        }
+
+        public DatabaseParameters assertDatabasePortIs(String expectedPort) throws Exception
+        {
+            copyToClipboard();
+            Assert.assertEquals(getTextFromClipboard(), expectedPort, "Database Server Port is set.");
             return this;
         }
     }
