@@ -13,7 +13,7 @@ import org.alfresco.utility.application.gui.installer.ACSInstallerProperties.LAN
  */
 public class InstallerFormTests extends InstallerTest
 {
-	
+
 	/**
 	 * AONE-18286
 	 */
@@ -21,14 +21,15 @@ public class InstallerFormTests extends InstallerTest
     public void languageSelectionForm() throws Exception
     {
         STEP("Precondition: Alfresco One installer is started and navigated to Language Selection form");
-        installer.navigateToLanguageForm();
+        navigateToLanguageForm();
         
         STEP("1. Press Cancel button and check that installer is closed.");
         installer.onLanguageSelectionDialog().clickCancel();
         Assert.assertFalse(installer.isRunning(), "The installer should be closed.");
         
         STEP("2. Start installer again and check that Language Selection form is displayed");
-        installer.navigateToLanguageForm().focus();
+        navigateToLanguageForm();
+        installer.onLanguageSelectionDialog().focus();
         
         STEP("3. Select a language different than English and press OK");
         installer.onLanguageSelectionDialog().setLanguage(LANGUAGES.FRENCH).startWithFrenchSetup();
@@ -42,41 +43,46 @@ public class InstallerFormTests extends InstallerTest
     public void welcomeForm() throws Exception
     {
         STEP("Precondition: Alfresco One installer is started and navigated to Setup/Welcome form");
-        installer.navigateToSetupForm();
-        
+        navigateToSetupForm();
+
         STEP("1. Go to Setup page, press Back button then assert that it is disabled");
         installer.onSetup().clickBack().assertBackButtonIsDisabled();
-        
+
         STEP("2. Press Cancel button. Warning 'Do you want to abort the installation process?' form is displayed.");
-        installer.onSetup().clickCancel().focus();
-        
+        installer.onSetup().clickCancel();
+
         STEP("3. Press No button. Question' form closed, installer is still running.");
         installer.onDialog().clickNo();
         installer.onSetup().focus();
         Assert.assertTrue(installer.isRunning(), "The installer should not be closed.");
-        
+
         STEP("4. Press Cancel button. Warning 'Do you want to abort the installation process?' form is displayed.");
-        installer.onSetup().clickCancel().focus();
+        installer.onSetup().clickCancel();
 
         STEP("5. Press Yes button. 'Question' form closed, installer closed, installation process aborted.");
         installer.onDialog().clickYes();
         Assert.assertFalse(installer.isRunning(), "The installer should be closed.");
-        
-        STEP("6. Run installer again, open Setup, press Next and check License Agreemend page is opened.");
-        installer.navigateToSetupForm().clickNext();
+
+        STEP("6. Run installer again, open Setup, press Next and check License Agreement page is opened.");
+        navigateToSetupForm();
+        installer.onSetup().clickNext();
         installer.onLicensePage().focus().noOptionIsSelected();
     }
 
+    /**
+     * AONE-18457
+     */
     @Test()
     public void licenseAgreementForm() throws Exception
     {
         STEP("Precondition: Alfresco One installer is started and navigated to License Agreement form");
-        installer.navigateToLicenseForm();
+        navigateToLicenseForm();
 
         STEP("1. Scroll the Alfresco Enterprise Trial Agreement text.");
         installer.onLicensePage().scrollAgreement();
 
         STEP("2. Don't select any of the two options and press Next button.");
+        installer.onLicensePage().noOptionIsSelected();
         installer.onSetup().clickNext();
         installer.onLicensePage();
 
@@ -89,7 +95,8 @@ public class InstallerFormTests extends InstallerTest
         Assert.assertFalse(installer.isRunning(), "The installer should be closed and the installation process is aborted.");
 
         STEP("5. Run installer again and navigate to the License Agreement form. Select 'I do not accept the agreement' and press the Next button.");
-        installer.navigateToLicenseForm().doNotAcceptTheAgreement();
+        navigateToLicenseForm();
+        installer.onLicensePage().doNotAcceptTheAgreement();
         installer.onSetup().clickNext();
 
         STEP("6. From the Abort installation process window, select No.");
@@ -104,7 +111,7 @@ public class InstallerFormTests extends InstallerTest
         Assert.assertFalse(installer.isRunning(), "The installer should be closed and the installation process is aborted.");
 
         STEP("9. Run installer again and navigate to the License Agreement form. Press Cancel and from the abort installation windows press 'No'.");
-        installer.navigateToLicenseForm();
+        navigateToLicenseForm();
         installer.onSetup().clickCancel();
         installer.onDialog().clickNo();
         installer.onLicensePage().noOptionIsSelected();
@@ -122,11 +129,14 @@ public class InstallerFormTests extends InstallerTest
         installer.close();
     }
 
+    /**
+     * AONE-18288
+     */
     @Test()
     public void installationTypeForm() throws Exception
     {
         STEP("Precondition: Alfresco One installer is started and navigated to Installation Type form");
-        installer.navigateToInstallationTypeForm();
+        navigateToInstallationTypeForm();
 
         STEP("1. The 'Easy - Install using the default configuration' radio button is selected. Press Next button.");
         installer.onSetup().clickNext();
@@ -153,11 +163,14 @@ public class InstallerFormTests extends InstallerTest
         Assert.assertFalse(installer.isRunning(), "The installer should be closed and the installation process is aborted.");
     }
 
+    /**
+     * AONE-18290
+     */
     @Test()
     public void installationFolderForm() throws Exception
     {
         STEP("Precondition: Alfresco One installer is running in easy install mode - Installation Folder form is opened.");
-        installer.navigateToInstallationFolderForm();
+        navigateToInstallationFolderForm();
 
         STEP("1. Select a non-empty folder (e.g. /opt/temp) and click 'Next' button.");
         String notEmptyFolder = createNotEmptyFolderInOS().getParent();
@@ -202,7 +215,7 @@ public class InstallerFormTests extends InstallerTest
     public void selectComponentsForm() throws Exception
     {
         STEP("Precondition: Alfresco One installer is running in advanced install mode - Select Components form is opened.");
-        installer.navigateToSelectComponentsForm();
+        navigateToSelectComponentsForm();
     }
 
     public void adminPasswordForm() throws Exception
@@ -219,7 +232,7 @@ public class InstallerFormTests extends InstallerTest
     public void tomcatPortConfigurationForm() throws Exception
     {
         STEP("Precondition: Alfresco One installer is started and navigated to Tomcat Port Configuration form");
-        installer.navigateToTomcatPortConfigurationPage();
+        navigateToTomcatPortConfigurationPage();
 
         STEP("1. For Tomcat Server Port enter incorrect port values instead of default values used by default. For example, 66000. Click Forward.");
         installer.onTomcatPortConfigurationPage().setTomcatServerPort("66000");
@@ -305,7 +318,7 @@ public class InstallerFormTests extends InstallerTest
     public void verifyLibreOfficeFtpPortRmiPortForms() throws Exception
     {
         STEP("Precondition: Alfresco One installer is started and navigated to LibreOffice Server Port form");
-        installer.navigateToLibreOfficeServerPortPage();
+        navigateToLibreOfficeServerPortPage();
 
         STEP("1. To the 'LibreOffice Server port' enter any busy port (or leave busy 8100 port) and verify error message is displayed.");
         installer.onLibreOfficeServerPortPage().setLibreOfficeServerPort("66000");
