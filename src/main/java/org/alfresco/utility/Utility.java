@@ -463,32 +463,10 @@ public class Utility
      * @param command
      * @return the List of lines returned by command
      */
-    public static String executeOnWin(String command) throws IOException, InterruptedException {
-        StringBuilder sb = new StringBuilder();
-
-        try {
-            Process executionProcess = Runtime.getRuntime().exec("cmd /c " + command);
-            executionProcess.waitFor();
-            BufferedReader stdInput = new BufferedReader(new InputStreamReader(executionProcess.getInputStream()));
-
-            BufferedReader stdError = new BufferedReader(new InputStreamReader(executionProcess.getErrorStream()));
-            String s = null;
-            while ((s = stdInput.readLine()) != null) {
-                sb.append(s);
-                sb.append("\n");
-            }
-
-            while ((s = stdError.readLine()) != null) {
-                sb.append(s);
-                sb.append("\n");
-            }
-            stdInput.close();
-            stdError.close();
-        }
-        catch (IOException ex){
-            ex.printStackTrace();
-        }
-        return sb.toString();
+    public static void executeOnWin(String command) throws IOException, InterruptedException
+    {
+        LOG.info("On Windows execute command: [{}]", command);
+        Runtime.getRuntime().exec("cmd /c " + command);
     }
 
     /**
