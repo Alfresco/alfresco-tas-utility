@@ -463,7 +463,7 @@ public class Utility
      * @param command
      * @return the List of lines returned by command
      */
-    public static void executeOnWin(String command) throws IOException
+    public static void executeOnWin(String command) throws IOException, InterruptedException
     {
         LOG.info("On Windows execute command: [{}]", command);
         Runtime.getRuntime().exec("cmd /c " + command);
