@@ -60,46 +60,13 @@ public class ACSInstaller extends ACSWizard implements Installable
         return new LicensePage();
     }
 
-    public LicensePage navigateToLicenseForm() throws Exception
-    {
-        open();
-        waitForInstallerToOpen();
-        onLanguageSelectionDialog().clickOK();
-        onSetup().clickNext();
-        return new LicensePage();
-    }
-
     public InstallationType onInstallationTypePage() throws Exception
     {
         return new InstallationType();
     }
 
-    public InstallationType navigateToInstallationTypeForm() throws Exception
-    {
-        open();
-        waitForInstallerToOpen();
-        onLanguageSelectionDialog().clickOK();
-        onSetup().clickNext();
-        onLicensePage().acceptTheAgreement();
-        onSetup().clickNext();
-        return new InstallationType();
-    }
-
     public InstallationFolder onInstallationFolderPage() throws Exception
     {
-        return new InstallationFolder();
-    }
-
-    public InstallationFolder navigateToInstallationFolderForm() throws Exception
-    {
-        open();
-        waitForInstallerToOpen();
-        onLanguageSelectionDialog().clickOK();
-        onSetup().clickNext();
-        onLicensePage().acceptTheAgreement();
-        onSetup().clickNext();
-        onInstallationTypePage().chooseEasyInstall();
-        onSetup().clickNext();
         return new InstallationFolder();
     }
 
@@ -133,22 +100,6 @@ public class ACSInstaller extends ACSWizard implements Installable
         return new TomcatConfigurationPage();
     }
 
-    public TomcatConfigurationPage navigateToTomcatPortConfigurationPage() throws Exception
-    {
-        open();
-        waitForInstallerToOpen();
-        onLanguageSelectionDialog().clickOK();
-        onSetup().clickNext();
-        onLicensePage().acceptTheAgreement();
-        onSetup().clickNext();
-        onInstallationTypePage().chooseAdvancedInstall();
-        onSetup().clickNext()
-                 .clickNext()
-                 .clickNext()
-                 .clickNext();
-        return new TomcatConfigurationPage();
-    }
-
     public ShardedSolrPage onShardedSolrInstallationPage() throws Exception
     {
         return new ShardedSolrPage();
@@ -159,69 +110,13 @@ public class ACSInstaller extends ACSWizard implements Installable
         return new FtpPortPage();
     }
 
-    public FtpPortPage navigateToFtpPortPage() throws Exception
-    {
-        open();
-        waitForInstallerToOpen();
-        onLanguageSelectionDialog().clickOK();
-        onSetup().clickNext();
-        onLicensePage().acceptTheAgreement();
-        onSetup().clickNext();
-        onInstallationTypePage().chooseAdvancedInstall();
-        onSetup().clickNext()
-                 .clickNext()
-                 .clickNext()
-                 .clickNext()
-                 .clickNext()
-                 .clickNext()
-                 .clickNext();
-        return new FtpPortPage();
-    }
-
     public RmiPortPage onRmiPortPage() throws Exception
     {
         return new RmiPortPage();
     }
 
-    public RmiPortPage navigateToRmiPortPage() throws Exception
-    {
-        open();
-        waitForInstallerToOpen();
-        onLanguageSelectionDialog().clickOK();
-        onSetup().clickNext();
-        onLicensePage().acceptTheAgreement();
-        onSetup().clickNext();
-        onInstallationTypePage().chooseAdvancedInstall();
-        onSetup().clickNext()
-                 .clickNext()
-                 .clickNext()
-                 .clickNext()
-                 .clickNext()
-                 .clickNext()
-                 .clickNext()
-                 .clickNext();
-        return new RmiPortPage();
-    }
-
     public LibreOfficeServerPortPage onLibreOfficeServerPortPage() throws Exception
     {
-        return new LibreOfficeServerPortPage();
-    }
-
-    public LibreOfficeServerPortPage navigateToLibreOfficeServerPortPage() throws Exception
-    {
-        open();
-        waitForInstallerToOpen();
-        onLanguageSelectionDialog().clickOK();
-        onSetup().clickNext();
-        onLicensePage().acceptTheAgreement();
-        onSetup().clickNext();
-        onInstallationTypePage().chooseAdvancedInstall();
-        onSetup().clickNext()
-                 .clickNext()
-                 .clickNext()
-                 .clickNext()
-                 .clickNext();
         return new LibreOfficeServerPortPage();
     }
 
@@ -239,20 +134,6 @@ public class ACSInstaller extends ACSWizard implements Installable
     {
         return new SelectComponents();
     }
-
-    public SelectComponents navigateToSelectComponentsForm() throws Exception
-    {
-        open();
-        waitForInstallerToOpen();
-        onLanguageSelectionDialog().clickOK();
-        onSetup().clickNext();
-        onLicensePage().acceptTheAgreement();
-        onSetup().clickNext();
-        onInstallationTypePage().chooseAdvancedInstall();
-        onSetup().clickNext();
-        return new SelectComponents();
-    }
-
 
     public AdminPassword onAdminPasswordPage() throws Exception
     {
@@ -358,7 +239,7 @@ public class ACSInstaller extends ACSWizard implements Installable
             waitOn("setup/description");
             return this;
         }
-        
+
         public Setup assertBackButtonIsDisabled() throws Exception
         {
             waitOn("back");
@@ -440,7 +321,6 @@ public class ACSInstaller extends ACSWizard implements Installable
         public Dialog() throws Exception
         {
             waitOn("dialog/doYouWantToAbort");
-            focus();
         }
 
         public void clickYes() throws Exception
@@ -1069,20 +949,4 @@ public class ACSInstaller extends ACSWizard implements Installable
         onSetup().focus();
         return this;
     }
-
-    public LanguageSelection navigateToLanguageForm() throws Exception
-    {
-        open();
-        waitForInstallerToOpen();
-        return new LanguageSelection();
-    }
-    
-    public Setup navigateToSetupForm() throws Exception
-    {
-        open();
-        waitForInstallerToOpen();
-        onLanguageSelectionDialog().clickOK();
-        return new Setup();
-    }
-
 }

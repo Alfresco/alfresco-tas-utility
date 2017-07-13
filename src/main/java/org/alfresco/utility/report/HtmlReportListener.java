@@ -22,6 +22,8 @@ import org.alfresco.utility.exception.CouldNotFindImageOnScreen;
 import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.report.Bug.Status;
 import org.alfresco.utility.web.AbstractWebTest;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.sikuli.script.FindFailed;
 import org.slf4j.Logger;
 import org.testng.IReporter;
@@ -223,8 +225,25 @@ public class HtmlReportListener implements IReporter
                            
                             if (imageParsed.length>0)
                             {  
-                                String imagePath = String.format("../%s", imageParsed[0].split("target")[1]);
-                                test.log(status, String.format("GUI Image NOT found on screen: %s", test.addScreenCapture(imagePath)));                                    
+                                File sourceFile = Paths.get(imageParsed[0]).toFile();
+                                File destinationFile = Paths.get(String.format("%s/%s/%s", defaultProperties.getProperty("reports.path"), defaultProperties.getProperty("screenshots.dir"), sourceFile.getName())).toFile();
+                                try
+                                {
+                                    FileUtils.copyFile(sourceFile, destinationFile);
+                                    
+                                    String[] imageNotFoundArr = destinationFile.getPath().split(defaultProperties.getProperty("reports.path"));
+                                    if(imageNotFoundArr.length>0)
+                                    {
+                                        String imageNotFound = StringUtils.removeStart(imageNotFoundArr[1], "/");
+                                        String imageNotFoundFormatted = String.format("<a href='%s' data-featherlight='image'><img class='report-img'src='%s'/></a>", imageNotFound, imageNotFound);
+                                       
+                                        test.log(status, String.format("GUI Image NOT found on screen: %s", imageNotFoundFormatted));    
+                                    }                                    
+                                }
+                                catch (IOException e)
+                                {                                    
+                                    LOG.error(e.getMessage());
+                                }                                                                    
                             }                            
                         }
                     }
