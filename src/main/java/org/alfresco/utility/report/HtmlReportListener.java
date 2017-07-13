@@ -209,21 +209,22 @@ public class HtmlReportListener implements IReporter
 
                     if (result.getInstance() instanceof AbstractGuiTest)
                     {
-
                         if (result.getThrowable() instanceof CouldNotFindImageOnScreen)
                         {
                             CouldNotFindImageOnScreen missingImage = (CouldNotFindImageOnScreen) result.getThrowable();
 
-                            test.log(status, String.format("GUI Image NOT found on screen: %s", test.addScreenCapture(String.format("\"%s\"",missingImage.getImagePath()))));
+                            test.log(status, String.format("GUI Image NOT found on screen: %s", test.addScreenCapture(missingImage.getImagePath())));
 
                         } else  if (result.getThrowable() instanceof FindFailed)
                         {
                             FindFailed missingImage = (FindFailed) result.getThrowable();
                              
                             String[] imageParsed = missingImage.getMessage().split(": "); 
+                           
                             if (imageParsed.length>0)
-                            {                                                                                    
-                                test.log(status, String.format("GUI Image NOT found on screen: %s", test.addScreenCapture(String.format("\"%s\"", imageParsed[0]))));                                    
+                            {  
+                                String imagePath = String.format("../%s", imageParsed[0].split("target")[1]);
+                                test.log(status, String.format("GUI Image NOT found on screen: %s", test.addScreenCapture(imagePath)));                                    
                             }                            
                         }
                     }
