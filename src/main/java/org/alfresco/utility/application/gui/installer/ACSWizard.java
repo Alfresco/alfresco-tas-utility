@@ -6,9 +6,11 @@ import java.nio.file.Paths;
 import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.Utility;
 import org.alfresco.utility.application.gui.GuiScreen;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.testng.Assert;
 
 public abstract class ACSWizard extends GuiScreen
 {
@@ -21,7 +23,7 @@ public abstract class ACSWizard extends GuiScreen
     {
         return installerProperties;
     }
-    
+
     @Override
     public ACSWizard open() throws Exception
     {
@@ -48,7 +50,8 @@ public abstract class ACSWizard extends GuiScreen
 
             Utility.executeOnUnixNoWait("sh " + installBuilderSh.getPath().replaceAll(" ", "\\\\ "));
             Thread.sleep(5000);
-        } else if (SystemUtils.IS_OS_LINUX)
+        }
+        else if (SystemUtils.IS_OS_LINUX)
         {
             Utility.executeOnUnixNoWait("chmod +x " + installerProperties.getInstallerSourcePath().getPath());
             Utility.executeOnUnixNoWait(installerProperties.getInstallerSourcePath().getPath());
@@ -67,7 +70,7 @@ public abstract class ACSWizard extends GuiScreen
         }
         else
         {
-            Utility.executeOnWin(String.format("taskkill /F /IM \"%s\"", installerProperties.getOSProperty("installer.name")));
+            Utility.executeOnWin(String.format("taskkill /F /IM \"%s\"", installerProperties.getInstallerSourcePath().getName()));
         }
 
         return this;
@@ -77,5 +80,19 @@ public abstract class ACSWizard extends GuiScreen
     public String getProcessName()
     {
         return "alfresco-content-services";
+    }
+
+    public void assertInstallationFolderIsEmpty()
+    {
+        File installationFolder = installerProperties.getInstallerDestinationPath();
+        if(installationFolder.exists())
+        {
+            File[] list = installationFolder.listFiles();
+            for (File item : list)
+            {
+                LOG.info(String.format("Found file/folder: %s", item.getPath()));
+            }
+            Assert.assertEquals(FileUtils.sizeOf(installationFolder), 0, "Size of install folder(bytes): ");
+        }
     }
 }

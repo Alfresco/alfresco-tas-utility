@@ -1,18 +1,18 @@
 package org.alfresco.utility.application.gui.installer;
 
+import static org.alfresco.utility.Utility.getTextFromClipboard;
+import static org.sikuli.script.Mouse.WHEEL_DOWN;
+
 import org.alfresco.utility.Utility;
 import org.alfresco.utility.application.Focusable;
 import org.alfresco.utility.application.gui.installer.ACSInstallerProperties.DESCRIPTION;
 import org.alfresco.utility.application.gui.installer.ACSInstallerProperties.LANGUAGES;
-import org.alfresco.utility.exception.CouldNotFindApplicationActionImage;
+import org.alfresco.utility.exception.CouldNotFindImageOnScreen;
 import org.apache.commons.lang.SystemUtils;
 import org.sikuli.api.robot.Key;
 import org.sikuli.script.FindFailed;
 import org.springframework.stereotype.Component;
 import org.testng.Assert;
-
-import static org.alfresco.utility.Utility.*;
-import static org.sikuli.script.Mouse.WHEEL_DOWN;
 
 /**
  * Sikuli approach of interacting with Alfresco Installer.
@@ -118,6 +118,22 @@ public class ACSInstaller extends ACSWizard implements Installable
         return new TomcatConfigurationPage();
     }
 
+    public TomcatConfigurationPage navigateToTomcatPortConfigurationPage() throws Exception
+    {
+        open();
+        waitForInstallerToOpen();
+        onLanguageSelectionDialog().clickOK();
+        onSetup().clickNext();
+        onLicensePage().acceptTheAgreement();
+        onSetup().clickNext();
+        onInstallationTypePage().chooseAdvancedInstall();
+        onSetup().clickNext()
+                 .clickNext()
+                 .clickNext()
+                 .clickNext();
+        return new TomcatConfigurationPage();
+    }
+
     public ShardedSolrPage onShardedSolrInstallationPage() throws Exception
     {
         return new ShardedSolrPage();
@@ -128,13 +144,69 @@ public class ACSInstaller extends ACSWizard implements Installable
         return new FtpPortPage();
     }
 
+    public FtpPortPage navigateToFtpPortPage() throws Exception
+    {
+        open();
+        waitForInstallerToOpen();
+        onLanguageSelectionDialog().clickOK();
+        onSetup().clickNext();
+        onLicensePage().acceptTheAgreement();
+        onSetup().clickNext();
+        onInstallationTypePage().chooseAdvancedInstall();
+        onSetup().clickNext()
+                 .clickNext()
+                 .clickNext()
+                 .clickNext()
+                 .clickNext()
+                 .clickNext()
+                 .clickNext();
+        return new FtpPortPage();
+    }
+
     public RmiPortPage onRmiPortPage() throws Exception
     {
         return new RmiPortPage();
     }
 
+    public RmiPortPage navigateToRmiPortPage() throws Exception
+    {
+        open();
+        waitForInstallerToOpen();
+        onLanguageSelectionDialog().clickOK();
+        onSetup().clickNext();
+        onLicensePage().acceptTheAgreement();
+        onSetup().clickNext();
+        onInstallationTypePage().chooseAdvancedInstall();
+        onSetup().clickNext()
+                 .clickNext()
+                 .clickNext()
+                 .clickNext()
+                 .clickNext()
+                 .clickNext()
+                 .clickNext()
+                 .clickNext();
+        return new RmiPortPage();
+    }
+
     public LibreOfficeServerPortPage onLibreOfficeServerPortPage() throws Exception
     {
+        return new LibreOfficeServerPortPage();
+    }
+
+    public LibreOfficeServerPortPage navigateToLibreOfficeServerPortPage() throws Exception
+    {
+        open();
+        waitForInstallerToOpen();
+        onLanguageSelectionDialog().clickOK();
+        onSetup().clickNext();
+        onLicensePage().acceptTheAgreement();
+        onSetup().clickNext();
+        onInstallationTypePage().chooseAdvancedInstall();
+        onSetup().clickNext()
+                 .clickNext()
+                 .clickNext()
+                 .clickNext()
+                 .clickNext();
         return new LibreOfficeServerPortPage();
     }
 
@@ -215,7 +287,7 @@ public class ACSInstaller extends ACSWizard implements Installable
             return this;
         }
         
-        public LanguageSelection setLanguage(LANGUAGES language) throws CouldNotFindApplicationActionImage {
+        public LanguageSelection setLanguage(LANGUAGES language) throws CouldNotFindImageOnScreen {
         	clickOn("languageSelection/openLanguages");
         	clickOn(language.toString());
         	return this;
@@ -374,7 +446,7 @@ public class ACSInstaller extends ACSWizard implements Installable
         }
 
         @Override
-        public Dialog focus() throws CouldNotFindApplicationActionImage
+        public Dialog focus() throws CouldNotFindImageOnScreen
         {
             clickOn("dialog/doYouWantToAbort");
             return this;
@@ -399,7 +471,7 @@ public class ACSInstaller extends ACSWizard implements Installable
         }
 
         @Override
-        public Warning focus() throws CouldNotFindApplicationActionImage
+        public Warning focus() throws CouldNotFindImageOnScreen
         {
             clickOn("warning/title");
             return this;
@@ -462,7 +534,7 @@ public class ACSInstaller extends ACSWizard implements Installable
             return this;
         }
 
-        public boolean isSelectedFolderNotEmptyWarningDisplayed() throws CouldNotFindApplicationActionImage
+        public boolean isSelectedFolderNotEmptyWarningDisplayed() throws CouldNotFindImageOnScreen
         {
             return isPopUpDisplayed("installationFolder/selectedFolderNotEmpty");
         }
@@ -526,49 +598,49 @@ public class ACSInstaller extends ACSWizard implements Installable
             return this;
         }
 
-        public SelectComponents checkLibreOffice() throws CouldNotFindApplicationActionImage
+        public SelectComponents checkLibreOffice() throws CouldNotFindImageOnScreen
         {
             checkOn("selectComponents/libreOffice");
             return this;
         }
 
-        public SelectComponents checkJava() throws CouldNotFindApplicationActionImage
+        public SelectComponents checkJava() throws CouldNotFindImageOnScreen
         {
             checkOn("selectComponents/java");
             return this;
         }
 
-        public SelectComponents checkPostgreSQL() throws CouldNotFindApplicationActionImage
+        public SelectComponents checkPostgreSQL() throws CouldNotFindImageOnScreen
         {
             checkOn("selectComponents/postgreSQL");
             return this;
         }
 
-        public SelectComponents checkSolr1() throws CouldNotFindApplicationActionImage
+        public SelectComponents checkSolr1() throws CouldNotFindImageOnScreen
         {
             checkOn("selectComponents/solr1");
             return this;
         }
 
-        public SelectComponents checkSolr4() throws CouldNotFindApplicationActionImage
+        public SelectComponents checkSolr4() throws CouldNotFindImageOnScreen
         {
             checkOn("selectComponents/solr4");
             return this;
         }
 
-        public SelectComponents checkAlfrescoOfficeServices() throws CouldNotFindApplicationActionImage
+        public SelectComponents checkAlfrescoOfficeServices() throws CouldNotFindImageOnScreen
         {
             checkOn("selectComponents/alfrescoOfficeServices");
             return this;
         }
 
-        public SelectComponents checkWebQuickStart() throws CouldNotFindApplicationActionImage
+        public SelectComponents checkWebQuickStart() throws CouldNotFindImageOnScreen
         {
             checkOn("selectComponents/webQuickStart");
             return this;
         }
 
-        public SelectComponents checkGoogleDocsIntegration() throws CouldNotFindApplicationActionImage
+        public SelectComponents checkGoogleDocsIntegration() throws CouldNotFindImageOnScreen
         {
             checkOn("selectComponents/googleDocsIntegration");
             return this;
@@ -614,21 +686,21 @@ public class ACSInstaller extends ACSWizard implements Installable
         public DatabaseConfiguration setUsername() throws Exception
         {
             clickOn("databaseConfiguration/username");
-            clearAndType(installerProperties.getOSProperty("db.username"));
+            clearAndType(installerProperties.getInstallerDBUsername());
             return this;
         }
 
         public DatabaseConfiguration setPassword() throws Exception
         {
             clickOn("databaseConfiguration/password");
-            clearAndType(installerProperties.getOSProperty("db.password"));
+            clearAndType(installerProperties.getInstallerDBPassword());
             return this;
         }
 
         public DatabaseConfiguration verifyPassword() throws Exception
         {
             clickOn("databaseConfiguration/verify");
-            clearAndType(installerProperties.getOSProperty("db.password"));
+            clearAndType(installerProperties.getInstallerDBPassword());
             return this;
         }
     }
@@ -649,36 +721,89 @@ public class ACSInstaller extends ACSWizard implements Installable
 
         public TomcatConfigurationPage setWebServerDomain() throws Exception
         {
-            clearAndType(installerProperties.getOSProperty("web.server.domain"));
+            clearAndType(installerProperties.getInstallerWebServerDomain());
             return this;
         }
 
         public TomcatConfigurationPage setTomcatServerPort() throws Exception
         {
             clickOn("tomcat/tomcatServerPort");
-            clearAndType(installerProperties.getOSProperty("tomcat.server.port"));
+            clearAndType(installerProperties.getInstallerTomcatServerPort());
+            return this;
+        }
+
+        public TomcatConfigurationPage setTomcatServerPort(String portNumber) throws Exception
+        {
+            clickOn("tomcat/tomcatServerPort");
+            clearAndType(portNumber);
             return this;
         }
 
         public TomcatConfigurationPage setTomcatShutdownPort() throws Exception
         {
             clickOn("tomcat/tomcatShutdownPort");
-            clearAndType(installerProperties.getOSProperty("tomcat.shutdown.port"));
+            clearAndType(installerProperties.getInstallerTomcatShutdownPort());
+            return this;
+        }
+
+        public TomcatConfigurationPage setTomcatShutdownPort(String portNumber) throws Exception
+        {
+            clickOn("tomcat/tomcatShutdownPort");
+            clearAndType(portNumber);
             return this;
         }
 
         public TomcatConfigurationPage setTomcatSSLPort() throws Exception
         {
             clickOn("tomcat/tomcatSSLPort");
-            clearAndType(installerProperties.getOSProperty("tomcat.ssl.port"));
+            clearAndType(installerProperties.getInstallerTomcatSSLPort());
+            return this;
+        }
+
+        public TomcatConfigurationPage setTomcatSSLPort(String portNumber) throws Exception
+        {
+            clickOn("tomcat/tomcatSSLPort");
+            clearAndType(portNumber);
             return this;
         }
 
         public TomcatConfigurationPage setTomcatAJPPort() throws Exception
         {
             clickOn("tomcat/tomcatAJPPort");
-            clearAndType(installerProperties.getOSProperty("tomcat.ajp.port"));
+            clearAndType(installerProperties.getInstallerTomcatAJPPort());
             return this;
+        }
+
+        public TomcatConfigurationPage setTomcatAJPPort(String portNumber) throws Exception
+        {
+            clickOn("tomcat/tomcatAJPPort");
+            clearAndType(portNumber);
+            return this;
+        }
+
+        public boolean isTomcatServerPortWarningMessageDisplayed() throws CouldNotFindImageOnScreen
+        {
+            return isPopUpDisplayed("tomcat/tomcatServerPortWarning");
+        }
+
+        public boolean isTomcatShutdownPortWarningMessageDisplayed() throws CouldNotFindImageOnScreen
+        {
+            return isPopUpDisplayed("tomcat/tomcatShutdownPortWarning");
+        }
+
+        public boolean isTomcatSSLPortWarningMessageDisplayed() throws CouldNotFindImageOnScreen
+        {
+            return isPopUpDisplayed("tomcat/tomcatSSLPortWarning");
+        }
+
+        public boolean isTomcatAJPPortWarningMessageDisplayed() throws CouldNotFindImageOnScreen
+        {
+            return isPopUpDisplayed("tomcat/tomcatAJPPortWarning");
+        }
+
+        public boolean isTomcatPortCharacterWarningMessageDisplayed() throws CouldNotFindImageOnScreen
+        {
+            return isPopUpDisplayed("tomcat/charactersNotPermittedError");
         }
     }
 
@@ -696,13 +821,13 @@ public class ACSInstaller extends ACSWizard implements Installable
             return this;
         }
 
-        public ShardedSolrPage setYes() throws CouldNotFindApplicationActionImage
+        public ShardedSolrPage setYes() throws CouldNotFindImageOnScreen
         {
             clickOn("shardedSolr/yes");
             return this;
         }
 
-        public ShardedSolrPage setNo() throws CouldNotFindApplicationActionImage
+        public ShardedSolrPage setNo() throws CouldNotFindImageOnScreen
         {
             clickOn("shardedSolr/no");
             return this;
@@ -726,8 +851,25 @@ public class ACSInstaller extends ACSWizard implements Installable
         public FtpPortPage setFtpPort() throws Exception
         {
             clickOn("ftp/ftpPort");
-            clearAndType(installerProperties.getOSProperty("ftp.port"));
+            clearAndType(installerProperties.getInstallerFTPPort());
             return this;
+        }
+
+        public FtpPortPage setFtpPort(String portNumber) throws Exception
+        {
+            clickOn("ftp/ftpPort");
+            clearAndType(portNumber);
+            return this;
+        }
+
+        public boolean isFtpPortWarningMessageDisplayed() throws CouldNotFindImageOnScreen
+        {
+            return isPopUpDisplayed("ftp/ftpPortNotPermittedError");
+        }
+
+        public boolean isFtpCharacterWarningMessageDisplayed() throws CouldNotFindImageOnScreen
+        {
+            return isPopUpDisplayed("ftp/charactersNotPermittedError");
         }
     }
 
@@ -748,8 +890,25 @@ public class ACSInstaller extends ACSWizard implements Installable
         public RmiPortPage setRmiPort() throws Exception
         {
             clickOn("rmi/rmiPort");
-            clearAndType(installerProperties.getOSProperty("rmi.port"));
+            clearAndType(installerProperties.getInstallerRMIPort());
             return this;
+        }
+
+        public RmiPortPage setRmiPort(String portNumber) throws Exception
+        {
+            clickOn("rmi/rmiPort");
+            clearAndType(portNumber);
+            return this;
+        }
+
+        public boolean isRmiPortWarningMessageDisplayed() throws CouldNotFindImageOnScreen
+        {
+            return isPopUpDisplayed("rmi/rmiPortNotPermittedError");
+        }
+
+        public boolean isRmiCharacterWarningMessageDisplayed() throws CouldNotFindImageOnScreen
+        {
+            return isPopUpDisplayed("rmi/charactersNotPermittedError");
         }
     }
 
@@ -767,13 +926,13 @@ public class ACSInstaller extends ACSWizard implements Installable
             return this;
         }
 
-        public ServiceStartupConfigurationPage setManual() throws CouldNotFindApplicationActionImage
+        public ServiceStartupConfigurationPage setManual() throws CouldNotFindImageOnScreen
         {
             clickOn("serviceStartup/manual");
             return this;
         }
 
-        public ServiceStartupConfigurationPage setAuto() throws CouldNotFindApplicationActionImage
+        public ServiceStartupConfigurationPage setAuto() throws CouldNotFindImageOnScreen
         {
             clickOn("serviceStartup/auto");
             return this;
@@ -794,11 +953,28 @@ public class ACSInstaller extends ACSWizard implements Installable
             return this;
         }
 
-        public LibreOfficeServerPortPage setRmiPort() throws Exception
+        public LibreOfficeServerPortPage setLibreOfficeServerPort() throws Exception
         {
             clickOn("libreOffice/libreOfficeServerPort");
-            clearAndType(installerProperties.getOSProperty("libre.office.server.port"));
+            clearAndType(installerProperties.getInstallerLibreOfficeServerPort());
             return this;
+        }
+
+        public LibreOfficeServerPortPage setLibreOfficeServerPort(String portNumber) throws Exception
+        {
+            clickOn("libreOffice/libreOfficeServerPort");
+            clearAndType(portNumber);
+            return this;
+        }
+
+        public boolean isLibreOfficePortWarningMessageDisplayed() throws CouldNotFindImageOnScreen
+        {
+            return isPopUpDisplayed("libreOffice/libreOfficePortNotPermittedError");
+        }
+
+        public boolean isLibreOfficeCharacterWarningMessageDisplayed() throws CouldNotFindImageOnScreen
+        {
+            return isPopUpDisplayed("libreOffice/charactersNotPermittedError");
         }
     }
 
@@ -819,14 +995,14 @@ public class ACSInstaller extends ACSWizard implements Installable
         public RemoteSolrConfigurationPage setRemoteSolrHost() throws Exception
         {
             clickOn("remoteSolr/remoteSolrHost");
-            clearAndType(installerProperties.getOSProperty("remote.solr.host"));
+            clearAndType(installerProperties.getInstallerRemoteSolrHost());
             return this;
         }
 
         public RemoteSolrConfigurationPage setRemoteSolrSSLPort() throws Exception
         {
             clickOn("remoteSolr/remoteSolrSSLPort");
-            clearAndType(installerProperties.getOSProperty("remote.solr.ssl.port"));
+            clearAndType(installerProperties.getInstallerRemoteSolrSSLPort());
             return this;
         }
     }

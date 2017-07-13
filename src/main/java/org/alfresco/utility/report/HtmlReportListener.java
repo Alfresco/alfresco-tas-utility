@@ -17,9 +17,12 @@ import java.util.stream.Collectors;
 
 import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.Utility;
+import org.alfresco.utility.application.gui.AbstractGuiTest;
+import org.alfresco.utility.exception.CouldNotFindImageOnScreen;
 import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.report.Bug.Status;
 import org.alfresco.utility.web.AbstractWebTest;
+import org.sikuli.script.FindFailed;
 import org.slf4j.Logger;
 import org.testng.IReporter;
 import org.testng.IResultMap;
@@ -141,8 +144,8 @@ public class HtmlReportListener implements IReporter
 
                 if (bugAnnotated != null)
                 {
-                    test = extent.startTest(String.format("%s # %s (BUG: %s)", result.getInstance().getClass().getSimpleName(), testName,
-                            trackerUrl(bugAnnotated.id())));  
+                    test = extent.startTest(
+                            String.format("%s # %s (BUG: %s)", result.getInstance().getClass().getSimpleName(), testName, trackerUrl(bugAnnotated.id())));
                     if (bugAnnotated.status().equals(Status.OPENED))
                     {
                         test.assignCategory("BUGS");
@@ -157,7 +160,10 @@ public class HtmlReportListener implements IReporter
                         }
                         if (status == LogStatus.PASS)
                         {
-                            test.log(status, String.format("Currently, test with opened bug %s is passed. Please check if this issue is passed and update the @Bug status to FIXED.", trackerUrl(bugAnnotated.id())));
+                            test.log(status,
+                                    String.format(
+                                            "Currently, test with opened bug %s is passed. Please check if this issue is passed and update the @Bug status to FIXED.",
+                                            trackerUrl(bugAnnotated.id())));
                         }
                     }
                     else
@@ -165,7 +171,8 @@ public class HtmlReportListener implements IReporter
                         if (status == LogStatus.PASS)
                         {
                             test.assignCategory("FIXED-BUGS");
-                            test.log(status, String.format("Currently, test passed. But it failed in a regression due to this issue %s", trackerUrl(bugAnnotated.id())));
+                            test.log(status,
+                                    String.format("Currently, test passed. But it failed in a regression due to this issue %s", trackerUrl(bugAnnotated.id())));
                         }
                     }
 
@@ -190,19 +197,40 @@ public class HtmlReportListener implements IReporter
 
                 if (result.getThrowable() != null)
                 {
-                    test.log(status, result.getThrowable());
-
                     if (result.getInstance() instanceof AbstractWebTest)
                     {
                         String screenshotsDir = defaultProperties.getProperty("screenshots.dir");
                         String screenshotsPath = Paths.get(defaultProperties.getProperty("reports.path"), screenshotsDir).toString();
                         File screenshot = Paths.get(screenshotsPath, testName + ".png").toFile();
                         if (screenshot.exists())
-                            test.log(
-                                    status,
-                                    String.format("Screenshot below: %s",
-                                            test.addScreenCapture(Paths.get(screenshotsDir, testName + ".png").toFile().getPath())));
+                            test.log(status, String.format("Screenshot below: %s",
+                                    test.addScreenCapture(Paths.get(screenshotsDir, testName + ".png").toFile().getPath())));
                     }
+
+                    if (result.getInstance() instanceof AbstractGuiTest)
+                    {
+
+                        if (result.getThrowable() instanceof CouldNotFindImageOnScreen)
+                        {
+                            CouldNotFindImageOnScreen missingImage = (CouldNotFindImageOnScreen) result.getThrowable();
+
+                            test.log(status, String.format("GUI Image NOT found on screen: %s", test.addScreenCapture(String.format("\"%s\"",missingImage.getImagePath()))));
+
+                        } else  if (result.getThrowable() instanceof FindFailed)
+                        {
+                            FindFailed missingImage = (FindFailed) result.getThrowable();
+                             
+                            String[] imageParsed = missingImage.getMessage().split(": ("); 
+                            if (imageParsed.length>0)
+                            {
+                                LOG.info("Image Missing:" + missingImage.getMessage());                                                     
+                                test.log(status, String.format("GUI Image NOT found on screen: %s", test.addScreenCapture(String.format("\"%s\"", imageParsed[0]))));                                    
+                            }                            
+                        }
+                    }
+                    
+                    // also log the errors
+                    test.log(status, result.getThrowable());
                 }
                 else
                 {
