@@ -463,7 +463,7 @@ public class Utility
      * @param command
      * @return the List of lines returned by command
      */
-    public static void executeOnWin(String command) throws IOException
+    public static void executeOnWin(String command) throws Exception
     {
         LOG.info("On Windows execute command: [{}]", command);
         Runtime.getRuntime().exec("cmd /c " + command);
@@ -613,5 +613,41 @@ public class Utility
         Toolkit toolkit = Toolkit.getDefaultToolkit();
         Clipboard clipboard = toolkit.getSystemClipboard();
         return (String) clipboard.getData(DataFlavor.stringFlavor);
+    }
+
+    /**
+     * Method to retrieve a process output as String
+     * @param command
+     * @return process output in String format
+     * @throws Exception
+     */
+    public static String executeOnWinAndReturnOutput(String command) throws Exception
+    {
+        StringBuilder sb = new StringBuilder();
+        try
+        {
+            Process executionProcess = Runtime.getRuntime().exec("cmd /c " + command);
+            BufferedReader stdInput = new BufferedReader(new InputStreamReader(executionProcess.getInputStream()));
+
+            BufferedReader stdError = new BufferedReader(new InputStreamReader(executionProcess.getErrorStream()));
+            String s = null;
+            while ((s = stdInput.readLine()) != null)
+            {
+                sb.append(s);
+                sb.append("\n");
+            }
+            while ((s = stdError.readLine()) != null)
+            {
+                sb.append(s);
+                sb.append("\n");
+            }
+            stdInput.close();
+            stdError.close();
+        }
+        catch (IOException ex)
+        {
+            ex.printStackTrace();
+        }
+        return sb.toString();
     }
 }
