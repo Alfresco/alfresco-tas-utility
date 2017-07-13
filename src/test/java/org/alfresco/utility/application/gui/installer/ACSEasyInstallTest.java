@@ -1,15 +1,15 @@
 package org.alfresco.utility.application.gui.installer;
 
+import org.alfresco.utility.application.gui.AbstractGuiTest;
 import org.alfresco.utility.report.HtmlReportListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 @ContextConfiguration("classpath:alfresco-tester-context.xml")
 @Listeners(value = HtmlReportListener.class)
-public class ACSEasyInstallTest extends AbstractTestNGSpringContextTests
+public class ACSEasyInstallTest extends AbstractGuiTest
 {
     @Autowired
     ACSInstaller installer;
