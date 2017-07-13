@@ -14,6 +14,9 @@ import org.alfresco.utility.application.gui.installer.ACSInstallerProperties.LAN
 public class InstallerFormTests extends InstallerTest
 {
 	
+	/**
+	 * AONE-18286
+	 */
 	@Test
     public void languageSelectionForm() throws Exception
     {
@@ -32,9 +35,36 @@ public class InstallerFormTests extends InstallerTest
         installer.onFrenchSetup().assertDescriptionIs(DESCRIPTION.FRENCH);
     }
 
+	/**
+	 * AONE-18287
+	 */
+	@Test
     public void welcomeForm() throws Exception
     {
-        //TODO
+        STEP("Precondition: Alfresco One installer is started and navigated to Setup/Welcome form");
+        installer.navigateToSetupForm();
+        
+        STEP("1. Go to Setup page, press Back button then assert that it is disabled");
+        installer.onSetup().clickBack().assertBackButtonIsDisabled();
+        
+        STEP("2. Press Cancel button. Warning 'Do you want to abort the installation process?' form is displayed.");
+        installer.onSetup().clickCancel().focus();
+        
+        STEP("3. Press No button. Question' form closed, installer is still running.");
+        installer.onDialog().clickNo();
+        installer.onSetup().focus();
+        Assert.assertTrue(installer.isRunning(), "The installer should not be closed.");
+        
+        STEP("4. Press Cancel button. Warning 'Do you want to abort the installation process?' form is displayed.");
+        installer.onSetup().clickCancel().focus();
+
+        STEP("5. Press Yes button. 'Question' form closed, installer closed, installation process aborted.");
+        installer.onDialog().clickYes();
+        Assert.assertFalse(installer.isRunning(), "The installer should be closed.");
+        
+        STEP("6. Run installer again, open Setup, press Next and check License Agreemend page is opened.");
+        installer.navigateToSetupForm().clickNext();
+        installer.onLicensePage().focus().noOptionIsSelected();
     }
 
     @Test()

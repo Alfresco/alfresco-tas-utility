@@ -343,6 +343,12 @@ public class ACSInstaller extends ACSWizard implements Installable
             waitOn("setup/description");
             return this;
         }
+        
+        public Setup assertBackButtonIsDisabled() throws Exception
+        {
+            waitOn("back");
+            return this;
+        }
     }
     
     public class FrenchSetup implements Focusable<FrenchSetup>
@@ -449,6 +455,7 @@ public class ACSInstaller extends ACSWizard implements Installable
         public Dialog focus() throws CouldNotFindImageOnScreen
         {
             clickOn("dialog/doYouWantToAbort");
+            clickOn("dialog/title");
             return this;
         }
     }
@@ -1034,6 +1041,14 @@ public class ACSInstaller extends ACSWizard implements Installable
         open();
         waitForInstallerToOpen();
         return new LanguageSelection();
+    }
+    
+    public Setup navigateToSetupForm() throws Exception
+    {
+        open();
+        waitForInstallerToOpen();
+        onLanguageSelectionDialog().clickOK();
+        return new Setup();
     }
 
 }
