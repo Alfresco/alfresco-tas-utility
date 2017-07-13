@@ -1,16 +1,15 @@
 package org.alfresco.utility.application.gui.installer;
 
 import org.alfresco.utility.exception.CouldNotFindApplicationActionImage;
-import org.alfresco.utility.model.TestGroup;
+import org.alfresco.utility.report.HtmlReportListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.Assert;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
-import static org.alfresco.utility.report.log.Step.STEP;
-
 @ContextConfiguration("classpath:alfresco-tester-context.xml")
+@Listeners(value=HtmlReportListener.class)
 public class ACSEasyInstallTest extends AbstractTestNGSpringContextTests
 {
     @Autowired
@@ -77,6 +76,7 @@ public class ACSEasyInstallTest extends AbstractTestNGSpringContextTests
         installer.onAdminPasswordPage()
                  .setAdminPassword(installer.getFileProperties().getAdminPassword())
                  .setRepeatAdminPassword(installer.getFileProperties().getAdminPassword());
+        
         
         installer.onSetup().clickNext();
     }
