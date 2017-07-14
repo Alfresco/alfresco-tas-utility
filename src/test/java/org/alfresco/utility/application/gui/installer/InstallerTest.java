@@ -15,8 +15,7 @@ import org.springframework.test.context.ContextConfiguration;
 @ContextConfiguration("classpath:alfresco-tester-context.xml")
 public abstract class InstallerTest extends AbstractGuiTest
 {
-    @Autowired
-    ACSInstaller installer;
+    @Autowired ACSInstaller installer;
 
     public File createNotEmptyFolderInOS() throws Exception
     {
@@ -79,9 +78,7 @@ public abstract class InstallerTest extends AbstractGuiTest
     public void navigateToTomcatPortConfigurationPage() throws Exception
     {
         navigateToSelectComponentsForm();
-        installer.onSetup().clickNext()
-                .clickNext()
-                .clickNext();
+        installer.onSetup().clickNext().clickNext().clickNext();
     }
 
     public void navigateToLibreOfficeServerPortPage() throws Exception
@@ -93,13 +90,18 @@ public abstract class InstallerTest extends AbstractGuiTest
     public void navigateToFtpPortPage() throws Exception
     {
         navigateToLibreOfficeServerPortPage();
-        installer.onSetup().clickNext()
-                .clickNext();
+        installer.onSetup().clickNext().clickNext();
     }
 
     public void navigateToRmiPortPage() throws Exception
     {
         navigateToFtpPortPage();
+        installer.onSetup().clickNext();
+    }
+
+    public void navigateToAdminPasswordForm() throws Exception
+    {
+        navigateToInstallationFolderForm();
         installer.onSetup().clickNext();
     }
 
