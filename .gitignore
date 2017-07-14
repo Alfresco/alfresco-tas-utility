@@ -8,3 +8,6 @@ src/main/java/META-INF/sun-jaxb.episode
 .idea/
 *.log
 *.iml
+Vagrantfile
+.vagrant/
+test.sikuli/
