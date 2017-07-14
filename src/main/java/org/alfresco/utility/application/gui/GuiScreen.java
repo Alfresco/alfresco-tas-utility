@@ -11,6 +11,7 @@ import org.alfresco.utility.report.log.Step;
 import org.apache.commons.lang.SystemUtils;
 import org.sikuli.api.robot.Key;
 import org.sikuli.script.FindFailed;
+import org.sikuli.script.Pattern;
 import org.sikuli.script.Screen;
 
 /**
@@ -84,8 +85,63 @@ public abstract class GuiScreen extends Screen implements Applicationable, Focus
      */
     public GuiScreen waitOn(String imageAction) throws FindFailed, Exception
     {
+        waitOn(imageAction, WAIT_TIMEOUT);
+        return this;
+    }
+
+    /**
+     * Wait for the image passed to be visible on screen for the given number of seconds
+     * Usage:
+     * if class name is "WindowsExplorer" and we want to wait for title for 5 seconds we can use
+     * <code>
+     * waitOn("title", 5)
+     * <code>
+     * This means that we need to create this hierarchy:
+     * "shared-resources/gui/win/windowsexplorer/title.png"
+     *
+     * @return {@link GuiScreen}
+     * @throws FindFailed
+     * @throws Exception
+     */
+    public GuiScreen waitOn(String imageAction, double timeout) throws FindFailed, Exception
+    {
         Step.STEP(String.format("Wait for: [%s]", imageAction));
-        wait(getImageActionRelatedToApp(imageAction), WAIT_TIMEOUT);
+        wait(getImageActionRelatedToApp(imageAction), timeout);
+        return this;
+    }
+
+    /**
+     * Click on the image passed if it's visible on screen at specified target offset
+     * Usage:
+     * if class name is "WindowsExplorer" and we want to click on "close" image
+     * <code>
+     * clickOn("close", 1, 1)
+     * <code>
+     * This means that we need to create this hierarchy:
+     * "shared-resources/gui/win/windowsexplorer/close.png"
+     * 
+     * @param imageAction
+     * @return
+     * @throws CouldNotFindImageOnScreen
+     */
+    public GuiScreen clickOn(String imageAction, int targetOffsetX, int targetOffsetY) throws CouldNotFindImageOnScreen
+    {
+        Step.STEP(String.format("Click on: [%s] at position [%d, %d]", imageAction, targetOffsetX, targetOffsetY));
+        String location = "";
+        try
+        {
+            location = getImageActionRelatedToApp(imageAction);
+            Pattern pImage = new Pattern(location).targetOffset(targetOffsetX,targetOffsetY);
+            click(pImage);
+        }
+        catch (FindFailed e)
+        {
+            throw new CouldNotFindImageOnScreen(location, getAppName(), e.getMessage());
+        }
+        catch (Exception e)
+        {
+            throw new CouldNotFindImageOnScreen(location, getAppName(), e.getMessage());
+        }
         return this;
     }
 
@@ -138,20 +194,15 @@ public abstract class GuiScreen extends Screen implements Applicationable, Focus
 
     public GuiScreen clearAndType(String value) throws Exception
     {
-        if (SystemUtils.IS_OS_MAC)
+        if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX)
         {
             type("a", Key.CMD);
             type(Key.DELETE);
-
         }
         else if (SystemUtils.IS_OS_WINDOWS)
         {
             type("a", Key.CTRL);
             type(Key.DELETE);
-        }
-        else if (SystemUtils.IS_OS_LINUX)
-        {
-            throw new Exception("Please add code for Linux on this method");
         }
         type(value);
         return this;
@@ -159,17 +210,13 @@ public abstract class GuiScreen extends Screen implements Applicationable, Focus
 
     public GuiScreen copyToClipboard() throws Exception
     {
-        if (SystemUtils.IS_OS_MAC)
+        if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX)
         {
             type("c", Key.CMD);
         }
         else if (SystemUtils.IS_OS_WINDOWS)
         {
             type("c", Key.CTRL);
-        }
-        else if (SystemUtils.IS_OS_LINUX)
-        {
-            throw new Exception("Please add code for Linux on this method");
         }
         return this;
     }
@@ -195,8 +242,15 @@ public abstract class GuiScreen extends Screen implements Applicationable, Focus
         try
         {
             location = getImageActionRelatedToApp(imageAction);
-            focus();
-            type(location, Key.SPACE);
+            if (SystemUtils.IS_OS_LINUX)
+            {
+                type(location, Key.LEFT);
+                type(Key.ENTER);
+            }
+            else
+            {
+                type(location, Key.SPACE);
+            }
         }
         catch (Exception e)
         {

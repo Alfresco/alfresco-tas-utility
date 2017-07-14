@@ -70,7 +70,7 @@ public abstract class ACSWizard extends GuiScreen
         }
         else
         {
-            Utility.executeOnWin(String.format("taskkill /F /IM \"%s\"", installerProperties.getInstallerSourcePath().getName()));
+            Utility.killProcessName(installerProperties.getInstallerSourcePath().getName());
         }
 
         return this;

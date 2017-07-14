@@ -127,6 +127,16 @@ import org.testng.Assert;
         return new ReadyToInstallPage();
     }
 
+    public InstallingPage onInstallingPage() throws Exception
+    {
+        return new InstallingPage();
+    }
+
+    public CompletingSetup onCompletingSetupPage() throws Exception
+    {
+        return new CompletingSetup();
+    }
+
     /**
      * Language Selection - 1st Dialog
      */
@@ -497,49 +507,301 @@ import org.testng.Assert;
 
         public SelectComponents checkLibreOffice() throws CouldNotFindImageOnScreen
         {
-            checkOn("selectComponents/libreOffice");
+            clickOn("selectComponents/libreOffice/label");
+            clickOn("selectComponents/libreOffice/unchecked");
             return this;
         }
 
-        public SelectComponents checkJava() throws CouldNotFindImageOnScreen
+        public SelectComponents uncheckLibreOffice() throws CouldNotFindImageOnScreen
         {
-            checkOn("selectComponents/java");
+            clickOn("selectComponents/libreOffice/label");
+            clickOn("selectComponents/libreOffice/checked");
             return this;
         }
 
-        public SelectComponents checkPostgreSQL() throws CouldNotFindImageOnScreen
+        public SelectComponents assertLibreOfficeIsChecked() throws Exception
         {
-            checkOn("selectComponents/postgreSQL");
+            clickOn("selectComponents/libreOffice/label");
+            waitOn("selectComponents/libreOffice/checked");
             return this;
         }
 
-        public SelectComponents checkSolr1() throws CouldNotFindImageOnScreen
+        public SelectComponents assertLibreOfficeIsUnchecked() throws Exception
         {
-            checkOn("selectComponents/solr1");
+            clickOn("selectComponents/libreOffice/label");
+            waitOn("selectComponents/libreOffice/unchecked");
             return this;
         }
 
-        public SelectComponents checkSolr4() throws CouldNotFindImageOnScreen
+        public SelectComponents verifyLibreOfficeDescription() throws Exception
         {
-            checkOn("selectComponents/solr4");
+            clickOn("selectComponents/libreOffice/label");
+            waitOn("selectComponents/libreOffice/description");
             return this;
         }
 
-        public SelectComponents checkAlfrescoOfficeServices() throws CouldNotFindImageOnScreen
+        public SelectComponents checkJava()  throws CouldNotFindImageOnScreen
         {
-            checkOn("selectComponents/alfrescoOfficeServices");
+            clickOn("selectComponents/java/label");
+            clickOn("selectComponents/java/unchecked");
             return this;
         }
 
-        public SelectComponents checkWebQuickStart() throws CouldNotFindImageOnScreen
+        public SelectComponents uncheckJava() throws CouldNotFindImageOnScreen
         {
-            checkOn("selectComponents/webQuickStart");
+            clickOn("selectComponents/java/label");
+            clickOn("selectComponents/java/checked");
             return this;
         }
 
-        public SelectComponents checkGoogleDocsIntegration() throws CouldNotFindImageOnScreen
+        public SelectComponents assertJavaIsChecked() throws Exception
         {
-            checkOn("selectComponents/googleDocsIntegration");
+            clickOn("selectComponents/java/label");
+            waitOn("selectComponents/java/checked");
+            return this;
+        }
+
+        public SelectComponents assertJavaIsUnchecked() throws Exception
+        {
+            clickOn("selectComponents/java/label");
+            waitOn("selectComponents/java/unchecked");
+            return this;
+        }
+
+        public SelectComponents verifyJavaDescription() throws Exception
+        {
+            clickOn("selectComponents/java/label");
+            waitOn("selectComponents/java/description");
+            return this;
+        }
+
+        public SelectComponents checkPostgreSQL()  throws CouldNotFindImageOnScreen
+        {
+            clickOn("selectComponents/postgreSQL/label");
+            clickOn("selectComponents/postgreSQL/unchecked");
+            return this;
+        }
+
+        public SelectComponents uncheckPostgreSQL() throws CouldNotFindImageOnScreen
+        {
+            clickOn("selectComponents/postgreSQL/label");
+            clickOn("selectComponents/postgreSQL/checked");
+            return this;
+        }
+
+        public SelectComponents assertPostgreSQLIsChecked() throws Exception
+        {
+            clickOn("selectComponents/postgreSQL/label");
+            waitOn("selectComponents/postgreSQL/checked");
+            return this;
+        }
+
+        public SelectComponents assertPostgreSQLIsUnchecked() throws Exception
+        {
+            clickOn("selectComponents/postgreSQL/label");
+            waitOn("selectComponents/postgreSQL/unchecked");
+            return this;
+        }
+
+        public SelectComponents verifyPostgreSQLDescription() throws Exception
+        {
+            clickOn("selectComponents/postgreSQL/label");
+            waitOn("selectComponents/postgreSQL/description");
+            return this;
+        }
+
+        public SelectComponents checkSolr1()  throws CouldNotFindImageOnScreen
+        {
+            clickOn("selectComponents/solr1/label");
+            checkOn("selectComponents/solr1/unchecked");
+            return this;
+        }
+
+        public SelectComponents uncheckSolr1() throws CouldNotFindImageOnScreen
+        {
+            clickOn("selectComponents/solr1/label");
+            checkOn("selectComponents/solr1/checked");
+            return this;
+        }
+
+        public SelectComponents assertSolr1IsChecked() throws Exception
+        {
+            clickOn("selectComponents/solr1/label");
+            waitOn("selectComponents/solr1/checked");
+            return this;
+        }
+
+        public SelectComponents assertSolr1IsUnchecked() throws Exception
+        {
+            clickOn("selectComponents/solr1/label");
+            waitOn("selectComponents/solr1/unchecked");
+            return this;
+        }
+
+        public SelectComponents verifySolr1Description() throws Exception
+        {
+            clickOn("selectComponents/solr1/label");
+            waitOn("selectComponents/solr1/description");
+            return this;
+        }
+
+        public SelectComponents checkSolr4()  throws CouldNotFindImageOnScreen
+        {
+            clickOn("selectComponents/solr4/label");
+            checkOn("selectComponents/solr4/unchecked");
+            return this;
+        }
+
+        public SelectComponents uncheckSolr4() throws CouldNotFindImageOnScreen
+        {
+            clickOn("selectComponents/solr4/label");
+            checkOn("selectComponents/solr4/checked");
+            return this;
+        }
+
+        public SelectComponents assertSolr4IsChecked() throws Exception
+        {
+            clickOn("selectComponents/solr4/label");
+            waitOn("selectComponents/solr4/checked");
+            return this;
+        }
+
+        public SelectComponents assertSolr4IsUnchecked() throws Exception
+        {
+            clickOn("selectComponents/solr4/label");
+            waitOn("selectComponents/solr4/unchecked");
+            return this;
+        }
+
+        public SelectComponents verifySolr4Description() throws Exception
+        {
+            clickOn("selectComponents/solr4/label");
+            waitOn("selectComponents/solr4/description");
+            return this;
+        }
+
+        public SelectComponents checkAlfrescoOfficeServices()  throws CouldNotFindImageOnScreen
+        {
+            clickOn("selectComponents/alfrescoOfficeServices/label");
+            checkOn("selectComponents/alfrescoOfficeServices/unchecked");
+            return this;
+        }
+
+        public SelectComponents uncheckAlfrescoOfficeServices() throws CouldNotFindImageOnScreen
+        {
+            clickOn("selectComponents/alfrescoOfficeServices/label");
+            checkOn("selectComponents/alfrescoOfficeServices/checked");
+            return this;
+        }
+
+        public SelectComponents assertAlfrescoOfficeServicesIsChecked() throws Exception
+        {
+            clickOn("selectComponents/alfrescoOfficeServices/label");
+            waitOn("selectComponents/alfrescoOfficeServices/checked");
+            return this;
+        }
+
+        public SelectComponents assertAlfrescoOfficeServicesIsUnchecked() throws Exception
+        {
+            clickOn("selectComponents/alfrescoOfficeServices/label");
+            waitOn("selectComponents/alfrescoOfficeServices/unchecked");
+            return this;
+        }
+
+        public SelectComponents verifyAlfrescoOfficeServicesDescription() throws Exception
+        {
+            clickOn("selectComponents/alfrescoOfficeServices/label");
+            waitOn("selectComponents/alfrescoOfficeServices/description");
+            return this;
+        }
+
+        public SelectComponents checkWebQuickStart()  throws CouldNotFindImageOnScreen
+        {
+            clickOn("selectComponents/webQuickStart/label");
+            checkOn("selectComponents/webQuickStart/unchecked");
+            return this;
+        }
+
+        public SelectComponents uncheckWebQuickStart() throws CouldNotFindImageOnScreen
+        {
+            clickOn("selectComponents/webQuickStart/label");
+            checkOn("selectComponents/webQuickStart/checked");
+            return this;
+        }
+
+        public SelectComponents assertWebQuickStartIsChecked() throws Exception
+        {
+            clickOn("selectComponents/webQuickStart/label");
+            waitOn("selectComponents/webQuickStart/checked");
+            return this;
+        }
+
+        public SelectComponents assertWebQuickStartIsUnchecked() throws Exception
+        {
+            clickOn("selectComponents/webQuickStart/label");
+            waitOn("selectComponents/webQuickStart/unchecked");
+            return this;
+        }
+
+        public SelectComponents verifyWebQuickStartDescription() throws Exception
+        {
+            clickOn("selectComponents/webQuickStart/label");
+            waitOn("selectComponents/webQuickStart/description");
+            return this;
+        }
+
+        public SelectComponents checkGoogleDocsIntegration()  throws CouldNotFindImageOnScreen
+        {
+            clickOn("selectComponents/googleDocsIntegration/label");
+            checkOn("selectComponents/googleDocsIntegration/unchecked");
+            return this;
+        }
+
+        public SelectComponents uncheckGoogleDocsIntegration() throws CouldNotFindImageOnScreen
+        {
+            clickOn("selectComponents/googleDocsIntegration/label");
+            checkOn("selectComponents/googleDocsIntegration/checked");
+            return this;
+        }
+
+        public SelectComponents assertGoogleDocsIntegrationIsChecked() throws Exception
+        {
+            clickOn("selectComponents/googleDocsIntegration/label");
+            waitOn("selectComponents/googleDocsIntegration/checked");
+            return this;
+        }
+
+        public SelectComponents assertGoogleDocsIntegrationIsUnchecked() throws Exception
+        {
+            clickOn("selectComponents/googleDocsIntegration/label");
+            waitOn("selectComponents/googleDocsIntegration/unchecked");
+            return this;
+        }
+
+        public SelectComponents verifyGoogleDocsIntegrationDescription() throws Exception
+        {
+            clickOn("selectComponents/googleDocsIntegration/label");
+            waitOn("selectComponents/googleDocsIntegration/description");
+            return this;
+        }
+
+        public SelectComponents clickAlfrescoContentServices() throws CouldNotFindImageOnScreen
+        {
+            clickOn("selectComponents/alfrescoContentServices/labelCheckedAndDisabled");
+            checkOn("selectComponents/alfrescoContentServices/checked");
+            return this;
+        }
+
+        public SelectComponents assertAlfrescoContentServicesIsCheckedAndDisabled() throws Exception
+        {
+            waitOn("selectComponents/alfrescoContentServices/labelCheckedAndDisabled");
+            return this;
+        }
+
+        public SelectComponents verifyAlfrescoContentServicesDescription() throws Exception
+        {
+            clickOn("selectComponents/alfrescoContentServices/labelCheckedAndDisabled");
+            waitOn("selectComponents/alfrescoContentServices/description");
             return this;
         }
     }
@@ -928,7 +1190,66 @@ import org.testng.Assert;
         }
     }
 
-    @Override public ACSInstaller focus() throws Exception
+    public class InstallingPage implements Focusable<InstallingPage>
+    {
+        public InstallingPage() throws Exception
+        {
+            waitOn("installing/title");
+        }
+
+        @Override
+        public InstallingPage focus() throws Exception
+        {
+            clickOn("installing/title");
+            return this;
+        }
+    }
+
+    public class CompletingSetup implements Focusable<CompletingSetup>
+    {
+        public CompletingSetup() throws Exception
+        {
+            waitOn("completingSetup/title", 600);
+        }
+
+        @Override
+        public CompletingSetup focus() throws Exception
+        {
+            clickOn("completingSetup/title");
+            return this;
+        }
+
+        public CompletingSetup uncheckViewReadmeFile() throws Exception
+        {
+            focus();
+            clickOn("completingSetup/viewReadme", -52, -2);
+            return this;
+        }
+
+        public CompletingSetup uncheckLaunchAlfresco() throws Exception
+        {
+            focus();
+            clickOn("completingSetup/launchAlfresco", -94, -1);
+            return this;
+        }
+
+        public CompletingSetup uncheckShowNextSteps() throws Exception
+        {
+            focus();
+            clickOn("completingSetup/showNextSteps", -51, -1);
+            return this;
+        }
+
+        public void clickFinish() throws Exception
+        {
+            focus();
+            clickOn("completingSetup/finish");
+            Utility.waitToLoopTime(WAIT_TIMEOUT);
+        }
+    }
+
+    @Override
+    public ACSInstaller focus() throws Exception
     {
         onSetup().focus();
         return this;
