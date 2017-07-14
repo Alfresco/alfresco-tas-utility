@@ -508,14 +508,14 @@ import org.testng.Assert;
         public SelectComponents checkLibreOffice() throws CouldNotFindImageOnScreen
         {
             clickOn("selectComponents/libreOffice/label");
-            clickOn("selectComponents/libreOffice/unchecked");
+            checkOn("selectComponents/libreOffice/unchecked");
             return this;
         }
 
         public SelectComponents uncheckLibreOffice() throws CouldNotFindImageOnScreen
         {
             clickOn("selectComponents/libreOffice/label");
-            clickOn("selectComponents/libreOffice/checked");
+            checkOn("selectComponents/libreOffice/checked");
             return this;
         }
 
@@ -543,14 +543,14 @@ import org.testng.Assert;
         public SelectComponents checkJava()  throws CouldNotFindImageOnScreen
         {
             clickOn("selectComponents/java/label");
-            clickOn("selectComponents/java/unchecked");
+            checkOn("selectComponents/java/unchecked");
             return this;
         }
 
         public SelectComponents uncheckJava() throws CouldNotFindImageOnScreen
         {
             clickOn("selectComponents/java/label");
-            clickOn("selectComponents/java/checked");
+            checkOn("selectComponents/java/checked");
             return this;
         }
 
@@ -578,14 +578,14 @@ import org.testng.Assert;
         public SelectComponents checkPostgreSQL()  throws CouldNotFindImageOnScreen
         {
             clickOn("selectComponents/postgreSQL/label");
-            clickOn("selectComponents/postgreSQL/unchecked");
+            checkOn("selectComponents/postgreSQL/unchecked");
             return this;
         }
 
         public SelectComponents uncheckPostgreSQL() throws CouldNotFindImageOnScreen
         {
             clickOn("selectComponents/postgreSQL/label");
-            clickOn("selectComponents/postgreSQL/checked");
+            checkOn("selectComponents/postgreSQL/checked");
             return this;
         }
 

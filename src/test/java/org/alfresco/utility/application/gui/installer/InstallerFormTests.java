@@ -38,7 +38,8 @@ public class InstallerFormTests extends InstallerTest
     /**
      * AONE-18287
      */
-    @Test public void welcomeForm() throws Exception
+    @Test
+    public void welcomeForm() throws Exception
     {
         STEP("Precondition: Alfresco One installer is started and navigated to Setup/Welcome form");
         navigateToSetupForm();
@@ -70,7 +71,8 @@ public class InstallerFormTests extends InstallerTest
     /**
      * AONE-18457
      */
-    @Test() public void licenseAgreementForm() throws Exception
+    @Test()
+    public void licenseAgreementForm() throws Exception
     {
         STEP("Precondition: Alfresco One installer is started and navigated to License Agreement form");
         navigateToLicenseForm();
@@ -129,7 +131,8 @@ public class InstallerFormTests extends InstallerTest
     /**
      * AONE-18288
      */
-    @Test() public void installationTypeForm() throws Exception
+    @Test()
+    public void installationTypeForm() throws Exception
     {
         STEP("Precondition: Alfresco One installer is started and navigated to Installation Type form");
         navigateToInstallationTypeForm();
@@ -162,7 +165,8 @@ public class InstallerFormTests extends InstallerTest
     /**
      * AONE-18290
      */
-    @Test() public void installationFolderForm() throws Exception
+    @Test()
+    public void installationFolderForm() throws Exception
     {
         STEP("Precondition: Alfresco One installer is running in easy install mode - Installation Folder form is opened.");
         navigateToInstallationFolderForm();
@@ -272,15 +276,64 @@ public class InstallerFormTests extends InstallerTest
                 .clickFinish();
         Assert.assertFalse(installer.isRunning(), "The installer should be closed.");
 
-        // TODO check all components are installed
-        // TODO Install Alfresco with only the Alfresco One check box selected
-        // TODO Select any of the components besides Java and click Next. A message pops up : "This release was packaged to run on J2SE 1.7.0_25 or later. Install a compatible Java version and try again"
+        installer.getFileProperties().assertExpectedFilesAreInstalled();
+        installer.getFileProperties().assertExpectedAMPSAreInstalled();
+        installer.getFileProperties().assertExpectedWARSAreInstalled();
+
+        // TODO uninstall
+
+//        STEP("6. Run again Alfresco One Installer in advanced mode at Select Components and deselect all the check boxes. You can't  deselect Alfresco One check box");
+//        navigateToSelectComponentsForm();
+//        installer.onSelectComponentsPage()
+//                .uncheckJava()
+//                .uncheckPostgreSQL()
+//                .uncheckLibreOffice()
+//                .uncheckSolr4()
+//                .uncheckAlfrescoOfficeServices()
+//                .uncheckGoogleDocsIntegration()
+//                .clickAlfrescoContentServices()
+//                .assertAlfrescoContentServicesIsCheckedAndDisabled();
+//
+//        STEP("7. Install Alfresco with only the Alfresco One check box selected");
+//        installer.onSetup().clickNext();
+//        installer.onInstallationFolderPage().setDestination(destinationFolder);
+//        installer.onSetup()
+//                .clickNext()
+//                .clickNext()
+//                .clickNext()
+//                .clickNext()
+//                .clickNext()
+//                .clickNext();
+//        installer.onAdminPasswordPage()
+//                .setAdminPassword(installer.getFileProperties().getAdminPassword())
+//                .setRepeatAdminPassword(installer.getFileProperties().getAdminPassword());
+//        installer.onSetup()
+//                .clickNext()
+//                .clickNext();
+//        if (SystemUtils.IS_OS_WINDOWS)
+//        {
+//            installer.onSetup().clickNext();
+//        }
+//        installer.onInstallingPage().focus();
+//        installer.onCompletingSetupPage()
+//                .uncheckLaunchAlfresco()
+//                .uncheckShowNextSteps()
+//                .uncheckViewReadmeFile()
+//                .clickFinish();
+//        Assert.assertFalse(installer.isRunning(), "The installer should be closed.");
+//
+//        installer.getFileProperties().assertExpectedFilesAreNotInstalled();
+//        installer.getFileProperties().assertExpectedAMPSAreNotInstalled();
+//        installer.getFileProperties().assertExpectedWARSAreInstalled();
+
+        // TODO uninstall
     }
 
     /*
     AONE-18296
      */
-    @Test public void adminPasswordForm() throws Exception
+    @Test
+    public void adminPasswordForm() throws Exception
     {
         STEP("Precondition: Navigate to Admin Password form");
         navigateToAdminPasswordForm();
@@ -380,7 +433,8 @@ public class InstallerFormTests extends InstallerTest
         installer.assertInstallationFolderIsEmpty();
     }
 
-    @Test() public void tomcatPortConfigurationForm() throws Exception
+    @Test()
+    public void tomcatPortConfigurationForm() throws Exception
     {
         STEP("Precondition: Alfresco One installer is started and navigated to Tomcat Port Configuration form");
         navigateToTomcatPortConfigurationPage();
@@ -473,7 +527,8 @@ public class InstallerFormTests extends InstallerTest
     /**
      * AONE-18296 + AONE-18295 + AONE-18293
      */
-    @Test() public void verifyLibreOfficeFtpPortRmiPortForms() throws Exception
+    @Test()
+    public void verifyLibreOfficeFtpPortRmiPortForms() throws Exception
     {
         STEP("Precondition: Alfresco One installer is started and navigated to LibreOffice Server Port form");
         navigateToLibreOfficeServerPortPage();
