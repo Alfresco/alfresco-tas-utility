@@ -223,9 +223,61 @@ public class InstallerFormTests extends InstallerTest
         //TODO
     }
 
+    @Test()
     public void databaseServerParametersForm() throws Exception
     {
-        //TODO
+        STEP("Precondition: Alfresco One installer is started and navigated to Database Server Parameters form");
+        navigateToDatabaseServerParametersPage();
+
+        STEP("1. For Database Server Port enter incorrect port values instead of default values used by default. For example, 66000. Click Forward.");
+        installer.onDatabaseParametersPage().setPort("66000");
+        installer.onSetup().clickNext();
+        Assert.assertTrue(installer.onDatabaseParametersPage().isDatabaseServerPortWarningMessageDisplayed(), "Select another LibreOffice Server Port message should be displayed.");
+        installer.onWarning().clickOK();
+
+        STEP("2. Enter incorrect symbolic port value, DF, for example. Click Forward");
+        installer.onDatabaseParametersPage().setPort("DF");
+        installer.onSetup().clickNext();
+        Assert.assertTrue(installer.onDatabaseParametersPage().isDatabaseServerPortWarningMessageDisplayed(), "Use numbers only in the port configuration field message should be displayed.");
+        installer.onWarning().clickOK();
+
+        STEP("3. Leave 'Database Server port' field empty and click 'Next' button.");
+        installer.onDatabaseParametersPage().setPort("");
+        installer.onSetup().clickNext();
+        Assert.assertTrue(installer.onDatabaseParametersPage().isDatabaseServerPortWarningMessageDisplayed(), "Select another LibreOffice Server Port message should be displayed.");
+        installer.onWarning().clickOK();
+
+        STEP("4. To the 'Database Server port' enter any not used port and click 'Next' button.");
+        installer.onDatabaseParametersPage().setPort();
+        installer.onSetup().clickNext();
+        installer.onTomcatPortConfigurationPage().focus();
+
+        STEP("5. Click 'Back' button until 1st page opened. Then return to Database Server Parameters page.");
+        installer.onSetup().clickBack()
+                .clickBack();
+        String destinationFolder = installer.getFileProperties().getInstallerDestinationPath().getPath();
+        installer.onInstallationFolderPage().assertInstallationFolderIs(destinationFolder);
+        installer.onSetup().clickBack()
+                .clickBack()
+                .clickBack()
+                .clickBack()
+                .clickNext();
+        installer.onLicensePage().acceptTheAgreement();
+        installer.onSetup().clickNext()
+                .clickNext()
+                .clickNext();
+        installer.onInstallationFolderPage().assertInstallationFolderIs(destinationFolder);
+        installer.onSetup().clickNext();
+        String databasePort = installer.getFileProperties().getInstallerDBPort();
+        installer.onDatabaseParametersPage().assertDatabasePortIs(databasePort);
+
+        STEP("6. Click 'Cancel' button ");
+        installer.onSetup().clickCancel();
+
+        STEP("7. Click 'Yes' button and verify <install dir>.");
+        installer.onDialog().clickYes();
+        Assert.assertFalse(installer.isRunning(), "The installer should be closed and the installation process is aborted.");
+        installer.assertInstallationFolderIsEmpty();
     }
 
     @Test()
