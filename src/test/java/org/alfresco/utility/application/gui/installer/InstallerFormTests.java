@@ -1,19 +1,18 @@
 package org.alfresco.utility.application.gui.installer;
 
+import org.alfresco.utility.application.gui.installer.ACSInstallerProperties.DESCRIPTION;
+import org.alfresco.utility.application.gui.installer.ACSInstallerProperties.LANGUAGES;
+import org.apache.commons.lang.SystemUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import static org.alfresco.utility.report.log.Step.STEP;
-
-import org.alfresco.utility.application.gui.installer.ACSInstallerProperties.DESCRIPTION;
-import org.alfresco.utility.application.gui.installer.ACSInstallerProperties.LANGUAGES;
 
 /**
  * Created by Claudia Agache on 7/10/2017.
  */
 public class InstallerFormTests extends InstallerTest
 {
-
 	/**
 	 * AONE-18286
 	 */
@@ -211,11 +210,77 @@ public class InstallerFormTests extends InstallerTest
         installer.assertInstallationFolderIsEmpty();
     }
 
-//    @Test()
+    /**
+     * AONE-18289
+     */
+    @Test()
     public void selectComponentsForm() throws Exception
     {
         STEP("Precondition: Alfresco One installer is running in advanced install mode - Select Components form is opened.");
         navigateToSelectComponentsForm();
+
+        STEP("1. Check the default  selection of the components list");
+        installer.onSelectComponentsPage()
+                .assertJavaIsChecked()
+                .assertPostgreSQLIsChecked()
+                .assertLibreOfficeIsChecked()
+                .assertAlfrescoContentServicesIsCheckedAndDisabled()
+                .assertSolr1IsUnchecked()
+                .assertSolr4IsChecked()
+                .assertAlfrescoOfficeServicesIsChecked()
+                .assertWebQuickStartIsUnchecked()
+                .assertGoogleDocsIntegrationIsChecked();
+
+        STEP("2. Click on components one by one in order to verify description.");
+        installer.onSelectComponentsPage()
+                .verifyJavaDescription()
+                .verifyPostgreSQLDescription()
+                .verifyLibreOfficeDescription()
+                .verifyAlfrescoContentServicesDescription()
+                .verifySolr1Description()
+                .verifySolr4Description()
+                .verifyAlfrescoOfficeServicesDescription()
+                .verifyWebQuickStartDescription()
+                .verifyGoogleDocsIntegrationDescription();
+
+        STEP("3. Select all the components by clicking on the check boxes");
+        installer.onSelectComponentsPage()
+                .checkSolr1()
+                .checkWebQuickStart();
+
+        STEP("4. Install Alfresco and check if all components are installed");
+        installer.onSetup().clickNext();
+        String destinationFolder = installer.getFileProperties().getInstallerDestinationPath().getPath();
+        installer.onInstallationFolderPage().setDestination(destinationFolder);
+        installer.onSetup()
+                .clickNext()
+                .clickNext()
+                .clickNext()
+                .clickNext()
+                .clickNext()
+                .clickNext()
+                .clickNext();
+        installer.onAdminPasswordPage()
+                .setAdminPassword(installer.getFileProperties().getAdminPassword())
+                .setRepeatAdminPassword(installer.getFileProperties().getAdminPassword());
+        installer.onSetup()
+                .clickNext()
+                .clickNext();
+        if (SystemUtils.IS_OS_WINDOWS)
+        {
+            installer.onSetup().clickNext();
+        }
+        installer.onInstallingPage().focus();
+        installer.onCompletingSetupPage()
+                .uncheckLaunchAlfresco()
+                .uncheckShowNextSteps()
+                .uncheckViewReadmeFile()
+                .clickFinish();
+        Assert.assertFalse(installer.isRunning(), "The installer should be closed.");
+
+        // TODO check all components are installed
+        // TODO Install Alfresco with only the Alfresco One check box selected
+        // TODO Select any of the components besides Java and click Next. A message pops up : "This release was packaged to run on J2SE 1.7.0_25 or later. Install a compatible Java version and try again"
     }
 
     public void adminPasswordForm() throws Exception
