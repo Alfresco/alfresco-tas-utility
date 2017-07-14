@@ -12,16 +12,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.utility.Utility;
-import org.alfresco.utility.exception.TestConfigurationException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.apache.commons.lang.SystemUtils;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
-import freemarker.template.TemplateException;
 
 /**
  * Running this class, you will see in browser all imates collected
+ * 
  * @author Paul Brodner
  */
 public class BrowseGuiImages
@@ -71,7 +71,7 @@ public class BrowseGuiImages
         }
     }
 
-    public static void main(String[] args) throws TestConfigurationException, IOException, TemplateException
+    public static void main(String[] args) throws Exception
     {
         String imgPath = System.getProperty("imgPath");
         if (imgPath == null)
@@ -100,7 +100,14 @@ public class BrowseGuiImages
         fw.write(append.toString());
         fw.close();
 
-        Utility.executeOnUnix("open " + output.getPath());
+        if (SystemUtils.IS_OS_UNIX || SystemUtils.IS_OS_MAC)
+        {
+            Utility.executeOnUnix("open " + output.getPath());
+        }
+        else
+        {
+            Utility.executeOnWin("start " + output.getPath());
+        }
     }
 
     private static Configuration getConfig() throws IOException
