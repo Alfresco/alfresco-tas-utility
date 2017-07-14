@@ -15,7 +15,7 @@ import org.sikuli.script.Screen;
 
 /**
  * Inherit this class if you are dealing with GUI based application
- * 
+ *
  * @author Paul Brodner
  */
 public abstract class GuiScreen extends Screen implements Applicationable, Focusable<GuiScreen>
@@ -32,7 +32,7 @@ public abstract class GuiScreen extends Screen implements Applicationable, Focus
     /**
      * I assume the name of the app will be the name of the class.
      * We will look under share-resources/gui/<os-type>/<application-name> for all information
-     * 
+     *
      * @return
      */
     public String getAppName()
@@ -42,11 +42,11 @@ public abstract class GuiScreen extends Screen implements Applicationable, Focus
 
     /**
      * Return the location of the "action" image from the "shared-resource/gui/<os-type>/<application-name>/<action>" folder
-     * 
+     *
      * @param action -> the the actual image found in the image resource folder. Add it without the "png" extention.
+     * @return the full string path of the image
      * @throws TestConfigurationException
      * @throws CouldNotFindImageOnScreen
-     * @return the full string path of the image
      */
     protected String getImageActionRelatedToApp(String action) throws Exception
     {
@@ -58,7 +58,7 @@ public abstract class GuiScreen extends Screen implements Applicationable, Focus
         }
         else if (SystemUtils.IS_OS_WINDOWS)
         {
-            os = "win";
+            os = "win8";
         }
 
         String location = String.format("shared-resources/gui/%s/%s/%s.png", os, getAppName(), action);
@@ -77,9 +77,9 @@ public abstract class GuiScreen extends Screen implements Applicationable, Focus
      * <code>
      * This means that we need to create this hierarchy:
      * "shared-resources/gui/win/windowsexplorer/title.png"
-     * 
+     *
      * @return {@link GuiScreen}
-     * @throws FindFailed 
+     * @throws FindFailed
      * @throws Exception
      */
     public GuiScreen waitOn(String imageAction) throws FindFailed, Exception
@@ -98,7 +98,7 @@ public abstract class GuiScreen extends Screen implements Applicationable, Focus
      * <code>
      * This means that we need to create this hierarchy:
      * "shared-resources/gui/win/windowsexplorer/close.png"
-     * 
+     *
      * @param imageAction
      * @return
      * @throws CouldNotFindImageOnScreen
@@ -183,7 +183,7 @@ public abstract class GuiScreen extends Screen implements Applicationable, Focus
      * <code>
      * This means that we need to create this hierarchy:
      * "shared-resources/gui/win/windowsexplorer/folderA.png"
-     * 
+     *
      * @param imageAction
      * @return
      * @throws CouldNotFindImageOnScreen
@@ -209,8 +209,7 @@ public abstract class GuiScreen extends Screen implements Applicationable, Focus
     /**
      * This will kill the application based on the process name defined
      */
-    @Override
-    public Applicationable killProcess() throws Exception
+    @Override public Applicationable killProcess() throws Exception
     {
         Utility.killProcessName(getProcessName());
         return null;
@@ -219,8 +218,7 @@ public abstract class GuiScreen extends Screen implements Applicationable, Focus
     /**
      * Check if the process is running by process name defined
      */
-    @Override
-    public boolean isRunning()
+    @Override public boolean isRunning()
     {
         return Utility.isProcessRunning(getProcessName());
     }

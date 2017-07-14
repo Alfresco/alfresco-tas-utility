@@ -1,5 +1,6 @@
 package org.alfresco.utility.application.gui.installer;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -14,33 +15,31 @@ import org.alfresco.utility.application.gui.installer.ACSInstallerProperties.LAN
 public class InstallerFormTests extends InstallerTest
 {
 
-	/**
-	 * AONE-18286
-	 */
-	@Test
-    public void languageSelectionForm() throws Exception
+    /**
+     * AONE-18286
+     */
+    @Test public void languageSelectionForm() throws Exception
     {
         STEP("Precondition: Alfresco One installer is started and navigated to Language Selection form");
         navigateToLanguageForm();
-        
+
         STEP("1. Press Cancel button and check that installer is closed.");
         installer.onLanguageSelectionDialog().clickCancel();
         Assert.assertFalse(installer.isRunning(), "The installer should be closed.");
-        
+
         STEP("2. Start installer again and check that Language Selection form is displayed");
         navigateToLanguageForm();
         installer.onLanguageSelectionDialog().focus();
-        
+
         STEP("3. Select a language different than English and press OK");
         installer.onLanguageSelectionDialog().setLanguage(LANGUAGES.FRENCH).startWithFrenchSetup();
         installer.onFrenchSetup().assertDescriptionIs(DESCRIPTION.FRENCH);
     }
 
-	/**
-	 * AONE-18287
-	 */
-	@Test
-    public void welcomeForm() throws Exception
+    /**
+     * AONE-18287
+     */
+    @Test public void welcomeForm() throws Exception
     {
         STEP("Precondition: Alfresco One installer is started and navigated to Setup/Welcome form");
         navigateToSetupForm();
@@ -72,8 +71,7 @@ public class InstallerFormTests extends InstallerTest
     /**
      * AONE-18457
      */
-    @Test()
-    public void licenseAgreementForm() throws Exception
+    @Test() public void licenseAgreementForm() throws Exception
     {
         STEP("Precondition: Alfresco One installer is started and navigated to License Agreement form");
         navigateToLicenseForm();
@@ -132,8 +130,7 @@ public class InstallerFormTests extends InstallerTest
     /**
      * AONE-18288
      */
-    @Test()
-    public void installationTypeForm() throws Exception
+    @Test() public void installationTypeForm() throws Exception
     {
         STEP("Precondition: Alfresco One installer is started and navigated to Installation Type form");
         navigateToInstallationTypeForm();
@@ -166,8 +163,7 @@ public class InstallerFormTests extends InstallerTest
     /**
      * AONE-18290
      */
-    @Test()
-    public void installationFolderForm() throws Exception
+    @Test() public void installationFolderForm() throws Exception
     {
         STEP("Precondition: Alfresco One installer is running in easy install mode - Installation Folder form is opened.");
         navigateToInstallationFolderForm();
@@ -176,7 +172,8 @@ public class InstallerFormTests extends InstallerTest
         String notEmptyFolder = createNotEmptyFolderInOS().getParent();
         installer.onInstallationFolderPage().setDestination(notEmptyFolder);
         installer.onSetup().clickNext();
-        Assert.assertTrue(installer.onInstallationFolderPage().isSelectedFolderNotEmptyWarningDisplayed(), "'The selected folder is not empty. Specify a different folder' warning is not displayed.");
+        Assert.assertTrue(installer.onInstallationFolderPage().isSelectedFolderNotEmptyWarningDisplayed(),
+                "'The selected folder is not empty. Specify a different folder' warning is not displayed.");
         installer.onWarning().clickOK();
 
         STEP("2. Enter any random string to the 'Select a folder' field, click 'Forward' button and then click 'Back' button.");
@@ -196,10 +193,7 @@ public class InstallerFormTests extends InstallerTest
         installer.onSetup().clickNext();
 
         STEP("4. Click 'Back' button until the 1st step will not be reached and then return to 'Installation Folder' form.");
-        installer.onSetup()
-                .clickBack()
-                .clickBack()
-                .clickNext();
+        installer.onSetup().clickBack().clickBack().clickNext();
         installer.onInstallationFolderPage().assertInstallationFolderIs(destinationFolder);
 
         STEP("5. Click 'Cancel' button ");
@@ -211,16 +205,58 @@ public class InstallerFormTests extends InstallerTest
         installer.assertInstallationFolderIsEmpty();
     }
 
-//    @Test()
+    //    @Test()
     public void selectComponentsForm() throws Exception
     {
         STEP("Precondition: Alfresco One installer is running in advanced install mode - Select Components form is opened.");
         navigateToSelectComponentsForm();
     }
 
-    public void adminPasswordForm() throws Exception
+    /*
+    AONE-18296
+     */
+    @Test public void adminPasswordForm() throws Exception
     {
-        //TODO
+        STEP("Precondition: Navigate to Admin Password form");
+        navigateToAdminPasswordForm();
+        STEP("1. Enter different admin password and repeat password values. Click 'Next' button.");
+        installer.onAdminPasswordPage().setAdminPassword("Pass");
+        installer.onAdminPasswordPage().setRepeatAdminPassword("Passwrd123");
+        installer.onSetup().clickNext();
+        Assert.assertTrue(installer.onAdminPasswordPage().isPasswordsDoNotMatchWarningDisplayed(), "Passwords do not match warning message is not displayed.");
+        installer.onWarning().clickOK();
+        STEP("2. Enter equal password admin password and repeat password, but shorter than 3 symbols and click 'Next' button.");
+        installer.onAdminPasswordPage().setAdminPassword("ab");
+        installer.onAdminPasswordPage().setRepeatAdminPassword("ab");
+        installer.onSetup().clickNext();
+        Assert.assertTrue(installer.onAdminPasswordPage().isPasswordToShortWarningDisplayed(),
+                "Passwords should be longer than 3 characters warning is not displayed.");
+        installer.onWarning().clickOK();
+        STEP("3. Enter equal password admin password and password confirmation. Click 'Forward' button ");
+        String validPassword = "adminP1";
+        installer.onAdminPasswordPage().setAdminPassword(validPassword);
+        installer.onAdminPasswordPage().setRepeatAdminPassword(validPassword);
+        installer.onSetup().clickNext();
+        Assert.assertTrue(installer.onAdminPasswordPage().isReadyToInstallFormDisplayed(), "The next form, 'Ready to install' is not displayed");
+        STEP("4. Click on 'Back' button until 1st page opened. Then return to this page.");
+        installer.onSetup().clickBack();
+        installer.onSetup().clickBack();
+        installer.onSetup().clickBack();
+        installer.onSetup().clickBack();
+        installer.onSetup().clickBack();
+        installer.onSetup().clickNext();
+        installer.onLicensePage().acceptTheAgreement();
+        installer.onSetup().clickNext();
+        installer.onSetup().clickNext();
+        installer.onSetup().clickNext();
+        Assert.assertTrue(installer.onAdminPasswordPage().isPreviouslyProvidedPasswordAvailable(), "The previousley provided password is no longer available");
+        STEP("5. Click on 'Cancel' button.Verify <install dir>.");
+        installer.onSetup().clickCancel();
+        installer.onWarning().clickOK();
+        installer.assertInstallationFolderIsEmpty();
+        //TODO check this 2 step in an end to end test that installs alfresco
+        STEP("7. Run installer again, specify correct and equal passwords for admin and install Alfresco.");
+        STEP("8. When Alfresco is installed try to login to Alfresco One Share page as admin using password you set during install.");
     }
 
     public void databaseServerParametersForm() throws Exception
@@ -228,8 +264,7 @@ public class InstallerFormTests extends InstallerTest
         //TODO
     }
 
-    @Test()
-    public void tomcatPortConfigurationForm() throws Exception
+    @Test() public void tomcatPortConfigurationForm() throws Exception
     {
         STEP("Precondition: Alfresco One installer is started and navigated to Tomcat Port Configuration form");
         navigateToTomcatPortConfigurationPage();
@@ -237,13 +272,15 @@ public class InstallerFormTests extends InstallerTest
         STEP("1. For Tomcat Server Port enter incorrect port values instead of default values used by default. For example, 66000. Click Forward.");
         installer.onTomcatPortConfigurationPage().setTomcatServerPort("66000");
         installer.onSetup().clickNext();
-        Assert.assertTrue(installer.onTomcatPortConfigurationPage().isTomcatServerPortWarningMessageDisplayed(), "Select another LibreOffice Server Port message should be displayed.");
+        Assert.assertTrue(installer.onTomcatPortConfigurationPage().isTomcatServerPortWarningMessageDisplayed(),
+                "Select another LibreOffice Server Port message should be displayed.");
         installer.onWarning().clickOK();
 
         STEP("2. Enter incorrect symbolic port value, DF, for example. Click Forward");
         installer.onTomcatPortConfigurationPage().setTomcatServerPort("DF");
         installer.onSetup().clickNext();
-        Assert.assertTrue(installer.onTomcatPortConfigurationPage().isTomcatPortCharacterWarningMessageDisplayed(), "Use numbers only in the port configuration field message should be displayed.");
+        Assert.assertTrue(installer.onTomcatPortConfigurationPage().isTomcatPortCharacterWarningMessageDisplayed(),
+                "Use numbers only in the port configuration field message should be displayed.");
         installer.onWarning().clickOK();
 
         STEP("3. Enter correct port value, not used by another process (use netstat console utility to define of using ports). Click Forward.");
@@ -255,13 +292,15 @@ public class InstallerFormTests extends InstallerTest
         STEP("4. For Tomcat Shutdown Port enter incorrect port values instead of default values used by default. For example, 66000. Click Forward.");
         installer.onTomcatPortConfigurationPage().setTomcatShutdownPort("66000");
         installer.onSetup().clickNext();
-        Assert.assertTrue(installer.onTomcatPortConfigurationPage().isTomcatShutdownPortWarningMessageDisplayed(), "Select another LibreOffice Server Port message should be displayed.");
+        Assert.assertTrue(installer.onTomcatPortConfigurationPage().isTomcatShutdownPortWarningMessageDisplayed(),
+                "Select another LibreOffice Server Port message should be displayed.");
         installer.onWarning().clickOK();
 
         STEP("5. Enter incorrect symbolic port value, DF, for example. Click Forward");
         installer.onTomcatPortConfigurationPage().setTomcatShutdownPort("DF");
         installer.onSetup().clickNext();
-        Assert.assertTrue(installer.onTomcatPortConfigurationPage().isTomcatPortCharacterWarningMessageDisplayed(), "Use numbers only in the port configuration field message should be displayed.");
+        Assert.assertTrue(installer.onTomcatPortConfigurationPage().isTomcatPortCharacterWarningMessageDisplayed(),
+                "Use numbers only in the port configuration field message should be displayed.");
         installer.onWarning().clickOK();
 
         STEP("6. Enter correct port value, not used by another process (use netstat console utility to define of using ports). Click Forward.");
@@ -273,13 +312,15 @@ public class InstallerFormTests extends InstallerTest
         STEP("7. For Tomcat SSL Port enter incorrect port values instead of default values used by default. For example, 66000. Click Forward.");
         installer.onTomcatPortConfigurationPage().setTomcatSSLPort("66000");
         installer.onSetup().clickNext();
-        Assert.assertTrue(installer.onTomcatPortConfigurationPage().isTomcatSSLPortWarningMessageDisplayed(), "Select another LibreOffice Server Port message should be displayed.");
+        Assert.assertTrue(installer.onTomcatPortConfigurationPage().isTomcatSSLPortWarningMessageDisplayed(),
+                "Select another LibreOffice Server Port message should be displayed.");
         installer.onWarning().clickOK();
 
         STEP("8. Enter incorrect symbolic port value, DF, for example. Click Forward");
         installer.onTomcatPortConfigurationPage().setTomcatSSLPort("DF");
         installer.onSetup().clickNext();
-        Assert.assertTrue(installer.onTomcatPortConfigurationPage().isTomcatPortCharacterWarningMessageDisplayed(), "Use numbers only in the port configuration field message should be displayed.");
+        Assert.assertTrue(installer.onTomcatPortConfigurationPage().isTomcatPortCharacterWarningMessageDisplayed(),
+                "Use numbers only in the port configuration field message should be displayed.");
         installer.onWarning().clickOK();
 
         STEP("9. Enter correct port value, not used by another process (use netstat console utility to define of using ports). Click Forward.");
@@ -291,13 +332,15 @@ public class InstallerFormTests extends InstallerTest
         STEP("10. For Tomcat AJP Port enter incorrect port values instead of default values used by default. For example, 66000. Click Forward.");
         installer.onTomcatPortConfigurationPage().setTomcatAJPPort("66000");
         installer.onSetup().clickNext();
-        Assert.assertTrue(installer.onTomcatPortConfigurationPage().isTomcatAJPPortWarningMessageDisplayed(), "Select another LibreOffice Server Port message should be displayed.");
+        Assert.assertTrue(installer.onTomcatPortConfigurationPage().isTomcatAJPPortWarningMessageDisplayed(),
+                "Select another LibreOffice Server Port message should be displayed.");
         installer.onWarning().clickOK();
 
         STEP("11. Enter incorrect symbolic port value, DF, for example. Click Forward");
         installer.onTomcatPortConfigurationPage().setTomcatAJPPort("DF");
         installer.onSetup().clickNext();
-        Assert.assertTrue(installer.onTomcatPortConfigurationPage().isTomcatPortCharacterWarningMessageDisplayed(), "Use numbers only in the port configuration field message should be displayed.");
+        Assert.assertTrue(installer.onTomcatPortConfigurationPage().isTomcatPortCharacterWarningMessageDisplayed(),
+                "Use numbers only in the port configuration field message should be displayed.");
         installer.onWarning().clickOK();
 
         STEP("12. Enter correct port value, not used by another process (use netstat console utility to define of using ports). Click Forward.");
@@ -314,8 +357,7 @@ public class InstallerFormTests extends InstallerTest
     /**
      * AONE-18296 + AONE-18295 + AONE-18293
      */
-    @Test()
-    public void verifyLibreOfficeFtpPortRmiPortForms() throws Exception
+    @Test() public void verifyLibreOfficeFtpPortRmiPortForms() throws Exception
     {
         STEP("Precondition: Alfresco One installer is started and navigated to LibreOffice Server Port form");
         navigateToLibreOfficeServerPortPage();
@@ -323,13 +365,15 @@ public class InstallerFormTests extends InstallerTest
         STEP("1. To the 'LibreOffice Server port' enter any busy port (or leave busy 8100 port) and verify error message is displayed.");
         installer.onLibreOfficeServerPortPage().setLibreOfficeServerPort("66000");
         installer.onSetup().clickNext();
-        Assert.assertTrue(installer.onLibreOfficeServerPortPage().isLibreOfficePortWarningMessageDisplayed(), "Select another LibreOffice Server Port message should be displayed.");
+        Assert.assertTrue(installer.onLibreOfficeServerPortPage().isLibreOfficePortWarningMessageDisplayed(),
+                "Select another LibreOffice Server Port message should be displayed.");
         installer.onWarning().clickOK();
 
         STEP("2. To the 'Alfresco FTP port' enter any incorrect data, e.g. text click 'Next' button.");
         installer.onLibreOfficeServerPortPage().setLibreOfficeServerPort("DF");
         installer.onSetup().clickNext();
-        Assert.assertTrue(installer.onLibreOfficeServerPortPage().isLibreOfficeCharacterWarningMessageDisplayed(), "Use numbers only in the port configuration field message should be displayed.");
+        Assert.assertTrue(installer.onLibreOfficeServerPortPage().isLibreOfficeCharacterWarningMessageDisplayed(),
+                "Use numbers only in the port configuration field message should be displayed.");
         installer.onWarning().clickOK();
 
         STEP("3. Enter correct port value, not used by another process (use netstat console utility to define of using ports). Click Forward.");
@@ -346,7 +390,8 @@ public class InstallerFormTests extends InstallerTest
         STEP("5. To the 'Alfresco FTP port' enter any incorrect data, e.g. text click 'Next' button.");
         installer.onFtpPortPage().setFtpPort("DF");
         installer.onSetup().clickNext();
-        Assert.assertTrue(installer.onFtpPortPage().isFtpCharacterWarningMessageDisplayed(), "Use numbers only in the port configuration field message should be displayed.");
+        Assert.assertTrue(installer.onFtpPortPage().isFtpCharacterWarningMessageDisplayed(),
+                "Use numbers only in the port configuration field message should be displayed.");
         installer.onWarning().clickOK();
 
         STEP("6. Enter correct port value, not used by another process (use netstat console utility to define of using ports). Click Forward.");
@@ -362,7 +407,8 @@ public class InstallerFormTests extends InstallerTest
         STEP("8. To the 'Alfresco RMI port' enter any incorrect data, e.g. text click 'Next' button.");
         installer.onRmiPortPage().setRmiPort("DF");
         installer.onSetup().clickNext();
-        Assert.assertTrue(installer.onRmiPortPage().isRmiCharacterWarningMessageDisplayed(), "Use numbers only in the port configuration field message should be displayed.");
+        Assert.assertTrue(installer.onRmiPortPage().isRmiCharacterWarningMessageDisplayed(),
+                "Use numbers only in the port configuration field message should be displayed.");
         installer.onWarning().clickOK();
 
         STEP("9. Enter correct port value, not used by another process (use netstat console utility to define of using ports). Click Forward.");

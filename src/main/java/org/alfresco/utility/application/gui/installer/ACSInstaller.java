@@ -17,15 +17,12 @@ import org.testng.Assert;
 /**
  * Sikuli approach of interacting with Alfresco Installer.
  * Following a Wizard base design pattern
- * 
+ *
  * @author Paul Brodner
  */
-@Component
-public class ACSInstaller extends ACSWizard implements Installable
+@Component public class ACSInstaller extends ACSWizard implements Installable
 {
-    @SuppressWarnings("unchecked")
-    @Override
-    public LanguageSelection waitForInstallerToOpen() throws Exception
+    @SuppressWarnings("unchecked") @Override public LanguageSelection waitForInstallerToOpen() throws Exception
     {
         return new LanguageSelection();
     }
@@ -49,7 +46,7 @@ public class ACSInstaller extends ACSWizard implements Installable
     {
         return new Setup();
     }
-    
+
     public FrenchSetup onFrenchSetup() throws Exception
     {
         return new FrenchSetup();
@@ -146,7 +143,7 @@ public class ACSInstaller extends ACSWizard implements Installable
             clickOn("languageSelection/ok");
             return new Setup();
         }
-        
+
         public FrenchSetup startWithFrenchSetup() throws Exception
         {
             clickOn("languageSelection/title");
@@ -161,19 +158,19 @@ public class ACSInstaller extends ACSWizard implements Installable
             Utility.waitToLoopTime(WAIT_TIMEOUT);
         }
 
-        @Override
-        public LanguageSelection focus() throws Exception
+        @Override public LanguageSelection focus() throws Exception
         {
             clickOn("languageSelection/title");
             return this;
         }
-        
-        public LanguageSelection setLanguage(LANGUAGES language) throws CouldNotFindImageOnScreen {
-        	clickOn("languageSelection/openLanguages");
-        	clickOn(language.toString());
-        	return this;
+
+        public LanguageSelection setLanguage(LANGUAGES language) throws CouldNotFindImageOnScreen
+        {
+            clickOn("languageSelection/openLanguages");
+            clickOn(language.toString());
+            return this;
         }
-        
+
         public LanguageSelection assertSelectedLanguageIs(LANGUAGES language) throws Exception
         {
             waitOn(language.toString());
@@ -191,8 +188,7 @@ public class ACSInstaller extends ACSWizard implements Installable
             waitOn("setup");
         }
 
-        @Override
-        public Setup focus() throws Exception
+        @Override public Setup focus() throws Exception
         {
             clickOn("setup");
             return this;
@@ -231,24 +227,25 @@ public class ACSInstaller extends ACSWizard implements Installable
             return this;
         }
     }
-    
+
     public class FrenchSetup implements Focusable<FrenchSetup>
     {
         public FrenchSetup() throws FindFailed, Exception
         {
             waitOn("languageSelection/languages/french/setup");
         }
-        
-        public FrenchSetup assertDescriptionIs(DESCRIPTION description) throws Exception {
-			waitOn(description.toString());
-        	return this;	
+
+        public FrenchSetup assertDescriptionIs(DESCRIPTION description) throws Exception
+        {
+            waitOn(description.toString());
+            return this;
         }
 
-		@Override
-		public FrenchSetup focus() throws Exception {
-			clickOn("languageSelection/languages/french/setup");
-			return this;
-		}
+        @Override public FrenchSetup focus() throws Exception
+        {
+            clickOn("languageSelection/languages/french/setup");
+            return this;
+        }
     }
 
     /**
@@ -261,8 +258,7 @@ public class ACSInstaller extends ACSWizard implements Installable
             waitOn("license/licenseAgreement");
         }
 
-        @Override
-        public LicensePage focus() throws Exception
+        @Override public LicensePage focus() throws Exception
         {
             clickOn("license/licenseAgreement");
             return this;
@@ -331,8 +327,7 @@ public class ACSInstaller extends ACSWizard implements Installable
                 clickOn("dialog/no");
         }
 
-        @Override
-        public Dialog focus() throws CouldNotFindImageOnScreen
+        @Override public Dialog focus() throws CouldNotFindImageOnScreen
         {
             clickOn("dialog/doYouWantToAbort");
             clickOn("dialog/title");
@@ -357,8 +352,7 @@ public class ACSInstaller extends ACSWizard implements Installable
             clickOn("warning/ok");
         }
 
-        @Override
-        public Warning focus() throws CouldNotFindImageOnScreen
+        @Override public Warning focus() throws CouldNotFindImageOnScreen
         {
             clickOn("warning/title");
             return this;
@@ -375,8 +369,7 @@ public class ACSInstaller extends ACSWizard implements Installable
             waitOn("installationType/title");
         }
 
-        @Override
-        public InstallationType focus() throws Exception
+        @Override public InstallationType focus() throws Exception
         {
             clickOn("installationType/title");
             return this;
@@ -407,8 +400,7 @@ public class ACSInstaller extends ACSWizard implements Installable
             waitOn("installationFolder/title");
         }
 
-        @Override
-        public InstallationFolder focus() throws Exception
+        @Override public InstallationFolder focus() throws Exception
         {
             clickOn("installationFolder/title");
             return this;
@@ -416,7 +408,7 @@ public class ACSInstaller extends ACSWizard implements Installable
 
         public InstallationFolder setDestination(String destination) throws Exception
         {
-            focus();            
+            focus();
             clearAndType(destination);
             return this;
         }
@@ -444,8 +436,7 @@ public class ACSInstaller extends ACSWizard implements Installable
             waitOn("adminPassword/title");
         }
 
-        @Override
-        public AdminPassword focus() throws Exception
+        @Override public AdminPassword focus() throws Exception
         {
             clickOn("adminPassword/title");
             return this;
@@ -455,7 +446,7 @@ public class ACSInstaller extends ACSWizard implements Installable
         {
             focus();
             clickOn("adminPassword/adminPassword");
-            clearAndType(installerProperties.getAdminPassword());
+            clearAndType(password);
             return this;
         }
 
@@ -463,8 +454,28 @@ public class ACSInstaller extends ACSWizard implements Installable
         {
             focus();
             clickOn("adminPassword/repeatPassword");
-            clearAndType(installerProperties.getAdminPassword());
+            clearAndType(password);
             return this;
+        }
+
+        public boolean isPasswordsDoNotMatchWarningDisplayed() throws CouldNotFindImageOnScreen
+        {
+            return isPopUpDisplayed("adminPassword/passwordsDoNotMatchWarning");
+        }
+
+        public boolean isPasswordToShortWarningDisplayed() throws CouldNotFindImageOnScreen
+        {
+            return isPopUpDisplayed("adminPassword/passwordsToShortWarning");
+        }
+
+        public boolean isReadyToInstallFormDisplayed() throws CouldNotFindImageOnScreen
+        {
+            return isPopUpDisplayed("ready/readyToInstall");
+        }
+
+        public boolean isPreviouslyProvidedPasswordAvailable() throws CouldNotFindImageOnScreen
+        {
+            return isPopUpDisplayed("adminPassword/adminPassPreviousleyProvidedData");
         }
     }
 
@@ -478,8 +489,7 @@ public class ACSInstaller extends ACSWizard implements Installable
             waitOn("selectComponents/title");
         }
 
-        @Override
-        public SelectComponents focus() throws Exception
+        @Override public SelectComponents focus() throws Exception
         {
             clickOn("selectComponents/title");
             return this;
@@ -541,8 +551,7 @@ public class ACSInstaller extends ACSWizard implements Installable
             waitOn("databaseParameters/title");
         }
 
-        @Override
-        public DatabaseParameters focus() throws Exception
+        @Override public DatabaseParameters focus() throws Exception
         {
             clickOn("databaseParameters/title");
             return this;
@@ -563,8 +572,7 @@ public class ACSInstaller extends ACSWizard implements Installable
             waitOn("databaseConfiguration/title");
         }
 
-        @Override
-        public DatabaseConfiguration focus() throws Exception
+        @Override public DatabaseConfiguration focus() throws Exception
         {
             clickOn("databaseConfiguration/title");
             return this;
@@ -599,8 +607,7 @@ public class ACSInstaller extends ACSWizard implements Installable
             waitOn("tomcat/title");
         }
 
-        @Override
-        public TomcatConfigurationPage focus() throws Exception
+        @Override public TomcatConfigurationPage focus() throws Exception
         {
             clickOn("tomcat/title");
             return this;
@@ -701,8 +708,7 @@ public class ACSInstaller extends ACSWizard implements Installable
             waitOn("shardedSolr/title");
         }
 
-        @Override
-        public ShardedSolrPage focus() throws Exception
+        @Override public ShardedSolrPage focus() throws Exception
         {
             clickOn("shardedSolr/title");
             return this;
@@ -728,8 +734,7 @@ public class ACSInstaller extends ACSWizard implements Installable
             waitOn("ftp/title");
         }
 
-        @Override
-        public FtpPortPage focus() throws Exception
+        @Override public FtpPortPage focus() throws Exception
         {
             clickOn("ftp/title");
             return this;
@@ -767,8 +772,7 @@ public class ACSInstaller extends ACSWizard implements Installable
             waitOn("rmi/title");
         }
 
-        @Override
-        public RmiPortPage focus() throws Exception
+        @Override public RmiPortPage focus() throws Exception
         {
             clickOn("rmi/title");
             return this;
@@ -806,8 +810,7 @@ public class ACSInstaller extends ACSWizard implements Installable
             waitOn("serviceStartup/title");
         }
 
-        @Override
-        public ServiceStartupConfigurationPage focus() throws Exception
+        @Override public ServiceStartupConfigurationPage focus() throws Exception
         {
             clickOn("serviceStartup/title");
             return this;
@@ -833,8 +836,7 @@ public class ACSInstaller extends ACSWizard implements Installable
             waitOn("libreOffice/title");
         }
 
-        @Override
-        public LibreOfficeServerPortPage focus() throws Exception
+        @Override public LibreOfficeServerPortPage focus() throws Exception
         {
             clickOn("libreOffice/title");
             return this;
@@ -872,8 +874,7 @@ public class ACSInstaller extends ACSWizard implements Installable
             waitOn("remoteSolr/title");
         }
 
-        @Override
-        public RemoteSolrConfigurationPage focus() throws Exception
+        @Override public RemoteSolrConfigurationPage focus() throws Exception
         {
             clickOn("remoteSolr/title");
             return this;
@@ -901,16 +902,14 @@ public class ACSInstaller extends ACSWizard implements Installable
             waitOn("ready/title");
         }
 
-        @Override
-        public ReadyToInstallPage focus() throws Exception
+        @Override public ReadyToInstallPage focus() throws Exception
         {
             clickOn("ready/title");
             return this;
         }
     }
 
-    @Override
-    public ACSInstaller focus() throws Exception
+    @Override public ACSInstaller focus() throws Exception
     {
         onSetup().focus();
         return this;
