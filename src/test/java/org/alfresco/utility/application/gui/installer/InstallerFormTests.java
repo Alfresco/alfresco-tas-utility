@@ -227,7 +227,7 @@ public class InstallerFormTests extends InstallerTest
     public void databaseServerParametersForm() throws Exception
     {
         STEP("Precondition: Alfresco One installer is started and navigated to Database Server Parameters form");
-        installer.navigateToDatabaseServerParametersPage();
+        navigateToDatabaseServerParametersPage();
 
         STEP("1. For Database Server Port enter incorrect port values instead of default values used by default. For example, 66000. Click Forward.");
         installer.onDatabaseParametersPage().setPort("66000");

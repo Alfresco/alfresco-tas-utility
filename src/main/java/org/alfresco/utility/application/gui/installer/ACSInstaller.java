@@ -75,21 +75,6 @@ public class ACSInstaller extends ACSWizard implements Installable
         return new DatabaseParameters();
     }
 
-    public DatabaseConfiguration navigateToDatabaseServerParametersPage() throws Exception
-    {
-        open();
-        waitForInstallerToOpen();
-        onLanguageSelectionDialog().clickOK();
-        onSetup().clickNext();
-        onLicensePage().acceptTheAgreement();
-        onSetup().clickNext();
-        onInstallationTypePage().chooseAdvancedInstall();
-        onSetup().clickNext()
-                .clickNext()
-                .clickNext();
-        return new DatabaseConfiguration();
-    }
-
     public DatabaseConfiguration onDatabaseConfigurationPage() throws Exception
     {
         return new DatabaseConfiguration();
