@@ -557,10 +557,29 @@ import org.testng.Assert;
             return this;
         }
 
+        public DatabaseParameters setPort() throws Exception
+        {
+            clickOn("databaseParameters/port");
+            clearAndType(installerProperties.getInstallerDBPort());
+            return this;
+        }
+
         public DatabaseParameters setPort(String port) throws Exception
         {
             focus();
             clearAndType(port);
+            return this;
+        }
+
+        public boolean isDatabaseServerPortWarningMessageDisplayed() throws CouldNotFindImageOnScreen
+        {
+            return isPopUpDisplayed("databaseParameters/databaseServerPortWarningMessage");
+        }
+
+        public DatabaseParameters assertDatabasePortIs(String expectedPort) throws Exception
+        {
+            copyToClipboard();
+            Assert.assertEquals(getTextFromClipboard(), expectedPort, "Database Server Port is set.");
             return this;
         }
     }

@@ -58,6 +58,15 @@ import java.nio.file.Paths;
         installer.onSetup().clickNext();
     }
 
+    public void navigateToDatabaseServerParametersPage() throws Exception
+    {
+        navigateToInstallationTypeForm();
+        installer.onInstallationTypePage().chooseAdvancedInstall();
+        installer.onSetup().clickNext()
+                .clickNext()
+                .clickNext();
+    }
+
     public void navigateToSelectComponentsForm() throws Exception
     {
         navigateToInstallationTypeForm();

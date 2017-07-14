@@ -4,7 +4,10 @@
 $scriptubuntu = <<SCRIPT
     cd /vagrant
     echo $LDAP_USER
-    mvn clean install -s $HOME/.m2/settings.xml -DskipTests
+    sudo startxfce4 &
+    export DISPLAY=:0.0
+    vncserver
+    mvn clean install -s $HOME/.m2/settings.xml
 SCRIPT
 
 
@@ -18,8 +21,11 @@ Vagrant.configure('2') do |config|
           vb.cpus = "2"
           vb.customize ['modifyvm', :id, '--cableconnected1', 'on']
         end
+        ubuntu.vm.network "forwarded_port", guest: 5901, host: 5901
 
-        ubuntu.vm.provision 'shell', env: {"LDAP_USER" => "#{ENV['AUTHUSER']}", "LDAP_PASS" => "#{ENV['AUTHPASS']}"}, inline: $scriptubuntu, privileged: false
+        ubuntu.vm.provision 'shell', env: {"LDAP_USER" => "#{ENV['LDAP_USER']}", "LDAP_PASS" => "#{ENV['LDAP_PASS']}"}, inline: $scriptubuntu, privileged: false
     end
 
 end
+
+
