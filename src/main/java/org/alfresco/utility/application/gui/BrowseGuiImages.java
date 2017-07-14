@@ -12,8 +12,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.utility.Utility;
+import org.alfresco.utility.exception.TestConfigurationException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.SystemUtils;
 
 import freemarker.template.Configuration;
@@ -31,11 +33,13 @@ public class BrowseGuiImages
     public static class OSBasedFiles
     {
         private String osName;
-        private List<File> files;
+        private File parent;
+        private List<File> files = new ArrayList<File>();
 
-        public OSBasedFiles(String osName)
+        public OSBasedFiles(String osName, File parent)
         {
             setOsName(osName);
+            setParent(parent);
         }
 
         public String getOsName()
@@ -53,6 +57,16 @@ public class BrowseGuiImages
             return files;
         }
 
+        public String[] getArrayFiles()
+        {
+            ArrayList<String> tmp = new ArrayList<String>();
+            for (File f : files)
+            {
+                tmp.add(f.getPath().split(osName)[1]);
+            }
+            return tmp.toArray(new String[tmp.size()]);
+        }
+
         public String getFilesCount()
         {
             return String.valueOf(files.size());
@@ -65,9 +79,36 @@ public class BrowseGuiImages
 
         public static OSBasedFiles collectOsBasedFiles(String osName, File parent)
         {
-            OSBasedFiles tmp = new OSBasedFiles(osName);
-            tmp.setFiles((List<File>) FileUtils.listFiles(parent, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE));
+            OSBasedFiles tmp = new OSBasedFiles(osName, parent);
+
+            File fromLocation = Paths.get(parent.getPath(), osName).toFile();
+            if (fromLocation.isDirectory())
+            {
+                tmp.setFiles((List<File>) FileUtils.listFiles(fromLocation, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE));
+            }
+
             return tmp;
+        }
+
+        public String fileExist(String filename) throws TestConfigurationException
+        {
+            File file = Paths.get(getParent().getPath(), getOsName(), filename).toFile();
+            if (file.exists())
+            {
+                return file.getPath();
+            }
+            else
+                return "";//Utility.getTestResourceFile("shared-resources/gui/x.png").getPath();
+        }
+
+        public File getParent()
+        {
+            return parent;
+        }
+
+        public void setParent(File parent)
+        {
+            this.parent = parent;
         }
     }
 
@@ -82,14 +123,23 @@ public class BrowseGuiImages
 
         File parent = Utility.getTestResourceFile(imgPath);
         List<OSBasedFiles> osBasedFiles = new ArrayList<OSBasedFiles>();
+
+        String[] uniqueOSBasedFiles = new String[] {};
+
         for (String osName : parent.list())
         {
-            osBasedFiles.add(OSBasedFiles.collectOsBasedFiles(osName, Paths.get(parent.getPath(), osName).toFile()));
+            OSBasedFiles tmp = OSBasedFiles.collectOsBasedFiles(osName, parent);
+
+            osBasedFiles.add(tmp);
+            uniqueOSBasedFiles = (String[]) ArrayUtils.addAll(uniqueOSBasedFiles, tmp.getArrayFiles());
         }
+        
+        
 
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("author", System.getProperty("user.name"));
         data.put("osDataFiles", osBasedFiles);
+        data.put("uniqueOSBasedFiles", uniqueOSBasedFiles);
 
         Writer append = new StringWriter();
         browseImagesTemplate.process(data, append);
