@@ -223,21 +223,20 @@ public class InstallerFormTests extends InstallerTest
         installer.onAdminPasswordPage().setAdminPassword("Pass");
         installer.onAdminPasswordPage().setRepeatAdminPassword("Passwrd123");
         installer.onSetup().clickNext();
-        Assert.assertTrue(installer.onAdminPasswordPage().isPasswordsDoNotMatchWarningDisplayed(), "Passwords do not match warning message is not displayed.");
+        installer.onAdminPasswordPage().assertPasswordsDoNotMatchWarningIsDisplayed();
         installer.onWarning().clickOK();
         STEP("2. Enter equal password admin password and repeat password, but shorter than 3 symbols and click 'Next' button.");
         installer.onAdminPasswordPage().setAdminPassword("ab");
         installer.onAdminPasswordPage().setRepeatAdminPassword("ab");
         installer.onSetup().clickNext();
-        Assert.assertTrue(installer.onAdminPasswordPage().isPasswordToShortWarningDisplayed(),
-                "Passwords should be longer than 3 characters warning is not displayed.");
+
         installer.onWarning().clickOK();
         STEP("3. Enter equal password admin password and password confirmation. Click 'Forward' button ");
         String validPassword = "adminP1";
         installer.onAdminPasswordPage().setAdminPassword(validPassword);
         installer.onAdminPasswordPage().setRepeatAdminPassword(validPassword);
         installer.onSetup().clickNext();
-        Assert.assertTrue(installer.onAdminPasswordPage().isReadyToInstallFormDisplayed(), "The next form, 'Ready to install' is not displayed");
+        installer.onAdminPasswordPage().assertReadyToInstallFormIsDisplayed();
         STEP("4. Click on 'Back' button until 1st page opened. Then return to this page.");
         installer.onSetup().clickBack();
         installer.onSetup().clickBack();
@@ -249,7 +248,7 @@ public class InstallerFormTests extends InstallerTest
         installer.onSetup().clickNext();
         installer.onSetup().clickNext();
         installer.onSetup().clickNext();
-        Assert.assertTrue(installer.onAdminPasswordPage().isPreviouslyProvidedPasswordAvailable(), "The previousley provided password is no longer available");
+        installer.onAdminPasswordPage().assertPreviouslyProvidedPasswordIsAvailable();
         STEP("5. Click on 'Cancel' button.Verify <install dir>.");
         installer.onSetup().clickCancel();
         installer.onWarning().clickOK();

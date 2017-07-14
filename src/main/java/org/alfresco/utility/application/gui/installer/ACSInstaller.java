@@ -458,24 +458,24 @@ import org.testng.Assert;
             return this;
         }
 
-        public boolean isPasswordsDoNotMatchWarningDisplayed() throws CouldNotFindImageOnScreen
+        public void assertPasswordsDoNotMatchWarningIsDisplayed() throws CouldNotFindImageOnScreen
         {
-            return isPopUpDisplayed("adminPassword/passwordsDoNotMatchWarning");
+            Assert.assertTrue(isPopUpDisplayed("adminPassword/passwordsDoNotMatchWarning"), "Passwords do not match warning message is not displayed.");
         }
 
-        public boolean isPasswordToShortWarningDisplayed() throws CouldNotFindImageOnScreen
+        public void assertPasswordToShortWarningIsDisplayed() throws CouldNotFindImageOnScreen
         {
-            return isPopUpDisplayed("adminPassword/passwordsToShortWarning");
+           Assert.assertTrue(isPopUpDisplayed("adminPassword/passwordsToShortWarning"), "Passwords should be longer than 3 characters warning is not displayed.");
         }
 
-        public boolean isReadyToInstallFormDisplayed() throws CouldNotFindImageOnScreen
+        public void assertReadyToInstallFormIsDisplayed() throws CouldNotFindImageOnScreen
         {
-            return isPopUpDisplayed("ready/readyToInstall");
+          Assert.assertTrue(isPopUpDisplayed("ready/readyToInstall"), "The next form, 'Ready to install' is not displayed");
         }
 
-        public boolean isPreviouslyProvidedPasswordAvailable() throws CouldNotFindImageOnScreen
+        public void assertPreviouslyProvidedPasswordIsAvailable() throws CouldNotFindImageOnScreen
         {
-            return isPopUpDisplayed("adminPassword/adminPassPreviousleyProvidedData");
+            Assert.assertTrue(isPopUpDisplayed("adminPassword/adminPassPreviousleyProvidedData"), "The previousley provided password is no longer available");
         }
     }
 
