@@ -198,6 +198,14 @@ public class ACSInstallerProperties
     }
 
     /**
+     * @return the list of expected wars that should be installed on your OS
+     */
+    public List<String> getExpectedInstalledWARS()
+    {
+        return getPropertyArrays("expect.war");
+    }
+
+    /**
      * <code>
      * mac.expect.file.1=alf_data
      * mac.expect.file.2=alfresco.ico
@@ -238,7 +246,79 @@ public class ACSInstallerProperties
 
     public void assertExpectedAMPSAreInstalled()
     {
-        // TODO add code for asserting amps : share/repo
+        SoftAssert softAssert = new SoftAssert();
+        for (String filePath : getExpectedInstalledRepoAMPs())
+        {
+            File file = Paths.get(getInstallerDestinationPath().getPath(), "amps", filePath).toFile();
+            softAssert.assertTrue(file.exists(),
+                    String.format(
+                            "Missing expected repo amp after installation:  {%s}. [Please check your expected repo amp path defined in \"intaller.properties\" file]",
+                            file.getPath()));
+        }
+
+        for (String filePath : getExpectedInstalledShareAMPs())
+        {
+            File file = Paths.get(getInstallerDestinationPath().getPath(), "amps_share", filePath).toFile();
+            softAssert.assertTrue(file.exists(),
+                    String.format(
+                            "Missing expected share amp after installation:  {%s}. [Please check your expected share amp path defined in \"intaller.properties\" file]",
+                            file.getPath()));
+        }
+
+        softAssert.assertAll();
     }
 
+    public void assertExpectedFilesAreNotInstalled()
+    {
+        SoftAssert softAssert = new SoftAssert();
+        for (String filePath : getExpectedInstalledFiles())
+        {
+            File file = Paths.get(getInstallerDestinationPath().getPath(), filePath).toFile();
+            softAssert.assertFalse(file.exists(),
+                    String.format(
+                            "Found not expected file after installation:  {%s}. [Please check your expected files path defined in \"intaller.properties\" file]",
+                            file.getPath()));
+        }
+
+        softAssert.assertAll();
+    }
+
+    public void assertExpectedAMPSAreNotInstalled()
+    {
+        SoftAssert softAssert = new SoftAssert();
+        for (String filePath : getExpectedInstalledRepoAMPs())
+        {
+            File file = Paths.get(getInstallerDestinationPath().getPath(), "amps", filePath).toFile();
+            softAssert.assertFalse(file.exists(),
+                    String.format(
+                            "Found not expected repo amp after installation:  {%s}. [Please check your expected repo amp path defined in \"intaller.properties\" file]",
+                            file.getPath()));
+        }
+
+        for (String filePath : getExpectedInstalledShareAMPs())
+        {
+            File file = Paths.get(getInstallerDestinationPath().getPath(), "amps_share", filePath).toFile();
+            softAssert.assertFalse(file.exists(),
+                    String.format(
+                            "Found not expected share amp after installation:  {%s}. [Please check your expected share amp path defined in \"intaller.properties\" file]",
+                            file.getPath()));
+        }
+
+        softAssert.assertAll();
+    }
+
+    public void assertExpectedWARSAreInstalled()
+    {
+        SoftAssert softAssert = new SoftAssert();
+        for (String filePath : getExpectedInstalledWARS())
+        {
+            File file = Paths.get(getInstallerDestinationPath().getPath(), "tomcat", "webapps", filePath).toFile();
+            softAssert.assertTrue(file.exists(),
+                    String.format(
+                            "Missing expected war after installation:  {%s}. [Please check your expected wars path defined in \"intaller.properties\" file]",
+                            file.getPath()));
+        }
+
+        softAssert.assertAll();
+    }
 }
