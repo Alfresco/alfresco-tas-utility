@@ -669,5 +669,24 @@ public class Utility
             Assert.assertEquals(FileUtils.sizeOf(folder), 0, "Size of install folder(bytes): ");
         }
     }
+    
+    /**
+     * Wait until process is running, or the RETRY_COUNT is reached
+     * 
+     * @param processName
+     */
+    public static void waitUntilProcessIsRunning(String processName)
+    {
+        boolean isRunning = false;
+        int retry = 0;
+        waitToLoopTime(1);
+        while (!isRunning && retry <= retryCountSeconds)
+        {
+            retry++;
+            waitToLoopTime(1);
+            isRunning = isProcessRunning(processName);
+        }
+    }
+
 
 }
