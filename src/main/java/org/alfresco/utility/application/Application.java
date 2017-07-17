@@ -21,8 +21,9 @@ public interface Application
 
     /**
      * @return the process name of this application
+     * @throws Exception 
      */
-    String getProcessName();
+    String getProcessName() throws Exception;
 
     /**
      * just kill the application
