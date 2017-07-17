@@ -671,7 +671,7 @@ public class Utility
     }
     
     /**
-     * Wait until process is running, or the RETRY_COUNT is reached
+     * Wait until process is running, or the retryCountSeconds is reached
      * 
      * @param processName
      */
