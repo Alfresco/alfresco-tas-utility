@@ -675,7 +675,7 @@ public class Utility
      * 
      * @param processName
      */
-    public static void waitUntilProcessIsRunning(String processName)
+    public static boolean waitUntilProcessIsRunning(String processName)
     {
         boolean isRunning = false;
         int retry = 0;
@@ -686,6 +686,8 @@ public class Utility
             waitToLoopTime(1);
             isRunning = isProcessRunning(processName);
         }
+        
+        return isRunning;
     }
 
 
