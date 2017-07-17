@@ -2,6 +2,7 @@ package org.alfresco.utility.application.gui;
 
 import java.io.File;
 
+import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.Utility;
 import org.alfresco.utility.application.Application;
 import org.alfresco.utility.application.Focusable;
@@ -13,6 +14,7 @@ import org.sikuli.api.robot.Key;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Pattern;
 import org.sikuli.script.Screen;
+import org.slf4j.Logger;
 
 /**
  * Inherit this class if you are dealing with GUI based application
@@ -21,6 +23,8 @@ import org.sikuli.script.Screen;
  */
 public abstract class GuiScreen extends Screen implements Application, Focusable<GuiScreen>
 {
+    private Logger LOG = LogFactory.getLogger();
+    
     static final Screen screenHelperInstance = new Screen();
 
     public static Screen getScreenHelper()
@@ -264,7 +268,7 @@ public abstract class GuiScreen extends Screen implements Application, Focusable
      * This will kill the application based on the process name defined
      */
     @Override public Application killProcess() throws Exception
-    {
+    {                
         Utility.killProcessName(getProcessName());
         return null;
     }

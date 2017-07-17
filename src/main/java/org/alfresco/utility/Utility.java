@@ -525,6 +525,7 @@ public class Utility
      */
     public static void killProcessName(String processName) throws IOException
     {
+        LOG.info("Killing application using process name [{}]", processName);
         if (SystemUtils.IS_OS_WINDOWS)
         {
             Runtime.getRuntime().exec(new String[] { "taskkill", "/F", "/IM", processName });
