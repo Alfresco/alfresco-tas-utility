@@ -1,6 +1,6 @@
 package org.alfresco.utility;
 
-import java.awt.*;
+import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -412,6 +412,7 @@ public class Utility
     public static void executeOnUnixNoWait(String command) throws IOException
     {
         String[] com = { "/bin/sh", "-c", command + " &" };
+        LOG.info("On Unix execute command(no wait): [{}]" + String.valueOf(com) );
         Runtime.getRuntime().exec(com);
     }
 
