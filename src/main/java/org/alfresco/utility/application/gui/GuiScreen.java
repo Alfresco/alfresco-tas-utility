@@ -3,7 +3,7 @@ package org.alfresco.utility.application.gui;
 import java.io.File;
 
 import org.alfresco.utility.Utility;
-import org.alfresco.utility.application.Applicationable;
+import org.alfresco.utility.application.Application;
 import org.alfresco.utility.application.Focusable;
 import org.alfresco.utility.exception.CouldNotFindImageOnScreen;
 import org.alfresco.utility.exception.TestConfigurationException;
@@ -19,7 +19,7 @@ import org.sikuli.script.Screen;
  *
  * @author Paul Brodner
  */
-public abstract class GuiScreen extends Screen implements Applicationable, Focusable<GuiScreen>
+public abstract class GuiScreen extends Screen implements Application, Focusable<GuiScreen>
 {
     static final Screen screenHelperInstance = new Screen();
 
@@ -263,7 +263,7 @@ public abstract class GuiScreen extends Screen implements Applicationable, Focus
     /**
      * This will kill the application based on the process name defined
      */
-    @Override public Applicationable killProcess() throws Exception
+    @Override public Application killProcess() throws Exception
     {
         Utility.killProcessName(getProcessName());
         return null;

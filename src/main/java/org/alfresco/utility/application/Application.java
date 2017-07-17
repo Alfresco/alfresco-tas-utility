@@ -3,21 +3,21 @@ package org.alfresco.utility.application;
 /**
  * Application based interface
  */
-public interface Applicationable
+public interface Application
 {
     /**
      * add appropriate image that will open this application
      * 
      * @throws Exception
      */
-    Applicationable open() throws Exception;
+    Application open() throws Exception;
 
     /**
      * add appropriate image that will close this application
      * 
      * @throws Exception
      */
-    Applicationable close() throws Exception;
+    Application close() throws Exception;
 
     /**
      * @return the process name of this application
@@ -30,7 +30,7 @@ public interface Applicationable
      * @return
      * @throws Exception
      */
-    Applicationable killProcess() throws Exception;
+    Application killProcess() throws Exception;
 
     /**
      * check if application is running
