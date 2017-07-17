@@ -38,4 +38,11 @@ public interface Applicationable
      * @return
      */
     boolean isRunning();
+
+    /**
+     * 
+     * @return
+     * @throws Exception
+     */
+    <T> T waitToOpen() throws Exception;
 }

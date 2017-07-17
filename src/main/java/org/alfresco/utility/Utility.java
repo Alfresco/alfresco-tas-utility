@@ -27,6 +27,7 @@ import org.alfresco.dataprep.CMISUtil.DocumentType;
 import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.exception.TestObjectNotDefinedException;
 import org.alfresco.utility.testrail.TestRailExecutorListener;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
@@ -651,4 +652,22 @@ public class Utility
         }
         return sb.toString();
     }
+    
+    /**
+     * Asserting folder/File is empty based on its size
+     * @param folder
+     */
+    public static void assertIsEmpty(File folder)
+    {
+        if(folder.exists())
+        {
+            File[] list = folder.listFiles();
+            for (File item : list)
+            {
+                LOG.info(String.format("Found file/folder: %s", item.getPath()));
+            }
+            Assert.assertEquals(FileUtils.sizeOf(folder), 0, "Size of install folder(bytes): ");
+        }
+    }
+
 }
