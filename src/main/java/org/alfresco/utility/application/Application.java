@@ -37,8 +37,9 @@ public interface Application
      * check if application is running
      * 
      * @return
+     * @throws Exception 
      */
-    boolean isRunning();
+    boolean isRunning() throws Exception;
 
     /**
      * 
