@@ -2,7 +2,6 @@ package org.alfresco.utility;
 
 import org.alfresco.dataprep.CMISUtil.DocumentType;
 import org.alfresco.dataprep.UserService;
-import org.alfresco.utility.application.gui.installer.ACSInstallerProperties;
 import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.DataSite;
 import org.alfresco.utility.data.DataUser;
@@ -58,9 +57,6 @@ public class BeansTest extends AbstractTestNGSpringContextTests
 
     @Autowired
     ModelAndMessagesConsole modelAndMessagesConsole;
-
-    @Autowired
-    ACSInstallerProperties installerProperties;
 
     SiteModel siteModel;
 
@@ -133,17 +129,6 @@ public class BeansTest extends AbstractTestNGSpringContextTests
         alfrescoTenantConsole.tenantExist();
         System.out.println(workflowConsole.user());
         System.out.println(modelAndMessagesConsole.showModels());
-    }
-
-    @Test
-    public void installerProperties()
-    {
-        Assert.assertNotNull(installerProperties);
-        Assert.assertNotNull(installerProperties.getInstallerSourcePath().getPath());
-        Assert.assertNotNull(installerProperties.getInstallerDestinationPath().getPath());
-        Assert.assertNotNull(installerProperties.getInstallerOptionFile().getPath());
-        
-        installerProperties.assertExpectedFilesAreInstalled();
     }
 
 }
