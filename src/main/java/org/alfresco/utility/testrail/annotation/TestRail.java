@@ -18,6 +18,8 @@ public @interface TestRail
      * section = {"level1", "level2", "level3"}
      */
     String[] section();
+    
+    String[] references() default {};
 
     String description() default "";
 
