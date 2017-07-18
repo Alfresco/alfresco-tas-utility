@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.nio.ByteBuffer;
@@ -691,5 +692,22 @@ public class Utility
         return isRunning;
     }
 
+    /**
+     * @return OS Version.
+     * @throws IOException 
+     */
+    public static String getOSVersion() throws IOException
+    {
+        String osVersion = SystemUtils.OS_NAME;
+        if(SystemUtils.IS_OS_LINUX)
+        {
+            String output = Utility.executeOnUnix("cat /etc/*-release");
+            Properties osPropertie = new Properties();
+            osPropertie.load(new StringReader(output)); 
+            osVersion = osPropertie.getProperty("NAME");
+        }
+        
+        return osVersion;
+    }
 
 }
