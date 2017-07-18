@@ -693,10 +693,10 @@ public class Utility
     }
 
     /**
-     * @return OS Version.
+     * @return OS Name.
      * @throws IOException 
      */
-    public static String getOSVersion() throws IOException
+    public static String getOSName() throws IOException
     {
         String osVersion = SystemUtils.OS_NAME;
         if(SystemUtils.IS_OS_LINUX)

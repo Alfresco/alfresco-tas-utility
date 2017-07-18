@@ -48,20 +48,11 @@ public abstract class GuiScreen extends Screen implements Application, Focusable
      * @throws TestConfigurationException
      * @throws CouldNotFindImageOnScreen
      */
-    protected String getImageActionRelatedToApp(String action) throws TestConfigurationException
+    protected String getImageActionRelatedToApp(String action) throws Exception
     {
-        String os = "unix";
+        String osName = Utility.getOSName();
 
-        if (SystemUtils.IS_OS_MAC)
-        {
-            os = "mac";
-        }
-        else if (SystemUtils.IS_OS_WINDOWS)
-        {
-            os = "win";
-        }
-
-        String location = String.format("shared-resources/gui/%s/%s/%s.png", os, getAppName(), action);
+        String location = String.format("shared-resources/gui/%s/%s/%s.png", osName, getAppName(), action);
         File imageFile = Utility.getTestResourceFile(location);
         if (!imageFile.exists())
             throw new TestConfigurationException("missing image from your local resource folder: [ " + imageFile.getPath() + " ]");
@@ -125,7 +116,7 @@ public abstract class GuiScreen extends Screen implements Application, Focusable
      * @throws FindFailed 
      * @throws CouldNotFindImageOnScreen
      */
-    public GuiScreen clickOn(String imageAction, int targetOffsetX, int targetOffsetY) throws TestConfigurationException, FindFailed
+    public GuiScreen clickOn(String imageAction, int targetOffsetX, int targetOffsetY) throws Exception
     {
         Step.STEP(String.format("Click on: [%s] at position [%d, %d]", imageAction, targetOffsetX, targetOffsetY));
         String location = "";
