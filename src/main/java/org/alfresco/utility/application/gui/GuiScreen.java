@@ -3,7 +3,6 @@ package org.alfresco.utility.application.gui;
 import java.io.File;
 
 import org.alfresco.utility.Utility;
-import org.alfresco.utility.application.Application;
 import org.alfresco.utility.application.Focusable;
 import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.report.log.Step;
@@ -73,7 +72,7 @@ public abstract class GuiScreen extends Screen implements Application, Focusable
      * @throws FindFailed
      * @throws Exception
      */
-    public GuiScreen waitOn(String imageAction) throws FindFailed, Exception
+    protected GuiScreen waitOn(String imageAction) throws FindFailed, Exception
     {
         waitOn(imageAction, WAIT_TIMEOUT);
         return this;
