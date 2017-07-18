@@ -9,6 +9,7 @@ import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.report.log.Step;
 import org.apache.commons.lang.SystemUtils;
 import org.sikuli.api.robot.Key;
+import org.sikuli.api.robot.KeyModifier;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Pattern;
 import org.sikuli.script.Screen;
@@ -80,9 +81,9 @@ public abstract class GuiScreen extends Screen implements Application, Focusable
     }
 
     /**
-     * Wait for the image passed to be visible on screen for the given number of seconds
+     * Wait up to given number of seconds for the image passed to be visible on screen
      * Usage:
-     * if class name is "WindowsExplorer" and we want to wait for title for 5 seconds we can use
+     * if class name is "WindowsExplorer" and we want to wait for title to be visible within 5 seconds we can use
      * <code>
      * waitOn("title", 5)
      * <code>
@@ -95,7 +96,7 @@ public abstract class GuiScreen extends Screen implements Application, Focusable
      */
     public GuiScreen waitOn(String imageAction, double timeout) throws FindFailed, Exception
     {
-        Step.STEP(String.format("Wait for: [%s]", imageAction));
+        Step.STEP(String.format("Wait up to %4.0f seconds for: [%s]", timeout, imageAction));
         wait(getImageActionRelatedToApp(imageAction), timeout);
         return this;
     }
@@ -116,7 +117,7 @@ public abstract class GuiScreen extends Screen implements Application, Focusable
      */
     public GuiScreen waitVanishOn(String imageAction, double timeout) throws FindFailed, Exception
     {
-        Step.STEP(String.format("Wait for: [%s] to disappear", imageAction));
+        Step.STEP(String.format("Wait up to %4.0f seconds for: [%s] to disappear", timeout, imageAction));
         waitVanish(getImageActionRelatedToApp(imageAction), timeout);
         return this;
     }
@@ -201,11 +202,18 @@ public abstract class GuiScreen extends Screen implements Application, Focusable
     {
         if (SystemUtils.IS_OS_MAC)
         {
+            type("a", Key.CMD);
             type("c", Key.CMD);
         }
-        else if (SystemUtils.IS_OS_WINDOWS || SystemUtils.IS_OS_LINUX)
+        else if (SystemUtils.IS_OS_WINDOWS)
         {
+            type("a", Key.CTRL);
             type("c", Key.CTRL);
+        }
+        else if (SystemUtils.IS_OS_LINUX)
+        {
+            type("a", KeyModifier.CTRL);
+            type("c", KeyModifier.CTRL);
         }
         return this;
     }
