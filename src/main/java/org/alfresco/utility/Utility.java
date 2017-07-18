@@ -682,11 +682,11 @@ public class Utility
     {
         boolean isRunning = false;
         int retry = 0;
-        waitToLoopTime(1);
+        waitToLoopTime(1, "Wait until process is running...");
         while (!isRunning && retry <= retryCountSeconds)
         {
             retry++;
-            waitToLoopTime(1);
+            waitToLoopTime(1, "Wait until process is running...");
             isRunning = isProcessRunning(processName);
         }
         
