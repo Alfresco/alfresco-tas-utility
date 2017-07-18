@@ -2,11 +2,9 @@ package org.alfresco.utility.application.gui;
 
 import java.io.File;
 
-import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.Utility;
 import org.alfresco.utility.application.Application;
 import org.alfresco.utility.application.Focusable;
-import org.alfresco.utility.exception.CouldNotFindImageOnScreen;
 import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.report.log.Step;
 import org.apache.commons.lang.SystemUtils;
@@ -14,7 +12,6 @@ import org.sikuli.api.robot.Key;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Pattern;
 import org.sikuli.script.Screen;
-import org.slf4j.Logger;
 
 /**
  * Inherit this class if you are dealing with GUI based application
@@ -23,8 +20,6 @@ import org.slf4j.Logger;
  */
 public abstract class GuiScreen extends Screen implements Application, Focusable<GuiScreen>
 {
-    private Logger LOG = LogFactory.getLogger();
-    
     static final Screen screenHelperInstance = new Screen();
 
     public static Screen getScreenHelper()
@@ -53,7 +48,7 @@ public abstract class GuiScreen extends Screen implements Application, Focusable
      * @throws TestConfigurationException
      * @throws CouldNotFindImageOnScreen
      */
-    protected String getImageActionRelatedToApp(String action) throws Exception
+    protected String getImageActionRelatedToApp(String action) throws TestConfigurationException
     {
         String os = "unix";
 
@@ -69,7 +64,7 @@ public abstract class GuiScreen extends Screen implements Application, Focusable
         String location = String.format("shared-resources/gui/%s/%s/%s.png", os, getAppName(), action);
         File imageFile = Utility.getTestResourceFile(location);
         if (!imageFile.exists())
-            throw new CouldNotFindImageOnScreen(imageFile.getPath(), getAppName(), "Missing image in your local resource folder. ");
+            throw new TestConfigurationException("missing image from your local resource folder: [ " + imageFile.getPath() + " ]");
         return imageFile.getPath();
     }
 
@@ -126,26 +121,18 @@ public abstract class GuiScreen extends Screen implements Application, Focusable
      * 
      * @param imageAction
      * @return
+     * @throws TestConfigurationException 
+     * @throws FindFailed 
      * @throws CouldNotFindImageOnScreen
      */
-    public GuiScreen clickOn(String imageAction, int targetOffsetX, int targetOffsetY) throws CouldNotFindImageOnScreen
+    public GuiScreen clickOn(String imageAction, int targetOffsetX, int targetOffsetY) throws TestConfigurationException, FindFailed
     {
         Step.STEP(String.format("Click on: [%s] at position [%d, %d]", imageAction, targetOffsetX, targetOffsetY));
         String location = "";
-        try
-        {
-            location = getImageActionRelatedToApp(imageAction);
-            Pattern pImage = new Pattern(location).targetOffset(targetOffsetX,targetOffsetY);
-            click(pImage);
-        }
-        catch (FindFailed e)
-        {
-            throw new CouldNotFindImageOnScreen(location, getAppName(), e.getMessage());
-        }
-        catch (Exception e)
-        {
-            throw new CouldNotFindImageOnScreen(location, getAppName(), e.getMessage());
-        }
+
+        location = getImageActionRelatedToApp(imageAction);
+        Pattern pImage = new Pattern(location).targetOffset(targetOffsetX, targetOffsetY);
+        click(pImage);
         return this;
     }
 
@@ -161,49 +148,35 @@ public abstract class GuiScreen extends Screen implements Application, Focusable
      *
      * @param imageAction
      * @return
+     * @throws TestConfigurationException 
+     * @throws FindFailed 
      * @throws CouldNotFindImageOnScreen
      */
-    public GuiScreen clickOn(String imageAction) throws CouldNotFindImageOnScreen
+    public GuiScreen clickOn(String imageAction) throws Exception
     {
         Step.STEP(String.format("Click on: [%s]", imageAction));
         String location = "";
-        try
-        {
-            location = getImageActionRelatedToApp(imageAction);
-            click(location);
-        }
-        catch (FindFailed e)
-        {
-            throw new CouldNotFindImageOnScreen(location, getAppName(), e.getMessage());
-        }
-        catch (Exception e)
-        {
-            throw new CouldNotFindImageOnScreen(location, getAppName(), e.getMessage());
-        }
+
+        location = getImageActionRelatedToApp(imageAction);
+        click(location);
+
         return this;
     }
 
-    protected boolean isPopUpDisplayed(String imageLocation) throws CouldNotFindImageOnScreen
+    protected boolean isPopUpDisplayed(String imageLocation) throws Exception
     {
-        try
-        {
-            waitOn(imageLocation);
-            return true;
-        }
-        catch (Exception e)
-        {
-            return false;
-        }
+        waitOn(imageLocation);
+        return true;
     }
 
     public GuiScreen clearAndType(String value) throws Exception
     {
-        if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX)
+        if (SystemUtils.IS_OS_MAC)
         {
             type("a", Key.CMD);
             type(Key.DELETE);
         }
-        else if (SystemUtils.IS_OS_WINDOWS)
+        else if (SystemUtils.IS_OS_WINDOWS || SystemUtils.IS_OS_LINUX)
         {
             type("a", Key.CTRL);
             type(Key.DELETE);
@@ -214,11 +187,11 @@ public abstract class GuiScreen extends Screen implements Application, Focusable
 
     public GuiScreen copyToClipboard() throws Exception
     {
-        if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX)
+        if (SystemUtils.IS_OS_MAC)
         {
             type("c", Key.CMD);
         }
-        else if (SystemUtils.IS_OS_WINDOWS)
+        else if (SystemUtils.IS_OS_WINDOWS || SystemUtils.IS_OS_LINUX)
         {
             type("c", Key.CTRL);
         }
@@ -237,47 +210,47 @@ public abstract class GuiScreen extends Screen implements Application, Focusable
      *
      * @param imageAction
      * @return
+     * @throws TestConfigurationException 
+     * @throws Exception 
      * @throws CouldNotFindImageOnScreen
      */
-    public GuiScreen checkOn(String imageAction) throws CouldNotFindImageOnScreen
+    public GuiScreen checkOn(String imageAction) throws Exception
     {
         Step.STEP(String.format("Check on: [%s]", imageAction));
         String location = "";
-        try
+
+        location = getImageActionRelatedToApp(imageAction);
+        if (SystemUtils.IS_OS_LINUX)
         {
-            location = getImageActionRelatedToApp(imageAction);
-            if (SystemUtils.IS_OS_LINUX)
-            {
-                type(location, Key.LEFT);
-                type(Key.ENTER);
-            }
-            else
-            {
-                type(location, Key.SPACE);
-            }
+            type(location, Key.LEFT);
+            type(Key.ENTER);
         }
-        catch (Exception e)
+        else
         {
-            throw new CouldNotFindImageOnScreen(location, getAppName(), e.getMessage());
+            type(location, Key.SPACE);
         }
 
         return this;
+
     }
 
     /**
      * This will kill the application based on the process name defined
      */
-    @Override public Application killProcess() throws Exception
-    {                
+    @Override
+    public Application killProcess() throws Exception
+    {
         Utility.killProcessName(getProcessName());
         return null;
     }
 
     /**
      * Check if the process is running by process name defined
-     * @throws Exception 
+     * 
+     * @throws Exception
      */
-    @Override public boolean isRunning() throws Exception
+    @Override
+    public boolean isRunning() throws Exception
     {
         return Utility.isProcessRunning(getProcessName());
     }
