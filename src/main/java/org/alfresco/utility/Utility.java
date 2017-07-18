@@ -702,11 +702,10 @@ public class Utility
         if(SystemUtils.IS_OS_LINUX)
         {
             String output = Utility.executeOnUnix("cat /etc/*-release");
-            Properties osPropertie = new Properties();
-            osPropertie.load(new StringReader(output)); 
-            osVersion = osPropertie.getProperty("NAME");
-            if(osVersion.contains(" "))
-                osVersion = osVersion.split(" ")[0];
+            Properties osProperties = new Properties();
+            osProperties.load(new StringReader(output)); 
+            osVersion = osProperties.getProperty("NAME");
+            osVersion = osVersion.split(" ")[0];
         }
         
         return osVersion.replaceAll(" ", "_");
