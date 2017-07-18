@@ -46,7 +46,7 @@ public abstract class GuiScreen extends Screen implements Application, Focusable
      * @param action -> the the actual image found in the image resource folder. Add it without the "png" extention.
      * @return the full string path of the image
      * @throws TestConfigurationException
-     * @throws CouldNotFindImageOnScreen
+     * @throws Exception
      */
     protected String getImageActionRelatedToApp(String action) throws Exception
     {
@@ -99,6 +99,27 @@ public abstract class GuiScreen extends Screen implements Application, Focusable
         wait(getImageActionRelatedToApp(imageAction), timeout);
         return this;
     }
+    
+    /**
+     * Wait the given number of seconds for the image passed to not be visible on screen
+     * Usage:
+     * if class name is "WindowsExplorer" and we want to wait for title to disappear within 5 seconds we can use
+     * <code>
+     * waitVanishOn("title", 5)
+     * <code>
+     * This means that we need to create this hierarchy:
+     * "shared-resources/gui/win/windowsexplorer/title.png"
+     *
+     * @return {@link GuiScreen}
+     * @throws FindFailed
+     * @throws Exception
+     */
+    public GuiScreen waitVanishOn(String imageAction, double timeout) throws FindFailed, Exception
+    {
+        Step.STEP(String.format("Wait for: [%s] to disappear", imageAction));
+        waitVanish(getImageActionRelatedToApp(imageAction), timeout);
+        return this;
+    }
 
     /**
      * Click on the image passed if it's visible on screen at specified target offset
@@ -114,7 +135,7 @@ public abstract class GuiScreen extends Screen implements Application, Focusable
      * @return
      * @throws TestConfigurationException 
      * @throws FindFailed 
-     * @throws CouldNotFindImageOnScreen
+     * @throws Exception
      */
     public GuiScreen clickOn(String imageAction, int targetOffsetX, int targetOffsetY) throws Exception
     {
@@ -141,7 +162,7 @@ public abstract class GuiScreen extends Screen implements Application, Focusable
      * @return
      * @throws TestConfigurationException 
      * @throws FindFailed 
-     * @throws CouldNotFindImageOnScreen
+     * @throws Exception
      */
     public GuiScreen clickOn(String imageAction) throws Exception
     {
@@ -203,7 +224,7 @@ public abstract class GuiScreen extends Screen implements Application, Focusable
      * @return
      * @throws TestConfigurationException 
      * @throws Exception 
-     * @throws CouldNotFindImageOnScreen
+     * @throws Exception
      */
     public GuiScreen checkOn(String imageAction) throws Exception
     {
@@ -232,7 +253,7 @@ public abstract class GuiScreen extends Screen implements Application, Focusable
     public Application killProcess() throws Exception
     {
         Utility.killProcessName(getProcessName());
-        return null;
+        return this;
     }
 
     /**
@@ -244,5 +265,5 @@ public abstract class GuiScreen extends Screen implements Application, Focusable
     public boolean isRunning() throws Exception
     {
         return Utility.isProcessRunning(getProcessName());
-    }
+    }       
 }
