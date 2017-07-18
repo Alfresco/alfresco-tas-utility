@@ -545,18 +545,18 @@ public class Utility
      */
     public static boolean isProcessRunning(String processName)
     {
-        String sys32 = System.getenv("SystemRoot") + "\\system32";
         processName = processName.toLowerCase();
         LOG.info("process name :" + processName);
         Process p = null;
         try
         {
-            if (SystemUtils.IS_OS_MAC)
+            if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX)
             {
                 p = Runtime.getRuntime().exec("ps -ef");
             }
             else if (SystemUtils.IS_OS_WINDOWS)
             {
+                String sys32 = System.getenv("SystemRoot") + "\\system32";
                 p = Runtime.getRuntime().exec(new String[] { "cmd", "/c", sys32 + "\\tasklist" });
             }
             InputStream inputStream = p.getInputStream();
