@@ -709,7 +709,7 @@ public class Utility
             osVersion = osVersion.split(" ")[0];
         }
         
-        return osVersion.replaceAll(" ", "_");
+        return osVersion.replaceAll(" ", "_").replaceAll("\"", "");
     }
     
     public static boolean isWinServiceRunning(String serviceName) throws Exception
