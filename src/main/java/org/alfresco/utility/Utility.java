@@ -545,6 +545,7 @@ public class Utility
      */
     public static boolean isProcessRunning(String processName)
     {
+        String sys32 = System.getenv("SystemRoot") + "\\system32";
         processName = processName.toLowerCase();
         LOG.info("process name :" + processName);
         Process p = null;
@@ -556,7 +557,7 @@ public class Utility
             }
             else if (SystemUtils.IS_OS_WINDOWS)
             {
-                p = Runtime.getRuntime().exec(new String[] { "cmd", "/c", "tasklist" });
+                p = Runtime.getRuntime().exec(new String[] { "cmd", "/c", sys32 + "\\tasklist" });
             }
             InputStream inputStream = p.getInputStream();
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
@@ -714,7 +715,6 @@ public class Utility
     public static boolean isWinServiceRunning(String serviceName) throws Exception
     {        
         String sys32 = System.getenv("SystemRoot") + "\\system32";
-        System.out.println(sys32);
         Process process = new ProcessBuilder(Paths.get(sys32, "sc.ex").toString() , "query", serviceName).start();
         InputStream is = process.getInputStream();
         InputStreamReader isr = new InputStreamReader(is);
