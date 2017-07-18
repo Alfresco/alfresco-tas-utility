@@ -705,9 +705,11 @@ public class Utility
             Properties osPropertie = new Properties();
             osPropertie.load(new StringReader(output)); 
             osVersion = osPropertie.getProperty("NAME");
+            if(osVersion.contains(" "))
+                osVersion = osVersion.split(" ")[0];
         }
         
-        return osVersion;
+        return osVersion.replaceAll(" ", "_");
     }
 
 }
