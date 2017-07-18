@@ -3,6 +3,7 @@ package org.alfresco.utility.application.gui;
 import java.io.File;
 
 import org.alfresco.utility.Utility;
+import org.alfresco.utility.application.Application;
 import org.alfresco.utility.application.Focusable;
 import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.report.log.Step;
