@@ -29,6 +29,8 @@ public abstract class GuiScreen extends Screen implements Application, Focusable
     }
 
     public static final int WAIT_TIMEOUT = 5;
+    public static final int TEN_MINUTES = 600;
+    public static final int FIVE_MINUTES = 300;
 
     /**
      * I assume the name of the app will be the name of the class.

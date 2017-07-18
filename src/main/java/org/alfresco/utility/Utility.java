@@ -715,7 +715,7 @@ public class Utility
     public static boolean isWinServiceRunning(String serviceName) throws Exception
     {        
         String sys32 = System.getenv("SystemRoot") + "\\system32";
-        Process process = new ProcessBuilder(Paths.get(sys32, "sc.ex").toString() , "query", serviceName).start();
+        Process process = new ProcessBuilder(Paths.get(sys32, "sc.exe").toString() , "query", serviceName).start();
         InputStream is = process.getInputStream();
         InputStreamReader isr = new InputStreamReader(is);
         BufferedReader br = new BufferedReader(isr);
