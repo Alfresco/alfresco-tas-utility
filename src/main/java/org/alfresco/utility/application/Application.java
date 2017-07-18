@@ -40,11 +40,4 @@ public interface Application
      * @throws Exception 
      */
     boolean isRunning() throws Exception;
-
-    /**
-     * 
-     * @return
-     * @throws Exception
-     */
-    <T> T waitToOpen() throws Exception;
 }
