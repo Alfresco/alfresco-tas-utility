@@ -694,6 +694,23 @@ public class Utility
     }
 
     /**
+     * Wait until process finish to run
+     *
+     * @param processName
+     * @param timeout
+     * @param loopTime
+     */
+    public static void waitUntilProcessFinishes(String processName, int timeout, int loopTime)
+    {
+        int count = 0;
+        while(isProcessRunning(processName) && count < timeout)
+        {
+            count++;
+            waitToLoopTime(loopTime, "Wait until process finishes...");
+        }
+    }
+
+    /**
      * @return OS Name.
      * @throws IOException 
      */
@@ -746,5 +763,11 @@ public class Utility
         }
     }
 
-
+    public static void deleteFolder(File folder) throws Exception
+    {
+        if(SystemUtils.IS_OS_WINDOWS)
+            executeOnWin(String.format("rmdir /S /Q %s", folder.getPath()));
+        else if (SystemUtils.IS_OS_LINUX)
+            executeOnUnixNoWait(String.format("rm -rf %s", folder.getPath()));
+    }
 }
