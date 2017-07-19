@@ -1,6 +1,3 @@
-![in progress](https://img.shields.io/badge/Document_Level-In_Progress-yellow.svg?style=flat-square)
-
-:paw_prints:  Back to [TAS Master Documentation](https://gitlab.alfresco.com/tas/documentation/wikis/home)
 
 ---
  
@@ -46,7 +43,7 @@ As a high level overview, this project contains a couple of functionalities usef
 * Health checks (verify if server is reachable, if server is online)
 * Generic Internal-DSL (Domain Specific Language)
 
-(take a look also on [this](https://gitlab.alfresco.com/tas/alfresco-tas-tester/wikis/Features) page: we will try to keep it up to date with the latest features based on each release)
+(take a look also on [this](https://git.alfresco.com/tas/alfresco-tas-tester/wikis/Features) page: we will try to keep it up to date with the latest features based on each release)
 
 Using a centralized location (Nexus), everyone will be able to reuse this individual interfaces in their own projects, adding new functionalities, extending also the automation core functionalities - that will be shared across teams. 
 
@@ -59,8 +56,8 @@ Using a centralized location (Nexus), everyone will be able to reuse this indivi
 * Configure Maven to use Alfresco alfresco-internal repository following this [Guide](https://ts.alfresco.com/share/page/site/eng/wiki-page?title=Maven_Setup).
 * Your favorite IDE as [Eclipse](https://eclipse.org/downloads/) or [InteliJ](https://www.jetbrains.com/idea).
 * Access to [Nexus](https://nexus.alfresco.com/nexus/) repository.
-* Access to Gitlab [TAS](https://gitlab.alfresco.com/tas/) repository.
-* GitLab client for your operating system. (we recommend [SourceTree](https://www.sourcetreeapp.com) - use your google account for initial setup).
+* Access to Git [TAS](https://git.alfresco.com/tas/) repository.
+* Git client for your operating system. (we recommend [SourceTree](https://www.sourcetreeapp.com) - use your google account for initial setup).
 * Getting familiar with [Basic Git Commands](http://docs.gitlab.com/ee/gitlab-basics/basic-git-commands.html).
 * Getting familiar with [Maven](https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html).
 * Getting familiar with [Spring](http://docs.spring.io).
@@ -69,12 +66,12 @@ Using a centralized location (Nexus), everyone will be able to reuse this indivi
 
 ## Installation (if you want to contribute or run tests from your local machine)
 
-* Open your Gitlab client and clone the repository of this project.
+* Open your Git client and clone the repository of this project.
 * You can do this also from command line (or in your terminal) adding:
 
 ```bash
 # this command will cloen the utility project locally
-$ git clone https://gitlab.alfresco.com/tas/alfresco-tas-tester.git 
+$ git clone https://git.alfresco.com/tas/alfresco-tas-tester.git 
 
 # this clone will have the latest changes from repository. If you want to checkout a specific version released, take a look at the [Change Log](docs/CHANGELOG.md) page
 $ cd alfresco-tas-tester
@@ -202,7 +199,7 @@ Thiw will add the implementation of generic DSL, plus new utilities that will ea
 See bellow as example, the implementation of WebDavWrapper (we call it wrapper, because is a class around a standard library: in this case [jackrabbit.apache](https://jackrabbit.apache.org/jcr/index.html) for testing WebDav)
 ![](docs/pics/webdav.png)
 
-(This is a project that is consuming tas.utility found also on http://gitlab.alfresco.com)
+(This is a project that is consuming tas.utility found also on http://git.alfresco.com)
 
 **[Back to Top ^](#table-of-contents)**
 
@@ -284,7 +281,7 @@ You can also take a look on our [changelog](docs/CHANGELOG.md) page for more det
 
 ### Naming Conventions
 
-Please read the following [Wiki](https://gitlab.alfresco.com/tas/alfresco-tas-tester/wikis/Naming-Convention) page
+Please read the following [Wiki](https://git.alfresco.com/tas/alfresco-tas-tester/wikis/Naming-Convention) page
 
 ### How to write a test
 
@@ -575,13 +572,13 @@ We wanted to simplify the Test Rail integration, so we used listeners in order t
 ## Reference
 
 * For any improvements, bugs, please use Jira - [TAS](https://issues.alfresco.com/jira/browse/TAS) project.
-* Setup the environment using [docker](https://gitlab.alfresco.com/tas/alfresco-docker-provisioning/blob/master/Readme.md)
+* Setup the environment using [docker](https://git.alfresco.com/tas/alfresco-docker-provisioning/blob/master/Readme.md)
 
 ## Contributors
 
 As contributors and maintainers of this project, we pledge to respect all people who contribute through reporting issues, posting feature requests, updating documentation, submitting pull requests or patches, and other... [more](CODE_OF_CONDUCT.md).
 
-:octocat: Please also take a look at the following [Workflow] (https://gitlab.alfresco.com/tas/alfresco-tas-tester/wikis/workflow-process) process.
+:octocat: Please also take a look at the following [Workflow] (https://git.alfresco.com/tas/alfresco-tas-tester/wikis/workflow-process) process.
 
 ## License
 
