@@ -1,4 +1,3 @@
-
 ---
  
 ## Table of Contents
@@ -43,7 +42,7 @@ As a high level overview, this project contains a couple of functionalities usef
 * Health checks (verify if server is reachable, if server is online)
 * Generic Internal-DSL (Domain Specific Language)
 
-(take a look also on [this](https://git.alfresco.com/tas/alfresco-tas-tester/wikis/Features) page: we will try to keep it up to date with the latest features based on each release)
+(take a look also on [this](https://git.alfresco.com/tas/alfresco-tas-utility/wikis/Features) page: we will try to keep it up to date with the latest features based on each release)
 
 Using a centralized location (Nexus), everyone will be able to reuse this individual interfaces in their own projects, adding new functionalities, extending also the automation core functionalities - that will be shared across teams. 
 
@@ -71,10 +70,10 @@ Using a centralized location (Nexus), everyone will be able to reuse this indivi
 
 ```bash
 # this command will cloen the utility project locally
-$ git clone https://git.alfresco.com/tas/alfresco-tas-tester.git 
+$ git clone https://git.alfresco.com/tas/alfresco-tas-utility.git 
 
 # this clone will have the latest changes from repository. If you want to checkout a specific version released, take a look at the [Change Log](docs/CHANGELOG.md) page
-$ cd alfresco-tas-tester
+$ cd alfresco-tas-utility
 # this command will checkout the remove v1.0.0 tagged repository and create locally a new branch v1.0.0
 $ git checkout tags/v1.0.0 -b v1.0.0 
 ```
@@ -281,7 +280,7 @@ You can also take a look on our [changelog](docs/CHANGELOG.md) page for more det
 
 ### Naming Conventions
 
-Please read the following [Wiki](https://git.alfresco.com/tas/alfresco-tas-tester/wikis/Naming-Convention) page
+Please read the following [Wiki](https://git.alfresco.com/tas/alfresco-tas-utility/wikis/Naming-Convention) page
 
 ### How to write a test
 
@@ -578,7 +577,7 @@ We wanted to simplify the Test Rail integration, so we used listeners in order t
 
 As contributors and maintainers of this project, we pledge to respect all people who contribute through reporting issues, posting feature requests, updating documentation, submitting pull requests or patches, and other... [more](CODE_OF_CONDUCT.md).
 
-:octocat: Please also take a look at the following [Workflow] (https://git.alfresco.com/tas/alfresco-tas-tester/wikis/workflow-process) process.
+:octocat: Please also take a look at the following [Workflow] (https://git.alfresco.com/tas/alfresco-tas-utility/wikis/workflow-process) process.
 
 ## License
 
