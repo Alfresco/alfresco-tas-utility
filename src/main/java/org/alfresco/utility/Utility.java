@@ -414,7 +414,7 @@ public class Utility
     public static void executeOnUnixNoWait(String command) throws IOException
     {
         String[] com = { "/bin/sh", "-c", command + " &" };
-        LOG.info("On Unix execute command(no wait): [{}]" + String.valueOf(com) );
+        LOG.info("On Unix execute command(no wait): [{}]", command );
         Runtime.getRuntime().exec(com);
     }
 
@@ -529,7 +529,8 @@ public class Utility
         LOG.info("Killing application using process name [{}]", processName);
         if (SystemUtils.IS_OS_WINDOWS)
         {
-            Runtime.getRuntime().exec(new String[] { "taskkill", "/F", "/IM", processName });
+            String sys32 = System.getenv("SystemRoot") + "\\system32";
+            Runtime.getRuntime().exec(new String[] { sys32 + "\\taskkill", "/F", "/IM", processName });
         }
         else
         {
