@@ -255,15 +255,4 @@ public abstract class GuiScreen extends Screen implements Application, Focusable
         return this;
 
     }
-
-    /**
-     * Check if the process is running by process name defined
-     *
-     * @throws Exception
-     */
-    @Override
-    public boolean isRunning() throws Exception
-    {
-        return Utility.isProcessRunning(getProcessName());
-    }
 }
