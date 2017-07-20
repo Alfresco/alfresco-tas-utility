@@ -706,7 +706,7 @@ public class Utility
         int count = 0;
         while(isProcessRunning(processName) && count < timeout)
         {
-            count++;
+            count = count + loopTime;
             waitToLoopTime(loopTime, "Wait until process finishes...");
         }
     }
