@@ -257,23 +257,13 @@ public abstract class GuiScreen extends Screen implements Application, Focusable
     }
 
     /**
-     * This will kill the application based on the process name defined
-     */
-    @Override
-    public Application killProcess() throws Exception
-    {
-        Utility.killProcessName(getProcessName());
-        return this;
-    }
-
-    /**
      * Check if the process is running by process name defined
-     * 
+     *
      * @throws Exception
      */
     @Override
     public boolean isRunning() throws Exception
     {
         return Utility.isProcessRunning(getProcessName());
-    }       
+    }
 }
