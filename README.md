@@ -53,6 +53,63 @@ Using a centralized location (Nexus), everyone will be able to reuse this indivi
 * [Java SE 1.8](http://www.oracle.com/technetwork/java/javase/downloads/index.html).
 * [Maven 3.3](https://maven.apache.org/download.cgi) installed and configure according to [Windows OS](https://maven.apache.org/guides/getting-started/windows-prerequisites.html) or [Mac OS](https://maven.apache.org/install.html).
 * Configure Maven to use Alfresco alfresco-internal repository following this [Guide](https://ts.alfresco.com/share/page/site/eng/wiki-page?title=Maven_Setup).
+We are using also the internal-snapshot repository, so here it is the full settings.xml file
+```
+<settings>
+  <profiles>
+    <profile>
+      <id>alfresco-internal</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <repositories>
+        <repository>
+          <id>alfresco-internal</id>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+          <name>Alfresco Internal Repository</name>
+          <url>https://artifacts.alfresco.com/nexus/content/groups/internal/</url>
+        </repository>
+        <repository>
+            <id>alfresco-internal-snapshots</id>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <name>Alfresco Internal Snapshots Repository</name>
+            <url>https://artifacts.alfresco.com/nexus/content/groups/internal-snapshots/</url>
+        </repository>
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>alfresco-internal</id>
+          <name>Alfresco Internal Repository</name>
+          <url>https://artifacts.alfresco.com/nexus/content/groups/public</url>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+</profiles>
+  <servers>
+      <server>
+        <id>alfresco-internal</id>
+        <username>Your_LDAP_Login</username>
+	    <password>Your_LDAP_Password</password>      
+      </server>
+      <server>
+          <id>alfresco-internal-snapshots</id>
+          <username>Your_LDAP_Login</username>
+	      <password>Your_LDAP_Password</password>  
+     </server>
+  </servers>
+</settings>
+```
+
 * Your favorite IDE as [Eclipse](https://eclipse.org/downloads/) or [InteliJ](https://www.jetbrains.com/idea).
 * Access to [Nexus](https://nexus.alfresco.com/nexus/) repository.
 * Access to Git [TAS](https://git.alfresco.com/tas/) repository.
