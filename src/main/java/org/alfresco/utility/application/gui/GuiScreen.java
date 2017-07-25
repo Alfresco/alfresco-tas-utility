@@ -76,7 +76,7 @@ public abstract class GuiScreen extends Screen implements Application, Focusable
      * @throws FindFailed
      * @throws Exception
      */
-    protected GuiScreen waitOn(String imageAction) throws FindFailed, Exception
+    public GuiScreen waitOn(String imageAction) throws FindFailed, Exception
     {
         waitOn(imageAction, WAIT_TIMEOUT);
         return this;
