@@ -1,6 +1,7 @@
 package org.alfresco.utility.application.gui;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.alfresco.utility.Utility;
 import org.alfresco.utility.application.Application;
@@ -28,6 +29,8 @@ public abstract class GuiScreen extends Screen implements Application, Focusable
         return screenHelperInstance;
     }
 
+    private String osName = "unknown";
+
     public static final int WAIT_TIMEOUT = 5;
     public static final int TEN_MINUTES = 600;
     public static final int FIVE_MINUTES = 300;
@@ -53,13 +56,22 @@ public abstract class GuiScreen extends Screen implements Application, Focusable
      */
     protected String getImageActionRelatedToApp(String action) throws Exception
     {
-        String osName = Utility.getOSName();
+        String osName = getOSName();
 
         String location = String.format("shared-resources/gui/%s/%s/%s.png", osName, getAppName(), action);
         File imageFile = Utility.getTestResourceFile(location);
         if (!imageFile.exists())
             throw new TestConfigurationException("missing image from your local resource folder: [ " + imageFile.getPath() + " ]");
         return imageFile.getPath();
+    }
+
+    public String getOSName() throws IOException
+    {
+        if(osName=="unknown")
+        {
+            osName= Utility.getOSName();
+        }
+        return osName;
     }
 
     /**
