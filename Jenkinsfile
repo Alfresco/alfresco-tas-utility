@@ -2,7 +2,7 @@ properties([
     	buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '1', numToKeepStr: '3'))
     ])
 
-node('paul-test') {     
+node('tas-node') {     
     configFileProvider([configFile(fileId: 'alfresco-maven', variable: 'MAVEN_SETTINGS')]) {
 
         stage('Checkout') {
