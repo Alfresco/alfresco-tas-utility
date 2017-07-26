@@ -11,7 +11,7 @@ node('paul-test') {
         }
 
         stage('Compile') {
-            sh 'mvn -s %MAVEN_SETTINGS% -U clean install -DskipTests'
+            sh 'mvn -s $MAVEN_SETTINGS -U clean install -DskipTests'
         }
     }
 }
