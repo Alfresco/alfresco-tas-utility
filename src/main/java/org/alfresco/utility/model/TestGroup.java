@@ -82,15 +82,9 @@ public @interface TestGroup
     /*
      * Used for installer
      */
-    String INSTALLER = "installer";
     String INSTALLER_ALFRESCO = "installer-alfresco";
     String INSTALLER_ALFRESCO_SHARE = "installer-alfresco-share";
     String INSTALLER_ALFRESCO_PLATFORM = "installer-alfresco-platform";
-    String CENTOS = "centos";
-    String RHEL = "rhel";
     String UBUNTU = "ubuntu";
-    String WIN_SERVER_2012 = "win2012";
-    String WIN_7 = "win7";
-    String SUSE = "suse";
 
 }
