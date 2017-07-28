@@ -32,7 +32,7 @@ public @interface TestGroup
     public static String TAGS = "tags";
     public static String TASKS = "tasks";
     public static String PROCESS_DEFINITION = "process-definitions";
-    public static String ACTIVITIES = "activities";    
+    public static String ACTIVITIES = "activities";
     public static String EXTENTION_POINTS = "extention-points";
     public static String NODES = "nodes";
     public static String AUTH = "auth";
@@ -50,19 +50,19 @@ public @interface TestGroup
     public static String INTEGRATION = "integration";
     public static String CONTENT = "content";
     public static String PREUPGRADE = "pre-upgrade";
-    public static String POSTUPGRADE = "post-upgrade";  
+    public static String POSTUPGRADE = "post-upgrade";
     public static String SHARE = "share";
-    public static String BROWSER = "browser";    
+    public static String BROWSER = "browser";
     public static String SECURITY = "security";
-    
+
     public static String WONT_FIX = "wont-fix";
-    public static String OS_WIN = "windows"; //this will mark tests that needs to be executed ONLY on Windows
-    public static String OS_LINUX = "linux"; //this will mark tests that needs to be executed ONLY on Unix    
-    public static String OS_MAC = "mac"; //this will mark tests that needs to be executed ONLY on Unix
-    public static String ASS_1 = "ASS_1.0.0"; //Alfresco Search Services 1.0
+    public static String OS_WIN = "windows"; // this will mark tests that needs to be executed ONLY on Windows
+    public static String OS_LINUX = "linux"; // this will mark tests that needs to be executed ONLY on Unix
+    public static String OS_MAC = "mac"; // this will mark tests that needs to be executed ONLY on Unix
+    public static String ASS_1 = "ASS_1.0.0"; // Alfresco Search Services 1.0
 
     /*
-    * Used in Share-PO
+     * Used in Share-PO
      */
     public static String SITES_FEATURES = "sites-features";
     public static String ADMIN_TOOLS = "admin-tools";
@@ -71,11 +71,26 @@ public @interface TestGroup
     public static String USER = "user";
     public static String MANAGE_INVITES = "manage-invites";
 
-      /*
-    * Used in Admin Console
+    /*
+     * Used in Admin Console
      */
     public static String TENANT_CONSOLE = "tenant-console";
     public static String WORKFLOW_CONSOLE = "workflow-console";
     public static String GOOGLE_DOCS_CONSOLE = "google-docs-console";
     public static String MODEL_MSG_CONSOLE = "model-messages-console";
+
+    /*
+     * Used for installer
+     */
+    public static String INSTALLER = "installer";
+    public static String INSTALLER_ALFRESCO = "installer-alfresco";
+    public static String INSTALLER_ALFRESCO_SHARE = "installer-alfresco-share";
+    public static String INSTALLER_ALFRESCO_PLATFORM = "installer-alfresco-platform";
+    public static String CENTOS = "centos";
+    public static String RHEL = "rhel";
+    public static String UBUNTU = "ubuntu";
+    public static String WIN_SERVER_2012 = "win2012";
+    public static String WIN_7 = "win7";
+    public static String SUSE = "suse";
+
 }
