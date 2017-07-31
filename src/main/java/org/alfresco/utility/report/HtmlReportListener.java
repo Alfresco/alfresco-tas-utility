@@ -172,7 +172,7 @@ public class HtmlReportListener implements IReporter
                 }
                 else
                 {
-                    test = extent.startTest(String.format("%s # %s", result.getInstance().getClass().getSimpleName(), testName));
+                    test = extent.startTest(String.format("%s # %s", result.getTestClass().getRealClass().getSimpleName(), testName));
                     test.assignCategory("WITHOUT-BUGS");
                 }
 
