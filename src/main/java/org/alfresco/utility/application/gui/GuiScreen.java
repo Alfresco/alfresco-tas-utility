@@ -60,7 +60,7 @@ public abstract class GuiScreen extends Screen implements Application, Focusable
         String iType = InstallerType.getInstallerType();
         File imageFile = null;
         
-        String location = String.format("shared-resources/gui/%s/%s/%s_%s.png", osName, getAppName(), action, iType);
+        String location = String.format("shared-resources/gui/%s/%s/%s%s.png", osName, getAppName(), action, iType);
         String locationDefault = String.format("shared-resources/gui/%s/%s/%s.png", osName, getAppName(), action);
         try {
             imageFile = Utility.getTestResourceFile(location);

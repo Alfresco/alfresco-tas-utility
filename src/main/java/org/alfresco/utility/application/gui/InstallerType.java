@@ -15,11 +15,11 @@ public class InstallerType
     {
         Step.STEP("Setting installer type based on installer source");
         if(name.contains("share"))
-            installerType = "share";
+            installerType = "_share";
         else if (name.contains("platform"))
-            installerType = "platform";
+            installerType = "_platform";
         else
-            installerType = "distribution";
+            installerType = "";
     }
 
 }
