@@ -57,11 +57,18 @@ public abstract class GuiScreen extends Screen implements Application, Focusable
     protected String getImageActionRelatedToApp(String action) throws Exception
     {
         String osName = getOSName();
-
-        String location = String.format("shared-resources/gui/%s/%s/%s.png", osName, getAppName(), action);
-        File imageFile = Utility.getTestResourceFile(location);
-        if (!imageFile.exists())
-            throw new TestConfigurationException("missing image from your local resource folder: [ " + imageFile.getPath() + " ]");
+        String iType = InstallerType.getInstallerType();
+        File imageFile = null;
+        
+        String location = String.format("shared-resources/gui/%s/%s/%s_%s.png", osName, getAppName(), action, iType);
+        String locationDefault = String.format("shared-resources/gui/%s/%s/%s.png", osName, getAppName(), action);
+        try {
+            imageFile = Utility.getTestResourceFile(location);
+        }
+        catch(TestConfigurationException e)
+        {
+            imageFile = Utility.getTestResourceFile(locationDefault);
+        }        
         return imageFile.getPath();
     }
 
