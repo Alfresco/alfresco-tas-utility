@@ -1,8 +1,8 @@
 package org.alfresco.utility.exception;
 
-public class XMLToModelUnmarshalException extends Exception
+public class XMLToModelUnmarshalException extends RuntimeException
 {
-    
+
     private static final long serialVersionUID = 1L;
 
     public <T> XMLToModelUnmarshalException(Class<T> classz, Exception e)

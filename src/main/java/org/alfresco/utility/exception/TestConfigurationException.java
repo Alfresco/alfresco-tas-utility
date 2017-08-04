@@ -1,6 +1,6 @@
 package org.alfresco.utility.exception;
 
-public class TestConfigurationException extends Exception
+public class TestConfigurationException extends RuntimeException
 {
     private static final long serialVersionUID = 1562196340548867033L;
 

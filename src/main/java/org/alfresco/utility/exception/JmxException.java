@@ -1,6 +1,6 @@
 package org.alfresco.utility.exception;
 
-public class JmxException extends Exception
+public class JmxException extends RuntimeException
 {
     private static final long serialVersionUID = 1L;
 

@@ -2,7 +2,7 @@ package org.alfresco.utility.exception;
 
 import org.alfresco.utility.TasProperties;
 
-public class ServerReachableAlfrescoIsNotRunningException extends Exception {
+public class ServerReachableAlfrescoIsNotRunningException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
 	public ServerReachableAlfrescoIsNotRunningException(TasProperties properties) {

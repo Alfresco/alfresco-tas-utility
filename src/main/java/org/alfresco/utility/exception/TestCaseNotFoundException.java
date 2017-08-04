@@ -1,6 +1,6 @@
 package org.alfresco.utility.exception;
 
-public class TestCaseNotFoundException extends Exception
+public class TestCaseNotFoundException extends RuntimeException
 {
     private static final long serialVersionUID = 1L;
 
