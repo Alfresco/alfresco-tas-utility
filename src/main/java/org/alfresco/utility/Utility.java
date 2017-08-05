@@ -534,7 +534,7 @@ public class Utility
         }
         else
         {
-            executeOnUnix("kill `ps ax | grep \"" + processName + "\" | awk '{print $1}'`");
+            executeOnUnix("sudo kill `ps ax | grep \"" + processName + "\" | awk '{print $1}'`");
         }
     }
 
@@ -769,6 +769,6 @@ public class Utility
         if(SystemUtils.IS_OS_WINDOWS)
             executeOnWin(String.format("rmdir /S /Q %s", folder.getPath()));
         else if (SystemUtils.IS_OS_LINUX)
-            executeOnUnixNoWait(String.format("rm -rf %s", folder.getPath()));
+            executeOnUnixNoWait(String.format("sudo rm -rf %s", folder.getPath()));
     }
 }
