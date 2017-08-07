@@ -29,6 +29,7 @@ public @interface TestGroup
     public static String PEOPLE = "people";
     public static String RATINGS = "ratings";
     public static String SITES = "sites";
+    public static String SHAREDLINKS = "shared-links";
     public static String TAGS = "tags";
     public static String TASKS = "tasks";
     public static String PROCESS_DEFINITION = "process-definitions";
