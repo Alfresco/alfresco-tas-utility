@@ -1,6 +1,6 @@
 package org.alfresco.utility.exception;
 
-public class ProtocolRuntimeException extends Exception
+public class ProtocolRuntimeException extends RuntimeException
 {
     private static final long serialVersionUID = -8284196521431424833L;
 

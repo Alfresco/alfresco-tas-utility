@@ -1,6 +1,6 @@
 package org.alfresco.utility.exception;
 
-public class ReportConfigurationException extends Exception
+public class ReportConfigurationException extends RuntimeException
 {
     private static final long serialVersionUID = 1L;
 

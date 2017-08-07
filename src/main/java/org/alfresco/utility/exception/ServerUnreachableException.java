@@ -2,7 +2,7 @@ package org.alfresco.utility.exception;
 
 import org.alfresco.utility.TasProperties;
 
-public class ServerUnreachableException extends Exception {
+public class ServerUnreachableException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
