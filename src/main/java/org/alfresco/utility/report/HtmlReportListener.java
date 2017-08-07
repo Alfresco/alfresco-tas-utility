@@ -141,8 +141,8 @@ public class HtmlReportListener implements IReporter
 
                 if (bugAnnotated != null)
                 {
-                    test = extent.startTest(String.format("%s # %s (BUG: %s)", result.getInstance().getClass().getSimpleName(), testName,
-                            trackerUrl(bugAnnotated.id())));  
+                    test = extent.startTest(
+                            String.format("%s # %s (BUG: %s)", result.getInstance().getClass().getSimpleName(), testName, trackerUrl(bugAnnotated.id())));
                     if (bugAnnotated.status().equals(Status.OPENED))
                     {
                         test.assignCategory("BUGS");
@@ -157,7 +157,10 @@ public class HtmlReportListener implements IReporter
                         }
                         if (status == LogStatus.PASS)
                         {
-                            test.log(status, String.format("Currently, test with opened bug %s is passed. Please check if this issue is passed and update the @Bug status to FIXED.", trackerUrl(bugAnnotated.id())));
+                            test.log(status,
+                                    String.format(
+                                            "Currently, test with opened bug %s is passed. Please check if this issue is passed and update the @Bug status to FIXED.",
+                                            trackerUrl(bugAnnotated.id())));
                         }
                     }
                     else
@@ -165,7 +168,8 @@ public class HtmlReportListener implements IReporter
                         if (status == LogStatus.PASS)
                         {
                             test.assignCategory("FIXED-BUGS");
-                            test.log(status, String.format("Currently, test passed. But it failed in a regression due to this issue %s", trackerUrl(bugAnnotated.id())));
+                            test.log(status,
+                                    String.format("Currently, test passed. But it failed in a regression due to this issue %s", trackerUrl(bugAnnotated.id())));
                         }
                     }
 
@@ -190,19 +194,18 @@ public class HtmlReportListener implements IReporter
 
                 if (result.getThrowable() != null)
                 {
-                    test.log(status, result.getThrowable());
-
                     if (result.getInstance() instanceof AbstractWebTest)
                     {
                         String screenshotsDir = defaultProperties.getProperty("screenshots.dir");
                         String screenshotsPath = Paths.get(defaultProperties.getProperty("reports.path"), screenshotsDir).toString();
                         File screenshot = Paths.get(screenshotsPath, testName + ".png").toFile();
                         if (screenshot.exists())
-                            test.log(
-                                    status,
-                                    String.format("Screenshot below: %s",
-                                            test.addScreenCapture(Paths.get(screenshotsDir, testName + ".png").toFile().getPath())));
+                            test.log(status, String.format("Screenshot below: %s",
+                                    test.addScreenCapture(Paths.get(screenshotsDir, testName + ".png").toFile().getPath())));
                     }
+                   
+                    // also log the errors
+                    test.log(status, result.getThrowable());
                 }
                 else
                 {

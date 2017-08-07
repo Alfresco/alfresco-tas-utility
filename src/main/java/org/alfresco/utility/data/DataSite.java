@@ -8,6 +8,7 @@ import org.alfresco.dataprep.SiteService.Visibility;
 import org.alfresco.utility.TasProperties;
 import org.alfresco.utility.exception.DataPreparationException;
 import org.alfresco.utility.model.SiteModel;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -46,7 +47,7 @@ public class DataSite extends TestData<DataSite>
         siteService.create(
                 getCurrentUser().getUsername(), 
                 getCurrentUser().getPassword(), 
-                "",
+                String.format(RandomStringUtils.randomAlphanumeric(10), EMAIL),
                 siteModel.getId(), 
                 siteModel.getTitle(), 
                 siteModel.getDescription(), 

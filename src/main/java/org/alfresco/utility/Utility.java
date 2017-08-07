@@ -1,13 +1,19 @@
 package org.alfresco.utility;
 
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.RandomAccessFile;
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.nio.ByteBuffer;
@@ -15,7 +21,6 @@ import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -27,7 +32,7 @@ import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.exception.TestObjectNotDefinedException;
 import org.alfresco.utility.model.FileModel;
 import org.alfresco.utility.testrail.TestRailExecutorListener;
-import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.json.JSONObject;
@@ -197,7 +202,7 @@ public class Utility
         {
             sourcePath = StringUtils.removeEnd(sourcePath, "/");
         }
-        if(sourcePath.isEmpty())
+        if (sourcePath.isEmpty())
         {
             // set root path (in CMIS root = '/')
             sourcePath = "/";
@@ -358,7 +363,7 @@ public class Utility
             }
             else
             {
-                if (FilenameUtils.getBaseName(f.getName()).equals(fileName))
+                if (f.getName().equals(fileName))
                 {
                     return f;
                 }
@@ -414,11 +419,18 @@ public class Utility
             return value;
     }
 
+    public static void executeOnUnixNoWait(String command) throws IOException
+    {
+        String[] com = { "/bin/sh", "-c", command + " &" };
+        LOG.info("On Unix execute command(no wait): [{}]", command);
+        Runtime.getRuntime().exec(com);
+    }
+
     /**
      * Execute any Terminal commands
-     * 
      * Example:
      * executeOnWin("ls -la")
+     * 
      * @param command
      * @return
      */
@@ -458,36 +470,14 @@ public class Utility
     /**
      * Example:
      * executeOnWin("mkdir 'a'")
+     * 
      * @param command
      * @return the List of lines returned by command
      */
-    public static String executeOnWin(String command)
+    public static void executeOnWin(String command) throws Exception
     {
         LOG.info("On Windows execute command: [{}]", command);
-        
-        List<String> lines = new ArrayList<String>();
-        try
-        {
-            Process p = Runtime.getRuntime().exec("cmd /c " + command);
-            p.waitFor();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-
-            String line;
-            while ((line = reader.readLine()) != null)
-            {
-                if (!line.startsWith(" Volume"))
-                {
-                    lines.add(line);
-                }
-            }
-        }
-        catch (IOException e1)
-        {
-        }
-        catch (InterruptedException e2)
-        {
-        }
-        return Arrays.toString(lines.toArray());
+        Runtime.getRuntime().exec("cmd /c " + command);
     }
 
     /**
@@ -510,7 +500,7 @@ public class Utility
         }
         Assert.assertTrue(file.exists(), String.format("File with path %s was not found.", filePath));
         return file;
-        
+
     }
 
     /**
@@ -534,13 +524,41 @@ public class Utility
         Assert.assertFalse(file.exists(), String.format("File with path %s was found.", filePath));
         return file;
     }
-    
+
+    public static void deleteFolder(File folder) throws Exception
+    {
+        if (SystemUtils.IS_OS_WINDOWS)
+            executeOnWin(String.format("rmdir /S /Q %s", folder.getPath()));
+        else if (SystemUtils.IS_OS_LINUX)
+            executeOnUnixNoWait(String.format("sudo rm -rf %s", folder.getPath()));
+    }
+
+    /**
+     * Kill a process using it's name.
+     * 
+     * @param processName
+     * @throws IOException
+     */
+    public static void killProcessName(String processName) throws IOException
+    {
+        LOG.info("Killing application using process name [{}]", processName);
+        if (SystemUtils.IS_OS_WINDOWS)
+        {
+            String sys32 = System.getenv("SystemRoot") + "\\system32";
+            Runtime.getRuntime().exec(new String[] { sys32 + "\\taskkill", "/F", "/IM", processName });
+        }
+        else
+        {
+            executeOnUnix("sudo kill `ps ax | grep \"" + processName + "\" | awk '{print $1}'`");
+        }
+    }
+
     /**
      * Get new {@link File} with content based on file model.
      * The new file will be deleted in the end.
      * 
      * @param fileModel {@link FileModel}
-     * @return  new {@link File} 
+     * @return new {@link File}
      */
     public static File setNewFile(FileModel fileModel)
     {
@@ -562,5 +580,234 @@ public class Utility
         }
         newFile.deleteOnExit();
         return newFile;
+    }
+
+    /**
+     * Check if process identified by <processName> is currently running
+     * 
+     * @param processName
+     * @return
+     */
+    public static boolean isProcessRunning(String processName)
+    {
+        processName = processName.toLowerCase();
+        LOG.info("process name :" + processName);
+        Process p = null;
+        try
+        {
+            if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX)
+            {
+                p = Runtime.getRuntime().exec("ps -ef");
+            }
+            else if (SystemUtils.IS_OS_WINDOWS)
+            {
+                String sys32 = System.getenv("SystemRoot") + "\\system32";
+                p = Runtime.getRuntime().exec(new String[] { "cmd", "/c", sys32 + "\\tasklist" });
+            }
+            InputStream inputStream = p.getInputStream();
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            BufferedReader bufferReader = new BufferedReader(inputStreamReader);
+            String line;
+            while ((line = bufferReader.readLine()) != null)
+            {
+                if (line.toLowerCase().contains(processName))
+                    return true;
+            }
+            inputStream.close();
+            inputStreamReader.close();
+            bufferReader.close();
+        }
+        catch (Exception err)
+        {
+            err.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * @param fromLocation
+     * @return {@link File} mounted on <fromLocation>
+     * @throws TestConfigurationException
+     */
+    public static File getMountedApp(File fromLocation) throws TestConfigurationException
+    {
+        File[] filesInMountedDrive = fromLocation.listFiles(new FilenameFilter()
+        {
+            @Override
+            public boolean accept(File dir, String name)
+            {
+                return name.toLowerCase().endsWith(".app");
+            }
+        });
+
+        if (filesInMountedDrive == null)
+            throw new TestConfigurationException("It seems there is not mounted App on location: " + fromLocation.getPath());
+
+        if (filesInMountedDrive.length > 0)
+        {
+            LOG.info("Found executable binary:  [{}] ", filesInMountedDrive[0].getPath());
+            return filesInMountedDrive[0];
+        }
+        else
+            return null;
+    }
+
+    /**
+     * Get text copied to System Clipboard
+     * 
+     * @return
+     * @throws IOException
+     * @throws UnsupportedFlavorException
+     */
+    public static String getTextFromClipboard() throws IOException, UnsupportedFlavorException
+    {
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        Clipboard clipboard = toolkit.getSystemClipboard();
+        return (String) clipboard.getData(DataFlavor.stringFlavor);
+    }
+
+    /**
+     * Method to retrieve a process output as String
+     * 
+     * @param command
+     * @return process output in String format
+     * @throws Exception
+     */
+    public static String executeOnWinAndReturnOutput(String command) throws Exception
+    {
+        StringBuilder sb = new StringBuilder();
+        try
+        {
+            Process executionProcess = Runtime.getRuntime().exec("cmd /c " + command);
+            BufferedReader stdInput = new BufferedReader(new InputStreamReader(executionProcess.getInputStream()));
+
+            BufferedReader stdError = new BufferedReader(new InputStreamReader(executionProcess.getErrorStream()));
+            String s = null;
+            while ((s = stdInput.readLine()) != null)
+            {
+                sb.append(s);
+                sb.append("\n");
+            }
+            while ((s = stdError.readLine()) != null)
+            {
+                sb.append(s);
+                sb.append("\n");
+            }
+            stdInput.close();
+            stdError.close();
+        }
+        catch (IOException ex)
+        {
+            ex.printStackTrace();
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Asserting folder/File is empty based on its size
+     * 
+     * @param folder
+     */
+    public static void assertIsEmpty(File folder)
+    {
+        if (folder.exists())
+        {
+            File[] list = folder.listFiles();
+            for (File item : list)
+            {
+                LOG.info(String.format("Found file/folder: %s", item.getPath()));
+            }
+            Assert.assertEquals(FileUtils.sizeOf(folder), 0, "Size of install folder(bytes): ");
+        }
+    }
+
+    /**
+     * Wait until process is running, or the retryCountSeconds is reached
+     * 
+     * @param processName
+     */
+    public static boolean waitUntilProcessIsRunning(String processName)
+    {
+        boolean isRunning = false;
+        int retry = 0;
+        waitToLoopTime(1, "Wait until process is running...");
+        while (!isRunning && retry <= retryCountSeconds)
+        {
+            retry++;
+            waitToLoopTime(1, "Wait until process is running...");
+            isRunning = isProcessRunning(processName);
+        }
+
+        return isRunning;
+    }
+
+    /**
+     * Wait until process finish to run
+     *
+     * @param processName
+     * @param timeout
+     * @param loopTime
+     */
+    public static void waitUntilProcessFinishes(String processName, int timeout, int loopTime)
+    {
+        int count = 0;
+        while (isProcessRunning(processName) && count < timeout)
+        {
+            count = count + loopTime;
+            waitToLoopTime(loopTime, "Wait until process finishes...");
+        }
+    }
+
+    /**
+     * @return OS Name.
+     * @throws IOException
+     */
+    public static String getOSName() throws IOException
+    {
+        String osVersion = SystemUtils.OS_NAME;
+        if (SystemUtils.IS_OS_LINUX)
+        {
+            String output = Utility.executeOnUnix("cat /etc/*-release");
+            Properties osProperties = new Properties();
+            osProperties.load(new StringReader(output));
+            osVersion = osProperties.getProperty("NAME");
+            osVersion = osVersion.split(" ")[0];
+        }
+
+        return osVersion.replaceAll(" ", "_").replaceAll("\"", "");
+    }
+
+    public static boolean isWinServiceRunning(String serviceName) throws Exception
+    {
+        String sys32 = System.getenv("SystemRoot") + "\\system32";
+        Process process = new ProcessBuilder(Paths.get(sys32, "sc.exe").toString(), "query", serviceName).start();
+        InputStream is = process.getInputStream();
+        InputStreamReader isr = new InputStreamReader(is);
+        BufferedReader br = new BufferedReader(isr);
+
+        String line;
+        String scOutput = "";
+
+        // Append the buffer lines into one string
+        while ((line = br.readLine()) != null)
+        {
+            scOutput += line + "\n";
+        }
+
+        if (scOutput.contains("STATE"))
+        {
+            if (scOutput.contains("RUNNING"))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            throw new Exception("Unknown Service: " + serviceName);
+        }
     }
 }

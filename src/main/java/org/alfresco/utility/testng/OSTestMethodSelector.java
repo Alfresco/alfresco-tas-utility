@@ -93,7 +93,7 @@ public class OSTestMethodSelector implements IInvokedMethodListener
 
                 if (groups != null)
                 {
-                    if (groups.contains(TestGroup.OS_LINUX) || groups.contains(TestGroup.OS_WIN))
+                    if (groups.contains(TestGroup.OS_LINUX) || groups.contains(TestGroup.OS_WIN) || groups.contains(TestGroup.OS_MAC))
                     {
                         if (SystemUtils.IS_OS_LINUX && !groups.contains(TestGroup.OS_LINUX))
                         {
