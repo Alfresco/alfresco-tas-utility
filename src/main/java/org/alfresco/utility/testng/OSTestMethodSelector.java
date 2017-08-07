@@ -126,6 +126,7 @@ public class OSTestMethodSelector implements IInvokedMethodListener
 
     }
 
+    @SuppressWarnings("static-access")
     @Override
     public void afterInvocation(IInvokedMethod testNGmethod, ITestResult testResult)
     {
