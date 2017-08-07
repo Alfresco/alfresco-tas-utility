@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.alfresco.tas</groupId>
 	<artifactId>utility</artifactId>
 	<name>alfresco-tas-utility</name>
-	<version>1.0.18-SNAPSHOT</version>
-
+	<version>1.0.19-SNAPSHOT</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.build.sourceVersion>1.8</maven.build.sourceVersion>
@@ -22,16 +22,16 @@
 		<org.jvnet.version>0.6.5</org.jvnet.version>
 		<javax.mail.version>1.5.1</javax.mail.version>
 		<seleniumjava.version>2.53.1</seleniumjava.version>
-		<yandex.qatools.version>1.15</yandex.qatools.version>
+		<yandex.qatools.version>1.15</yandex.qatools.version>		
 	</properties>
-	
+
 	<scm>
-		<connection>scm:git:https://gitlab.alfresco.com/tas/alfresco-tas-tester.git</connection>
-		<developerConnection>scm:git:https://gitlab.alfresco.com/tas/alfresco-tas-tester.git</developerConnection>
-		<url>https://gitlab.alfresco.com/tas/alfresco-tas-tester</url>
+		<connection>scm:git:https://git.alfresco.com/tas/alfresco-tas-tester.git</connection>
+		<developerConnection>scm:git:https://git.alfresco.com/tas/alfresco-tas-tester.git</developerConnection>
+		<url>https://git.alfresco.com/tas/alfresco-tas-tester</url>
 		<tag>HEAD</tag>
 	</scm>
-	
+
 	<issueManagement>
 		<system>JIRA</system>
 		<url>https://issues.alfresco.com/jira/browse/</url>
@@ -94,7 +94,9 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.19.1</version>
 				<configuration>
-					<skipTests>true</skipTests>
+					<suiteXmlFiles>
+						<suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
+					</suiteXmlFiles>
 				</configuration>
 			</plugin>
 
@@ -266,5 +268,4 @@
 			<version>${yandex.qatools.version}</version>
 		</dependency>
 	</dependencies>
-
 </project>
