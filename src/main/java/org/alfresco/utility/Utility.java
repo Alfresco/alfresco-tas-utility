@@ -355,7 +355,7 @@ public class Utility
             }
             else
             {
-                if (FilenameUtils.getBaseName(f.getName()).equals(fileName))
+                if (f.getName().equals(fileName))
                 {
                     return f;
                 }
