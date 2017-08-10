@@ -22,7 +22,7 @@
 		<org.jvnet.version>0.6.5</org.jvnet.version>
 		<javax.mail.version>1.5.1</javax.mail.version>
 		<seleniumjava.version>2.53.1</seleniumjava.version>
-		<yandex.qatools.version>1.15</yandex.qatools.version>		
+		<yandex.qatools.version>1.15</yandex.qatools.version>
 	</properties>
 
 	<scm>
@@ -94,6 +94,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.19.1</version>
 				<configuration>
+					<skipTests>true</skipTests>
 					<suiteXmlFiles>
 						<suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
 					</suiteXmlFiles>
