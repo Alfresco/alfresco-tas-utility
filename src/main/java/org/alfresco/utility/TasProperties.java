@@ -96,6 +96,48 @@ public class TasProperties
     @Value("${share.url:http://localhost}")
     private URL shareUrl;
 
+    @Value("${auth.context.factory:com.sun.jndi.ldap.LdapCtxFactory}")
+    private String authContextFactory;
+
+    @Value("${auth.security.authentication:simple}")
+    private String securityAuth;
+
+    @Value("${oracle.url:ldap://172.29.100.111:2389}")
+    private String oracleURL;
+
+    @Value("${oracle.security.principal:cn=Directory Manager}")
+    private String oracleSecurityPrincipal;
+
+    @Value("${oracle.security.credentials:directory}")
+    private String oracleSecurityCredentials;
+
+    @Value("${ldap.url:ldap://172.29.100.119:389}")
+    private String ldapURL;
+
+    @Value("${ldap.security.principal:CN=Administrator,CN=Users,DC=alfness,DC=com}")
+    private String ldapSecurityPrincipal;
+
+    @Value("${ldap.security.credentials:Alf1234}")
+    private String ldapSecurityCredentials;
+
+    @Value("${oldap.url:ldap://172.29.100.226:389}")
+    private String oldapURL;
+
+    @Value("${oldap.security.principal:CN=admin,DC=alfness,DC=com}")
+    private String oldapSecurityPrincipal;
+
+    @Value("${oldap.security.credentials:Alf1234}")
+    private String oldapSecurityCredentials;
+
+    @Value("${ntlm.host:172.29.100.126}")
+    private String ntlmHost;
+
+    @Value("${ntlm.security.principal:alfntlm\\Administrator}")
+    private String ntlmSecurityPrincipal;
+
+    @Value("${ntlm.security.credentials:Alf1234}")
+    private String ntlmSecurityCredentials;
+
     public Boolean showTenantsOnServerHealth()
     {
         return showTenantsOnServerHealth;
@@ -350,4 +392,145 @@ public class TasProperties
     {
         this.shareUrl = shareUrl;
     }
+
+    public String getAuthContextFactory()
+    {
+        return authContextFactory;
+    }
+
+    public void setAuthContextFactory(String authContextFactory)
+    {
+        this.authContextFactory = authContextFactory;
+    }
+
+    public String getSecurityAuth()
+    {
+        return securityAuth;
+    }
+
+    public void setSecurityAuth(String securityAuth)
+    {
+        this.securityAuth = securityAuth;
+    }
+
+    public String getOracleURL()
+    {
+        return oracleURL;
+    }
+
+    public void setOracleURL(String oracleURL)
+    {
+        this.oracleURL = oracleURL;
+    }
+
+    public String getOracleSecurityPrincipal()
+    {
+        return oracleSecurityPrincipal;
+    }
+
+    public void setOracleSecurityPrincipal(String oracleSecurityPrincipal)
+    {
+        this.oracleSecurityPrincipal = oracleSecurityPrincipal;
+    }
+
+    public String getOracleSecurityCredentials()
+    {
+        return oracleSecurityCredentials;
+    }
+
+    public void setOracleSecurityCredentials(String oracleSecurityCredentials)
+    {
+        this.oracleSecurityCredentials = oracleSecurityCredentials;
+    }
+
+    public String getLdapURL()
+    {
+        return ldapURL;
+    }
+
+    public void setLdapURL(String ldapURL)
+    {
+        this.ldapURL = ldapURL;
+    }
+
+    public String getLdapSecurityPrincipal()
+    {
+        return ldapSecurityPrincipal;
+    }
+
+    public void setLdapSecurityPrincipal(String ldapSecurityPrincipal)
+    {
+        this.ldapSecurityPrincipal = ldapSecurityPrincipal;
+    }
+
+    public String getLdapSecurityCredentials()
+    {
+        return ldapSecurityCredentials;
+    }
+
+    public void setLdapSecurityCredentials(String ldapSecurityCredentials)
+    {
+        this.ldapSecurityCredentials = ldapSecurityCredentials;
+    }
+
+    public String getOLdapURL()
+    {
+        return oldapURL;
+    }
+
+    public void setOLdapURL(String oldapURL)
+    {
+        this.oldapURL = oldapURL;
+    }
+
+    public String getOLdapSecurityPrincipal()
+    {
+        return oldapSecurityPrincipal;
+    }
+
+    public void setOLdapSecurityPrincipal(String oldapSecurityPrincipal)
+    {
+        this.oldapSecurityPrincipal = oldapSecurityPrincipal;
+    }
+
+    public String getOLdapSecurityCredentials()
+    {
+        return oldapSecurityCredentials;
+    }
+
+    public void setOLdapSecurityCredentials(String oldapSecurityCredentials)
+    {
+        this.oldapSecurityCredentials = oldapSecurityCredentials;
+    }
+
+    public String getNtlmHost()
+    {
+        return ntlmHost;
+    }
+
+    public void setNtlmHost(String ntlmHost)
+    {
+        this.ntlmHost = ntlmHost;
+    }
+
+    public String getNtlmSecurityPrincipal()
+    {
+        return ntlmSecurityPrincipal;
+    }
+
+    public void setNtlmSecurityPrincipal(String ntlmSecurityPrincipal)
+    {
+        this.ntlmSecurityPrincipal = ntlmSecurityPrincipal;
+    }
+
+    public String getNtlmSecurityCredentials()
+    {
+        return ntlmSecurityCredentials;
+    }
+
+    public void setNtlmSecurityCredentials(String ntlmSecurityCredentials)
+    {
+        this.ntlmSecurityCredentials = ntlmSecurityCredentials;
+    }
+
 }

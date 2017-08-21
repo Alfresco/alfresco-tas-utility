@@ -5,10 +5,10 @@ import org.alfresco.dataprep.UserService;
 import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.DataSite;
 import org.alfresco.utility.data.DataUser;
-import org.alfresco.utility.model.FileModel;
-import org.alfresco.utility.model.FolderModel;
-import org.alfresco.utility.model.SiteModel;
-import org.alfresco.utility.model.UserModel;
+import org.alfresco.utility.data.auth.*;
+import org.alfresco.utility.exception.DataPreparationException;
+import org.alfresco.utility.exception.TestStepException;
+import org.alfresco.utility.model.*;
 import org.alfresco.utility.network.ModelAndMessagesConsole;
 import org.alfresco.utility.network.ServerHealth;
 import org.alfresco.utility.network.TenantConsole;
@@ -21,6 +21,9 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+
+import javax.naming.NamingException;
+import java.util.HashMap;
 
 /**
  * Unit testing bean configurations
@@ -60,6 +63,20 @@ public class BeansTest extends AbstractTestNGSpringContextTests
 
     SiteModel siteModel;
 
+    @Autowired
+    protected DataOracleDirectoryServer oracleAuth;
+
+    @Autowired
+    protected DataNtlmPassthru ntlmPassthruAuth;
+
+    @Autowired
+    protected DataLDAP ldapAuth;
+
+    @Autowired
+    protected DataOpenLDAP openLdapAuth;
+
+    @Autowired
+    protected DataKerberos dataKerberos;
     @BeforeClass
     public void checkServerHealth() throws Exception
     {
@@ -90,7 +107,7 @@ public class BeansTest extends AbstractTestNGSpringContextTests
     {
         Assert.assertNotNull(properties, "Bean UserService is initialised");
     }
-
+    
     @Test
     public void getDataUserBean()
     {
@@ -130,5 +147,127 @@ public class BeansTest extends AbstractTestNGSpringContextTests
         System.out.println(workflowConsole.user());
         System.out.println(modelAndMessagesConsole.showModels());
     }
-    
+
+    @Test
+    public void testOracleAuth() throws NamingException, DataPreparationException, TestStepException {
+        HashMap<String, String> newUserAttributes = new HashMap<>();
+        newUserAttributes.put("sn", "new lastName");
+        newUserAttributes.put("userPassword", "newPassword");
+        UserModel userModel = UserModel.getRandomUserModel();
+        oracleAuth.perform()
+                .createUser(userModel)
+                .assertUserExists(userModel)
+                .updateUser(userModel, newUserAttributes)
+                .deleteUser(userModel)
+                .assertUserDoesNotExist(userModel);
+    }
+
+    @Test
+    public void testNtlmPassthruAuth() throws NamingException, DataPreparationException, TestStepException {
+        HashMap<String, String> newUserAttributes = new HashMap<>();
+        newUserAttributes.put("ln", "new lastName");
+        newUserAttributes.put("pwd", "newPassword");
+        UserModel userModel = UserModel.getRandomUserModel();
+        ntlmPassthruAuth.perform()
+                .createUser(userModel)
+                .assertUserExists(userModel)
+                .updateUser(userModel, newUserAttributes)
+                .disableUser(userModel)
+                .enableUser(userModel)
+                .deleteUser(userModel)
+                .assertUserDoesNotExist(userModel);
+    }
+
+    @Test
+    public void testLDAPAuthUser() throws NamingException, DataPreparationException, TestStepException {
+        HashMap<String, String> newUserAttributes = new HashMap<>();
+        newUserAttributes.put("sn", "new lastName");
+        newUserAttributes.put("userPassword", "newPassword");
+        UserModel userModel = UserModel.getRandomUserModel();
+        ldapAuth.perform()
+                .createUser(userModel)
+                .assertUserExists(userModel)
+                .updateUser(userModel, newUserAttributes)
+                .enableUser(userModel)
+                .assertUserIsEnabled(userModel, DataLDAP.UserAccountControlValue.enabledPasswordNotRequired)
+                .disableUser(userModel)
+                .assertUserIsDisabled(userModel, DataLDAP.UserAccountControlValue.disabledPasswordNotRequired)
+                .deleteUser(userModel)
+                .assertUserDoesNotExist(userModel);
+    }
+
+    @Test
+    public void testLADPAuthUserCreation() throws NamingException
+    {
+        UserModel enabledUser = UserModel.getRandomUserModel();
+        UserModel disabledUser = UserModel.getRandomUserModel();
+        ldapAuth.perform()
+                .createEnabledUserPasswordNotRequired(enabledUser)
+                .createDisabledUser(disabledUser)
+                .assertUserExists(enabledUser)
+                .assertUserExists(disabledUser)
+                .assertUserIsDisabled(disabledUser, DataLDAP.UserAccountControlValue.disabled)
+                .assertUserIsEnabled(enabledUser, DataLDAP.UserAccountControlValue.enabledPasswordNotRequired);
+    }
+
+    @Test
+    public void testLDAPAuthGroup () throws NamingException
+    {
+        GroupModel newGroup = GroupModel.getRandomGroupModel();
+        UserModel newUser = UserModel.getRandomUserModel();
+        ldapAuth.perform()
+                .createGroup(newGroup)
+                .createUser(newUser)
+                .assertGroupExists(newGroup)
+                .addUserToGroup(newUser, newGroup)
+                .assertUserIsMemberOfGroup(newUser, newGroup)
+                .removeUserFromGroup(newUser, newGroup)
+                .assertUserIsNotMemberOfGroup(newUser, newGroup)
+                .deleteGroup(newGroup)
+                .assertGroupDoesNotExist(newGroup);
+    }
+
+    @Test
+    public void testOpenLDAPAuthUser() throws NamingException, TestStepException {
+        HashMap<String, String> newUserAttributes = new HashMap<>();
+        newUserAttributes.put("sn", "new lastNamem");
+        newUserAttributes.put("userPassword", "newPassword123");
+        UserModel userModel = UserModel.getRandomUserModel();
+        openLdapAuth.perform()
+                .createUser(userModel)
+                .assertUserExists(userModel)
+                .updateUser(userModel, newUserAttributes)
+                .deleteUser(userModel)
+                .assertUserDoesNotExist(userModel);
+    }
+
+    @Test
+    public void testOpenLDAPAuthGroup () throws NamingException
+    {
+        GroupModel newGroup = GroupModel.getRandomGroupModel();
+        UserModel newUser = UserModel.getRandomUserModel();
+        openLdapAuth.perform()
+                .createUser(newUser)
+                .createGroup(newGroup)
+                .assertGroupExists(newGroup)
+                .addUserToGroup(newUser, newGroup)
+                .assertUserIsMemberOfGroup(newUser, newGroup)
+                .removeUserFromGroup(newUser, newGroup)
+                .assertUserIsNotMemberOfGroup(newUser, newGroup)
+                .deleteGroup(newGroup)
+                .assertGroupDoesNotExist(newGroup);
+    }
+
+    @Test
+    public void testKerberosUser() throws NamingException, TestStepException {
+        UserModel testUser = UserModel.getRandomUserModel();
+        HashMap<String, String> newUserAttributes = new HashMap<>();
+        newUserAttributes.put("sn", "updatedUser");
+        dataKerberos.perform()
+                .createUser(testUser)
+                .assertUserExists(testUser)
+                .updateUser(testUser, newUserAttributes)
+                .deleteUser(testUser)
+                .assertUserDoesNotExist(testUser);
+    }
 }
