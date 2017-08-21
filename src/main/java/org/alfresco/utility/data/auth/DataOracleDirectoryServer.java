@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import static org.alfresco.utility.report.log.Step.STEP;
+
 /**
  * Created by Claudia Agache on 6/14/2017.
  */
@@ -51,6 +53,7 @@ public class DataOracleDirectoryServer
         @Override
         public UserManageable createUser(UserModel user) throws NamingException
         {
+            STEP(String.format("[OracleDirServer] Add user %s", user.getUsername()));
             Attributes attributes = new BasicAttributes();
             Attribute objectClass = new BasicAttribute("objectClass");
             Attribute sn = new BasicAttribute("sn");
@@ -71,6 +74,7 @@ public class DataOracleDirectoryServer
         @Override
         public UserManageable deleteUser(UserModel user) throws NamingException
         {
+            STEP(String.format("[OracleDirServer] Delete user %s", user.getUsername()));
             context.destroySubcontext(String.format(USER_SEARCH_BASE, user.getUsername()));
             return this;
         }
@@ -78,6 +82,7 @@ public class DataOracleDirectoryServer
         @Override
         public UserManageable updateUser(UserModel user, HashMap<String, String> attributes) throws NamingException
         {
+            STEP(String.format("[OracleDirServer] Update user %s", user.getUsername()));
             ModificationItem[] items = new ModificationItem[attributes.size()];
             int i = 0;
             for (Map.Entry<String, String> entry : attributes.entrySet())
@@ -94,18 +99,19 @@ public class DataOracleDirectoryServer
         public SearchResult searchForObjectClass(String name, String typeOfClass, String base) throws NamingException
         {
             NamingEnumeration<SearchResult> results = null;
-            String searchFilter = String.format("(objectClass=%s)",typeOfClass.toString());
+            String searchFilter = String.format("(objectClass=%s)", typeOfClass.toString());
             SearchControls searchControls = new SearchControls();
             searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
 
-            try{
+            try
+            {
                 results = context.search(String.format(base, name), searchFilter, searchControls);
             }
             catch (NameNotFoundException e)
             {
                 return null;
             }
-            if(results.hasMoreElements())
+            if (results.hasMoreElements())
                 return (SearchResult) results.nextElement();
             return null;
         }
@@ -113,13 +119,16 @@ public class DataOracleDirectoryServer
         @Override
         public UserManageable assertUserExists(UserModel user) throws NamingException
         {
-            Assert.assertNotNull(searchForObjectClass(user.getUsername(), "inetOrgPerson",USER_SEARCH_BASE));
+            STEP(String.format("[OracleDirServer] Assert user %s exists", user.getUsername()));
+            Assert.assertNotNull(searchForObjectClass(user.getUsername(), "inetOrgPerson", USER_SEARCH_BASE));
             return this;
         }
 
         @Override
-        public UserManageable assertUserDoesNotExist(UserModel user) throws NamingException {
-            Assert.assertNull(searchForObjectClass(user.getUsername(), "inetOrgPerson",USER_SEARCH_BASE));
+        public UserManageable assertUserDoesNotExist(UserModel user) throws NamingException
+        {
+            STEP(String.format("[OracleDirServer] Assert user %s does not exist", user.getUsername()));
+            Assert.assertNull(searchForObjectClass(user.getUsername(), "inetOrgPerson", USER_SEARCH_BASE));
             return this;
         }
     }
