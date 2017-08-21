@@ -1,14 +1,26 @@
 package org.alfresco.utility;
 
+import java.util.HashMap;
+
+import javax.naming.NamingException;
+
 import org.alfresco.dataprep.CMISUtil.DocumentType;
 import org.alfresco.dataprep.UserService;
 import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.DataSite;
 import org.alfresco.utility.data.DataUser;
-import org.alfresco.utility.data.auth.*;
+import org.alfresco.utility.data.auth.DataKerberos;
+import org.alfresco.utility.data.auth.DataLDAP;
+import org.alfresco.utility.data.auth.DataNtlmPassthru;
+import org.alfresco.utility.data.auth.DataOpenLDAP;
+import org.alfresco.utility.data.auth.DataOracleDirectoryServer;
 import org.alfresco.utility.exception.DataPreparationException;
 import org.alfresco.utility.exception.TestStepException;
-import org.alfresco.utility.model.*;
+import org.alfresco.utility.model.FileModel;
+import org.alfresco.utility.model.FolderModel;
+import org.alfresco.utility.model.GroupModel;
+import org.alfresco.utility.model.SiteModel;
+import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.network.ModelAndMessagesConsole;
 import org.alfresco.utility.network.ServerHealth;
 import org.alfresco.utility.network.TenantConsole;
@@ -21,9 +33,6 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
-
-import javax.naming.NamingException;
-import java.util.HashMap;
 
 /**
  * Unit testing bean configurations
@@ -77,6 +86,7 @@ public class BeansTest extends AbstractTestNGSpringContextTests
 
     @Autowired
     protected DataKerberos dataKerberos;
+    
     @BeforeClass
     public void checkServerHealth() throws Exception
     {
@@ -114,7 +124,7 @@ public class BeansTest extends AbstractTestNGSpringContextTests
         Assert.assertNotNull(dataUser, "Bean DataUser is initialised");
     }
 
-    @Test
+    @Test(enabled=false)
     public void createFolderAndContent() throws Exception
     {
         FolderModel newFolder = dataContent.usingAdmin().usingSite(siteModel).createFolder();
@@ -124,7 +134,7 @@ public class BeansTest extends AbstractTestNGSpringContextTests
         dataContent.usingResource(newFile).assertContentExist();
     }
 
-    @Test
+    @Test(enabled=false)
     public void createFolderAndContentInSpaces() throws Exception
     {
         FolderModel newFolder;
@@ -134,13 +144,13 @@ public class BeansTest extends AbstractTestNGSpringContextTests
         dataContent.usingResource(newFolder).assertContentExist();
     }     
     
-    @Test
+    @Test(enabled=false)
     public void testServerlogs() throws Exception
     {
         dataUser.usingLastServerLogLines(100).assertLogLineIs("DEBUG");
     }
     
-    @Test
+    @Test(enabled=false)
     public void testConsole() throws Exception
     {
         alfrescoTenantConsole.tenantExist();
@@ -148,8 +158,8 @@ public class BeansTest extends AbstractTestNGSpringContextTests
         System.out.println(modelAndMessagesConsole.showModels());
     }
 
-    @Test
-    public void testOracleAuth() throws NamingException, DataPreparationException, TestStepException {
+    @Test(enabled=false)
+    public void testOracleAuth() throws Exception {
         HashMap<String, String> newUserAttributes = new HashMap<>();
         newUserAttributes.put("sn", "new lastName");
         newUserAttributes.put("userPassword", "newPassword");
@@ -162,8 +172,8 @@ public class BeansTest extends AbstractTestNGSpringContextTests
                 .assertUserDoesNotExist(userModel);
     }
 
-    @Test
-    public void testNtlmPassthruAuth() throws NamingException, DataPreparationException, TestStepException {
+    @Test(enabled=false)
+    public void testNtlmPassthruAuth() throws Exception {
         HashMap<String, String> newUserAttributes = new HashMap<>();
         newUserAttributes.put("ln", "new lastName");
         newUserAttributes.put("pwd", "newPassword");
@@ -178,7 +188,7 @@ public class BeansTest extends AbstractTestNGSpringContextTests
                 .assertUserDoesNotExist(userModel);
     }
 
-    @Test
+    @Test(enabled=false)
     public void testLDAPAuthUser() throws NamingException, DataPreparationException, TestStepException {
         HashMap<String, String> newUserAttributes = new HashMap<>();
         newUserAttributes.put("sn", "new lastName");
@@ -196,7 +206,7 @@ public class BeansTest extends AbstractTestNGSpringContextTests
                 .assertUserDoesNotExist(userModel);
     }
 
-    @Test
+    @Test(enabled=false)
     public void testLADPAuthUserCreation() throws NamingException
     {
         UserModel enabledUser = UserModel.getRandomUserModel();
@@ -210,7 +220,7 @@ public class BeansTest extends AbstractTestNGSpringContextTests
                 .assertUserIsEnabled(enabledUser, DataLDAP.UserAccountControlValue.enabledPasswordNotRequired);
     }
 
-    @Test
+    @Test(enabled=false)
     public void testLDAPAuthGroup () throws NamingException
     {
         GroupModel newGroup = GroupModel.getRandomGroupModel();
@@ -227,7 +237,7 @@ public class BeansTest extends AbstractTestNGSpringContextTests
                 .assertGroupDoesNotExist(newGroup);
     }
 
-    @Test
+    @Test(enabled=false)
     public void testOpenLDAPAuthUser() throws NamingException, TestStepException {
         HashMap<String, String> newUserAttributes = new HashMap<>();
         newUserAttributes.put("sn", "new lastNamem");
@@ -241,7 +251,7 @@ public class BeansTest extends AbstractTestNGSpringContextTests
                 .assertUserDoesNotExist(userModel);
     }
 
-    @Test
+    @Test(enabled=false)
     public void testOpenLDAPAuthGroup () throws NamingException
     {
         GroupModel newGroup = GroupModel.getRandomGroupModel();
@@ -258,8 +268,8 @@ public class BeansTest extends AbstractTestNGSpringContextTests
                 .assertGroupDoesNotExist(newGroup);
     }
 
-    @Test
-    public void testKerberosUser() throws NamingException, TestStepException {
+    @Test(enabled=false)
+    public void testKerberosUser() throws Exception {
         UserModel testUser = UserModel.getRandomUserModel();
         HashMap<String, String> newUserAttributes = new HashMap<>();
         newUserAttributes.put("sn", "updatedUser");

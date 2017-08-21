@@ -1,10 +1,11 @@
 package org.alfresco.utility.data.auth;
 
-import org.alfresco.utility.exception.TestStepException;
-import org.alfresco.utility.model.UserModel;
+import java.util.HashMap;
 
 import javax.naming.NamingException;
-import java.util.HashMap;
+
+import org.alfresco.utility.exception.TestStepException;
+import org.alfresco.utility.model.UserModel;
 
 /**
  * Interface for any authentication mechanism like LDAP, LDAP-AD, Kerberos, etc.
@@ -13,11 +14,11 @@ import java.util.HashMap;
  */
 public interface UserManageable
 {
-    UserManageable createUser(UserModel user) throws NamingException;
+    UserManageable createUser(UserModel user) throws NamingException, Exception;
 
-    UserManageable deleteUser(UserModel user) throws NamingException;
+    UserManageable deleteUser(UserModel user) throws NamingException, Exception;
 
-    UserManageable updateUser(UserModel user, HashMap<String, String> attributes) throws NamingException;
+    UserManageable updateUser(UserModel user, HashMap<String, String> attributes) throws NamingException, Exception;
 
     UserManageable assertUserExists(UserModel user) throws NamingException;
 
