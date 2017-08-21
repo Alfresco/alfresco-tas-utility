@@ -5,8 +5,6 @@ import javax.naming.NamingException;
 import org.alfresco.utility.model.GroupModel;
 import org.alfresco.utility.model.UserModel;
 
-import java.util.HashMap;
-
 /**
  * Created by Claudia Agache on 6/14/2017.
  */
