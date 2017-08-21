@@ -12,6 +12,9 @@ public class UserModel extends TestModel
     private String username;
     private String password;
     private String domain;
+    private String firstName;
+    private String lastName;
+
     /*
      * the role of the user;
      */
@@ -96,7 +99,10 @@ public class UserModel extends TestModel
 
     public static UserModel getRandomUserModel()
     {
-        UserModel user = new UserModel(RandomData.getRandomName("user"), TestData.PASSWORD);
+        String randomUsername = RandomData.getRandomName("user");
+        UserModel user = new UserModel(randomUsername, TestData.PASSWORD);
+        user.setFirstName(String.format("%s-FN", randomUsername));
+        user.setLastName(String.format("%s-LN", randomUsername));
         return user;
     }
 
@@ -114,4 +120,25 @@ public class UserModel extends TestModel
     {
         this.userRole = userRole;
     }
+
+    public String getFirstName()
+    {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName)
+    {
+        this.firstName = firstName;
+    }
+
+    public String getLastName()
+    {
+        return lastName;
+    }
+
+    public void setLastName(String lastName)
+    {
+        this.lastName = lastName;
+    }
+
 }
