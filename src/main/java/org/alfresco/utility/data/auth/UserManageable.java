@@ -14,13 +14,13 @@ import org.alfresco.utility.model.UserModel;
  */
 public interface UserManageable
 {
-    UserManageable createUser(UserModel user) throws NamingException, Exception;
+    UserManageable createUser(UserModel user) throws Exception;
 
-    UserManageable deleteUser(UserModel user) throws NamingException, Exception;
+    UserManageable deleteUser(UserModel user) throws Exception;
 
-    UserManageable updateUser(UserModel user, HashMap<String, String> attributes) throws NamingException, Exception;
+    UserManageable updateUser(UserModel user, HashMap<String, String> attributes) throws Exception;
 
-    UserManageable assertUserExists(UserModel user) throws NamingException;
+    UserManageable assertUserExists(UserModel user) throws Exception;
 
-    UserManageable assertUserDoesNotExist(UserModel user) throws NamingException, TestStepException;
+    UserManageable assertUserDoesNotExist(UserModel user) throws Exception;
 }
