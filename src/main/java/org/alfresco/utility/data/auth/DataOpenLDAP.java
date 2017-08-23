@@ -244,6 +244,13 @@ public class DataOpenLDAP
             return this;
         }
 
+        public GroupManageable assertSubgroupExists(GroupModel subgroup) throws NamingException
+        {
+            STEP(String.format("[OpenLDAP] Assert group %s exists", subgroup.getDisplayName()));
+            Assert.assertNotNull(searchForObjectClass(subgroup.getDisplayName(), ObjectType.group, SUBGROUP_SEARCH_BASE));
+            return this;
+        }
+
         @Override
         public GroupManageable assertGroupDoesNotExist(GroupModel group) throws NamingException
         {
