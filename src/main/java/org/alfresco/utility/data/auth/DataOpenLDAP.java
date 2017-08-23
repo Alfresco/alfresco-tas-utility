@@ -50,6 +50,8 @@ public class DataOpenLDAP
 
     private final static String GROUP_SEARCH_BASE = "cn=%s,ou=groups,dc=ldap,dc=dev,dc=alfresco,dc=me";
 
+    private final static String SUBGROUP_SEARCH_BASE = "cn=%s, cn=%s,ou=groups,dc=ldap,dc=dev,dc=alfresco,dc=me";
+
     private DirContext context;
 
     public DataOpenLDAP.Builder perform() throws NamingException
@@ -117,9 +119,33 @@ public class DataOpenLDAP
         }
 
         @Override
-        public Builder createGroup(GroupModel group) throws NamingException
+    public Builder createGroup(GroupModel group) throws NamingException
+    {
+        STEP(String.format("[OpenLDAP] Create group %s", group.getDisplayName()));
+        Random random = new Random();
+        int gidNumberValue = random.nextInt(10000);
+
+        Attributes attributes = new BasicAttributes();
+        Attribute objectClass = new BasicAttribute("objectClass");
+        Attribute gidNumber = new BasicAttribute("gidNumber");
+        Attribute cn = new BasicAttribute("cn");
+
+        objectClass.add(ObjectType.group.toString());
+        gidNumber.add(Integer.toString(gidNumberValue));
+        cn.add(group.getDisplayName());
+
+        attributes.put(objectClass);
+        attributes.put(gidNumber);
+        attributes.put(cn);
+
+        context.createSubcontext(String.format(GROUP_SEARCH_BASE, group.getDisplayName()), attributes);
+
+        return this;
+    }
+
+        public Builder createSubGroup(GroupModel subGroup, GroupModel mainGroup) throws NamingException
         {
-            STEP(String.format("[OpenLDAP] Create group %s", group.getDisplayName()));
+            STEP(String.format("[OpenLDAP] Create group %s", subGroup.getDisplayName()));
             Random random = new Random();
             int gidNumberValue = random.nextInt(10000);
 
@@ -127,16 +153,19 @@ public class DataOpenLDAP
             Attribute objectClass = new BasicAttribute("objectClass");
             Attribute gidNumber = new BasicAttribute("gidNumber");
             Attribute cn = new BasicAttribute("cn");
+            Attribute cnGroup = new BasicAttribute("cn");
 
             objectClass.add(ObjectType.group.toString());
             gidNumber.add(Integer.toString(gidNumberValue));
-            cn.add(group.getDisplayName());
+            cn.add(subGroup.getDisplayName());
+            cnGroup.add(mainGroup.getDisplayName());
 
             attributes.put(objectClass);
             attributes.put(gidNumber);
             attributes.put(cn);
+            attributes.put(cnGroup);
 
-            context.createSubcontext(String.format(GROUP_SEARCH_BASE, group.getDisplayName()), attributes);
+            context.createSubcontext(String.format(SUBGROUP_SEARCH_BASE, subGroup.getDisplayName(), mainGroup.getDisplayName()), attributes);
 
             return this;
         }
