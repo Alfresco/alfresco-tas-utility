@@ -119,29 +119,29 @@ public class DataOpenLDAP
         }
 
         @Override
-    public Builder createGroup(GroupModel group) throws NamingException
-    {
-        STEP(String.format("[OpenLDAP] Create group %s", group.getDisplayName()));
-        Random random = new Random();
-        int gidNumberValue = random.nextInt(10000);
+        public Builder createGroup(GroupModel group) throws NamingException
+        {
+            STEP(String.format("[OpenLDAP] Create group %s", group.getDisplayName()));
+            Random random = new Random();
+            int gidNumberValue = random.nextInt(10000);
 
-        Attributes attributes = new BasicAttributes();
-        Attribute objectClass = new BasicAttribute("objectClass");
-        Attribute gidNumber = new BasicAttribute("gidNumber");
-        Attribute cn = new BasicAttribute("cn");
+            Attributes attributes = new BasicAttributes();
+            Attribute objectClass = new BasicAttribute("objectClass");
+            Attribute gidNumber = new BasicAttribute("gidNumber");
+            Attribute cn = new BasicAttribute("cn");
 
-        objectClass.add(ObjectType.group.toString());
-        gidNumber.add(Integer.toString(gidNumberValue));
-        cn.add(group.getDisplayName());
+            objectClass.add(ObjectType.group.toString());
+            gidNumber.add(Integer.toString(gidNumberValue));
+            cn.add(group.getDisplayName());
 
-        attributes.put(objectClass);
-        attributes.put(gidNumber);
-        attributes.put(cn);
+            attributes.put(objectClass);
+            attributes.put(gidNumber);
+            attributes.put(cn);
 
-        context.createSubcontext(String.format(GROUP_SEARCH_BASE, group.getDisplayName()), attributes);
+            context.createSubcontext(String.format(GROUP_SEARCH_BASE, group.getDisplayName()), attributes);
 
-        return this;
-    }
+            return this;
+        }
 
         public Builder createSubGroup(GroupModel subGroup, GroupModel mainGroup) throws NamingException
         {
@@ -276,5 +276,10 @@ public class DataOpenLDAP
             Assert.assertFalse(membership.toString().contains(String.format(USER_SEARCH_BASE, user.getUsername())));
             return this;
         }
+    }
+
+    public String getUserId(UserModel user)
+    {
+        return String.format(USER_SEARCH_BASE, user.getUsername());
     }
 }
