@@ -181,7 +181,7 @@ public class DataOpenLDAP
         @Override
         public GroupManageable addUserToGroup(UserModel user, GroupModel group) throws NamingException
         {
-            STEP(String.format("[OpenLDAP] Add user % to group %s", user.getUsername(), group.getDisplayName()));
+            STEP(String.format("[OpenLDAP] Add user %s to group %s", user.getUsername(), group.getDisplayName()));
             Attribute memberAttribute = new BasicAttribute("memberUID", String.format(USER_SEARCH_BASE, user.getUsername()));
             ModificationItem member[] = new ModificationItem[1];
             member[0] = new ModificationItem(DirContext.ADD_ATTRIBUTE, memberAttribute);
@@ -192,7 +192,7 @@ public class DataOpenLDAP
         @Override
         public GroupManageable removeUserFromGroup(UserModel user, GroupModel group) throws NamingException
         {
-            STEP(String.format("[OpenLDAP] Remove user % from group %s", user.getUsername(), group.getDisplayName()));
+            STEP(String.format("[OpenLDAP] Remove user %s from group %s", user.getUsername(), group.getDisplayName()));
             Attribute memberAttribute = new BasicAttribute("memberUid", String.format(USER_SEARCH_BASE, user.getUsername()));
             ModificationItem member[] = new ModificationItem[1];
             member[0] = new ModificationItem(DirContext.REMOVE_ATTRIBUTE, memberAttribute);
@@ -255,7 +255,7 @@ public class DataOpenLDAP
         @Override
         public GroupManageable assertUserIsMemberOfGroup(UserModel user, GroupModel group) throws NamingException
         {
-            STEP(String.format("[OpenLDAP] Assert user % is member of group %s", user.getUsername(), group.getDisplayName()));
+            STEP(String.format("[OpenLDAP] Assert user %s is member of group %s", user.getUsername(), group.getDisplayName()));
             Attributes membership = context.getAttributes(String.format(GROUP_SEARCH_BASE, group.getDisplayName()), new String[] { "memberUid" });
             Assert.assertTrue(membership.toString().contains(String.format(USER_SEARCH_BASE, user.getUsername())));
             return this;
@@ -264,7 +264,7 @@ public class DataOpenLDAP
         @Override
         public GroupManageable assertUserIsNotMemberOfGroup(UserModel user, GroupModel group) throws NamingException
         {
-            STEP(String.format("[OpenLDAP] Assert user % is not member of group %s", user.getUsername(), group.getDisplayName()));
+            STEP(String.format("[OpenLDAP] Assert user %s is not member of group %s", user.getUsername(), group.getDisplayName()));
             Attributes membership = context.getAttributes(String.format(GROUP_SEARCH_BASE, group.getDisplayName()), new String[] { "member" });
             Assert.assertFalse(membership.toString().contains(String.format(USER_SEARCH_BASE, user.getUsername())));
             return this;
