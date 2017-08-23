@@ -178,6 +178,13 @@ public class DataOpenLDAP
             return this;
         }
 
+        public GroupManageable deleteSubgroup(GroupModel subgroup, GroupModel group) throws NamingException
+        {
+            STEP(String.format("[OpenLDAP] Delete group %s", subgroup.getDisplayName()));
+            context.destroySubcontext(String.format(SUBGROUP_SEARCH_BASE, subgroup.getDisplayName(), group.getDisplayName()));
+            return this;
+        }
+
         @Override
         public GroupManageable addUserToGroup(UserModel user, GroupModel group) throws NamingException
         {
