@@ -79,14 +79,17 @@ public class DataOpenLDAP
             Attributes attributes = new BasicAttributes();
             Attribute objectClass = new BasicAttribute("objectClass");
             Attribute sn = new BasicAttribute("sn");
+            Attribute uid = new BasicAttribute("uid");
             Attribute userPassword = new BasicAttribute("userPassword");
 
             objectClass.add(DataOpenLDAP.ObjectType.user.toString());
             sn.add(user.getLastName());
+            uid.add(user.getUsername());
             userPassword.add(user.getPassword());
 
             attributes.put(objectClass);
             attributes.put(sn);
+            attributes.put(uid);
             attributes.put(userPassword);
 
             context.createSubcontext(String.format(USER_SEARCH_BASE, user.getUsername()), attributes);
@@ -235,6 +238,56 @@ public class DataOpenLDAP
             if (results.hasMoreElements())
                 return (SearchResult) results.nextElement();
             return null;
+        }
+
+        private SearchResult searchGeneratedData(String partialName, ObjectType typeOfClass, String base) throws NamingException
+        {
+            NamingEnumeration<SearchResult> results = null;
+            String searchFilter = String.format("(objectClass=%s)", typeOfClass.toString());
+            SearchControls searchControls = new SearchControls();
+            searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+
+            try
+            {
+                results = context.search(base.replace("cn=%s,", ""), searchFilter, searchControls);
+            }
+            catch (NameNotFoundException e)
+            {
+                return null;
+            }
+            while (results.hasMoreElements())
+            {
+                SearchResult rez = results.nextElement();
+                if (rez.getNameInNamespace().contains(partialName))
+                {
+                    return rez;
+                }
+            }
+            return null;
+        }
+
+        public Builder deleteBulkUsers() throws NamingException
+        {
+            STEP(String.format("[OpenLDAP] Delete all users which start with 'user-'"));
+            SearchResult rez = searchGeneratedData("cn=user-", ObjectType.user, USER_SEARCH_BASE);
+            while (rez != null)
+            {
+                context.destroySubcontext(rez.getNameInNamespace());
+                rez = searchGeneratedData("cn=user-", ObjectType.user, USER_SEARCH_BASE);
+            }
+            return this;
+        }
+
+        public Builder deleteBulkGroups() throws NamingException
+        {
+            STEP(String.format("[OpenLDAP] Delete all groups which start with 'group-'"));
+            SearchResult rez = searchGeneratedData("cn=group-", ObjectType.group, GROUP_SEARCH_BASE);
+            while (rez != null)
+            {
+                context.destroySubcontext(rez.getNameInNamespace());
+                rez = searchGeneratedData("cn=group-", ObjectType.group, GROUP_SEARCH_BASE);
+            }
+            return this;
         }
 
         @Override

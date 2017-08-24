@@ -74,7 +74,7 @@ public class DataKerberos
         @Override
         public Builder createUser(UserModel user) throws NamingException
         {
-            STEP(String.format("[OracleDirServer] Add user %s", user.getUsername()));
+            STEP(String.format("[Kerberos] Add user %s", user.getUsername()));
             Attributes attributes = new BasicAttributes();
             Attribute objectClass = new BasicAttribute("objectClass");
             Attribute sn = new BasicAttribute("sn");
@@ -122,7 +122,7 @@ public class DataKerberos
         @Override
         public UserManageable deleteUser(UserModel user) throws NamingException
         {
-            STEP(String.format("[OracleDirServer] Delete user %s", user.getUsername()));
+            STEP(String.format("[Kerberos] Delete user %s", user.getUsername()));
             context.destroySubcontext(String.format(USER_SEARCH_BASE, user.getUsername()));
             return this;
         }
@@ -131,7 +131,7 @@ public class DataKerberos
         public UserManageable updateUser(UserModel user, HashMap<String, String> attributes) throws NamingException
         {
             {
-                STEP(String.format("[OracleDirServer] Update user %s", user.getUsername()));
+                STEP(String.format("[Kerberos] Update user %s", user.getUsername()));
                 ModificationItem[] items = new ModificationItem[attributes.size()];
                 int i = 0;
                 for (Map.Entry<String, String> entry : attributes.entrySet())
@@ -148,7 +148,7 @@ public class DataKerberos
         @Override
         public UserManageable assertUserExists(UserModel user) throws NamingException
         {
-            STEP(String.format("[OracleDirServer] Assert user %s exists", user.getUsername()));
+            STEP(String.format("[Kerberos] Assert user %s exists", user.getUsername()));
             Assert.assertNotNull(searchForObjectClass(user.getUsername(), DataLDAP.ObjectType.user));
             return this;
         }
@@ -156,7 +156,7 @@ public class DataKerberos
         @Override
         public UserManageable assertUserDoesNotExist(UserModel user) throws NamingException, TestStepException
         {
-            STEP(String.format("[OracleDirServer] Assert user %s does not exist", user.getUsername()));
+            STEP(String.format("[Kerberos] Assert user %s does not exist", user.getUsername()));
             Assert.assertNull(searchForObjectClass(user.getUsername(), DataLDAP.ObjectType.user));
             return this;
         }
