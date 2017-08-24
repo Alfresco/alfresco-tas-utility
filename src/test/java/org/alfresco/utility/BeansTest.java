@@ -238,7 +238,7 @@ public class BeansTest extends AbstractTestNGSpringContextTests
     }
 
     @Test(enabled=false)
-    public void testOpenLDAPAuthUser() throws NamingException, TestStepException {
+    public void testOpenLDAPAuthUser() throws Exception {
         HashMap<String, String> newUserAttributes = new HashMap<>();
         newUserAttributes.put("sn", "new lastNamem");
         newUserAttributes.put("userPassword", "newPassword123");

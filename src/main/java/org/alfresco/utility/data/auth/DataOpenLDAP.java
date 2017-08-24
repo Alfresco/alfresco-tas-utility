@@ -178,11 +178,28 @@ public class DataOpenLDAP
             return this;
         }
 
+        public Builder deleteSubgroup(GroupModel subgroup, GroupModel group) throws NamingException
+        {
+            STEP(String.format("[OpenLDAP] Delete subgroup %s from group %s", subgroup.getDisplayName(), group.getDisplayName()));
+            context.destroySubcontext(String.format(SUBGROUP_SEARCH_BASE, subgroup.getDisplayName(), group.getDisplayName()));
+            return this;
+        }
+
         @Override
         public GroupManageable addUserToGroup(UserModel user, GroupModel group) throws NamingException
         {
             STEP(String.format("[OpenLDAP] Add user %s to group %s", user.getUsername(), group.getDisplayName()));
             Attribute memberAttribute = new BasicAttribute("memberUID", String.format(USER_SEARCH_BASE, user.getUsername()));
+            ModificationItem member[] = new ModificationItem[1];
+            member[0] = new ModificationItem(DirContext.ADD_ATTRIBUTE, memberAttribute);
+            context.modifyAttributes(String.format(GROUP_SEARCH_BASE, group.getDisplayName()), member);
+            return this;
+        }
+
+        public Builder addGroupAsMemberOfAnotherGroup(GroupModel childGroup, GroupModel group) throws NamingException
+        {
+            STEP(String.format("[OpenLDAP] Add group %s as member of group %s", childGroup.getDisplayName(), group.getDisplayName()));
+            Attribute memberAttribute = new BasicAttribute("memberUID", String.format(GROUP_SEARCH_BASE, childGroup.getDisplayName()));
             ModificationItem member[] = new ModificationItem[1];
             member[0] = new ModificationItem(DirContext.ADD_ATTRIBUTE, memberAttribute);
             context.modifyAttributes(String.format(GROUP_SEARCH_BASE, group.getDisplayName()), member);
@@ -221,7 +238,7 @@ public class DataOpenLDAP
         }
 
         @Override
-        public Builder assertUserExists(UserModel user) throws NamingException
+        public UserManageable assertUserExists(UserModel user) throws NamingException
         {
             STEP(String.format("[OpenLDAP] Assert user %s exists", user.getUsername()));
             Assert.assertNotNull(searchForObjectClass(user.getUsername(), ObjectType.user, USER_SEARCH_BASE));
@@ -244,10 +261,11 @@ public class DataOpenLDAP
             return this;
         }
 
-        public GroupManageable assertSubgroupExists(GroupModel subgroup) throws NamingException
+        public Builder assertSubgroupExists(GroupModel subgroup, GroupModel group) throws NamingException
         {
-            STEP(String.format("[OpenLDAP] Assert group %s exists", subgroup.getDisplayName()));
-            Assert.assertNotNull(searchForObjectClass(subgroup.getDisplayName(), ObjectType.group, SUBGROUP_SEARCH_BASE));
+            STEP(String.format("[OpenLDAP] Assert subgroup %s from group %s exists", subgroup.getDisplayName(), group.getDisplayName()));
+            Assert.assertNotNull(searchForObjectClass(subgroup.getDisplayName(), ObjectType.group,
+                    String.format("%s,%s", "cn=%s", String.format(GROUP_SEARCH_BASE, group.getDisplayName()))));
             return this;
         }
 
@@ -265,6 +283,14 @@ public class DataOpenLDAP
             STEP(String.format("[OpenLDAP] Assert user %s is member of group %s", user.getUsername(), group.getDisplayName()));
             Attributes membership = context.getAttributes(String.format(GROUP_SEARCH_BASE, group.getDisplayName()), new String[] { "memberUid" });
             Assert.assertTrue(membership.toString().contains(String.format(USER_SEARCH_BASE, user.getUsername())));
+            return this;
+        }
+
+        public Builder assertGroupIsMemberOfGroup(GroupModel childGroup, GroupModel group) throws NamingException
+        {
+            STEP(String.format("[OpenLDAP] Assert group %s is member of group %s", childGroup.getDisplayName(), group.getDisplayName()));
+            Attributes membership = context.getAttributes(String.format(GROUP_SEARCH_BASE, group.getDisplayName()), new String[] { "memberUid" });
+            Assert.assertTrue(membership.toString().contains(String.format(GROUP_SEARCH_BASE, childGroup.getDisplayName())));
             return this;
         }
 
