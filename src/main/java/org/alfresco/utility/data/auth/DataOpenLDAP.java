@@ -14,10 +14,7 @@ import javax.naming.NameNotFoundException;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Random;
+import java.util.*;
 
 import static org.alfresco.utility.report.log.Step.STEP;
 
@@ -286,6 +283,27 @@ public class DataOpenLDAP
             {
                 context.destroySubcontext(rez.getNameInNamespace());
                 rez = searchGeneratedData("cn=group-", ObjectType.group, GROUP_SEARCH_BASE);
+            }
+            return this;
+        }
+
+        public Builder addBulkUsersInGroups(int noGroups, int noUsersPerGroup) throws NamingException {
+            STEP(String.format("[OpenLDAP] Add %s groups with %s users in each group", noGroups, noUsersPerGroup));
+            HashMap<GroupModel, List<UserModel>> usersGroupsMap = new HashMap<>();
+            for (int i = 0; i < noGroups; i++)
+            {
+                GroupModel testGroup = GroupModel.getRandomGroupModel();
+                createGroup(testGroup).assertGroupExists(testGroup);
+
+                List<UserModel> groupUsers = new ArrayList<>();
+                for (int j = 0; j < noUsersPerGroup; j++)
+                {
+                    UserModel testUser = UserModel.getRandomUserModel();
+                    createUser(testUser).addUserToGroup(testUser, testGroup);
+                    groupUsers.add(testUser);
+                }
+
+                usersGroupsMap.put(testGroup, groupUsers);
             }
             return this;
         }
