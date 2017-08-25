@@ -58,7 +58,8 @@ public class DataLDAP
 
     enum UserAccountStatus
     {
-        ACCOUNTDISABLE(0x0002), NORMAL_ACCOUNT(0x0200), PASSWD_NOTREQD(0x0020), PASSWORD_EXPIRED(0x800000);
+        ACCOUNTDISABLE(0x0002), NORMAL_ACCOUNT(0x0200), PASSWD_NOTREQD(0x0020),
+        PASSWORD_EXPIRED(0x800000), DONT_EXPIRE_PASSWD(0x10000);
 
         private final int value;
 
@@ -76,7 +77,7 @@ public class DataLDAP
     @Autowired
     private TasProperties tasProperties;
 
-    private final static String USER_GROUP_SEARCH_BASE = "CN=%s,CN=Users,DC=alfness,DC=com";
+    private final static String USER_GROUP_SEARCH_BASE = "CN=%s,CN=Users,DC=alfresconess,DC=com";
 
     private DirContext context;
 
@@ -105,14 +106,17 @@ public class DataLDAP
             Attributes attributes = new BasicAttributes();
             Attribute objectClass = new BasicAttribute("objectClass");
             Attribute sn = new BasicAttribute("sn");
+            Attribute fn = new BasicAttribute("givenName");
             Attribute userPassword = new BasicAttribute("userPassword");
 
             objectClass.add(ObjectType.user.toString());
             sn.add(user.getLastName());
+            fn.add(user.getFirstName());
             userPassword.add(user.getPassword());
 
             attributes.put(objectClass);
             attributes.put(sn);
+            attributes.put(fn);
             attributes.put(userPassword);
 
             context.createSubcontext(String.format(USER_GROUP_SEARCH_BASE, user.getUsername()), attributes);
@@ -242,12 +246,14 @@ public class DataLDAP
             Attributes attributes = new BasicAttributes();
             Attribute objectClass = new BasicAttribute("objectClass");
             Attribute sn = new BasicAttribute("sn");
+            Attribute fn = new BasicAttribute("givenName");
             Attribute samAccountName = new BasicAttribute("samAccountName");
             Attribute userPassword = new BasicAttribute("userPassword");
             Attribute userAccountControl = new BasicAttribute("userAccountControl");
 
             objectClass.add(ObjectType.user.toString());
             sn.add(user.getLastName());
+            fn.add(user.getFirstName());
             samAccountName.add(user.getUsername());
             userPassword.add(user.getPassword());
             userAccountControl.add(Integer.toString(
@@ -255,6 +261,7 @@ public class DataLDAP
 
             attributes.put(objectClass);
             attributes.put(sn);
+            attributes.put(fn);
             attributes.put(samAccountName);
             attributes.put(userPassword);
             attributes.put(userAccountControl);
