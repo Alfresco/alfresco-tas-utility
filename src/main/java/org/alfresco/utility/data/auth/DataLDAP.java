@@ -422,4 +422,10 @@ public class DataLDAP
             return this;
         }
     }
+
+    public String getUserId(UserModel userModel) throws NamingException
+    {
+        String[] DCs = USER_GROUP_SEARCH_BASE.split(",DC=");
+        return String.format("%s@%s.%s",userModel.getUsername(), DCs[1], DCs[2]);
+    }
 }
