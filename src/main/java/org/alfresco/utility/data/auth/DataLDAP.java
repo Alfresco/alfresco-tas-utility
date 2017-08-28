@@ -11,9 +11,7 @@ import org.testng.Assert;
 
 import javax.naming.*;
 import javax.naming.directory.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import static org.alfresco.utility.report.log.Step.STEP;
 
@@ -182,7 +180,7 @@ public class DataLDAP
         @Override
         public Builder addUserToGroup(UserModel user, GroupModel group) throws NamingException
         {
-            STEP(String.format("[LDAP-AD] Add user % to group %s", user.getUsername(), group.getDisplayName()));
+            STEP(String.format("[LDAP-AD] Add user %s to group %s", user.getUsername(), group.getDisplayName()));
             Attribute memberAttribute = new BasicAttribute("member", String.format(USER_GROUP_SEARCH_BASE, user.getUsername()));
             ModificationItem member[] = new ModificationItem[1];
             member[0] = new ModificationItem(DirContext.ADD_ATTRIBUTE, memberAttribute);
@@ -193,7 +191,7 @@ public class DataLDAP
         @Override
         public Builder removeUserFromGroup(UserModel user, GroupModel group) throws NamingException
         {
-            STEP(String.format("[LDAP-AD] Remove user % from group %s", user.getUsername(), group.getDisplayName()));
+            STEP(String.format("[LDAP-AD] Remove user %s from group %s", user.getUsername(), group.getDisplayName()));
             Attribute memberAttribute = new BasicAttribute("member", String.format(USER_GROUP_SEARCH_BASE, user.getUsername()));
             ModificationItem member[] = new ModificationItem[1];
             member[0] = new ModificationItem(DirContext.REMOVE_ATTRIBUTE, memberAttribute);
@@ -237,7 +235,7 @@ public class DataLDAP
                 return null;
             }
             if (results.hasMoreElements())
-                return (SearchResult) results.nextElement();
+                return results.nextElement();
             return null;
         }
 
@@ -343,7 +341,7 @@ public class DataLDAP
         @Override
         public GroupManageable assertUserIsMemberOfGroup(UserModel user, GroupModel group) throws NamingException
         {
-            STEP(String.format("[LDAP-AD] Assert user % is member of group %s", user.getUsername(), group.getDisplayName()));
+            STEP(String.format("[LDAP-AD] Assert user %s is member of group %s", user.getUsername(), group.getDisplayName()));
             Attributes membership = context.getAttributes(String.format(USER_GROUP_SEARCH_BASE, group.getDisplayName()), new String[] { "member" });
             Assert.assertTrue(membership.toString().contains(String.format(USER_GROUP_SEARCH_BASE, user.getUsername())),
                     String.format("User %s is not member of group %s", user.getUsername().toString(), group.getDisplayName().toString()));
@@ -353,10 +351,74 @@ public class DataLDAP
         @Override
         public GroupManageable assertUserIsNotMemberOfGroup(UserModel user, GroupModel group) throws NamingException
         {
-            STEP(String.format("[LDAP-AD] Assert user % is not member of group %s", user.getUsername(), group.getDisplayName()));
+            STEP(String.format("[LDAP-AD] Assert user %s is not member of group %s", user.getUsername(), group.getDisplayName()));
             Attributes membership = context.getAttributes(String.format(USER_GROUP_SEARCH_BASE, group.getDisplayName()), new String[] { "member" });
             Assert.assertFalse(membership.toString().contains(String.format(USER_GROUP_SEARCH_BASE, user.getUsername())),
                     String.format("User %s is member of group %s", user.getUsername().toString(), group.getDisplayName().toString()));
+            return this;
+        }
+
+        public Builder addBulkUsersInGroups(int noGroups, int noUsersPerGroup) throws NamingException {
+            STEP(String.format("[LDAP-AD] Add %s groups with %s users in each group", noGroups, noUsersPerGroup));
+            HashMap<GroupModel, List<UserModel>> usersGroupsMap = new HashMap<>();
+            for (int i = 0; i < noGroups; i++)
+            {
+                GroupModel testGroup = GroupModel.getRandomGroupModel();
+                createGroup(testGroup).assertGroupExists(testGroup);
+
+                List<UserModel> groupUsers = new ArrayList<>();
+                for (int j = 0; j < noUsersPerGroup; j++)
+                {
+                    UserModel testUser = UserModel.getRandomUserModel();
+                    createUser(testUser).addUserToGroup(testUser, testGroup);
+                    groupUsers.add(testUser);
+                }
+
+                usersGroupsMap.put(testGroup, groupUsers);
+            }
+            return this;
+        }
+
+        private SearchResult searchGeneratedData(String partialName, ObjectType typeOfClass) throws NamingException
+        {
+            NamingEnumeration<SearchResult> results = null;
+            String searchFilter = String.format("(&(objectClass=%s)(%s*))", typeOfClass.toString(), partialName);
+            SearchControls searchControls = new SearchControls();
+            searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+
+            try
+            {
+                results = context.search(USER_GROUP_SEARCH_BASE.replace("CN=%s,", ""), searchFilter, searchControls);
+            }
+            catch (NameNotFoundException e)
+            {
+                return null;
+            }
+            if (results.hasMoreElements())
+                return results.nextElement();
+            return null;
+        }
+        public Builder deleteBulkUsers() throws NamingException
+        {
+            STEP(String.format("[LDAP-AD] Delete all users which start with 'user-'"));
+            SearchResult rez = searchGeneratedData("cn=user-", ObjectType.user);
+            while (rez != null)
+            {
+                context.destroySubcontext(rez.getNameInNamespace());
+                rez = searchGeneratedData("cn=user-", ObjectType.user);
+            }
+            return this;
+        }
+
+        public Builder deleteBulkGroups() throws NamingException
+        {
+            STEP(String.format("[LDAP-AD] Delete all groups which start with 'group-'"));
+            SearchResult rez = searchGeneratedData("cn=group-", ObjectType.group);
+            while (rez != null)
+            {
+                context.destroySubcontext(rez.getNameInNamespace());
+                rez = searchGeneratedData("cn=group-", ObjectType.group);
+            }
             return this;
         }
     }
