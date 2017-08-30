@@ -105,16 +105,19 @@ public class DataLDAP
             Attribute objectClass = new BasicAttribute("objectClass");
             Attribute sn = new BasicAttribute("sn");
             Attribute fn = new BasicAttribute("givenName");
+            Attribute sAMAccountName = new BasicAttribute("sAMAccountName");
             Attribute userPassword = new BasicAttribute("userPassword");
 
             objectClass.add(ObjectType.user.toString());
             sn.add(user.getLastName());
             fn.add(user.getFirstName());
+            sAMAccountName.add(user.getUsername());
             userPassword.add(user.getPassword());
 
             attributes.put(objectClass);
             attributes.put(sn);
             attributes.put(fn);
+            attributes.put(sAMAccountName);
             attributes.put(userPassword);
 
             context.createSubcontext(String.format(USER_GROUP_SEARCH_BASE, user.getUsername()), attributes);
@@ -427,5 +430,10 @@ public class DataLDAP
     {
         String[] DCs = USER_GROUP_SEARCH_BASE.split(",DC=");
         return String.format("%s@%s.%s",userModel.getUsername(), DCs[1], DCs[2]);
+    }
+
+    public String getUserDCId(UserModel userModel) throws NamingException
+    {
+        return String.format(USER_GROUP_SEARCH_BASE,userModel.getUsername());
     }
 }
