@@ -53,7 +53,7 @@ public class DataKerberos
         return new Builder();
     }
 
-    private final static String USER_SEARCH_BASE = "CN=%s,CN=Users,DC=alfness,DC=com";
+    private final static String USER_SEARCH_BASE = "CN=%s,CN=Users,DC=alfresconess,DC=com";
 
     private DirContext context;
 
