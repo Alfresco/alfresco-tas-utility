@@ -82,7 +82,7 @@ public class DataKerberos
             Attribute samAccountName = new BasicAttribute("samAccountName", user.getUsername());
             Attribute userAccountControl = new BasicAttribute("userAccountControl");
 
-            userAccountControl.add(Integer.toString(UserAccountStatus.NORMAL_ACCOUNT.getValue() + DataLDAP.UserAccountStatus.PASSWD_NOTREQD.getValue()
+            userAccountControl.add(Integer.toString(UserAccountStatus.NORMAL_ACCOUNT.getValue() + UserAccountStatus.PASSWD_NOTREQD.getValue()
                     + UserAccountStatus.DONT_EXPIRE_PASSWD.getValue() + UserAccountStatus.TRUSTED_TO_AUTH_FOR_DELEGATION.getValue()
                     + UserAccountStatus.DONT_REQ_PREAUTH.getValue()));
             attributes.put(objectClass);
