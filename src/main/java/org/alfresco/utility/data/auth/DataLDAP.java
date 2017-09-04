@@ -11,6 +11,7 @@ import org.testng.Assert;
 
 import javax.naming.*;
 import javax.naming.directory.*;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 import static org.alfresco.utility.report.log.Step.STEP;
@@ -56,8 +57,7 @@ public class DataLDAP
 
     enum UserAccountStatus
     {
-        ACCOUNTDISABLE(0x0002), NORMAL_ACCOUNT(0x0200), PASSWD_NOTREQD(0x0020),
-        PASSWORD_EXPIRED(0x800000), DONT_EXPIRE_PASSWD(0x10000);
+        ACCOUNTDISABLE(0x0002), NORMAL_ACCOUNT(0x0200), PASSWD_NOTREQD(0x0020), PASSWORD_EXPIRED(0x800000), DONT_EXPIRE_PASSWD(0x10000);
 
         private final int value;
 
@@ -98,29 +98,33 @@ public class DataLDAP
         }
 
         @Override
-        public Builder createUser(UserModel user) throws NamingException
+        public Builder createUser(UserModel user) throws NamingException, UnsupportedEncodingException
         {
-            STEP(String.format("[LDAP-AD] Add user %s", user.getUsername()));
             Attributes attributes = new BasicAttributes();
-            Attribute objectClass = new BasicAttribute("objectClass");
-            Attribute sn = new BasicAttribute("sn");
-            Attribute fn = new BasicAttribute("givenName");
-            Attribute sAMAccountName = new BasicAttribute("sAMAccountName");
-            Attribute userPassword = new BasicAttribute("userPassword");
+            Attribute objectClass = new BasicAttribute("objectClass", ObjectType.user.toString());
+            Attribute sn = new BasicAttribute("sn", user.getLastName());
+            Attribute fn = new BasicAttribute("givenName", user.getFirstName());
+            Attribute samAccountName = new BasicAttribute("samAccountName", user.getUsername());
+            Attribute userAccountControl = new BasicAttribute("userAccountControl");
 
-            objectClass.add(ObjectType.user.toString());
-            sn.add(user.getLastName());
-            fn.add(user.getFirstName());
-            sAMAccountName.add(user.getUsername());
-            userPassword.add(user.getPassword());
+            userAccountControl.add(Integer.toString(UserAccountStatus.NORMAL_ACCOUNT.getValue() + UserAccountStatus.PASSWD_NOTREQD.getValue()
+                    + UserAccountStatus.DONT_EXPIRE_PASSWD.getValue()));
 
             attributes.put(objectClass);
             attributes.put(sn);
             attributes.put(fn);
-            attributes.put(sAMAccountName);
-            attributes.put(userPassword);
-
+            attributes.put(samAccountName);
+            attributes.put(userAccountControl);
             context.createSubcontext(String.format(USER_GROUP_SEARCH_BASE, user.getUsername()), attributes);
+
+            String newQuotedPassword = String.format("\"%s\"", user.getPassword());
+            byte[] newUnicodePassword = newQuotedPassword.getBytes("UTF-16LE");
+
+            ModificationItem[] mods = new ModificationItem[2];
+            mods[0] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, new BasicAttribute("unicodePwd", newUnicodePassword));
+            mods[1] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, new BasicAttribute("userAccountControl",
+                    Integer.toString(UserAccountStatus.NORMAL_ACCOUNT.getValue() + UserAccountStatus.DONT_EXPIRE_PASSWD.getValue())));
+            context.modifyAttributes(String.format(USER_GROUP_SEARCH_BASE, user.getUsername()), mods);
             return this;
         }
 
@@ -133,14 +137,23 @@ public class DataLDAP
         }
 
         @Override
-        public Builder updateUser(UserModel user, HashMap<String, String> attributes) throws NamingException
-        {
+        public Builder updateUser(UserModel user, HashMap<String, String> attributes) throws NamingException, UnsupportedEncodingException {
             STEP(String.format("[LDAP-AD] Update user %s", user.getUsername()));
             ModificationItem[] items = new ModificationItem[attributes.size()];
             int i = 0;
             for (Map.Entry<String, String> entry : attributes.entrySet())
             {
-                Attribute attribute = new BasicAttribute(entry.getKey(), entry.getValue());
+                Attribute attribute = new BasicAttribute(entry.getKey());
+                if(entry.getKey().equals("unicodePwd"))
+                {
+                    String newQuotedPassword = String.format("\"%s\"", entry.getValue());
+                    byte[] newUnicodePassword = newQuotedPassword.getBytes("UTF-16LE");
+                    attribute.add(newUnicodePassword);
+                }
+                else
+                {
+                   attribute.add(entry.getValue());
+                }
                 items[i] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, attribute);
                 i++;
             }
@@ -242,35 +255,6 @@ public class DataLDAP
             return null;
         }
 
-        public Builder createEnabledUserPasswordNotRequired(UserModel user) throws NamingException
-        {
-            Attributes attributes = new BasicAttributes();
-            Attribute objectClass = new BasicAttribute("objectClass");
-            Attribute sn = new BasicAttribute("sn");
-            Attribute fn = new BasicAttribute("givenName");
-            Attribute samAccountName = new BasicAttribute("samAccountName");
-            Attribute userPassword = new BasicAttribute("userPassword");
-            Attribute userAccountControl = new BasicAttribute("userAccountControl");
-
-            objectClass.add(ObjectType.user.toString());
-            sn.add(user.getLastName());
-            fn.add(user.getFirstName());
-            samAccountName.add(user.getUsername());
-            userPassword.add(user.getPassword());
-            userAccountControl.add(Integer.toString(
-                    UserAccountStatus.NORMAL_ACCOUNT.getValue() + UserAccountStatus.PASSWD_NOTREQD.getValue() + UserAccountStatus.PASSWORD_EXPIRED.getValue()));
-
-            attributes.put(objectClass);
-            attributes.put(sn);
-            attributes.put(fn);
-            attributes.put(samAccountName);
-            attributes.put(userPassword);
-            attributes.put(userAccountControl);
-
-            context.createSubcontext(String.format(USER_GROUP_SEARCH_BASE, user.getUsername()), attributes);
-            return this;
-        }
-
         public Builder createDisabledUser(UserModel user) throws NamingException
         {
             Attributes attributes = new BasicAttributes();
@@ -361,7 +345,8 @@ public class DataLDAP
             return this;
         }
 
-        public Builder addBulkUsersInGroups(int noGroups, int noUsersPerGroup) throws NamingException {
+        public Builder addBulkUsersInGroups(int noGroups, int noUsersPerGroup) throws NamingException, UnsupportedEncodingException
+        {
             STEP(String.format("[LDAP-AD] Add %s groups with %s users in each group", noGroups, noUsersPerGroup));
             HashMap<GroupModel, List<UserModel>> usersGroupsMap = new HashMap<>();
             for (int i = 0; i < noGroups; i++)
@@ -373,6 +358,7 @@ public class DataLDAP
                 for (int j = 0; j < noUsersPerGroup; j++)
                 {
                     UserModel testUser = UserModel.getRandomUserModel();
+                    testUser.setPassword("Password1234!");
                     createUser(testUser).addUserToGroup(testUser, testGroup);
                     groupUsers.add(testUser);
                 }
@@ -401,6 +387,7 @@ public class DataLDAP
                 return results.nextElement();
             return null;
         }
+
         public Builder deleteBulkUsers() throws NamingException
         {
             STEP(String.format("[LDAP-AD] Delete all users which start with 'user-'"));
@@ -429,11 +416,11 @@ public class DataLDAP
     public String getUserId(UserModel userModel) throws NamingException
     {
         String[] DCs = USER_GROUP_SEARCH_BASE.split(",DC=");
-        return String.format("%s@%s.%s",userModel.getUsername(), DCs[1], DCs[2]);
+        return String.format("%s@%s.%s", userModel.getUsername(), DCs[1], DCs[2]);
     }
 
     public String getUserDCId(UserModel userModel) throws NamingException
     {
-        return String.format(USER_GROUP_SEARCH_BASE,userModel.getUsername());
+        return String.format(USER_GROUP_SEARCH_BASE, userModel.getUsername());
     }
 }

@@ -1,5 +1,6 @@
 package org.alfresco.utility;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 
 import javax.naming.NamingException;
@@ -189,7 +190,8 @@ public class BeansTest extends AbstractTestNGSpringContextTests
     }
 
     @Test(enabled=false)
-    public void testLDAPAuthUser() throws NamingException, DataPreparationException, TestStepException {
+    public void testLDAPAuthUser() throws NamingException, DataPreparationException, TestStepException, UnsupportedEncodingException
+    {
         HashMap<String, String> newUserAttributes = new HashMap<>();
         newUserAttributes.put("sn", "new lastName");
         newUserAttributes.put("userPassword", "newPassword");
@@ -207,12 +209,12 @@ public class BeansTest extends AbstractTestNGSpringContextTests
     }
 
     @Test(enabled=false)
-    public void testLADPAuthUserCreation() throws NamingException
+    public void testLADPAuthUserCreation() throws NamingException, UnsupportedEncodingException
     {
         UserModel enabledUser = UserModel.getRandomUserModel();
         UserModel disabledUser = UserModel.getRandomUserModel();
         ldapAuth.perform()
-                .createEnabledUserPasswordNotRequired(enabledUser)
+                .createUser(enabledUser)
                 .createDisabledUser(disabledUser)
                 .assertUserExists(enabledUser)
                 .assertUserExists(disabledUser)
@@ -221,7 +223,7 @@ public class BeansTest extends AbstractTestNGSpringContextTests
     }
 
     @Test(enabled=false)
-    public void testLDAPAuthGroup () throws NamingException
+    public void testLDAPAuthGroup () throws NamingException, UnsupportedEncodingException
     {
         GroupModel newGroup = GroupModel.getRandomGroupModel();
         UserModel newUser = UserModel.getRandomUserModel();
