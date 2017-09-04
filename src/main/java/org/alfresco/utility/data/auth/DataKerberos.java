@@ -13,6 +13,7 @@ import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.Context;
 import javax.naming.directory.*;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -72,30 +73,35 @@ public class DataKerberos
         }
 
         @Override
-        public Builder createUser(UserModel user) throws NamingException
+        public Builder createUser(UserModel user) throws NamingException, UnsupportedEncodingException
         {
             STEP(String.format("[Kerberos] Add user %s", user.getUsername()));
             Attributes attributes = new BasicAttributes();
-            Attribute objectClass = new BasicAttribute("objectClass");
-            Attribute sn = new BasicAttribute("sn");
-            Attribute samAccountName = new BasicAttribute("samAccountName");
-            Attribute userPassword = new BasicAttribute("userPassword");
+            Attribute objectClass = new BasicAttribute("objectClass", DataLDAP.ObjectType.user.toString());
+            Attribute sn = new BasicAttribute("sn", user.getLastName());
+            Attribute samAccountName = new BasicAttribute("samAccountName", user.getUsername());
             Attribute userAccountControl = new BasicAttribute("userAccountControl");
 
-            objectClass.add(DataLDAP.ObjectType.user.toString());
-            sn.add(user.getLastName());
-            samAccountName.add(user.getUsername());
-            userPassword.add(user.getPassword());
             userAccountControl.add(Integer.toString(UserAccountStatus.NORMAL_ACCOUNT.getValue() + DataLDAP.UserAccountStatus.PASSWD_NOTREQD.getValue()
                     + UserAccountStatus.DONT_EXPIRE_PASSWD.getValue() + UserAccountStatus.TRUSTED_TO_AUTH_FOR_DELEGATION.getValue()
                     + UserAccountStatus.DONT_REQ_PREAUTH.getValue()));
             attributes.put(objectClass);
             attributes.put(sn);
             attributes.put(samAccountName);
-            attributes.put(userPassword);
             attributes.put(userAccountControl);
 
             context.createSubcontext(String.format(USER_SEARCH_BASE, user.getUsername()), attributes);
+
+            String newQuotedPassword = String.format("\"%s\"", user.getPassword());
+            byte[] newUnicodePassword = newQuotedPassword.getBytes("UTF-16LE");
+
+            ModificationItem[] mods = new ModificationItem[2];
+            mods[0] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, new BasicAttribute("unicodePwd", newUnicodePassword));
+            mods[1] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
+                    new BasicAttribute("userAccountControl",
+                            Integer.toString(UserAccountStatus.NORMAL_ACCOUNT.getValue() + UserAccountStatus.DONT_EXPIRE_PASSWD.getValue()
+                                    + UserAccountStatus.TRUSTED_TO_AUTH_FOR_DELEGATION.getValue() + UserAccountStatus.DONT_REQ_PREAUTH.getValue())));
+            context.modifyAttributes(String.format(USER_SEARCH_BASE, user.getUsername()), mods);
             return this;
         }
 
@@ -128,7 +134,7 @@ public class DataKerberos
         }
 
         @Override
-        public UserManageable updateUser(UserModel user, HashMap<String, String> attributes) throws NamingException
+        public UserManageable updateUser(UserModel user, HashMap<String, String> attributes) throws NamingException, UnsupportedEncodingException
         {
             {
                 STEP(String.format("[Kerberos] Update user %s", user.getUsername()));
@@ -136,7 +142,17 @@ public class DataKerberos
                 int i = 0;
                 for (Map.Entry<String, String> entry : attributes.entrySet())
                 {
-                    Attribute attribute = new BasicAttribute(entry.getKey(), entry.getValue());
+                    Attribute attribute = new BasicAttribute(entry.getKey());
+                    if(entry.getKey().equals("unicodePwd"))
+                    {
+                        String newQuotedPassword = String.format("\"%s\"", entry.getValue());
+                        byte[] newUnicodePassword = newQuotedPassword.getBytes("UTF-16LE");
+                        attribute.add(newUnicodePassword);
+                    }
+                    else
+                    {
+                        attribute.add(entry.getValue());
+                    }
                     items[i] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, attribute);
                     i++;
                 }
