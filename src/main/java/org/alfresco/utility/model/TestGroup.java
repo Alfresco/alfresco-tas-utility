@@ -14,6 +14,7 @@ public @interface TestGroup
     public static String FULL = "full";
     public static String PROTOCOLS = "protocols";
     public static String SSO = "sso";
+    public static String VALIDATION_CYCLE = "validation-cycle";
 
     /*
      * Used in Rest api mostly
