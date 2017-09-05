@@ -78,6 +78,8 @@ public class DataUser extends TestData<DataUser>
         if (!created)
             throw new DataPreparationException(String.format(USER_NOT_CREATED, newUser.toString()));
 
+        String userNodeRef = userService.getUserNodeRef(getAdminUser().getUsername(), getAdminUser().getPassword(), userName);
+        newUser.setNodeRef(userNodeRef);
         newUser.setDomain(getCurrentUser().getDomain());
         return newUser;
     }
