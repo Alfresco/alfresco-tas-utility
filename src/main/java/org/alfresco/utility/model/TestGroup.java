@@ -81,9 +81,27 @@ public @interface TestGroup
     public static String GOOGLE_DOCS_CONSOLE = "google-docs-console";
     public static String MODEL_MSG_CONSOLE = "model-messages-console";
 
+    /*
+     * Used in GUI Installer
+     */     
     public static String INSTALLER_ALFRESCO = "installer-alfresco";
     public static String INSTALLER_ALFRESCO_SHARE = "installer-alfresco-share";
     public static String INSTALLER_ALFRESCO_PLATFORM = "installer-alfresco-platform";
     public static String UBUNTU = "ubuntu";
-
+    
+    /*
+     * Used in Identity Provider
+     */
+    public static String AUTHENTICATION_INTERNAL = "authentication-internal";
+    public static String AUTHENTICATION_KERBEROS = "authentication-kerberos";
+    public static String AUTHENTICATION_OPENLDAP = "authentication-openldap";
+    public static String AUTHENTICATION_ADLDAP = "authentication-adldap";
+    public static String AUTHENTICATION_NTLM_SSO = "authentication-ntlm-sso";
+    public static String AUTHENTICATION_ORACLE_ACTIVEDIR = "authentication-oracle-active-directory";
+    public static String AUTHENTICATION_CHAIN = "authentication-chain";
+    
+    /*
+     * Used in Cryptographic password hashing
+     */
+    public static String PASSWORD_ENCONDING = "password-encoding";
 }
