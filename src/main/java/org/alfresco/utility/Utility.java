@@ -675,6 +675,7 @@ public class Utility
      */
     public static String executeOnWinAndReturnOutput(String command) throws Exception
     {
+        LOG.info("On Windows execute command: [{}]", command);
         StringBuilder sb = new StringBuilder();
         try
         {

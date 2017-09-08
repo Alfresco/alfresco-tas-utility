@@ -77,9 +77,6 @@ public class BeansTest extends AbstractTestNGSpringContextTests
     protected DataOracleDirectoryServer oracleAuth;
 
     @Autowired
-    protected DataNtlmPassthru ntlmPassthruAuth;
-
-    @Autowired
     protected DataLDAP ldapAuth;
 
     @Autowired
@@ -169,22 +166,6 @@ public class BeansTest extends AbstractTestNGSpringContextTests
                 .createUser(userModel)
                 .assertUserExists(userModel)
                 .updateUser(userModel, newUserAttributes)
-                .deleteUser(userModel)
-                .assertUserDoesNotExist(userModel);
-    }
-
-    @Test(enabled=false)
-    public void testNtlmPassthruAuth() throws Exception {
-        HashMap<String, String> newUserAttributes = new HashMap<>();
-        newUserAttributes.put("ln", "new lastName");
-        newUserAttributes.put("pwd", "newPassword");
-        UserModel userModel = UserModel.getRandomUserModel();
-        ntlmPassthruAuth.perform()
-                .createUser(userModel)
-                .assertUserExists(userModel)
-                .updateUser(userModel, newUserAttributes)
-                .disableUser(userModel)
-                .enableUser(userModel)
                 .deleteUser(userModel)
                 .assertUserDoesNotExist(userModel);
     }
