@@ -411,6 +411,24 @@ public class DataLDAP
             }
             return this;
         }
+
+        public Builder addGroupAsMemberOfAnotherGroup(GroupModel childGroup, GroupModel group) throws NamingException
+        {
+            STEP(String.format("[LDAP-AD] Add group %s as member of group %s", childGroup.getDisplayName(), group.getDisplayName()));
+            Attribute memberAttribute = new BasicAttribute("memberUID", String.format(USER_GROUP_SEARCH_BASE, childGroup.getDisplayName()));
+            ModificationItem member[] = new ModificationItem[1];
+            member[0] = new ModificationItem(DirContext.ADD_ATTRIBUTE, memberAttribute);
+            context.modifyAttributes(String.format(USER_GROUP_SEARCH_BASE, group.getDisplayName()), member);
+            return this;
+        }
+
+        public Builder assertGroupIsMemberOfGroup(GroupModel childGroup, GroupModel group) throws NamingException
+        {
+            STEP(String.format("[LDAP-AD] Assert group %s is member of group %s", childGroup.getDisplayName(), group.getDisplayName()));
+            Attributes membership = context.getAttributes(String.format(USER_GROUP_SEARCH_BASE, group.getDisplayName()), new String[] { "memberUid" });
+            Assert.assertTrue(membership.toString().contains(String.format(USER_GROUP_SEARCH_BASE, childGroup.getDisplayName())));
+            return this;
+        }
     }
 
     public String getUserId(UserModel userModel) throws NamingException
