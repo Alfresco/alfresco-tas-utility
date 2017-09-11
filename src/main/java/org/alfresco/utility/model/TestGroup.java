@@ -87,7 +87,6 @@ public @interface TestGroup
     public static String INSTALLER_ALFRESCO = "installer-alfresco";
     public static String INSTALLER_ALFRESCO_SHARE = "installer-alfresco-share";
     public static String INSTALLER_ALFRESCO_PLATFORM = "installer-alfresco-platform";
-    public static String UBUNTU = "ubuntu";
     
     /*
      * Used in Identity Provider
@@ -104,4 +103,7 @@ public @interface TestGroup
      * Used in Cryptographic password hashing
      */
     public static String PASSWORD_ENCONDING = "password-encoding";
+    public static String MD4 = "md4";
+    public static String SHA256 = "sha256";
+    public static String BCRYPT10 = "bcrypt10";
 }
