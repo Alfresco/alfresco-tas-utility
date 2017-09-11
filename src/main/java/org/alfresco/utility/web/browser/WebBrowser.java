@@ -1101,4 +1101,16 @@ public class WebBrowser extends EventFiringWebDriver
      * return false;
      * }
      */
+
+    /**
+     * Wait until the given text is not present in the given Element
+     *
+     * @param element WebElement
+     */
+    public void waitUntilElementDoesNotContainText(WebElement element, String text)
+    {
+        Parameter.checkIsMandotary("Element", element);
+        WebDriverWait wait = new WebDriverWait(this, properties.getExplicitWait());
+        wait.until(ExpectedConditions.not(ExpectedConditions.textToBePresentInElement(element, text)));
+    }
 }
