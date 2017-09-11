@@ -14,7 +14,6 @@ public class UserModel extends TestModel
     private String domain;
     private String firstName;
     private String lastName;
-    private String nodeRef;
 
     /*
      * the role of the user;
@@ -142,11 +141,4 @@ public class UserModel extends TestModel
         this.lastName = lastName;
     }
 
-    public String getNodeRef() {
-        return nodeRef;
-    }
-
-    public void setNodeRef(String nodeRef) {
-        this.nodeRef = nodeRef;
-    }
 }
