@@ -1,6 +1,7 @@
 package org.alfresco.utility.web.browser;
 
 import java.io.File;
+import java.util.HashMap;
 
 import org.alfresco.utility.TasProperties;
 import org.alfresco.utility.exception.UnrecognizedBrowser;
@@ -56,11 +57,8 @@ public enum Browser
      */
     public static FirefoxProfile changeFirefoxDownloadLocationToTestDataFolder()
     {
-        String srcRoot = System.getProperty("user.dir") + File.separator;
-        String testDataFolder = srcRoot + "testdata" + File.separator;
-
         FirefoxProfile profile = new FirefoxProfile();
-        profile.setPreference("browser.download.dir", testDataFolder);
+        profile.setPreference("browser.download.dir", getDownloadLocation());
         profile.setPreference("browser.download.folderList", 2);
         profile.setPreference("browser.download.manager.alertOnEXEOpen", false);
         profile.setPreference("browser.helperApps.neverAsk.saveToDisk",
@@ -83,8 +81,13 @@ public enum Browser
                 return new FirefoxDriver(changeFirefoxDownloadLocationToTestDataFolder());
             case "chrome":
                 System.setProperty("webdriver.chrome.driver", properties.getEnv().getProperty("browser.chrome.driver"));
+                HashMap<String, Object> chromePrefs = new HashMap<String, Object>();
+                chromePrefs.put("profile.default_content_settings.popups", 0);
+                chromePrefs.put("download.default_directory", getDownloadLocation());
+                
                 ChromeOptions options = new ChromeOptions();
                 options.addArguments("--start-maximized");
+                options.setExperimentalOption("prefs", chromePrefs);
                 ChromeDriver chromeDriver = new ChromeDriver(options);
                 return chromeDriver;
             case "ie":
@@ -96,5 +99,12 @@ public enum Browser
             default:
                 throw new UnrecognizedBrowser(properties.getBrowserName());
         }
+    }
+    
+    private static String getDownloadLocation()
+    {
+        String srcRoot = System.getProperty("user.dir") + File.separator;
+        String testDataFolder = srcRoot + "testdata" + File.separator;
+        return testDataFolder;
     }
 }
