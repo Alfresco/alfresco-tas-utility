@@ -552,6 +552,26 @@ public class Utility
             executeOnUnix("sudo kill `ps ax | grep \"" + processName + "\" | awk '{print $1}'`");
         }
     }
+    
+    /**
+     * Kill a process using it's exact name.
+     * 
+     * @param processName
+     * @throws IOException
+     */
+    public static void killProcessByExactName(String processName) throws IOException
+    {
+        LOG.info("Killing application using process name [{}]", processName);
+        if (SystemUtils.IS_OS_WINDOWS)
+        {
+            String sys32 = System.getenv("SystemRoot") + "\\system32";
+            Runtime.getRuntime().exec(new String[] { sys32 + "\\taskkill", "/F", "/IM", processName });
+        }
+        else
+        {
+            executeOnUnix("sudo kill `ps ax | grep \"" + "\\<" + processName + "\\>\" | awk '{print $1}'`");
+        }
+    }
 
     /**
      * Get new {@link File} with content based on file model.
