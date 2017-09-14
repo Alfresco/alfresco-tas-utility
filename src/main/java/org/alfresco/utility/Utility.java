@@ -569,7 +569,7 @@ public class Utility
         }
         else
         {
-            executeOnUnix("sudo kill `ps ax | grep \"" + "\\<" + processName + "\\>\" | awk '{print $1}'`");
+            executeOnUnix("sudo kill `ps ax | grep \"<" + processName + ">\" | awk '{print $1}'`");
         }
     }
 
