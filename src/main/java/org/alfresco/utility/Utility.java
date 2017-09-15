@@ -570,8 +570,8 @@ public class Utility
         else
         {
         	LOG.info("Kill GUI installer process using command: " 
-        				+ "sudo kill `ps ax | grep -v \"maven\" | grep \"" + processName + "\" | awk '{print $1}'`");
-            executeOnUnix("sudo kill `ps ax | grep -v \"maven\" | grep \"" + processName + "\" | awk '{print $1}'`");
+        				+ "sudo kill `ps ax | grep -v \"maven\" | grep -v \"mvn\" | grep \"" + processName + "\" | awk '{print $1}'`");
+            executeOnUnix("sudo kill `ps ax | grep -v \"maven\" | grep -v \"mvn\" | grep \"" + processName + "\" | awk '{print $1}'`");
         }
     }
 
