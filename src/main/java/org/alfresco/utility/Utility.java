@@ -559,7 +559,7 @@ public class Utility
      * @param processName
      * @throws IOException
      */
-    public static void killProcessByExactName(String processName) throws IOException
+    public static void killGuiInstallerProcess(String processName) throws IOException
     {
         LOG.info("Killing application using process name [{}]", processName);
         if (SystemUtils.IS_OS_WINDOWS)
@@ -569,7 +569,9 @@ public class Utility
         }
         else
         {
-            executeOnUnix("sudo kill `ps ax | grep \"<" + processName + ">\" | awk '{print $1}'`");
+        	LOG.info("Kill GUI installer process using command: " 
+        				+ "sudo kill `ps ax | grep -v \"maven\" | grep \"" + processName + "\" | awk '{print $1}'`");
+            executeOnUnix("sudo kill `ps ax | grep -v \"maven\" | grep \"" + processName + "\" | awk '{print $1}'`");
         }
     }
 
