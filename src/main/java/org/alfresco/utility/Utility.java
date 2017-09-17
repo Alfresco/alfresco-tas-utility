@@ -619,7 +619,7 @@ public class Utility
         {
             if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX)
             {
-            	LOG.info("Get all running processes using ps -ef");
+            	LOG.info("Get all running processes using ps -ef | grep -v \"maven\" | grep -v \"mvn\"");
                 p = Runtime.getRuntime().exec("ps -ef | grep -v \"maven\" | grep -v \"mvn\"");
             }
             else if (SystemUtils.IS_OS_WINDOWS)
@@ -631,16 +631,11 @@ public class Utility
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
             BufferedReader bufferReader = new BufferedReader(inputStreamReader);
             String line;
-            
-            LOG.info("Debug buffered reader" + bufferReader.toString());
-            
+                        
             while ((line = bufferReader.readLine()) != null)
             {
-            	LOG.info("Process line found: " + line);
-                if (line.toLowerCase().contains(processName)) {
-                	LOG.info("Process found: " + line);
+                if (line.toLowerCase().contains(processName))
                     return true;
-                }
             }
             inputStream.close();
             inputStreamReader.close();
