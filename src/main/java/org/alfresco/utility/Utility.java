@@ -572,7 +572,7 @@ public class Utility
         }
         else
         {
-            executeOnUnix("sudo kill `ps ax | grep \"" + processName + "\" | grep -v \"mvn\" | grep \"maven\" | awk '{print $1}'`");
+            executeOnUnix("sudo kill `ps ax | grep \"" + processName + "\" | grep -v \"mvn\" | grep -v \"maven\" | awk '{print $1}'`");
         }
     }
 
