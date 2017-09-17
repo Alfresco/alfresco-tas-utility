@@ -42,7 +42,7 @@ import org.testng.Assert;
 public class Utility
 {
     static Logger LOG = LogFactory.getLogger();
-    public static int retryCountSeconds = 15;
+    public static int retryCountSeconds = 30;
 
     public static void checkObjectIsInitialized(Object model, String message) throws Exception
     {
