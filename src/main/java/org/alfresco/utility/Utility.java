@@ -619,8 +619,8 @@ public class Utility
         {
             if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX)
             {
-            	LOG.info("Get all running processes using ps -ef | grep -v \"maven\"");
-                p = Runtime.getRuntime().exec("ps -ef | grep -v \"maven\"");
+            	LOG.info("Get all running processes using ps -ef | grep -v \"maven\" | grep -v \"mvn\"");
+                p = Runtime.getRuntime().exec("ps -ef | grep -v \"maven\" | grep -v \"mvn\"");
             }
             else if (SystemUtils.IS_OS_WINDOWS)
             {
@@ -633,9 +633,10 @@ public class Utility
             String line;
             while ((line = bufferReader.readLine()) != null)
             {
-                if (line.toLowerCase().contains(processName))
+                if (line.toLowerCase().contains(processName)) {
                 	LOG.info("Process found: " + line);
                     return true;
+                }
             }
             inputStream.close();
             inputStreamReader.close();
