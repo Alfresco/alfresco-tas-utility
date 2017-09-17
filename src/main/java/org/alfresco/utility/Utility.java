@@ -619,7 +619,8 @@ public class Utility
         {
             if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX)
             {
-                p = Runtime.getRuntime().exec("ps -ef");
+            	LOG.info("Get all running processes using ps -ef | grep -v \"maven\"");
+                p = Runtime.getRuntime().exec("ps -ef | grep -v \"maven\"");
             }
             else if (SystemUtils.IS_OS_WINDOWS)
             {
