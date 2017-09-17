@@ -42,7 +42,7 @@ import org.testng.Assert;
 public class Utility
 {
     static Logger LOG = LogFactory.getLogger();
-    public static int retryCountSeconds = 30;
+    public static int retryCountSeconds = 15;
 
     public static void checkObjectIsInitialized(Object model, String message) throws Exception
     {
@@ -552,28 +552,6 @@ public class Utility
             executeOnUnix("sudo kill `ps ax | grep \"" + processName + "\" | awk '{print $1}'`");
         }
     }
-    
-    /**
-     * Kill a process using it's exact name.
-     * 
-     * @param processName
-     * @throws IOException
-     */
-    public static void killGuiInstallerProcess(String processName) throws IOException
-    {
-        LOG.info("Killing application using process name [{}]", processName);
-        if (SystemUtils.IS_OS_WINDOWS)
-        {
-            String sys32 = System.getenv("SystemRoot") + "\\system32";
-            Runtime.getRuntime().exec(new String[] { sys32 + "\\taskkill", "/F", "/IM", processName });
-        }
-        else
-        {
-        	LOG.info("Kill GUI installer process using command: " 
-        				+ "sudo kill `ps ax | grep -v \"maven\" | grep -v \"mvn\" | grep \"" + processName + "\" | awk '{print $1}'`");
-            executeOnUnix("sudo kill `ps ax | grep -v \"maven\" | grep -v \"mvn\" | grep \"" + processName + "\" | awk '{print $1}'`");
-        }
-    }
 
     /**
      * Get new {@link File} with content based on file model.
@@ -619,8 +597,7 @@ public class Utility
         {
             if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX)
             {
-            	LOG.info("Get all running processes using ps -ef | grep -v \"maven\" | grep -v \"mvn\"");
-                p = Runtime.getRuntime().exec("ps -ef | grep -v \"maven\" | grep -v \"mvn\"");
+                p = Runtime.getRuntime().exec("ps -ef");
             }
             else if (SystemUtils.IS_OS_WINDOWS)
             {
@@ -631,7 +608,6 @@ public class Utility
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
             BufferedReader bufferReader = new BufferedReader(inputStreamReader);
             String line;
-                        
             while ((line = bufferReader.readLine()) != null)
             {
                 if (line.toLowerCase().contains(processName))
