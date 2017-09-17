@@ -633,6 +633,7 @@ public class Utility
             String line;
             while ((line = bufferReader.readLine()) != null)
             {
+            	LOG.info("Process line found: " + line);
                 if (line.toLowerCase().contains(processName)) {
                 	LOG.info("Process found: " + line);
                     return true;
