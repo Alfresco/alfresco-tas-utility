@@ -432,7 +432,7 @@ public class Utility
      * executeOnWin("ls -la")
      * 
      * @param command
-     * @return
+     * @return output as string
      */
     public static String executeOnUnix(String command)
     {
@@ -468,6 +468,30 @@ public class Utility
         LOG.info("Unix command execution result: " + sb.toString());
         
         return sb.toString();
+    }
+    
+    /**
+     * Execute any Terminal commands
+     * Example:
+     * executeOnWin("ls -la")
+     * 
+     * @param command
+     * @return process
+     */
+    public static Process executeCommandOnUnix(String command)
+    {
+        LOG.info("On Unix execute command: [{}]", command);
+
+        String[] commands = new String[] { "/bin/sh", "-c", command };
+     
+        Process proc = null;
+        try {
+			proc = new ProcessBuilder(commands).start();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        
+        return proc;
     }
 
     /**
@@ -621,7 +645,7 @@ public class Utility
             if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX)
             {
             	LOG.info("Executing command to check process is running: ps -ef | grep -v \"maven\" | grep -v \"mvn\"");
-                executeOnUnix("ps -ef | grep -v \"maven\" | grep -v \"mvn\"");
+                p = executeCommandOnUnix("ps -ef | grep -v \"maven\" | grep -v \"mvn\"");
             }
             else if (SystemUtils.IS_OS_WINDOWS)
             {
