@@ -574,9 +574,13 @@ public class Utility
             String sys32 = System.getenv("SystemRoot") + "\\system32";
             Runtime.getRuntime().exec(new String[] { sys32 + "\\taskkill", "/F", "/IM", processName });
         }
-        else
+        else if (SystemUtils.IS_OS_LINUX)
         {
-            executeOnUnix("sudo kill `ps ax | grep \"" + processName + "\" | awk '{print $1}'`");
+            executeOnUnix("kill `ps ax | grep \"" + processName + "\" | awk '{print $1}'`");
+        }
+        else if (SystemUtils.IS_OS_MAC)
+        {
+        	executeOnUnix("pkill -f " + processName);
         }
     }
     
@@ -641,8 +645,8 @@ public class Utility
         LOG.info("process name :" + processName);
         Process p = null;
         try
-        {
-            if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX)
+        {        			
+            if (SystemUtils.IS_OS_LINUX)
             {
             	LOG.info("Executing command to check process is running: ps -ef | grep -v \"maven\" | grep -v \"mvn\"");
                 p = executeCommandOnUnix("ps -ef | grep -v \"maven\" | grep -v \"mvn\"");
@@ -652,6 +656,19 @@ public class Utility
                 String sys32 = System.getenv("SystemRoot") + "\\system32";
                 p = Runtime.getRuntime().exec(new String[] { "cmd", "/c", sys32 + "\\tasklist" });
             }
+            else if (SystemUtils.IS_OS_MAC)
+            {
+            	String com  = "pgrep -f " +  processName;
+            	p = Runtime.getRuntime().exec(com);
+                InputStream inputStream = p.getInputStream();
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferReader = new BufferedReader(inputStreamReader);
+                if(bufferReader.readLine() != null)
+                	return true;
+                else
+                	return false;
+            }
+            
             InputStream inputStream = p.getInputStream();
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
             BufferedReader bufferReader = new BufferedReader(inputStreamReader);
