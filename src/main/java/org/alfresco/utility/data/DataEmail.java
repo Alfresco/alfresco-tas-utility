@@ -134,12 +134,11 @@ public class DataEmail extends TestData<DataEmail>
         Message[] messages = null;
         ArrayList<Message> messageArrayList = new ArrayList<>();
 
+        int retry = 0;
+        connectToHost(userModel, host, port, protocol);
+
         try
         {
-            int retry = 0;
-
-            connectToHost(userModel, host, port, protocol);
-
             while (retry < 15)
             {
                 messages = findMessagesBySubject(subject);
