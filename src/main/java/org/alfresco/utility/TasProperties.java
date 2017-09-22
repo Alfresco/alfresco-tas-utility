@@ -45,6 +45,15 @@ public class TasProperties
     @Value("${alfresco.port:8070}")
     private int port;
 
+    @Value("${sync.scheme:http}")
+    private String syncScheme;
+
+    @Value("${sync.server:localhost}")
+    private String syncServer;
+
+    @Value("${sync.port:9090}")
+    private int syncPort;
+
     @Value("${jmx.user:controlRole}")
     private String jmxUser;
 
@@ -262,6 +271,14 @@ public class TasProperties
     public String getTestServerUrl()
     {
         return String.format("%s://%s", getScheme(), getServer());
+    }
+    
+    /**
+     * @return host: <schema>://<server>
+     */
+    public String getSyncServerUrl()
+    {
+        return String.format("%s://%s", getSyncScheme(), getSyncServer());
     }
 
     public String getDbUrl()
@@ -531,6 +548,36 @@ public class TasProperties
     public void setNtlmSecurityCredentials(String ntlmSecurityCredentials)
     {
         this.ntlmSecurityCredentials = ntlmSecurityCredentials;
+    }
+
+    public String getSyncScheme()
+    {
+        return syncScheme;
+    }
+
+    public void setSyncScheme(String syncScheme)
+    {
+        this.syncScheme = syncScheme;
+    }
+
+    public String getSyncServer()
+    {
+        return syncServer;
+    }
+
+    public void setSyncServer(String syncServer)
+    {
+        this.syncServer = syncServer;
+    }
+
+    public int getSyncPort()
+    {
+        return syncPort;
+    }
+
+    public void setSyncPort(int syncPort)
+    {
+        this.syncPort = syncPort;
     }
 
 }
