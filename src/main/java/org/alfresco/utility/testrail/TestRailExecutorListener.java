@@ -47,7 +47,7 @@ public class TestRailExecutorListener implements ISuiteListener, ITestListener
         }
         else
         {
-            TestRailExecutor.LOG.info(
+            TestRailExecutor.LOG.warn(
                     "'TestRailExecutorListener' is added in your suite.xml file, but the property: testManagement.enabled is set to 'false' in your {} file",
                     Utility.getEnvironmentPropertyFile());
         }
