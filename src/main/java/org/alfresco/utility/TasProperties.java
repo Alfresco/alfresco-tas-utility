@@ -19,7 +19,7 @@ import org.springframework.core.env.Environment;
  * environment defined For "test" environment just define {code}
  * System.setProperty("environment", "test"); {code} or run your test passing
  * -Denvironment=test
- * 
+ *
  * @author Paul.Brodner
  */
 @Configuration
@@ -45,15 +45,6 @@ public class TasProperties
     @Value("${alfresco.port:8070}")
     private int port;
 
-    @Value("${sync.scheme:http}")
-    private String syncScheme;
-
-    @Value("${sync.server:localhost}")
-    private String syncServer;
-
-    @Value("${sync.port:9090}")
-    private int syncPort;
-
     @Value("${jmx.user:controlRole}")
     private String jmxUser;
 
@@ -74,7 +65,7 @@ public class TasProperties
 
     @Value("${db.password:alfresco}")
     private String dbPassword;
-    
+
     @Value("${serverHealth.showTenants:true}")
     private Boolean showTenantsOnServerHealth;
 
@@ -89,7 +80,7 @@ public class TasProperties
 
     @Value("${browser.explicitWait:30}")
     private long explicitWait;
-    
+
     @Value("${grid.url:not-set}")
     private String gridUrl;
 
@@ -123,11 +114,26 @@ public class TasProperties
     @Value("${ldap.url:ldap://172.29.100.119:389}")
     private String ldapURL;
 
+    @Value("${ldap.search.base:CN=Users,DC=alfresconess,DC=com}")
+    private String ldapSearchBase;
+
+    @Value("${ldap2.search.base:CN=Users,DC=alfresconess2,DC=com}")
+    private String ldapSearchBase2;
+
     @Value("${ldap.security.principal:CN=Administrator,CN=Users,DC=alfness,DC=com}")
     private String ldapSecurityPrincipal;
 
     @Value("${ldap.security.credentials:Alf1234}")
     private String ldapSecurityCredentials;
+
+    @Value("${ldap2.url:ldap://1/52.213.122.208:389}")
+    private String ldap2URL;
+
+    @Value("${ldap2.security.principal:CN=Administrator,CN=Users,DC=alfness,DC=com}")
+    private String ldap2SecurityPrincipal;
+
+    @Value("${ldap2.security.credentials:Alf1234}")
+    private String ldap2SecurityCredentials;
 
     @Value("${oldap.url:ldap://172.29.100.226:389}")
     private String oldapURL;
@@ -146,6 +152,15 @@ public class TasProperties
 
     @Value("${ntlm.security.credentials:Alf1234}")
     private String ntlmSecurityCredentials;
+
+    @Value("${sync.scheme:http}")
+    private String syncScheme;
+
+    @Value("${sync.server:localhost}")
+    private String syncServer;
+
+    @Value("${sync.port:9090}")
+    private int syncPort;
 
     public Boolean showTenantsOnServerHealth()
     {
@@ -272,14 +287,6 @@ public class TasProperties
     {
         return String.format("%s://%s", getScheme(), getServer());
     }
-    
-    /**
-     * @return host: <schema>://<server>
-     */
-    public String getSyncServerUrl()
-    {
-        return String.format("%s://%s", getSyncScheme(), getSyncServer());
-    }
 
     public String getDbUrl()
     {
@@ -340,7 +347,7 @@ public class TasProperties
     {
         this.implicitWait = implicitWait;
     }
-    
+
     public long getExplicitWait()
     {
         return explicitWait;
@@ -390,6 +397,22 @@ public class TasProperties
         this.screenshotsDir = f;
     }
 
+    public String getLdapSearchBase() {
+        return ldapSearchBase;
+    }
+
+    public void setLdapSearchBase(String ldapSearchBase) {
+        this.ldapSearchBase = ldapSearchBase;
+    }
+
+    public String getLdapSearchBase2() {
+        return ldapSearchBase2;
+    }
+
+    public void setLdapSearchBase2(String ldapSearchBase2) {
+        this.ldapSearchBase2 = ldapSearchBase2;
+    }
+
     public String getEnvPlatformName()
     {
         return envPlatformName;
@@ -423,6 +446,14 @@ public class TasProperties
     public String getSecurityAuth()
     {
         return securityAuth;
+    }
+
+    /**
+     * @return host: <schema>://<server>
+     */
+    public String getSyncServerUrl()
+    {
+        return String.format("%s://%s", getSyncScheme(), getSyncServer());
     }
 
     public void setSecurityAuth(String securityAuth)
@@ -465,9 +496,19 @@ public class TasProperties
         return ldapURL;
     }
 
+    public String getLdap2URL()
+    {
+        return ldap2URL;
+    }
+
     public void setLdapURL(String ldapURL)
     {
         this.ldapURL = ldapURL;
+    }
+
+    public void setLdap2URL(String ldap2URL)
+    {
+        this.ldap2URL = ldap2URL;
     }
 
     public String getLdapSecurityPrincipal()
@@ -475,9 +516,19 @@ public class TasProperties
         return ldapSecurityPrincipal;
     }
 
+    public String getLdap2SecurityPrincipal()
+    {
+        return ldap2SecurityPrincipal;
+    }
+
     public void setLdapSecurityPrincipal(String ldapSecurityPrincipal)
     {
         this.ldapSecurityPrincipal = ldapSecurityPrincipal;
+    }
+
+    public void setLdap2SecurityPrincipal(String ldap2SecurityPrincipal)
+    {
+        this.ldap2SecurityPrincipal = ldap2SecurityPrincipal;
     }
 
     public String getLdapSecurityCredentials()
@@ -485,9 +536,19 @@ public class TasProperties
         return ldapSecurityCredentials;
     }
 
+    public String getLdap2SecurityCredentials()
+    {
+        return ldap2SecurityCredentials;
+    }
+
     public void setLdapSecurityCredentials(String ldapSecurityCredentials)
     {
         this.ldapSecurityCredentials = ldapSecurityCredentials;
+    }
+
+    public void setLdap2SecurityCredentials(String ldap2SecurityCredentials)
+    {
+        this.ldap2SecurityCredentials = ldap2SecurityCredentials;
     }
 
     public String getOLdapURL()
