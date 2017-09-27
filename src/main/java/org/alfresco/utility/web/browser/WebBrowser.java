@@ -1074,6 +1074,22 @@ public class WebBrowser extends EventFiringWebDriver
         webElement.sendKeys(Keys.TAB);
     }
 
+    /**
+     * Wait until element is visible with retry
+     * @param locator
+     * @param retryCount
+     */
+    public void waitUntilElementIsVisibleWithRetry(By locator, int retryCount) {
+        Parameter.checkIsMandotary("Locator", locator);
+        int counter = 0;
+
+        while(!isElementDisplayed(locator)&& counter <= retryCount)
+        {
+            waitInSeconds(2);
+            counter++;
+        }
+    }
+
     /*
      * private boolean isDisplayedBasedOnLocator(By locator)
      * {
