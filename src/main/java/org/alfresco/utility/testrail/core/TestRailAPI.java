@@ -596,6 +596,11 @@ public class TestRailAPI
         if (!currentTestCase.getTestCaseDestination().hasRootSection())
         {
             Section root = addNewSection(currentTestCase.getTestCaseDestination().getRootSectionName(), null, currentProjectID, currentSuiteID);
+            if (root.getName()==null)
+            {
+             LOG.error("Cannot add a new Section. Please check previous log WARN/ERROR !!!");
+             return;
+            }
             currentTestCase.getTestCaseDestination().setRootSection(root);
             allSections.add(root);
         }

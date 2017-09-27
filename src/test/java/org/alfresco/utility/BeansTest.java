@@ -1,5 +1,6 @@
 package org.alfresco.utility;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 
 import javax.naming.NamingException;
@@ -74,9 +75,6 @@ public class BeansTest extends AbstractTestNGSpringContextTests
 
     @Autowired
     protected DataOracleDirectoryServer oracleAuth;
-
-    @Autowired
-    protected DataNtlmPassthru ntlmPassthruAuth;
 
     @Autowired
     protected DataLDAP ldapAuth;
@@ -173,23 +171,8 @@ public class BeansTest extends AbstractTestNGSpringContextTests
     }
 
     @Test(enabled=false)
-    public void testNtlmPassthruAuth() throws Exception {
-        HashMap<String, String> newUserAttributes = new HashMap<>();
-        newUserAttributes.put("ln", "new lastName");
-        newUserAttributes.put("pwd", "newPassword");
-        UserModel userModel = UserModel.getRandomUserModel();
-        ntlmPassthruAuth.perform()
-                .createUser(userModel)
-                .assertUserExists(userModel)
-                .updateUser(userModel, newUserAttributes)
-                .disableUser(userModel)
-                .enableUser(userModel)
-                .deleteUser(userModel)
-                .assertUserDoesNotExist(userModel);
-    }
-
-    @Test(enabled=false)
-    public void testLDAPAuthUser() throws NamingException, DataPreparationException, TestStepException {
+    public void testLDAPAuthUser() throws NamingException, DataPreparationException, TestStepException, UnsupportedEncodingException
+    {
         HashMap<String, String> newUserAttributes = new HashMap<>();
         newUserAttributes.put("sn", "new lastName");
         newUserAttributes.put("userPassword", "newPassword");
@@ -207,12 +190,12 @@ public class BeansTest extends AbstractTestNGSpringContextTests
     }
 
     @Test(enabled=false)
-    public void testLADPAuthUserCreation() throws NamingException
+    public void testLADPAuthUserCreation() throws NamingException, UnsupportedEncodingException
     {
         UserModel enabledUser = UserModel.getRandomUserModel();
         UserModel disabledUser = UserModel.getRandomUserModel();
         ldapAuth.perform()
-                .createEnabledUserPasswordNotRequired(enabledUser)
+                .createUser(enabledUser)
                 .createDisabledUser(disabledUser)
                 .assertUserExists(enabledUser)
                 .assertUserExists(disabledUser)
@@ -221,7 +204,7 @@ public class BeansTest extends AbstractTestNGSpringContextTests
     }
 
     @Test(enabled=false)
-    public void testLDAPAuthGroup () throws NamingException
+    public void testLDAPAuthGroup () throws NamingException, UnsupportedEncodingException
     {
         GroupModel newGroup = GroupModel.getRandomGroupModel();
         UserModel newUser = UserModel.getRandomUserModel();
@@ -238,7 +221,7 @@ public class BeansTest extends AbstractTestNGSpringContextTests
     }
 
     @Test(enabled=false)
-    public void testOpenLDAPAuthUser() throws NamingException, TestStepException {
+    public void testOpenLDAPAuthUser() throws Exception {
         HashMap<String, String> newUserAttributes = new HashMap<>();
         newUserAttributes.put("sn", "new lastNamem");
         newUserAttributes.put("userPassword", "newPassword123");

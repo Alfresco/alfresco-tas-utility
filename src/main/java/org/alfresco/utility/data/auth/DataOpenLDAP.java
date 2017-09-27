@@ -14,10 +14,7 @@ import javax.naming.NameNotFoundException;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Random;
+import java.util.*;
 
 import static org.alfresco.utility.report.log.Step.STEP;
 
@@ -79,14 +76,17 @@ public class DataOpenLDAP
             Attributes attributes = new BasicAttributes();
             Attribute objectClass = new BasicAttribute("objectClass");
             Attribute sn = new BasicAttribute("sn");
+            Attribute uid = new BasicAttribute("uid");
             Attribute userPassword = new BasicAttribute("userPassword");
 
             objectClass.add(DataOpenLDAP.ObjectType.user.toString());
             sn.add(user.getLastName());
+            uid.add(user.getUsername());
             userPassword.add(user.getPassword());
 
             attributes.put(objectClass);
             attributes.put(sn);
+            attributes.put(uid);
             attributes.put(userPassword);
 
             context.createSubcontext(String.format(USER_SEARCH_BASE, user.getUsername()), attributes);
@@ -178,9 +178,9 @@ public class DataOpenLDAP
             return this;
         }
 
-        public GroupManageable deleteSubgroup(GroupModel subgroup, GroupModel group) throws NamingException
+        public Builder deleteSubgroup(GroupModel subgroup, GroupModel group) throws NamingException
         {
-            STEP(String.format("[OpenLDAP] Delete group %s", subgroup.getDisplayName()));
+            STEP(String.format("[OpenLDAP] Delete subgroup %s from group %s", subgroup.getDisplayName(), group.getDisplayName()));
             context.destroySubcontext(String.format(SUBGROUP_SEARCH_BASE, subgroup.getDisplayName(), group.getDisplayName()));
             return this;
         }
@@ -190,6 +190,16 @@ public class DataOpenLDAP
         {
             STEP(String.format("[OpenLDAP] Add user %s to group %s", user.getUsername(), group.getDisplayName()));
             Attribute memberAttribute = new BasicAttribute("memberUID", String.format(USER_SEARCH_BASE, user.getUsername()));
+            ModificationItem member[] = new ModificationItem[1];
+            member[0] = new ModificationItem(DirContext.ADD_ATTRIBUTE, memberAttribute);
+            context.modifyAttributes(String.format(GROUP_SEARCH_BASE, group.getDisplayName()), member);
+            return this;
+        }
+
+        public Builder addGroupAsMemberOfAnotherGroup(GroupModel childGroup, GroupModel group) throws NamingException
+        {
+            STEP(String.format("[OpenLDAP] Add group %s as member of group %s", childGroup.getDisplayName(), group.getDisplayName()));
+            Attribute memberAttribute = new BasicAttribute("memberUID", String.format(GROUP_SEARCH_BASE, childGroup.getDisplayName()));
             ModificationItem member[] = new ModificationItem[1];
             member[0] = new ModificationItem(DirContext.ADD_ATTRIBUTE, memberAttribute);
             context.modifyAttributes(String.format(GROUP_SEARCH_BASE, group.getDisplayName()), member);
@@ -227,8 +237,79 @@ public class DataOpenLDAP
             return null;
         }
 
+        private SearchResult searchGeneratedData(String partialName, ObjectType typeOfClass, String base) throws NamingException
+        {
+            NamingEnumeration<SearchResult> results = null;
+            String searchFilter = String.format("(objectClass=%s)", typeOfClass.toString());
+            SearchControls searchControls = new SearchControls();
+            searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+
+            try
+            {
+                results = context.search(base.replace("cn=%s,", ""), searchFilter, searchControls);
+            }
+            catch (NameNotFoundException e)
+            {
+                return null;
+            }
+            while (results.hasMoreElements())
+            {
+                SearchResult rez = results.nextElement();
+                if (rez.getNameInNamespace().contains(partialName))
+                {
+                    return rez;
+                }
+            }
+            return null;
+        }
+
+        public Builder deleteBulkUsers() throws NamingException
+        {
+            STEP(String.format("[OpenLDAP] Delete all users which start with 'user-'"));
+            SearchResult rez = searchGeneratedData("cn=user-", ObjectType.user, USER_SEARCH_BASE);
+            while (rez != null)
+            {
+                context.destroySubcontext(rez.getNameInNamespace());
+                rez = searchGeneratedData("cn=user-", ObjectType.user, USER_SEARCH_BASE);
+            }
+            return this;
+        }
+
+        public Builder deleteBulkGroups() throws NamingException
+        {
+            STEP(String.format("[OpenLDAP] Delete all groups which start with 'group-'"));
+            SearchResult rez = searchGeneratedData("cn=group-", ObjectType.group, GROUP_SEARCH_BASE);
+            while (rez != null)
+            {
+                context.destroySubcontext(rez.getNameInNamespace());
+                rez = searchGeneratedData("cn=group-", ObjectType.group, GROUP_SEARCH_BASE);
+            }
+            return this;
+        }
+
+        public Builder addBulkUsersInGroups(int noGroups, int noUsersPerGroup) throws NamingException {
+            STEP(String.format("[OpenLDAP] Add %s groups with %s users in each group", noGroups, noUsersPerGroup));
+            HashMap<GroupModel, List<UserModel>> usersGroupsMap = new HashMap<>();
+            for (int i = 0; i < noGroups; i++)
+            {
+                GroupModel testGroup = GroupModel.getRandomGroupModel();
+                createGroup(testGroup).assertGroupExists(testGroup);
+
+                List<UserModel> groupUsers = new ArrayList<>();
+                for (int j = 0; j < noUsersPerGroup; j++)
+                {
+                    UserModel testUser = UserModel.getRandomUserModel();
+                    createUser(testUser).addUserToGroup(testUser, testGroup);
+                    groupUsers.add(testUser);
+                }
+
+                usersGroupsMap.put(testGroup, groupUsers);
+            }
+            return this;
+        }
+
         @Override
-        public Builder assertUserExists(UserModel user) throws NamingException
+        public UserManageable assertUserExists(UserModel user) throws NamingException
         {
             STEP(String.format("[OpenLDAP] Assert user %s exists", user.getUsername()));
             Assert.assertNotNull(searchForObjectClass(user.getUsername(), ObjectType.user, USER_SEARCH_BASE));
@@ -251,10 +332,11 @@ public class DataOpenLDAP
             return this;
         }
 
-        public GroupManageable assertSubgroupExists(GroupModel subgroup) throws NamingException
+        public Builder assertSubgroupExists(GroupModel subgroup, GroupModel group) throws NamingException
         {
-            STEP(String.format("[OpenLDAP] Assert group %s exists", subgroup.getDisplayName()));
-            Assert.assertNotNull(searchForObjectClass(subgroup.getDisplayName(), ObjectType.group, SUBGROUP_SEARCH_BASE));
+            STEP(String.format("[OpenLDAP] Assert subgroup %s from group %s exists", subgroup.getDisplayName(), group.getDisplayName()));
+            Assert.assertNotNull(searchForObjectClass(subgroup.getDisplayName(), ObjectType.group,
+                    String.format("%s,%s", "cn=%s", String.format(GROUP_SEARCH_BASE, group.getDisplayName()))));
             return this;
         }
 
@@ -272,6 +354,14 @@ public class DataOpenLDAP
             STEP(String.format("[OpenLDAP] Assert user %s is member of group %s", user.getUsername(), group.getDisplayName()));
             Attributes membership = context.getAttributes(String.format(GROUP_SEARCH_BASE, group.getDisplayName()), new String[] { "memberUid" });
             Assert.assertTrue(membership.toString().contains(String.format(USER_SEARCH_BASE, user.getUsername())));
+            return this;
+        }
+
+        public Builder assertGroupIsMemberOfGroup(GroupModel childGroup, GroupModel group) throws NamingException
+        {
+            STEP(String.format("[OpenLDAP] Assert group %s is member of group %s", childGroup.getDisplayName(), group.getDisplayName()));
+            Attributes membership = context.getAttributes(String.format(GROUP_SEARCH_BASE, group.getDisplayName()), new String[] { "memberUid" });
+            Assert.assertTrue(membership.toString().contains(String.format(GROUP_SEARCH_BASE, childGroup.getDisplayName())));
             return this;
         }
 

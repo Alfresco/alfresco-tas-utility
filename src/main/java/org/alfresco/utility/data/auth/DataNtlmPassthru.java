@@ -1,15 +1,23 @@
 package org.alfresco.utility.data.auth;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
 import org.alfresco.utility.TasProperties;
 import org.alfresco.utility.Utility;
 import org.alfresco.utility.model.UserModel;
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.UnhandledAlertException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
-import org.testng.Assert;
 
 import static org.alfresco.utility.report.log.Step.STEP;
 
@@ -23,15 +31,19 @@ public class DataNtlmPassthru
 {
     @Autowired
     private TasProperties tasProperties;
-    private final static String USER_SEARCH_BASE = "CN=%s,CN=Users,DC=alfntlm,DC=com";
     private String command, psCommand;
+    String userPrefPath = "C:\\Program Files\\Mozilla Firefox\\defaults\\pref";
+    String userPrefFile = "userPref.js";
+
+    String firefoxPath = "C:\\Program Files\\Mozilla Firefox";
+    String hub = "http://ec2-34-253-204-163.eu-west-1.compute.amazonaws.com:8070";
 
     public DataNtlmPassthru.Builder perform()
     {
         return new DataNtlmPassthru.Builder();
     }
 
-    public class Builder implements UserManageable
+    public class Builder
     {
         public Builder()
         {
@@ -39,73 +51,52 @@ public class DataNtlmPassthru
                     tasProperties.getNtlmSecurityCredentials());
         }
 
-        @Override
-        public Builder createUser(UserModel user) throws Exception
+        public Builder configureFirefox() throws Exception
         {
-            STEP(String.format("[NTLM] Add user %s", user.getUsername()));
-            command = String.format(
-                    "%s dsadd user \"%s\" -samid %s -upn %s@alfntlm.com -fn %s -ln %s -display \"%s %s\" -disabled no -pwd %s -mustchpwd no -memberof \"cn=Remote Desktop Users,cn=Builtin,dc=alfntlm,dc=com\" ",
-                    psCommand, String.format(USER_SEARCH_BASE, user.getUsername()), user.getUsername(), user.getUsername(), user.getFirstName(),
-                    user.getLastName(), user.getFirstName(), user.getLastName(), user.getPassword());
-            Utility.executeOnWin(command);
+            STEP(String.format("[NTLM] Add alfresco ip address %s to network.automatic-ntlm-auth.trusted-uris", tasProperties.getTestServerUrl()));
+            command = String.format("%s cmd /C \"cd \"%s\" && echo pref(\"network.automatic-ntlm-auth.trusted-uris\", \"%s\");pref(\"general.config.filename\", \"mozilla.cfg\");  > %s\"", psCommand, userPrefPath,
+                    tasProperties.getTestServerUrl(), userPrefFile);
+            STEP(Utility.executeOnWinAndReturnOutput(command));
+            command = String.format("%s cmd /C \"cd \"%s\" && echo lockPref(\"browser.shell.checkDefaultBrowser\", false); > mozilla.cfg\"", psCommand, firefoxPath);
+            STEP(Utility.executeOnWinAndReturnOutput(command));
             return this;
         }
+    }
 
-        @Override
-        public Builder deleteUser(UserModel user) throws Exception
-        {
-            STEP(String.format("[NTLM] Delete user %s", user.getUsername()));
-            command = String.format("%s dsrm -noprompt \"%s\"", psCommand, String.format(USER_SEARCH_BASE, user.getUsername()));
-            Utility.executeOnWin(command);
-            return this;
-        }
+    private WebDriver setDriver() throws MalformedURLException
+    {
+        DesiredCapabilities cap = DesiredCapabilities.firefox();
+        cap.setBrowserName("firefox");
+        cap.setPlatform(Platform.WIN8);
+        cap.setCapability("marionette", true);
+        cap.setCapability("network.automatic-ntlm-auth.trusted-uris", tasProperties.getTestServerUrl());
 
-        @Override
-        public Builder updateUser(UserModel user, HashMap<String, String> attributes) throws Exception
-        {
-            STEP(String.format("[NTLM] Update user %s", user.getUsername()));
-            command = String.format("%s dsmod user \"%s\" ", psCommand, String.format(USER_SEARCH_BASE, user.getUsername()));
-            for (Map.Entry<String, String> entry : attributes.entrySet())
-            {
-                command += String.format("-%s \"%s\" ", entry.getKey(), entry.getValue());
-            }
-            Utility.executeOnWin(command);
-            return this;
-        }
+        WebDriver driver = new RemoteWebDriver(new URL(String.format("%s/wd/hub", hub)), cap);
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
 
-        public Builder disableUser(UserModel user) throws Exception
-        {
-            STEP(String.format("[NTLM] Disable user %s", user.getUsername()));
-            command = String.format("%s dsmod user \"%s\" -disabled yes", psCommand, String.format(USER_SEARCH_BASE, user.getUsername()));
-            Utility.executeOnWin(command);
-            return this;
-        }
+        return driver;
+    }
+    
+    public String getTitleInFirefox(String url) throws MalformedURLException 
+    {
+        STEP(String.format("Open URL %s", url));
+        WebDriver driver = setDriver();
+        driver.get(url);
+        String title = driver.getTitle();
+        driver.quit();
 
-        public Builder enableUser(UserModel user) throws Exception
-        {
-            STEP(String.format("[NTLM] Enable user %s", user.getUsername()));
-            command = String.format("%s dsmod user \"%s\" -disabled no", psCommand, String.format(USER_SEARCH_BASE, user.getUsername()));
-            Utility.executeOnWin(command);
-            return this;
-        }
+        return title;
+    }
 
-        @Override
-        public Builder assertUserExists(UserModel user) throws Exception
-        {
-            STEP(String.format("[NTLM] Assert user %s exists", user.getUsername()));
-            command = String.format("%s dsquery user \"%s\"", psCommand, String.format(USER_SEARCH_BASE, user.getUsername()));
-            Assert.assertEquals(Utility.executeOnWinAndReturnOutput(command), String.format("[\"%s\"]", String.format(USER_SEARCH_BASE, user.getUsername())),
-                    "User was not found!");
-            return this;
-        }
+    public String getAlertInFirefox(String url) throws MalformedURLException
+    {
+        WebDriver driver = setDriver();
+        STEP(String.format("Open URL %s", url));
+        driver.get(url);
+        String alertText = driver.switchTo().alert().getText();
+        driver.quit();
 
-        @Override
-        public Builder assertUserDoesNotExist(UserModel user) throws Exception
-        {
-            STEP(String.format("[NTLM] Assert user %s does not exist", user.getUsername()));
-            command = String.format("%s dsquery user \"%s\"", psCommand, String.format(USER_SEARCH_BASE, user.getUsername()));
-            Assert.assertEquals(Utility.executeOnWinAndReturnOutput(command), "[]", "User was found!");
-            return this;
-        }
+        return alertText;
     }
 }

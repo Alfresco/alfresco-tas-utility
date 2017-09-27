@@ -432,7 +432,7 @@ public class Utility
      * executeOnWin("ls -la")
      * 
      * @param command
-     * @return
+     * @return output as string
      */
     public static String executeOnUnix(String command)
     {
@@ -464,7 +464,34 @@ public class Utility
         {
             e.printStackTrace();
         }
+        
+        LOG.info("Unix command execution result: " + sb.toString());
+        
         return sb.toString();
+    }
+    
+    /**
+     * Execute any Terminal commands
+     * Example:
+     * executeOnWin("ls -la")
+     * 
+     * @param command
+     * @return process
+     */
+    public static Process executeCommandOnUnix(String command)
+    {
+        LOG.info("On Unix execute command: [{}]", command);
+
+        String[] commands = new String[] { "/bin/sh", "-c", command };
+     
+        Process proc = null;
+        try {
+			proc = new ProcessBuilder(commands).start();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        
+        return proc;
     }
 
     /**
@@ -547,9 +574,33 @@ public class Utility
             String sys32 = System.getenv("SystemRoot") + "\\system32";
             Runtime.getRuntime().exec(new String[] { sys32 + "\\taskkill", "/F", "/IM", processName });
         }
+        else if (SystemUtils.IS_OS_LINUX)
+        {
+            executeOnUnix("kill `ps ax | grep \"" + processName + "\" | awk '{print $1}'`");
+        }
+        else if (SystemUtils.IS_OS_MAC)
+        {
+        	executeOnUnix("pkill -f " + processName);
+        }
+    }
+    
+    /**
+     * Kill process excluding Maven
+     * 
+     * @param processName
+     * @throws IOException
+     */
+    public static void killProcessExcludingMaven(String processName) throws IOException
+    {
+        LOG.info("Killing application using process name [{}]", processName);
+        if (SystemUtils.IS_OS_WINDOWS)
+        {
+            String sys32 = System.getenv("SystemRoot") + "\\system32";
+            Runtime.getRuntime().exec(new String[] { sys32 + "\\taskkill", "/F", "/IM", processName });
+        }
         else
         {
-            executeOnUnix("sudo kill `ps ax | grep \"" + processName + "\" | awk '{print $1}'`");
+            executeOnUnix("sudo kill `ps ax | grep \"" + processName + "\" | grep -v \"mvn\" | grep -v \"maven\" | awk '{print $1}'`");
         }
     }
 
@@ -594,16 +645,30 @@ public class Utility
         LOG.info("process name :" + processName);
         Process p = null;
         try
-        {
-            if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX)
+        {        			
+            if (SystemUtils.IS_OS_LINUX)
             {
-                p = Runtime.getRuntime().exec("ps -ef");
+            	LOG.info("Executing command to check process is running: ps -ef | grep -v \"maven\" | grep -v \"mvn\"");
+                p = executeCommandOnUnix("ps -ef | grep -v \"maven\" | grep -v \"mvn\"");
             }
             else if (SystemUtils.IS_OS_WINDOWS)
             {
                 String sys32 = System.getenv("SystemRoot") + "\\system32";
                 p = Runtime.getRuntime().exec(new String[] { "cmd", "/c", sys32 + "\\tasklist" });
             }
+            else if (SystemUtils.IS_OS_MAC)
+            {
+            	String com  = "pgrep -f " +  processName;
+            	p = Runtime.getRuntime().exec(com);
+                InputStream inputStream = p.getInputStream();
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferReader = new BufferedReader(inputStreamReader);
+                if(bufferReader.readLine() != null)
+                	return true;
+                else
+                	return false;
+            }
+            
             InputStream inputStream = p.getInputStream();
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
             BufferedReader bufferReader = new BufferedReader(inputStreamReader);
@@ -675,6 +740,7 @@ public class Utility
      */
     public static String executeOnWinAndReturnOutput(String command) throws Exception
     {
+        LOG.info("On Windows execute command: [{}]", command);
         StringBuilder sb = new StringBuilder();
         try
         {

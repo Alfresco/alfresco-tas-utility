@@ -11,9 +11,8 @@ import org.testng.Assert;
 
 import javax.naming.*;
 import javax.naming.directory.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.io.UnsupportedEncodingException;
+import java.util.*;
 
 import static org.alfresco.utility.report.log.Step.STEP;
 
@@ -58,7 +57,7 @@ public class DataLDAP
 
     enum UserAccountStatus
     {
-        ACCOUNTDISABLE(0x0002), NORMAL_ACCOUNT(0x0200), PASSWD_NOTREQD(0x0020), PASSWORD_EXPIRED(0x800000);
+        ACCOUNTDISABLE(0x0002), NORMAL_ACCOUNT(0x0200), PASSWD_NOTREQD(0x0020), PASSWORD_EXPIRED(0x800000), DONT_EXPIRE_PASSWD(0x10000);
 
         private final int value;
 
@@ -76,8 +75,6 @@ public class DataLDAP
     @Autowired
     private TasProperties tasProperties;
 
-    private final static String USER_GROUP_SEARCH_BASE = "CN=%s,CN=Users,DC=alfness,DC=com";
-
     private DirContext context;
 
     public DataLDAP.Builder perform() throws NamingException
@@ -85,8 +82,14 @@ public class DataLDAP
         return new DataLDAP.Builder();
     }
 
+    public DataLDAP.Builder performLdap2() throws NamingException
+    {
+        return new DataLDAP.Builder(tasProperties.getLdap2URL(), tasProperties.getLdap2SecurityPrincipal(), tasProperties.getLdap2SecurityCredentials(), tasProperties.getLdapSearchBase2());
+    }
+
     public class Builder implements UserManageable, GroupManageable
     {
+        private String searchBase = "";
         public Builder() throws NamingException
         {
             Properties properties = new Properties();
@@ -95,27 +98,50 @@ public class DataLDAP
             properties.put(Context.SECURITY_AUTHENTICATION, tasProperties.getSecurityAuth());
             properties.put(Context.SECURITY_PRINCIPAL, tasProperties.getLdapSecurityPrincipal());
             properties.put(Context.SECURITY_CREDENTIALS, tasProperties.getLdapSecurityCredentials());
+            searchBase = tasProperties.getLdapSearchBase();
             context = new InitialDirContext(properties);
         }
 
-        @Override
-        public Builder createUser(UserModel user) throws NamingException
+        public Builder(String ldapURL, String ldapSecurityPrincipal, String ldapSecurityCredentials, String ldapSearchBase) throws NamingException
         {
-            STEP(String.format("[LDAP-AD] Add user %s", user.getUsername()));
+            Properties properties = new Properties();
+            properties.put(Context.INITIAL_CONTEXT_FACTORY, tasProperties.getAuthContextFactory());
+            properties.put(Context.PROVIDER_URL, ldapURL);
+            properties.put(Context.SECURITY_AUTHENTICATION, tasProperties.getSecurityAuth());
+            properties.put(Context.SECURITY_PRINCIPAL, ldapSecurityPrincipal);
+            properties.put(Context.SECURITY_CREDENTIALS, ldapSecurityCredentials);
+            searchBase = ldapSearchBase;
+            context = new InitialDirContext(properties);
+        }
+        
+        @Override
+        public Builder createUser(UserModel user) throws NamingException, UnsupportedEncodingException
+        {
             Attributes attributes = new BasicAttributes();
-            Attribute objectClass = new BasicAttribute("objectClass");
-            Attribute sn = new BasicAttribute("sn");
-            Attribute userPassword = new BasicAttribute("userPassword");
+            Attribute objectClass = new BasicAttribute("objectClass", ObjectType.user.toString());
+            Attribute sn = new BasicAttribute("sn", user.getLastName());
+            Attribute fn = new BasicAttribute("givenName", user.getFirstName());
+            Attribute samAccountName = new BasicAttribute("samAccountName", user.getUsername());
+            Attribute userAccountControl = new BasicAttribute("userAccountControl");
 
-            objectClass.add(ObjectType.user.toString());
-            sn.add(user.getLastName());
-            userPassword.add(user.getPassword());
+            userAccountControl.add(Integer.toString(UserAccountStatus.NORMAL_ACCOUNT.getValue() + UserAccountStatus.PASSWD_NOTREQD.getValue()
+                    + UserAccountStatus.DONT_EXPIRE_PASSWD.getValue()));
 
             attributes.put(objectClass);
             attributes.put(sn);
-            attributes.put(userPassword);
+            attributes.put(fn);
+            attributes.put(samAccountName);
+            attributes.put(userAccountControl);
+            context.createSubcontext(String.format(searchBase, user.getUsername()), attributes);
 
-            context.createSubcontext(String.format(USER_GROUP_SEARCH_BASE, user.getUsername()), attributes);
+            String newQuotedPassword = String.format("\"%s\"", user.getPassword());
+            byte[] newUnicodePassword = newQuotedPassword.getBytes("UTF-16LE");
+
+            ModificationItem[] mods = new ModificationItem[2];
+            mods[0] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, new BasicAttribute("unicodePwd", newUnicodePassword));
+            mods[1] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, new BasicAttribute("userAccountControl",
+                    Integer.toString(UserAccountStatus.NORMAL_ACCOUNT.getValue() + UserAccountStatus.DONT_EXPIRE_PASSWD.getValue())));
+            context.modifyAttributes(String.format(searchBase, user.getUsername()), mods);
             return this;
         }
 
@@ -123,24 +149,33 @@ public class DataLDAP
         public Builder deleteUser(UserModel user) throws NamingException
         {
             STEP(String.format("[LDAP-AD] Delete user %s", user.getUsername()));
-            context.destroySubcontext(String.format(USER_GROUP_SEARCH_BASE, user.getUsername()));
+            context.destroySubcontext(String.format(searchBase, user.getUsername()));
             return this;
         }
 
         @Override
-        public Builder updateUser(UserModel user, HashMap<String, String> attributes) throws NamingException
-        {
+        public Builder updateUser(UserModel user, HashMap<String, String> attributes) throws NamingException, UnsupportedEncodingException {
             STEP(String.format("[LDAP-AD] Update user %s", user.getUsername()));
             ModificationItem[] items = new ModificationItem[attributes.size()];
             int i = 0;
             for (Map.Entry<String, String> entry : attributes.entrySet())
             {
-                Attribute attribute = new BasicAttribute(entry.getKey(), entry.getValue());
+                Attribute attribute = new BasicAttribute(entry.getKey());
+                if(entry.getKey().equals("unicodePwd"))
+                {
+                    String newQuotedPassword = String.format("\"%s\"", entry.getValue());
+                    byte[] newUnicodePassword = newQuotedPassword.getBytes("UTF-16LE");
+                    attribute.add(newUnicodePassword);
+                }
+                else
+                {
+                   attribute.add(entry.getValue());
+                }
                 items[i] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, attribute);
                 i++;
             }
 
-            context.modifyAttributes(String.format(USER_GROUP_SEARCH_BASE, user.getUsername()), items);
+            context.modifyAttributes(String.format(searchBase, user.getUsername()), items);
             return this;
         }
 
@@ -162,7 +197,7 @@ public class DataLDAP
             attributes.put(samAccountName);
             attributes.put(name);
 
-            context.createSubcontext(String.format(USER_GROUP_SEARCH_BASE, group.getDisplayName()), attributes);
+            context.createSubcontext(String.format(searchBase, group.getDisplayName()), attributes);
 
             return this;
         }
@@ -171,29 +206,29 @@ public class DataLDAP
         public Builder deleteGroup(GroupModel group) throws NamingException
         {
             STEP(String.format("[LDAP-AD] Delete group %s", group.getDisplayName()));
-            context.destroySubcontext(String.format(USER_GROUP_SEARCH_BASE, group.getDisplayName()));
+            context.destroySubcontext(String.format(searchBase, group.getDisplayName()));
             return this;
         }
 
         @Override
         public Builder addUserToGroup(UserModel user, GroupModel group) throws NamingException
         {
-            STEP(String.format("[LDAP-AD] Add user % to group %s", user.getUsername(), group.getDisplayName()));
-            Attribute memberAttribute = new BasicAttribute("member", String.format(USER_GROUP_SEARCH_BASE, user.getUsername()));
+            STEP(String.format("[LDAP-AD] Add user %s to group %s", user.getUsername(), group.getDisplayName()));
+            Attribute memberAttribute = new BasicAttribute("member", String.format(searchBase, user.getUsername()));
             ModificationItem member[] = new ModificationItem[1];
             member[0] = new ModificationItem(DirContext.ADD_ATTRIBUTE, memberAttribute);
-            context.modifyAttributes(String.format(USER_GROUP_SEARCH_BASE, group.getDisplayName()), member);
+            context.modifyAttributes(String.format(searchBase, group.getDisplayName()), member);
             return this;
         }
 
         @Override
         public Builder removeUserFromGroup(UserModel user, GroupModel group) throws NamingException
         {
-            STEP(String.format("[LDAP-AD] Remove user % from group %s", user.getUsername(), group.getDisplayName()));
-            Attribute memberAttribute = new BasicAttribute("member", String.format(USER_GROUP_SEARCH_BASE, user.getUsername()));
+            STEP(String.format("[LDAP-AD] Remove user %s from group %s", user.getUsername(), group.getDisplayName()));
+            Attribute memberAttribute = new BasicAttribute("member", String.format(searchBase, user.getUsername()));
             ModificationItem member[] = new ModificationItem[1];
             member[0] = new ModificationItem(DirContext.REMOVE_ATTRIBUTE, memberAttribute);
-            context.modifyAttributes(String.format(USER_GROUP_SEARCH_BASE, group.getDisplayName()), member);
+            context.modifyAttributes(String.format(searchBase, group.getDisplayName()), member);
             return this;
         }
 
@@ -203,7 +238,7 @@ public class DataLDAP
                     UserAccountStatus.ACCOUNTDISABLE.getValue() + UserAccountStatus.NORMAL_ACCOUNT.getValue() + UserAccountStatus.PASSWD_NOTREQD.getValue()));
             ModificationItem modification[] = new ModificationItem[1];
             modification[0] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, memberAttribute);
-            context.modifyAttributes(String.format(USER_GROUP_SEARCH_BASE, user.getUsername()), modification);
+            context.modifyAttributes(String.format(searchBase, user.getUsername()), modification);
             return this;
         }
 
@@ -213,7 +248,7 @@ public class DataLDAP
                     Integer.toString(UserAccountStatus.NORMAL_ACCOUNT.getValue() + UserAccountStatus.PASSWD_NOTREQD.getValue()));
             ModificationItem modification[] = new ModificationItem[1];
             modification[0] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, memberAttribute);
-            context.modifyAttributes(String.format(USER_GROUP_SEARCH_BASE, user.getUsername()), modification);
+            context.modifyAttributes(String.format(searchBase, user.getUsername()), modification);
             return this;
         }
 
@@ -226,41 +261,15 @@ public class DataLDAP
 
             try
             {
-                results = context.search(String.format(USER_GROUP_SEARCH_BASE, name), searchFilter, searchControls);
+                results = context.search(String.format(searchBase, name), searchFilter, searchControls);
             }
             catch (NameNotFoundException e)
             {
                 return null;
             }
             if (results.hasMoreElements())
-                return (SearchResult) results.nextElement();
+                return results.nextElement();
             return null;
-        }
-
-        public Builder createEnabledUserPasswordNotRequired(UserModel user) throws NamingException
-        {
-            Attributes attributes = new BasicAttributes();
-            Attribute objectClass = new BasicAttribute("objectClass");
-            Attribute sn = new BasicAttribute("sn");
-            Attribute samAccountName = new BasicAttribute("samAccountName");
-            Attribute userPassword = new BasicAttribute("userPassword");
-            Attribute userAccountControl = new BasicAttribute("userAccountControl");
-
-            objectClass.add(ObjectType.user.toString());
-            sn.add(user.getLastName());
-            samAccountName.add(user.getUsername());
-            userPassword.add(user.getPassword());
-            userAccountControl.add(Integer.toString(
-                    UserAccountStatus.NORMAL_ACCOUNT.getValue() + UserAccountStatus.PASSWD_NOTREQD.getValue() + UserAccountStatus.PASSWORD_EXPIRED.getValue()));
-
-            attributes.put(objectClass);
-            attributes.put(sn);
-            attributes.put(samAccountName);
-            attributes.put(userPassword);
-            attributes.put(userAccountControl);
-
-            context.createSubcontext(String.format(USER_GROUP_SEARCH_BASE, user.getUsername()), attributes);
-            return this;
         }
 
         public Builder createDisabledUser(UserModel user) throws NamingException
@@ -284,7 +293,7 @@ public class DataLDAP
             attributes.put(samAccountName);
             attributes.put(userAccountControl);
 
-            context.createSubcontext(String.format(USER_GROUP_SEARCH_BASE, user.getUsername()), attributes);
+            context.createSubcontext(String.format(searchBase, user.getUsername()), attributes);
             return this;
         }
 
@@ -319,7 +328,7 @@ public class DataLDAP
 
         public Builder assertUserIsDisabled(UserModel user, UserAccountControlValue userAccountControlValue) throws NamingException
         {
-            Attributes accountStatus = context.getAttributes(String.format(USER_GROUP_SEARCH_BASE, user.getUsername()), new String[] { "userAccountControl" });
+            Attributes accountStatus = context.getAttributes(String.format(searchBase, user.getUsername()), new String[] { "userAccountControl" });
             Assert.assertTrue(accountStatus.toString().contains(userAccountControlValue.toString()),
                     String.format("User account control value expected %s but found %s", userAccountControlValue.toString(), accountStatus.toString()));
             return this;
@@ -327,7 +336,7 @@ public class DataLDAP
 
         public Builder assertUserIsEnabled(UserModel user, UserAccountControlValue userAccountControlValue) throws NamingException
         {
-            Attributes accountStatus = context.getAttributes(String.format(USER_GROUP_SEARCH_BASE, user.getUsername()), new String[] { "userAccountControl" });
+            Attributes accountStatus = context.getAttributes(String.format(searchBase, user.getUsername()), new String[] { "userAccountControl" });
             Assert.assertTrue(accountStatus.toString().contains(userAccountControlValue.toString()),
                     String.format("User account value expected %s but found %s ", userAccountControlValue.toString(), accountStatus.toString()));
             return this;
@@ -336,9 +345,9 @@ public class DataLDAP
         @Override
         public GroupManageable assertUserIsMemberOfGroup(UserModel user, GroupModel group) throws NamingException
         {
-            STEP(String.format("[LDAP-AD] Assert user % is member of group %s", user.getUsername(), group.getDisplayName()));
-            Attributes membership = context.getAttributes(String.format(USER_GROUP_SEARCH_BASE, group.getDisplayName()), new String[] { "member" });
-            Assert.assertTrue(membership.toString().contains(String.format(USER_GROUP_SEARCH_BASE, user.getUsername())),
+            STEP(String.format("[LDAP-AD] Assert user %s is member of group %s", user.getUsername(), group.getDisplayName()));
+            Attributes membership = context.getAttributes(String.format(searchBase, group.getDisplayName()), new String[] { "member" });
+            Assert.assertTrue(membership.toString().contains(String.format(searchBase, user.getUsername())),
                     String.format("User %s is not member of group %s", user.getUsername().toString(), group.getDisplayName().toString()));
             return this;
         }
@@ -346,11 +355,107 @@ public class DataLDAP
         @Override
         public GroupManageable assertUserIsNotMemberOfGroup(UserModel user, GroupModel group) throws NamingException
         {
-            STEP(String.format("[LDAP-AD] Assert user % is not member of group %s", user.getUsername(), group.getDisplayName()));
-            Attributes membership = context.getAttributes(String.format(USER_GROUP_SEARCH_BASE, group.getDisplayName()), new String[] { "member" });
-            Assert.assertFalse(membership.toString().contains(String.format(USER_GROUP_SEARCH_BASE, user.getUsername())),
+            STEP(String.format("[LDAP-AD] Assert user %s is not member of group %s", user.getUsername(), group.getDisplayName()));
+            Attributes membership = context.getAttributes(String.format(searchBase, group.getDisplayName()), new String[] { "member" });
+            Assert.assertFalse(membership.toString().contains(String.format(searchBase, user.getUsername())),
                     String.format("User %s is member of group %s", user.getUsername().toString(), group.getDisplayName().toString()));
             return this;
+        }
+
+        public Builder addBulkUsersInGroups(int noGroups, int noUsersPerGroup) throws NamingException, UnsupportedEncodingException
+        {
+            STEP(String.format("[LDAP-AD] Add %s groups with %s users in each group", noGroups, noUsersPerGroup));
+            HashMap<GroupModel, List<UserModel>> usersGroupsMap = new HashMap<>();
+            for (int i = 0; i < noGroups; i++)
+            {
+                GroupModel testGroup = GroupModel.getRandomGroupModel();
+                createGroup(testGroup).assertGroupExists(testGroup);
+
+                List<UserModel> groupUsers = new ArrayList<>();
+                for (int j = 0; j < noUsersPerGroup; j++)
+                {
+                    UserModel testUser = UserModel.getRandomUserModel();
+                    testUser.setPassword("Password1234!");
+                    createUser(testUser).addUserToGroup(testUser, testGroup);
+                    groupUsers.add(testUser);
+                }
+
+                usersGroupsMap.put(testGroup, groupUsers);
+            }
+            return this;
+        }
+
+        private SearchResult searchGeneratedData(String partialName, ObjectType typeOfClass) throws NamingException
+        {
+            NamingEnumeration<SearchResult> results = null;
+            String searchFilter = String.format("(&(objectClass=%s)(%s*))", typeOfClass.toString(), partialName);
+            SearchControls searchControls = new SearchControls();
+            searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+
+            try
+            {
+                results = context.search(searchBase.replace("CN=%s,", ""), searchFilter, searchControls);
+            }
+            catch (NameNotFoundException e)
+            {
+                return null;
+            }
+            if (results.hasMoreElements())
+                return results.nextElement();
+            return null;
+        }
+
+        public Builder deleteBulkUsers() throws NamingException
+        {
+            STEP(String.format("[LDAP-AD] Delete all users which start with 'user-'"));
+            SearchResult rez = searchGeneratedData("cn=user-", ObjectType.user);
+            while (rez != null)
+            {
+                context.destroySubcontext(rez.getNameInNamespace());
+                rez = searchGeneratedData("cn=user-", ObjectType.user);
+            }
+            return this;
+        }
+
+        public Builder deleteBulkGroups() throws NamingException
+        {
+            STEP(String.format("[LDAP-AD] Delete all groups which start with 'group-'"));
+            SearchResult rez = searchGeneratedData("cn=group-", ObjectType.group);
+            while (rez != null)
+            {
+                context.destroySubcontext(rez.getNameInNamespace());
+                rez = searchGeneratedData("cn=group-", ObjectType.group);
+            }
+            return this;
+        }
+
+        public Builder addGroupAsMemberOfAnotherGroup(GroupModel childGroup, GroupModel group) throws NamingException
+        {
+            STEP(String.format("[LDAP-AD] Add group %s as member of group %s", childGroup.getDisplayName(), group.getDisplayName()));
+            Attribute memberAttribute = new BasicAttribute("memberUID", String.format(searchBase, childGroup.getDisplayName()));
+            ModificationItem member[] = new ModificationItem[1];
+            member[0] = new ModificationItem(DirContext.ADD_ATTRIBUTE, memberAttribute);
+            context.modifyAttributes(String.format(searchBase, group.getDisplayName()), member);
+            return this;
+        }
+
+        public Builder assertGroupIsMemberOfGroup(GroupModel childGroup, GroupModel group) throws NamingException
+        {
+            STEP(String.format("[LDAP-AD] Assert group %s is member of group %s", childGroup.getDisplayName(), group.getDisplayName()));
+            Attributes membership = context.getAttributes(String.format(searchBase, group.getDisplayName()), new String[] { "memberUid" });
+            Assert.assertTrue(membership.toString().contains(String.format(searchBase, childGroup.getDisplayName())));
+            return this;
+        }
+
+        public String getUserId(UserModel userModel) throws NamingException
+        {
+            String[] DCs = searchBase.split(",DC=");
+            return String.format("%s@%s.%s", userModel.getUsername(), DCs[1], DCs[2]);
+        }
+
+        public String getUserDCId(UserModel userModel) throws NamingException
+        {
+            return String.format(searchBase, userModel.getUsername());
         }
     }
 }
