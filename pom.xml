@@ -17,12 +17,12 @@
 		<maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
 		<maven-remote-resources.version>1.5</maven-remote-resources.version>
 		<extentreports.version>2.41.2</extentreports.version>
-		<google.guava.version>19.0</google.guava.version>
+		<google.guava.version>23.0</google.guava.version>
 		<jackson-databind.version>2.4.4</jackson-databind.version>
 		<org.jvnet.version>0.6.5</org.jvnet.version>
 		<javax.mail.version>1.5.1</javax.mail.version>
-		<seleniumjava.version>2.53.1</seleniumjava.version>
-		<yandex.qatools.version>1.15</yandex.qatools.version>
+		<seleniumjava.version>3.5.3</seleniumjava.version>
+		<yandex.qatools.version>1.18</yandex.qatools.version>
 	</properties>
 
 	<scm>
@@ -127,7 +127,7 @@
 				</includes>
 			</resource>
 		</resources>
-
+	
 	</build>
 	<dependencies>
 		<!--Guava is a suite of core and expanded libraries that include utility 

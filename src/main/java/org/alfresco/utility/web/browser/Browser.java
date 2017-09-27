@@ -1,9 +1,12 @@
 package org.alfresco.utility.web.browser;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 
 import org.alfresco.utility.TasProperties;
+import org.alfresco.utility.Utility;
 import org.alfresco.utility.exception.UnrecognizedBrowser;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -73,12 +76,15 @@ public enum Browser
         return profile;
     }
 
+
     public static WebDriver fromProperties(TasProperties properties)
     {
         switch (properties.getBrowserName().toLowerCase())
         {
             case "firefox":
-                return new FirefoxDriver(changeFirefoxDownloadLocationToTestDataFolder());
+                System.setProperty("webdriver.gecko.driver",Utility.getTestResourceFile("shared-resources/geckodriver/geckodriver.exe").toString());
+                //return new FirefoxDriver(changeFirefoxDownloadLocationToTestDataFolder());
+                return new FirefoxDriver();
             case "chrome":
                 System.setProperty("webdriver.chrome.driver", properties.getEnv().getProperty("browser.chrome.driver"));
                 HashMap<String, Object> chromePrefs = new HashMap<String, Object>();
