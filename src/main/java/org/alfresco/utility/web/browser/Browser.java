@@ -1,13 +1,12 @@
 package org.alfresco.utility.web.browser;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 
 import org.alfresco.utility.TasProperties;
 import org.alfresco.utility.Utility;
 import org.alfresco.utility.exception.UnrecognizedBrowser;
+import org.apache.commons.lang.SystemUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -79,10 +78,19 @@ public enum Browser
 
     public static WebDriver fromProperties(TasProperties properties)
     {
-        switch (properties.getBrowserName().toLowerCase())
+        String geckodriver = "Not-Defined";
+        if(SystemUtils.IS_OS_WINDOWS)
+            geckodriver = "shared-resources/geckodriver/geckodriver.exe";
+        else
         {
-            case "firefox":
-                System.setProperty("webdriver.gecko.driver",Utility.getTestResourceFile("shared-resources/geckodriver/geckodriver.exe").toString());
+            geckodriver = "shared-resources/geckodriver/geckodriver";
+            Utility.getTestResourceFile(geckodriver).setExecutable(true);
+        }            
+        
+        switch (properties.getBrowserName().toLowerCase())
+        {                
+            case "firefox":                
+                System.setProperty("webdriver.gecko.driver",Utility.getTestResourceFile(geckodriver).toString());
                 //return new FirefoxDriver(changeFirefoxDownloadLocationToTestDataFolder());
                 return new FirefoxDriver();
             case "chrome":
