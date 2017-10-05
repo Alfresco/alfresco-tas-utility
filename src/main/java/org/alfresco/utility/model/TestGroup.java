@@ -10,6 +10,7 @@ import java.lang.annotation.Target;
 public @interface TestGroup
 {
     public static String SANITY = "sanity";
+    public static String REGRESSION = "regression";
     public static String CORE = "core";
     public static String FULL = "full";
     public static String PROTOCOLS = "protocols";
