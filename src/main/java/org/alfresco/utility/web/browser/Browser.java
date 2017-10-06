@@ -81,11 +81,16 @@ public enum Browser
         String geckodriver = "Not-Defined";
         if(SystemUtils.IS_OS_WINDOWS)
             geckodriver = "shared-resources/geckodriver/geckodriver.exe";
+        else if(SystemUtils.IS_OS_MAC)
+        {
+            geckodriver = "shared-resources/geckodriver/geckodriver_mac";
+            Utility.getTestResourceFile(geckodriver).setExecutable(true);
+        }        
         else
         {
-            geckodriver = "shared-resources/geckodriver/geckodriver";
+            geckodriver = "shared-resources/geckodriver/geckodriver_linux";
             Utility.getTestResourceFile(geckodriver).setExecutable(true);
-        }            
+        }
         
         switch (properties.getBrowserName().toLowerCase())
         {                
