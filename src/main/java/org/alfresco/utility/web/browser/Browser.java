@@ -29,6 +29,7 @@ public enum Browser
     HTMLUNIT(DesiredCapabilities.htmlUnit()),
     INTERNETEXPLORER(DesiredCapabilities.internetExplorer()),
     OPERA(DesiredCapabilities.operaBlink()),
+    HTMLINITDRIVER(DesiredCapabilities.htmlUnit()),
 
     /*
      * Add Safari-Driver extension prior to tests
@@ -78,23 +79,22 @@ public enum Browser
 
     public static WebDriver fromProperties(TasProperties properties)
     {
-        String geckodriver = "Not-Defined";
-        if(SystemUtils.IS_OS_WINDOWS)
-            geckodriver = "shared-resources/geckodriver/geckodriver.exe";
-        else if(SystemUtils.IS_OS_MAC)
-        {
-            geckodriver = "shared-resources/geckodriver/geckodriver_mac";
-            Utility.getTestResourceFile(geckodriver).setExecutable(true);
-        }        
-        else
-        {
-            geckodriver = "shared-resources/geckodriver/geckodriver_linux";
-            Utility.getTestResourceFile(geckodriver).setExecutable(true);
-        }
-        
         switch (properties.getBrowserName().toLowerCase())
         {                
-            case "firefox":                
+            case "firefox":
+                String geckodriver = "Not-Defined";
+                if(SystemUtils.IS_OS_WINDOWS)
+                    geckodriver = "shared-resources/geckodriver/geckodriver.exe";
+                else if(SystemUtils.IS_OS_MAC)
+                {
+                    geckodriver = "shared-resources/geckodriver/geckodriver_mac";
+                    Utility.getTestResourceFile(geckodriver).setExecutable(true);
+                }        
+                else
+                {
+                    geckodriver = "shared-resources/geckodriver/geckodriver_linux";
+                    Utility.getTestResourceFile(geckodriver).setExecutable(true);
+                }
                 System.setProperty("webdriver.gecko.driver",Utility.getTestResourceFile(geckodriver).toString());
                 //return new FirefoxDriver(changeFirefoxDownloadLocationToTestDataFolder());
                 return new FirefoxDriver();
