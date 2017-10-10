@@ -112,7 +112,7 @@ public enum Browser
             case "ie":
                 return new InternetExplorerDriver();
             case "htmlunit":
-                return new HtmlUnitDriver();
+                return new HtmlUnitDriver(true);
             case "safari":
                 return new SafariDriver();
             default:
