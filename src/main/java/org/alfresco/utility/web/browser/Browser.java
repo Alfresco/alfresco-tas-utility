@@ -17,6 +17,8 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.safari.SafariDriver;
 
+import com.gargoylesoftware.htmlunit.BrowserVersion;
+
 /**
  * Return differed DesiredCapabilities for {@link WebDriver}
  * 
@@ -112,7 +114,10 @@ public enum Browser
             case "ie":
                 return new InternetExplorerDriver();
             case "htmlunit":
-                return new HtmlUnitDriver(true);
+                HtmlUnitDriver driver = new HtmlUnitDriver(BrowserVersion.BEST_SUPPORTED);
+                driver.setJavascriptEnabled(true);
+                
+                return driver;
             case "safari":
                 return new SafariDriver();
             default:

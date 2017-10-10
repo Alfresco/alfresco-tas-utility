@@ -46,6 +46,7 @@ public class WebBrowserFactory implements FactoryBean<WebBrowser>
         //webbrowser.manage().timeouts().implicitlyWait(default_wait, TimeUnit.SECONDS);
         if(!properties.getBrowserName().toLowerCase().equals("chrome"))
         {
+            if(!properties.isGridEnabled())
             webbrowser.maximize();
         }
         return webbrowser;
@@ -75,8 +76,8 @@ public class WebBrowserFactory implements FactoryBean<WebBrowser>
         LOG.info("Using RemoteWebDriver on Hub URL {}", properties.getGridUrl().toString());
 
         DesiredCapabilities caps = new DesiredCapabilities(Browser.getBrowserFromProperties(properties).getCapabilities());
-        caps.setCapability("version", properties.getBrowserVersion());
-        caps.setCapability("platform", properties.getEnvPlatformName());
+//        caps.setCapability("version", properties.getBrowserVersion());
+//        caps.setCapability("platform", properties.getEnvPlatformName());
 
         RemoteWebDriver remoteWebDriver = new RemoteWebDriver(properties.getGridUrl(), caps);
         return remoteWebDriver;
