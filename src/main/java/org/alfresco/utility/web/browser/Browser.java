@@ -10,7 +10,9 @@ import org.apache.commons.lang.SystemUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
@@ -99,7 +101,21 @@ public enum Browser
                 }
                 System.setProperty("webdriver.gecko.driver",Utility.getTestResourceFile(geckodriver).toString());
                 //return new FirefoxDriver(changeFirefoxDownloadLocationToTestDataFolder());
-                return new FirefoxDriver();
+                
+                if(SystemUtils.IS_OS_LINUX)
+                {
+	                String Xport = System.getProperty("lmportal.xvfb.id", ":1");
+	                FirefoxBinary firefoxBinary = new FirefoxBinary();
+	                firefoxBinary.setEnvironmentProperty("DISPLAY", Xport);
+	                firefoxBinary.addCommandLineOptions("-headless");
+	                
+	                FirefoxOptions options1 = new FirefoxOptions()
+	                .setProfile(new FirefoxProfile());
+	                options1.setBinary(firefoxBinary);
+	                return new FirefoxDriver(options1);
+                }
+                else
+                	return new FirefoxDriver();
             case "chrome":
                 System.setProperty("webdriver.chrome.driver", properties.getEnv().getProperty("browser.chrome.driver"));
                 HashMap<String, Object> chromePrefs = new HashMap<String, Object>();
