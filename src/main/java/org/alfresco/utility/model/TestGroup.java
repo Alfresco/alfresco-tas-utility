@@ -108,4 +108,7 @@ public @interface TestGroup
     public static String MD4 = "md4";
     public static String SHA256 = "sha256";
     public static String BCRYPT10 = "bcrypt10";
+    
+    //mark the test that it requires one amp installed
+    public static String REQUIRES_AMP = "requires=amp";
 }
