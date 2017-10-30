@@ -109,7 +109,13 @@ public @interface TestGroup
     public static String MD4 = "md4";
     public static String SHA256 = "sha256";
     public static String BCRYPT10 = "bcrypt10";
-    
+
+    /*
+     * Mark tests that require a certain module
+     */
+    public static String REQUIRE_SHARE = "require-share";
+    public static String REQUIRE_TRANSFORMATION = "require-transformation";
+
     //mark the test that it requires one amp installed
     public static String REQUIRES_AMP = "requires=amp";
 }
