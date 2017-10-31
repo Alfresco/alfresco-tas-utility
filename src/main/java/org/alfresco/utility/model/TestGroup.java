@@ -115,6 +115,7 @@ public @interface TestGroup
      */
     public static String REQUIRE_SHARE = "require-share";
     public static String REQUIRE_TRANSFORMATION = "require-transformation";
+    public static String REQUIRE_JMX = "require-jmx";
 
     //mark the test that it requires one amp installed
     public static String REQUIRES_AMP = "requires=amp";
