@@ -273,6 +273,30 @@ public class Utility
         }
         while (endTime - currentTime < (seconds * 1000));
     }
+    
+    /**
+     * We will wait until the interval is passed from current run and retry until the maxTime is reached
+     * 
+     * @param interval
+     * @param maxTime
+     * @param callback
+     * @throws Exception 
+     */
+	public static void sleep(int interval, int maxTime, RetryOperation callback) throws Exception {
+
+		long currentTime = System.currentTimeMillis();
+		long endTime = 0;
+		do {
+			try {
+				endTime = System.currentTimeMillis();
+				callback.execute();
+				break;
+			} catch (AssertionError e) {
+				Thread.sleep(interval);
+			}
+		} while (endTime - currentTime < maxTime);
+
+	};
 
     /**
      * Pretty prints unformatted JSON
@@ -876,4 +900,6 @@ public class Utility
             throw new Exception("Unknown Service: " + serviceName);
         }
     }
+    
+   
 }
