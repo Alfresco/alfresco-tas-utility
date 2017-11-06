@@ -283,7 +283,6 @@ public class Utility
      * @throws Exception 
      */
 	public static void sleep(int interval, int maxTime, RetryOperation callback) throws Exception {
-
 		long currentTime = System.currentTimeMillis();
 		long endTime = 0;
 		do {
@@ -291,12 +290,17 @@ public class Utility
 				endTime = System.currentTimeMillis();
 				callback.execute();
 				break;
-			} catch (AssertionError e) {
+			} catch (AssertionError|Exception e) {
+				if (endTime - currentTime > maxTime) {
+					throw new AssertionError("Maximum retry period reached, test failed.", e);
+				}
 				Thread.sleep(interval);
 			}
-		} while (endTime - currentTime < maxTime);
-
+		} while (true);
 	};
+	
+	
+	
 
     /**
      * Pretty prints unformatted JSON
