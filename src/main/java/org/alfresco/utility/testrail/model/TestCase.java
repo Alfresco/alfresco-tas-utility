@@ -210,12 +210,12 @@ public class TestCase
         this.custom_expected = custom_expected;
     }
 
-    public String getCustom_steps_separated()
+    public List<CustomStepsSeparated> getCustom_steps_separated()
     {
         return custom_steps_separated;
     }
 
-    public void setCustom_steps_separated(String custom_steps_separated)
+    public void setCustom_steps_separated(List<CustomStepsSeparated> custom_steps_separated)
     {
         this.custom_steps_separated = custom_steps_separated;
     }
@@ -259,8 +259,6 @@ public class TestCase
     {
         this.custom_executiontype = custom_executiontype;
     }
-
-    
 
     public String getCustom_auto_ref()
     {
@@ -342,7 +340,7 @@ public class TestCase
     private String custom_preconds;
     private String custom_steps;
     private String custom_expected;
-    private String custom_steps_separated;
+    private List<CustomStepsSeparated> custom_steps_separated;
     private String custom_mission;
     private String custom_goals;
     private List<Integer> custom_exce_type;
@@ -353,5 +351,4 @@ public class TestCase
     private List<String> custom_min_vers;
     private List<String> custom_max_version;
     private int custom_platform;
-
 }

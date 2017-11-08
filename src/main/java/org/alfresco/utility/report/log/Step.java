@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.alfresco.utility.LogFactory;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 public class Step
 {
@@ -42,22 +43,24 @@ public class Step
                     Method method  = null;
                     try
                     {
-
                         method = newClass.getDeclaredMethod(stack.getMethodName());
                     }
                     catch (NoSuchMethodException ex)
                     {
                         // doNothing when method has params
                     }
-                    if (method != null &&  method.getAnnotation(BeforeClass.class) != null)
+                    if (method != null && method.getAnnotation(BeforeClass.class) != null)
                     {
                         methodNameKey = stack.getClassName();
                     }
-                    else
+                    if (method != null && method.getAnnotation(Test.class) != null)
                     {
                         methodNameKey = stack.getMethodName();
                     }
-
+                    if(methodNameKey == null)
+                    {
+                        continue;
+                    }
                     if (!testSteps.containsKey(methodNameKey))
                     {
                         testSteps.put(methodNameKey, new ArrayList<String>());
@@ -65,14 +68,11 @@ public class Step
                     testSteps.get(methodNameKey).add(stepValue);
                     break;
                 }
-
             }
             catch (Exception e)
             {
                 e.printStackTrace();
             }
-
         }
-
     }
 }

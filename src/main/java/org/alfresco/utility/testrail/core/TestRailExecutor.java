@@ -93,11 +93,14 @@ public class TestRailExecutor
 
         for (TestCase tmpTC : getAllTestCases())
         {
-            if (tmpTC.getCustom_auto_ref().equals(currentTestCase.getId())
-                    && tmpTC.getSection_id() == currentTestCase.getTestCaseDestination().getDestination().getId())
+            if(tmpTC.getCustom_auto_ref() != null)
             {
-                newTestCase = tmpTC;
-                break;
+                if (tmpTC.getCustom_auto_ref().equals(currentTestCase.getId())
+                        && tmpTC.getSection_id() == currentTestCase.getTestCaseDestination().getDestination().getId())
+                {
+                    newTestCase = tmpTC;
+                    break;
+                }
             }
         }
 
