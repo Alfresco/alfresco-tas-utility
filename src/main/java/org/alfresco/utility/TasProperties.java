@@ -162,6 +162,12 @@ public class TasProperties
     @Value("${sync.port:9090}")
     private int syncPort;
 
+    @Value("${browser.language:en}")
+    private String browserLanguage;
+
+    @Value("${browser.language.country:gb}")
+    private String browserLanguageCountry;
+
     public Boolean showTenantsOnServerHealth()
     {
         return showTenantsOnServerHealth;
@@ -397,19 +403,23 @@ public class TasProperties
         this.screenshotsDir = f;
     }
 
-    public String getLdapSearchBase() {
+    public String getLdapSearchBase()
+    {
         return ldapSearchBase;
     }
 
-    public void setLdapSearchBase(String ldapSearchBase) {
+    public void setLdapSearchBase(String ldapSearchBase)
+    {
         this.ldapSearchBase = ldapSearchBase;
     }
 
-    public String getLdapSearchBase2() {
+    public String getLdapSearchBase2()
+    {
         return ldapSearchBase2;
     }
 
-    public void setLdapSearchBase2(String ldapSearchBase2) {
+    public void setLdapSearchBase2(String ldapSearchBase2)
+    {
         this.ldapSearchBase2 = ldapSearchBase2;
     }
 
@@ -641,4 +651,23 @@ public class TasProperties
         this.syncPort = syncPort;
     }
 
+    public String getBrowserLanguage()
+    {
+        return browserLanguage;
+    }
+
+    public void setBrowserLanguage(String browserLanguage)
+    {
+        this.browserLanguage = browserLanguage;
+    }
+
+    public String getBrowserLanguageCountry()
+    {
+        return browserLanguageCountry;
+    }
+
+    public void setBrowserLanguageCountry(String browserLanguageCountry)
+    {
+        this.browserLanguageCountry = browserLanguageCountry;
+    }
 }

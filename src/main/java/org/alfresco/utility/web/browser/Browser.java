@@ -2,24 +2,23 @@ package org.alfresco.utility.web.browser;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.alfresco.utility.TasProperties;
 import org.alfresco.utility.Utility;
 import org.alfresco.utility.exception.UnrecognizedBrowser;
 import org.apache.commons.lang.SystemUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.openqa.selenium.firefox.GeckoDriverService;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.safari.SafariDriver;
-
-import com.gargoylesoftware.htmlunit.BrowserVersion;
 
 /**
  * Return differed DesiredCapabilities for {@link WebDriver}
@@ -30,7 +29,7 @@ public enum Browser
 {
     FIREFOX(DesiredCapabilities.firefox()),
     CHROME(DesiredCapabilities.chrome()),
-    HTMLUNIT(DesiredCapabilities.htmlUnit()),
+    //HTMLUNIT(DesiredCapabilities.htmlUnit()),
     INTERNETEXPLORER(DesiredCapabilities.internetExplorer()),
     OPERA(DesiredCapabilities.operaBlink()),
     HTMLINITDRIVER(DesiredCapabilities.htmlUnit()),
@@ -62,78 +61,65 @@ public enum Browser
      * Change Firefox browser's default download location to testdata folder
      * return type : FirefoxProfile
      */
-    public static FirefoxProfile changeFirefoxDownloadLocationToTestDataFolder()
+    public static FirefoxOptions setFirefoxOptions(TasProperties properties)
     {
-        FirefoxProfile profile = new FirefoxProfile();
-        profile.setPreference("browser.download.dir", getDownloadLocation());
-        profile.setPreference("browser.download.folderList", 2);
-        profile.setPreference("browser.download.manager.alertOnEXEOpen", false);
-        profile.setPreference("browser.helperApps.neverAsk.saveToDisk",
+        FirefoxOptions options = new FirefoxOptions();
+        options.addPreference("browser.download.dir", getDownloadLocation());
+        options.addPreference("browser.download.folderList", 2);
+        options.addPreference("browser.download.manager.alertOnEXEOpen", false);
+        options.addPreference("browser.helperApps.neverAsk.saveToDisk",
                 "application/msword, application/csv, application/ris, text/csv, image/png, application/pdf, text/html, text/plain, application/zip, application/x-zip, application/x-zip-compressed, application/download, application/octet-stream");
-        profile.setPreference("browser.download.manager.showWhenStarting", false);
-        profile.setPreference("browser.download.manager.focusWhenStarting", false);
-        profile.setPreference("browser.download.useDownloadDir", true);
-        profile.setPreference("browser.helperApps.alwaysAsk.force", false);
-        profile.setPreference("browser.download.manager.alertOnEXEOpen", false);
-        profile.setPreference("browser.download.manager.closeWhenDone", true);
-        profile.setPreference("browser.download.manager.showAlertOnComplete", false);
-        return profile;
+        options.addPreference("browser.download.manager.showWhenStarting", false);
+        options.addPreference("browser.download.manager.focusWhenStarting", false);
+        options.addPreference("browser.download.useDownloadDir", true);
+        options.addPreference("browser.helperApps.alwaysAsk.force", false);
+        options.addPreference("browser.download.manager.alertOnEXEOpen", false);
+        options.addPreference("browser.download.manager.closeWhenDone", true);
+        options.addPreference("browser.download.manager.showAlertOnComplete", false);
+        options.addPreference("intl.accept_languages", getBrowserLanguage(properties));
+        options.setAcceptInsecureCerts(true);
+        return options;
     }
-
 
     public static WebDriver fromProperties(TasProperties properties)
     {
         switch (properties.getBrowserName().toLowerCase())
-        {                
+        {
             case "firefox":
-                String geckodriver = "Not-Defined";
-                if(SystemUtils.IS_OS_WINDOWS)
-                    geckodriver = "shared-resources/geckodriver/geckodriver.exe";
-                else if(SystemUtils.IS_OS_MAC)
+                setFirefoxDriver();
+                if (SystemUtils.IS_OS_LINUX)
                 {
-                    geckodriver = "shared-resources/geckodriver/geckodriver_mac";
-                    Utility.getTestResourceFile(geckodriver).setExecutable(true);
-                }        
-                else
-                {
-                    geckodriver = "shared-resources/geckodriver/geckodriver_linux";
-                    Utility.getTestResourceFile(geckodriver).setExecutable(true);
-                }
-                System.setProperty("webdriver.gecko.driver",Utility.getTestResourceFile(geckodriver).toString());
-                //return new FirefoxDriver(changeFirefoxDownloadLocationToTestDataFolder());
-                
-                if(SystemUtils.IS_OS_LINUX)
-                {
-	                String Xport = System.getProperty("lmportal.xvfb.id", ":1");
-	                FirefoxBinary firefoxBinary = new FirefoxBinary();
-	                firefoxBinary.setEnvironmentProperty("DISPLAY", Xport);
-	                firefoxBinary.addCommandLineOptions("-headless");
-	                
-	                FirefoxOptions options1 = new FirefoxOptions()
-	                .setProfile(new FirefoxProfile());
-	                options1.setBinary(firefoxBinary);
-	                return new FirefoxDriver(options1);
+                    String Xport = System.getProperty("lmportal.xvfb.id", ":1");
+                    FirefoxBinary firefoxBinary = new FirefoxBinary();
+                    firefoxBinary.addCommandLineOptions("-headless");
+                    Map<String, String> env = new HashMap<String, String>();
+                    env.put("DISPLAY", Xport);
+                    FirefoxOptions options1 = setFirefoxOptions(properties);
+                    options1.setBinary(firefoxBinary);
+                    return new FirefoxDriver(new GeckoDriverService.Builder().withEnvironment(env).build());
                 }
                 else
-                	return new FirefoxDriver();
+                {
+                    return new FirefoxDriver(setFirefoxOptions(properties));
+                }
             case "chrome":
-                System.setProperty("webdriver.chrome.driver", properties.getEnv().getProperty("browser.chrome.driver"));
+                setChromeDriver();
                 HashMap<String, Object> chromePrefs = new HashMap<String, Object>();
                 chromePrefs.put("profile.default_content_settings.popups", 0);
                 chromePrefs.put("download.default_directory", getDownloadLocation());
-                
+
                 ChromeOptions options = new ChromeOptions();
                 options.addArguments("--start-maximized");
+                options.addArguments(String.format("--lang=%s", getBrowserLanguage(properties)));
                 options.setExperimentalOption("prefs", chromePrefs);
                 ChromeDriver chromeDriver = new ChromeDriver(options);
                 return chromeDriver;
             case "ie":
                 return new InternetExplorerDriver();
-            case "htmlunit":
-                HtmlUnitDriver driver = new HtmlUnitDriver(BrowserVersion.BEST_SUPPORTED);
-                driver.setJavascriptEnabled(true);
-                
-                return driver;
+            //case "htmlunit":
+                //HtmlUnitDriver driver = new HtmlUnitDriver(BrowserVersion.BEST_SUPPORTED);
+                //driver.setJavascriptEnabled(true);
+                //return driver;
             case "safari":
                 return new SafariDriver();
             default:
@@ -141,10 +127,55 @@ public enum Browser
         }
     }
     
+    private static void setChromeDriver()
+    {
+        String chromedriver = "not-defined";
+        if (SystemUtils.IS_OS_WINDOWS)
+            chromedriver = "shared-resources/chromedriver/chromedriver.exe";
+        else if (SystemUtils.IS_OS_MAC)
+        {
+            chromedriver = "shared-resources/chromedriver/chromedriver_mac";
+            Utility.getTestResourceFile(chromedriver).setExecutable(true);
+        }
+        else
+        {
+            chromedriver = "shared-resources/chromedriver/chromedriver_linux";
+            Utility.getTestResourceFile(chromedriver).setExecutable(true);
+        }
+        System.setProperty("webdriver.chrome.driver", Utility.getTestResourceFile(chromedriver).toString());
+    }
+    
+    private static void setFirefoxDriver()
+    {
+        String geckodriver = "Not-Defined";
+        if (SystemUtils.IS_OS_WINDOWS)
+            geckodriver = "shared-resources/geckodriver/geckodriver.exe";
+        else if (SystemUtils.IS_OS_MAC)
+        {
+            geckodriver = "shared-resources/geckodriver/geckodriver_mac";
+            Utility.getTestResourceFile(geckodriver).setExecutable(true);
+        }
+        else
+        {
+            geckodriver = "shared-resources/geckodriver/geckodriver_linux";
+            Utility.getTestResourceFile(geckodriver).setExecutable(true);
+        }
+        System.setProperty("webdriver.gecko.driver", Utility.getTestResourceFile(geckodriver).toString());
+    }
+
     private static String getDownloadLocation()
     {
         String srcRoot = System.getProperty("user.dir") + File.separator;
         String testDataFolder = srcRoot + "testdata" + File.separator;
         return testDataFolder;
+    }
+    
+    private static String getBrowserLanguage(TasProperties properties)
+    {
+        if(!StringUtils.isEmpty(properties.getBrowserLanguageCountry()))
+        {
+            return properties.getBrowserLanguage() + "-" +  properties.getBrowserLanguageCountry();
+        }
+        return properties.getBrowserLanguage();
     }
 }
