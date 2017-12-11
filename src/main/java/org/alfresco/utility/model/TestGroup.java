@@ -35,6 +35,7 @@ public @interface TestGroup
     public static String SHAREDLINKS = "shared-links";
     public static String SYNC_API = "sync-api";
     public static String TAGS = "tags";
+    public static String TRASHCAN = "trashcan";
     public static String TASKS = "tasks";
     public static String PROCESS_DEFINITION = "process-definitions";
     public static String ACTIVITIES = "activities";
