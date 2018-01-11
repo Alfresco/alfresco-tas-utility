@@ -61,6 +61,7 @@ public @interface TestGroup
     public static String BROWSER = "browser";
     public static String SECURITY = "security";
     public static String GROUPS = "groups";
+    public static String DISCOVERY = "discovery";
 
     public static String WONT_FIX = "wont-fix";
     public static String OS_WIN = "windows"; // this will mark tests that needs to be executed ONLY on Windows
