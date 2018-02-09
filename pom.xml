@@ -27,9 +27,9 @@
 	</properties>
 
 	<scm>
-		<connection>scm:git:https://git.alfresco.com/tas/alfresco-tas-tester.git</connection>
-		<developerConnection>scm:git:https://git.alfresco.com/tas/alfresco-tas-tester.git</developerConnection>
-		<url>https://git.alfresco.com/tas/alfresco-tas-tester</url>
+		<connection>scm:git:https://git.alfresco.com/tas/alfresco-tas-utility.git</connection>
+		<developerConnection>scm:git:https://git.alfresco.com/tas/alfresco-tas-utility.git</developerConnection>
+		<url>https://git.alfresco.com/tas/alfresco-tas-utility</url>
 		<tag>HEAD</tag>
 	</scm>
 
