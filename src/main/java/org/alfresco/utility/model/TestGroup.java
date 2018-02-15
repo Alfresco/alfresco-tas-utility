@@ -120,6 +120,7 @@ public @interface TestGroup
     public static String REQUIRE_SHARE = "require-share";
     public static String REQUIRE_TRANSFORMATION = "require-transformation";
     public static String REQUIRE_JMX = "require-jmx";
+    public static String REQUIRE_SOLR = "require-solr";
 
     //mark the test that it requires one amp installed
     public static String REQUIRES_AMP = "requires=amp";
