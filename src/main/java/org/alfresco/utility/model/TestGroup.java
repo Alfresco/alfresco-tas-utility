@@ -69,7 +69,7 @@ public @interface TestGroup
     public static String OS_LINUX = "linux"; // this will mark tests that needs to be executed ONLY on Unix
     public static String OS_MAC = "mac"; // this will mark tests that needs to be executed ONLY on Unix
     public static String ASS_1 = "ASS_1.0.0"; // Alfresco Search Services 1.0
-
+    public static String SYNC_SERVICE_220 = "SS_2.2.0"; // Sync Service 2.2
     /*
      * Used in Share-PO
      */
