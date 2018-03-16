@@ -167,6 +167,9 @@ public class TasProperties
 
     @Value("${browser.language.country:gb}")
     private String browserLanguageCountry;
+    
+    @Value("${solrWaitTimeInSeconds:60}")
+    private int solrWaitTimeInSeconds;
 
     public Boolean showTenantsOnServerHealth()
     {
@@ -669,5 +672,15 @@ public class TasProperties
     public void setBrowserLanguageCountry(String browserLanguageCountry)
     {
         this.browserLanguageCountry = browserLanguageCountry;
+    }
+    
+    public int getSolrWaitTimeInSeconds()
+    {
+        return solrWaitTimeInSeconds;
+    }
+
+    public void setSolrWaitTimeInSeconds(int solrWaitTimeInSeconds)
+    {
+        this.solrWaitTimeInSeconds = solrWaitTimeInSeconds;
     }
 }
