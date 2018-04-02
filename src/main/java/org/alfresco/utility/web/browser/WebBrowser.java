@@ -20,6 +20,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.openqa.selenium.support.events.WebDriverEventListener;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -79,8 +80,16 @@ public class WebBrowser extends EventFiringWebDriver
      */
     public void mouseOver(WebElement element)
     {
-        Parameter.checkIsMandotary("WebElement", element);
-        new Actions(this).moveToElement(element).perform();
+        try
+        {
+            Parameter.checkIsMandotary("WebElement", element);
+            new Actions(this).moveToElement(element).perform();
+        }
+        catch(MoveTargetOutOfBoundsException ex)
+        {
+            ((JavascriptExecutor) this).executeScript("arguments[0].scrollIntoView(true);", element);
+            new Actions(this).moveToElement(element).perform();
+        }
     }
 
     /**
