@@ -129,7 +129,7 @@ public class XMLTestData extends XMLCollection
      * Creates folder structure
      * 
      * @param folderStructure
-     * @param inSite
+     * @param location
      * @param dataContent
      * @throws Exception
      */
@@ -143,7 +143,7 @@ public class XMLTestData extends XMLCollection
              */
             UserModel userFolder = getUserBy(dataContent.getAdminUser(), folder.getCreatedBy());
 
-            FolderModel folderInRepo = null;
+            FolderModel folderInRepo;
 
             /*
              * create a custom folder model
@@ -173,7 +173,7 @@ public class XMLTestData extends XMLCollection
      * Creates file structure
      * 
      * @param filesStructure
-     * @param inFolder
+     * @param parentFolder
      * @param dataContent
      * @throws Exception
      */
@@ -189,16 +189,16 @@ public class XMLTestData extends XMLCollection
             FileModel contentInRepo = null;
             if (parentFolder instanceof FolderModel)
             {
-                FolderModel parentFoldeInCmis = (FolderModel) parentFolder;
+                FolderModel parentFolderInCmis = (FolderModel) parentFolder;
                 if (file.isCustomModel())
                 {
-                    dataContent.usingUser(userFile).usingResource(parentFoldeInCmis).setCurrentSpace(parentFoldeInCmis.getCmisLocation());
+                    dataContent.usingUser(userFile).usingResource(parentFolderInCmis).setCurrentSpace(parentFolderInCmis.getCmisLocation());
                     contentInRepo = (FileModel) dataContent.createCustomContent(file.getModel(), file.getCustomModel().getName(),
                             file.getCustomModel().getObjectTypeProperties());
                 }
                 else
                 {
-                    dataContent.usingUser(userFile).usingResource(parentFoldeInCmis).setCurrentSpace(parentFoldeInCmis.getCmisLocation());
+                    dataContent.usingUser(userFile).usingResource(parentFolderInCmis).setCurrentSpace(parentFolderInCmis.getCmisLocation());
                     contentInRepo = dataContent.usingUser(userFile).createContent(file.getModel());
                 }
             }
@@ -226,7 +226,7 @@ public class XMLTestData extends XMLCollection
      */
     public void cleanup(DataContent dataContent) throws TestConfigurationException
     {
-        LOG.info("Startig CLEANUP process...");
+        LOG.info("Starting CLEANUP process...");
         for (XMLSiteData site : getSites())
         {
             for (XMLFolderData folder : site.getFolders())
@@ -293,7 +293,7 @@ public class XMLTestData extends XMLCollection
      * Add users as members with role to site
      * 
      * @param membersStructure a list of users to be added as members
-     * @param inSite
+     * @param siteModel
      * @param dataUser
      * @throws Exception
      */

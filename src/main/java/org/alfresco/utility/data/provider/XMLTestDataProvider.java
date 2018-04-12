@@ -1,17 +1,17 @@
 package org.alfresco.utility.data.provider;
 
-import java.io.FileInputStream;
+import org.alfresco.utility.Utility;
+import org.alfresco.utility.exception.DataPreparationException;
+import org.alfresco.utility.model.QueryModel;
+import org.testng.annotations.DataProvider;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
+import java.io.File;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
-
-import org.alfresco.utility.exception.DataPreparationException;
-import org.alfresco.utility.model.QueryModel;
-import org.testng.annotations.DataProvider;
 
 /**
  * 
@@ -30,11 +30,10 @@ public class XMLTestDataProvider
         {            
             throw new DataPreparationException("Please annotate your test that is using XMLTestDataProvider with @XMLDataConfig(file='../location-to-your-xml-test-data-file.xml'");
         }
-        
+        Utility.waitToLoopTime(2);
         JAXBContext context = JAXBContext.newInstance(XMLTestData.class);
         Unmarshaller um = context.createUnmarshaller();
-       
-        XMLTestData dataProvider = (XMLTestData) um.unmarshal(new FileInputStream(config.file()));
+        XMLTestData dataProvider = (XMLTestData) um.unmarshal(new File(config.file()));
         return dataProvider;
     }
 
@@ -112,5 +111,4 @@ public class XMLTestDataProvider
         XMLTestData dataFromXMLFile = initializeXMLFileData(m);
         return  new Object[][] { {dataFromXMLFile }};
     }
-    
 }

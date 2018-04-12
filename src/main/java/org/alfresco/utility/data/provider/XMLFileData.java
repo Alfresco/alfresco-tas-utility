@@ -25,7 +25,6 @@ public class XMLFileData extends XMLCollection implements XMLDataItem
     private String createdBy;
     private String content;
     private String id;
-
     private XMLCustomModel customModel;
     private List<XMLCommentData> comments = new ArrayList<XMLCommentData>();
     private List<XMLTagData> tags = new ArrayList<XMLTagData>();

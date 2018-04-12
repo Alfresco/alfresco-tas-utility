@@ -68,7 +68,11 @@ public enum Browser
         options.addPreference("browser.download.folderList", 2);
         options.addPreference("browser.download.manager.alertOnEXEOpen", false);
         options.addPreference("browser.helperApps.neverAsk.saveToDisk",
-                "application/msword, application/csv, application/ris, text/csv, image/png, application/pdf, text/html, text/plain, application/zip, application/x-zip, application/x-zip-compressed, application/download, application/octet-stream");
+                    "application/msword, application/csv, application/ris, text/csv, image/png, application/pdf, text/html, text/plain, "
+                    + "application/zip, application/x-zip, application/x-zip-compressed, application/download, application/octet-stream, "
+                    + "application/vnd.openxmlformats-officedocument.wordprocessingml.document,"
+                    + "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    + "application/vnd.openxmlformats-officedocument.presentationml.presentation");
         options.addPreference("browser.download.manager.showWhenStarting", false);
         options.addPreference("browser.download.manager.focusWhenStarting", false);
         options.addPreference("browser.download.useDownloadDir", true);
