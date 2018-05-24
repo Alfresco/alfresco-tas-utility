@@ -13,6 +13,7 @@ public @interface TestGroup
     public static String REGRESSION = "regression";
     public static String CORE = "core";
     public static String FULL = "full";
+    public static String ENTERPRISE = "enterprise";
     public static String PROTOCOLS = "protocols";
     public static String SSO = "sso";
     public static String VALIDATION_CYCLE = "validation-cycle";
