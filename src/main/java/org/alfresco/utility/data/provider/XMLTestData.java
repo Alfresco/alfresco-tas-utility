@@ -15,6 +15,7 @@ import org.alfresco.utility.data.DataSite;
 import org.alfresco.utility.data.DataUser;
 import org.alfresco.utility.exception.DataPreparationException;
 import org.alfresco.utility.exception.TestConfigurationException;
+import org.alfresco.utility.model.ContentModel;
 import org.alfresco.utility.model.FileModel;
 import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.QueryModel;
@@ -245,6 +246,31 @@ public class XMLTestData extends XMLCollection
                         LOG.error("Could not delete file: {}", file.getModel().toString());
                     }
             }
+            
+            dataContent.usingAdmin().deleteSite(site.getModel());
+        }
+        // Delete content from trashcan
+        dataContent.emptyUserTrashcan(dataContent.getAdminUser());
+        
+        // Delete custom tas model
+        try
+        {
+            ContentModel customModel = dataContent.getCustomModel();
+            if (customModel != null)
+            {
+                dataContent.usingAdmin().usingResource(customModel).deleteContent();
+
+                // Delete content model from trashcan
+                dataContent.emptyUserTrashcan(dataContent.getAdminUser());
+            }
+            else
+            {
+                LOG.info("Custom Model not found!");
+            }
+        }
+        catch (Exception e)
+        {
+            LOG.error("Could not delete custom model file: {}", e);
         }
         LOG.info("CLEANUP finished!");
     }

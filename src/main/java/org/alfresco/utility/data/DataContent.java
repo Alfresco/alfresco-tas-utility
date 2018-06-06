@@ -20,6 +20,7 @@ import org.alfresco.dataprep.ContentActions;
 import org.alfresco.dataprep.ContentAspects;
 import org.alfresco.dataprep.ContentService;
 import org.alfresco.dataprep.SiteService;
+import org.alfresco.dataprep.UserService;
 import org.alfresco.utility.Utility;
 import org.alfresco.utility.data.provider.XMLAspectData;
 import org.alfresco.utility.exception.DataPreparationException;
@@ -68,6 +69,11 @@ public class DataContent extends TestData<DataContent>
 
     @Autowired
     private SiteService siteService;
+    
+    @Autowired
+    private UserService userService;
+    
+    private FileModel customModel;
 
     public ContentActions getContentActions()
     {
@@ -361,7 +367,7 @@ public class DataContent extends TestData<DataContent>
      * @param localModelXMLFilePath
      * @throws TestConfigurationException
      */
-    public void deployContentModel(String localModelXMLFilePath) throws TestConfigurationException
+    public void setCustomModel(String localModelXMLFilePath)
     {
         File file = Utility.getTestResourceFile(localModelXMLFilePath);
 
@@ -396,9 +402,32 @@ public class DataContent extends TestData<DataContent>
         catch (Exception e)
         {
             Folder model = (Folder) session.getObjectByPath("/Data Dictionary/Models");
-            model.createDocument(props, contentStream, VersioningState.MAJOR);
+            modelInRepo = model.createDocument(props, contentStream, VersioningState.MAJOR);
+            LOG.info("Custom Content Model [{}] is now deployed under [/Data Dictionary/Models/] location", localModelXMLFilePath);
         }
+        
+        this.customModel = new FileModel(modelInRepo.getName());
+        this.customModel.setNodeRef(modelInRepo.getId());
+        this.customModel.setNodeRef( this.customModel.getNodeRefWithoutVersion());
+        this.customModel.setCmisLocation(String.format("/Data Dictionary/Models/%s", file.getName()));
+        LOG.info("Custom Model file: " + this.customModel.getCmisLocation());
     }
+    
+    public void deployContentModel(String localModelXMLFilePath) throws TestConfigurationException
+    { 
+        setCustomModel(localModelXMLFilePath);
+    }
+    
+    /**
+     * Returns customModel file is one exists or is deployed using deployContentModel
+     * otherwise null
+     */
+    public FileModel getCustomModel()
+    {
+        return customModel;
+    }
+    
+
 
     public ContentStream getContentStream(String fileName, String content) throws Exception
     {
@@ -678,5 +707,9 @@ public class DataContent extends TestData<DataContent>
         String contentPath = getLastResource();
         STEP(String.format("DATAPREP: Set inherit permissions to %s for %s", inheritPermissions, contentPath));
         contentActions.setInheritPermissions(getCurrentUser().getUsername(),  getCurrentUser().getPassword(), contentPath, inheritPermissions);
+    }
+    public void emptyUserTrashcan(UserModel user)
+    {
+        userService.emptyTrashcan(user.getUsername(), user.getPassword());
     }
 }
