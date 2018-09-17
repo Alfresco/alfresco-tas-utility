@@ -77,6 +77,7 @@ public @interface TestGroup
     
     public static String INSIGHT_10 = "InsightEngine_1.0.0"; // Alfresco Insight Engine 1.0
     public static String NOT_INSIGHT_ENGINE = "Not_InsightEngine"; // When Alfresco Insight Engine 1.0 isn't running
+    public static String SOLR = "SOLR"; //To be used for tests for /solr/alfresco/* end-points
     
     public static String ACS_52n = "ACS_52n"; // Alfresco Content Services 5.2.n
     public static String ACS_60n = "ACS_60n"; // Alfresco Content Services 6.0 or above
