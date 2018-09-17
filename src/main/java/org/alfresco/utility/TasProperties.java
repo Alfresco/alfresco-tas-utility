@@ -171,6 +171,15 @@ public class TasProperties
     @Value("${solrWaitTimeInSeconds:60}")
     private int solrWaitTimeInSeconds;
 
+    @Value("${solr.scheme:http}")
+    private String solrScheme;
+
+    @Value("${solr.server:localhost}")
+    private String solrServer;
+
+    @Value("${solr.port:8983}")
+    private int solrPort;
+
     public Boolean showTenantsOnServerHealth()
     {
         return showTenantsOnServerHealth;
@@ -682,5 +691,43 @@ public class TasProperties
     public void setSolrWaitTimeInSeconds(int solrWaitTimeInSeconds)
     {
         this.solrWaitTimeInSeconds = solrWaitTimeInSeconds;
+    }
+
+    public String getSolrScheme()
+    {
+        return solrScheme;
+    }
+
+    public void setSolrScheme(String solrScheme)
+    {
+        this.solrScheme = solrScheme;
+    }
+
+    public String getSolrServer()
+    {
+        return solrServer;
+    }
+
+    public void setSolrServer(String solrServer)
+    {
+        this.solrServer = solrServer;
+    }
+
+    public int getSolrPort()
+    {
+        return solrPort;
+    }
+
+    public void setSolrPort(int solrPort)
+    {
+        this.solrPort = solrPort;
+    }
+    
+    /**
+     * @return host: <schema>://<server>
+     */
+    public String getSolrServerUrl()
+    {
+        return String.format("%s://%s", getSolrScheme(), getSolrServer());
     }
 }
