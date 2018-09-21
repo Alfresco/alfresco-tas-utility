@@ -806,8 +806,7 @@ public class WebBrowser extends EventFiringWebDriver
         Parameter.checkIsMandotary("source element", source);
         Parameter.checkIsMandotary("target element", target);
         Actions builder = new Actions(this);
-        Action dragAndDrop = builder.clickAndHold(source).moveToElement(target).release(target).build();
-        dragAndDrop.perform();
+        builder.dragAndDrop(source, target).perform();
     }
 
     /**
