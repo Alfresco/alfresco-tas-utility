@@ -73,6 +73,7 @@ public @interface TestGroup
     
     // Search: Minimum Version Required
     public static String ASS_1 = "ASS_1.0.0"; // Alfresco Search Services 1.0. Does not work with Solr4
+    public static String ASS_112 = "ASS_1.1.2"; // Alfresco Search Services 1.1.2
     public static String ASS_12 = "ASS_1.2.0"; // Alfresco Search Services 1.2
     
     public static String INSIGHT_10 = "InsightEngine_1.0.0"; // Alfresco Insight Engine 1.0
