@@ -138,4 +138,7 @@ public @interface TestGroup
 
     //mark the test that it requires one amp installed
     public static String REQUIRES_AMP = "requires=amp";
+
+    //Marks the test as renditions regression test, these tests run in their own separate test suit
+    public static String RENDITIONS_REGRESSION = "renditions-regression";
 }
