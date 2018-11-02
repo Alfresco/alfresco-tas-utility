@@ -82,6 +82,7 @@ public @interface TestGroup
     
     public static String ACS_52n = "ACS_52n"; // Alfresco Content Services 5.2.n
     public static String ACS_60n = "ACS_60n"; // Alfresco Content Services 6.0 or above
+    public static String ACS_61n = "ACS_61n"; // Alfresco Content Services 6.1 or above
     
     public static String SYNC_SERVICE_220 = "SS_2.2.0"; // Sync Service 2.2
     /*
