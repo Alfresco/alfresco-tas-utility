@@ -75,8 +75,10 @@ public @interface TestGroup
     public static String ASS_1 = "ASS_1.0.0"; // Alfresco Search Services 1.0. Does not work with Solr4
     public static String ASS_112 = "ASS_1.1.2"; // Alfresco Search Services 1.1.2
     public static String ASS_12 = "ASS_1.2.0"; // Alfresco Search Services 1.2
+    public static String ASS_13 = "ASS_1.3.0"; // Alfresco Search Services 1.3
     
     public static String INSIGHT_10 = "InsightEngine_1.0.0"; // Alfresco Insight Engine 1.0
+    public static String INSIGHT_11 = "InsightEngine_1.1.0"; // Alfresco Insight Engine 1.1
     public static String NOT_INSIGHT_ENGINE = "Not_InsightEngine"; // When Alfresco Insight Engine 1.0 isn't running
     public static String SOLR = "SOLR"; //To be used for tests for /solr/alfresco/* end-points
     
