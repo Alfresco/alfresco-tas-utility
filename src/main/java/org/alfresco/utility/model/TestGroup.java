@@ -76,6 +76,7 @@ public @interface TestGroup
     public static String ASS_112 = "ASS_1.1.2"; // Alfresco Search Services 1.1.2
     public static String ASS_12 = "ASS_1.2.0"; // Alfresco Search Services 1.2
     public static String ASS_13 = "ASS_1.3.0"; // Alfresco Search Services 1.3
+    public static String ASS_14 = "ASS_1.4.0"; // Alfresco Search Services 1.4
     
     public static String INSIGHT_10 = "InsightEngine_1.0.0"; // Alfresco Insight Engine 1.0
     public static String INSIGHT_11 = "InsightEngine_1.1.0"; // Alfresco Insight Engine 1.1
