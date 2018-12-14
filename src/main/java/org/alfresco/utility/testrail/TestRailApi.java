@@ -48,7 +48,7 @@ public class TestRailApi
      * Test Rail Template:
      * 1 - Test Case
      */
-    private static final int TEMPLATE_ID = new Integer(1);
+    private static final int TEMPLATE_ID = Integer.valueOf(1);
     private static final int TEST_PRIORITY_MEDIUM = 2;
 
     Properties testRailProperties = new Properties();
@@ -345,7 +345,7 @@ public class TestRailApi
             // data.put("custom_steps_separated", steps);
             // data.put("custom_steps", annotation.description());
             data.put("custom_auto_ref", getFullTestCaseName(result));
-            data.put("custom_executiontype", new Boolean(true)); // always automated
+            data.put("custom_executiontype", Boolean.valueOf(true)); // always automated
 
             // holds Sanity, Smoke, Regression, etc
             List<Integer> executionTypeList = new ArrayList<Integer>();
@@ -356,7 +356,7 @@ public class TestRailApi
 
             data.put("custom_exce_type", executionTypeList);
             data.put("custom_description", annotation.description());
-            data.put("priority_id", new Integer(TEST_PRIORITY_MEDIUM));
+            data.put("priority_id", Integer.valueOf(TEST_PRIORITY_MEDIUM));
             data.put("custom_platform", 1);
 
             Object response = postRequest("add_case/" + section.getId(), data);
