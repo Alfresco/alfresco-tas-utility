@@ -2,9 +2,6 @@ package org.alfresco.utility.data.auth;
 
 import java.util.HashMap;
 
-import javax.naming.NamingException;
-
-import org.alfresco.utility.exception.TestStepException;
 import org.alfresco.utility.model.UserModel;
 
 /**

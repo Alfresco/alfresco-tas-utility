@@ -12,7 +12,6 @@ import org.alfresco.utility.data.DataSite;
 import org.alfresco.utility.data.DataUser;
 import org.alfresco.utility.data.auth.DataKerberos;
 import org.alfresco.utility.data.auth.DataLDAP;
-import org.alfresco.utility.data.auth.DataNtlmPassthru;
 import org.alfresco.utility.data.auth.DataOpenLDAP;
 import org.alfresco.utility.data.auth.DataOracleDirectoryServer;
 import org.alfresco.utility.exception.DataPreparationException;
