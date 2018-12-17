@@ -96,15 +96,14 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>${maven-compiler-plugin.version}</version>
 				<configuration>
-					<source>${java.version}</source>
-                    <target>${java.version}</target>
+					<release>${java.version}</release>                    
                     <showWarnings>true</showWarnings>
                     <showDeprecation>true</showDeprecation>
 				</configuration>
 			</plugin>
 			<plugin>
 				<artifactId>maven-deploy-plugin</artifactId>
-				<version>2.8.1</version>
+				<version>3.0.0-M1</version>
 				<executions>
 					<execution>
 						<id>default-deploy</id>
@@ -119,12 +118,15 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.22.1</version>
+				<version>3.0.0-M2</version>
 				<configuration>
 					<skipTests>true</skipTests>
 					<suiteXmlFiles>
 						<suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
 					</suiteXmlFiles>
+					<argLine>    
+						--illegal-access=permit
+        			</argLine>
 				</configuration>
 			</plugin>
 
@@ -143,7 +145,27 @@
 						<include>shared-resources/**/*</include>
 					</includes>
 				</configuration>
-			</plugin>
+			</plugin>			
+			<plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-enforcer-plugin</artifactId>
+		        <version>3.0.0-M2</version>
+		        <executions>
+		          <execution>
+		            <id>enforce-maven</id>
+		            <goals>
+		              <goal>enforce</goal>
+		            </goals>
+		            <configuration>
+		              <rules>
+		                <requireMavenVersion>
+		                  <version>3.3</version>
+		                </requireMavenVersion>
+		              </rules>    
+		            </configuration>
+		          </execution>
+		        </executions>
+		      </plugin>
 		</plugins>
 
 		<resources>
@@ -317,6 +339,6 @@
 			<groupId>ru.yandex.qatools.htmlelements</groupId>
 			<artifactId>htmlelements-java</artifactId>
 			<version>${yandex.qatools.version}</version>
-		</dependency>
+		</dependency>		
 	</dependencies>
 </project>
