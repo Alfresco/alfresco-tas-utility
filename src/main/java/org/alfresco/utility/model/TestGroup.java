@@ -75,6 +75,7 @@ public @interface TestGroup
     public static String ASS_1 = "ASS_1.0.0"; // Alfresco Search Services 1.0. Does not work with Solr4
     public static String ASS_112 = "ASS_1.1.2"; // Alfresco Search Services 1.1.2
     public static String ASS_12 = "ASS_1.2.0"; // Alfresco Search Services 1.2
+    public static String ASS_121 = "ASS_1.2.1"; // Alfresco Search Services 1.2.1
     public static String ASS_13 = "ASS_1.3.0"; // Alfresco Search Services 1.3
     public static String ASS_14 = "ASS_1.4.0"; // Alfresco Search Services 1.4
     
