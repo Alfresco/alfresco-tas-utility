@@ -25,6 +25,7 @@
 * [Reference](#reference)
 * [Change Log](docs/CHANGELOG.md)
 * [Contributors](#contributors)
+* [Releasing](#releasing)
 * [License](#license)
 
 ## Synopsis
@@ -635,6 +636,14 @@ We wanted to simplify the Test Rail integration, so we used listeners in order t
 As contributors and maintainers of this project, we pledge to respect all people who contribute through reporting issues, posting feature requests, updating documentation, submitting pull requests or patches, and other... [more](CODE_OF_CONDUCT.md).
 
 :octocat: Please also take a look at the following [Workflow] (https://git.alfresco.com/tas/alfresco-tas-utility/wikis/workflow-process) process.
+
+## Releasing
+
+Any commit done on this project should be automatically executed by [TAS Build Plan](https://bamboo.alfresco.com/bamboo/browse/TAS-TAS)
+If the build passes, then you didn't broke anything.
+
+If you want to perform a release, open [TAS-Utility](https://bamboo.alfresco.com/bamboo/browse/TAS-UT) Bamboo Build.
+Run the Default stage and if it passes, then manually perform the Release stage (this will auto-increment the version in pom.xml) 
 
 ## License
 
