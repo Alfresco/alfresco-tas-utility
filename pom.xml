@@ -4,7 +4,7 @@
 	<groupId>org.alfresco.tas</groupId>
 	<artifactId>utility</artifactId>
 	<name>alfresco-tas-utility</name>
-	<version>2.0.2-SNAPSHOT</version>
+	<version>2.0.1-SNAPSHOT</version>
 	<organization>
 		<name>Alfresco Software</name>
 		<url>http://www.alfresco.com/</url>
