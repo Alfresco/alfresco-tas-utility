@@ -250,6 +250,18 @@ public class DataContent extends TestData<DataContent>
         {
             cmisDocument = contentService.createDocumentInRepository(getSession(), getLastResource(), DocumentType.valueOf(fileModel.getFileType().toString()),
                     fileFullName, fileModel.getContent());
+
+            // Set Title or Description if specified
+            if (fileModel.getTitle() != null || fileModel.getDescription() != null)
+            {
+                Map<String, Object> properties = new HashMap<String, Object>();
+                {
+                    properties.put("cm:title", fileModel.getTitle());
+                    properties.put("cm:description", fileModel.getDescription());
+                }
+
+                cmisDocument.updateProperties(properties);
+            }
         }
         catch (CmisStorageException cse)
         {
