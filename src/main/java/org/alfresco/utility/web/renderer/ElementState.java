@@ -25,9 +25,9 @@ public enum ElementState
         Renderer newInstance = null;
         try
         {
-            newInstance = (Renderer) clazzValue.newInstance();
+            newInstance = (Renderer) clazzValue.getDeclaredConstructor().newInstance();
         }
-        catch (InstantiationException | IllegalAccessException e)
+        catch (Exception e)
         {
         }
         return newInstance;
