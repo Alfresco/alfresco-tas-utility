@@ -29,4 +29,4 @@ release: ## perform the release, automatically increase the version
 	-Dresume=false \
 	-Dusername=$(GIT_COMMITTER_NAME) \
 	-Dpassword=$(bamboo_auth_ldap_password) \
-	"-Darguments=-Dmaven.test.skip=true -Dmaven.javadoc.skip=true -Dadditionalparam=-Xdoclint:none"
+	"-Darguments=-DskipTests=true -Dmaven.javadoc.skip=true -Dadditionalparam=-Xdoclint:none"
