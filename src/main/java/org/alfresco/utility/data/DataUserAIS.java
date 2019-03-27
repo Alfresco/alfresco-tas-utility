@@ -52,6 +52,21 @@ public class DataUserAIS extends DataUser
         deleteUserFromAIS(userToDelete);
     }
 
+    @Override
+    public void disableUser(UserModel userToDisable)
+    {
+        super.disableUser(userToDisable);
+        disableUserInAIS(userToDisable);
+    }
+
+    private void disableUserInAIS(UserModel userModel)
+    {
+        if (dataAIS.isEnabled())
+        {
+            dataAIS.perform().disableUser(userModel);
+        }
+    }
+
     private void deleteUserFromAIS(UserModel userModel)
     {
         if (dataAIS.isEnabled())
