@@ -31,7 +31,7 @@ public class SanityTestsGeneratorListener implements ISuiteListener
     public void onStart(ISuite suite)
     {
         // the list of Test Groups to search for
-        List<String> projects = new ArrayList<String>(Arrays.asList(TestGroup.OS_WIN, "Demo"));
+        List<String> projects = new ArrayList<String>(Arrays.asList(TestGroup.SANITY));
 
         Collection<ITestNGMethod> testsOnRuntime = suite.getAllMethods();
         LOG.info("Total number of tests: " + testsOnRuntime.size());
