@@ -2,7 +2,6 @@
 package org.alfresco.utility.listener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -26,12 +25,15 @@ public class SanityTestsGeneratorListener implements ISuiteListener
 {
     private static Logger LOG = LogFactory.getLogger();
     private String filePath = "src/main/resources";
+    private static String DEFAULT_TEST_GROUP = TestGroup.SANITY;
+    private static String PARAM_TEST_GROUP = "testGroup";
 
     @Override
     public void onStart(ISuite suite)
     {
+
         // the list of Test Groups to search for
-        List<String> projects = new ArrayList<String>(Arrays.asList(TestGroup.SANITY));
+        List<String> projects = resolveTestGroup(suite);
 
         Collection<ITestNGMethod> testsOnRuntime = suite.getAllMethods();
         LOG.info("Total number of tests: " + testsOnRuntime.size());
@@ -45,7 +47,7 @@ public class SanityTestsGeneratorListener implements ISuiteListener
         {
             if (groupsOfTests.keySet().contains(key))
             {
-                LOG.info("Total number of tests for TestGroup='" + key + "' is " + groupsOfTests.get(key).size());
+                LOG.info("Total number of tests for TestGroup = '" + key + "' is " + groupsOfTests.get(key).size());
                 iterator = groupsOfTests.get(key).iterator();
 
                 while (iterator.hasNext())
@@ -69,9 +71,27 @@ public class SanityTestsGeneratorListener implements ISuiteListener
         }
 
         XmlTestsSuiteWriter writer = new XmlTestsSuiteWriter();
-        writer.generateXmlFile(filePath, testClasses);
+        writer.generateXmlFile(filePath, testClasses, projects.get(0));
 
         System.exit(0);
+    }
+
+    /**
+     * Get the TestGroup param value from the xml file that run this listener. The default value for it is Sanity Test
+     * Group.
+     * 
+     * @param suite The tests suite.
+     * @return The test group value.
+     */
+    private List<String> resolveTestGroup(ISuite suite)
+    {
+        List<String> projects = new ArrayList<String>();
+
+        String testGroup = suite.getParameter(PARAM_TEST_GROUP);
+        testGroup = testGroup != null ? testGroup : DEFAULT_TEST_GROUP;
+        projects.add(testGroup);
+
+        return projects;
     }
 
     @Override

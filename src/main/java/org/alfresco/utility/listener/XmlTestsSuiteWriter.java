@@ -28,7 +28,7 @@ public class XmlTestsSuiteWriter
 {
     public static Logger LOG = LogFactory.getLogger();
     private String PROJECT_NAME = "tas";
-    private static final String SUITE_NAME = "Run Sanity Tests";
+    private static final String SUITE_NAME = "Run Tests for Test Group = ";
 
     /**
      * Generate the XML file suite and write it to the disk.
@@ -36,7 +36,7 @@ public class XmlTestsSuiteWriter
      * @param filePath The file path where to save the file.
      * @param testClasses The map containing the classes and methods to be write on the XML file.
      */
-    public void generateXmlFile(String filePath, Map<String, List<String>> testClasses)
+    public void generateXmlFile(String filePath, Map<String, List<String>> testClasses, String testGroup)
     {
         try
         {
@@ -46,7 +46,7 @@ public class XmlTestsSuiteWriter
             Document doc = docBuilder.newDocument();
             doc.setXmlStandalone(true);
 
-            generateXMLBody(doc, testClasses);
+            generateXMLBody(doc, testClasses, testGroup);
 
             // write the content into XML file
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -67,10 +67,10 @@ public class XmlTestsSuiteWriter
 
     private String getFullFilePath(String filePath)
     {
-        return filePath + File.separator + PROJECT_NAME + "-sanity-suite.xml";
+        return filePath + File.separator + PROJECT_NAME + "-tests-suite.xml";
     }
 
-    private void generateXMLBody(Document doc, Map<String, List<String>> testClasses)
+    private void generateXMLBody(Document doc, Map<String, List<String>> testClasses, String testGroup)
     {
         // create Suite element
         Element rootElement = doc.createElement("suite");
@@ -78,7 +78,7 @@ public class XmlTestsSuiteWriter
 
         // add Suite -> Name attribute
         Attr suiteName = doc.createAttribute("name");
-        suiteName.setValue(SUITE_NAME);
+        suiteName.setValue(SUITE_NAME + testGroup);
         rootElement.setAttributeNode(suiteName);
 
         // add Suite -> Verbose attribute
@@ -92,7 +92,7 @@ public class XmlTestsSuiteWriter
 
         // add Test -> Name attribute
         Attr testNameAttr = doc.createAttribute("name");
-        testNameAttr.setValue("Sanity tests");
+        testNameAttr.setValue("Tas tests");
         testElement.setAttributeNode(testNameAttr);
 
         // create Classes element
@@ -127,5 +127,4 @@ public class XmlTestsSuiteWriter
             }
         }
     }
-
 }
