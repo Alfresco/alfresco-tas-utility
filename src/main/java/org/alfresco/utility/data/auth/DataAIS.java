@@ -44,6 +44,7 @@ public class DataAIS implements InitializingBean
     private AuthzClient authzClient;
     private boolean enabled;
     private static HashMap<Integer, AisToken> aisTokens = new HashMap<>();
+    private static final int TIMEOUT_DELTA_MILLISECONDS = 5000;
 
     @Autowired
     private TasAisProperties aisProperties;
@@ -263,7 +264,7 @@ public class DataAIS implements InitializingBean
             if (aisTokens.containsKey(key))
             {
                 AisToken token = aisTokens.get(key);
-                if (currentTime < (token.getExpirationTime() - 5000))
+                if (currentTime < (token.getExpirationTime() - TIMEOUT_DELTA_MILLISECONDS))
                 {
                     return true;
                 }
