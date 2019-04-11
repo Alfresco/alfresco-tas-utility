@@ -28,7 +28,7 @@ public class XmlTestsSuiteWriter
 {
     public static Logger LOG = LogFactory.getLogger();
     private String PROJECT_NAME = "tas";
-    private static final String SUITE_NAME = "Run Tests for Test Group = ";
+    private static final String SUITE_NAME = "Tests for Test Group = ";
 
     /**
      * Generate the XML file suite and write it to the disk.
@@ -92,7 +92,7 @@ public class XmlTestsSuiteWriter
 
         // add Test -> Name attribute
         Attr testNameAttr = doc.createAttribute("name");
-        testNameAttr.setValue("Tas tests");
+        testNameAttr.setValue("Tas sanity suite");
         testElement.setAttributeNode(testNameAttr);
 
         // create Classes element

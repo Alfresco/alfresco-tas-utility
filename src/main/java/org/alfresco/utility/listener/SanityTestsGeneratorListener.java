@@ -17,7 +17,11 @@ import org.testng.ITestNGMethod;
 import org.testng.internal.TestNGMethod;
 
 /**
- * Listener class to generate a XML tests suite file, based on given TestGroups added as parameters.
+ * Listener class to generate a XML tests suite file, based on given TestGroups added as parameters. To run this
+ * listener, see src/main/resources/tas-suite-generator.xml file. By default, the testGroup is set to SANITY, but it can
+ * be changed setting testGroup parameter. The package name should point to the package we want to scan for tests. To
+ * generate the sanity xml suite: run tas-suite-generator.xml as TestNG suite. Result: the xml sanity suite will be
+ * generated on src/main/resources/tas-tests-suite.xml
  * 
  * @author Cristina Diaconu
  */
@@ -26,7 +30,6 @@ public class SanityTestsGeneratorListener implements ISuiteListener
     private static Logger LOG = LogFactory.getLogger();
     private String filePath = "src/main/resources";
     private static String DEFAULT_TEST_GROUP = TestGroup.SANITY;
-    private static String PARAM_TEST_GROUP = "testGroup";
 
     @Override
     public void onStart(ISuite suite)
@@ -87,7 +90,7 @@ public class SanityTestsGeneratorListener implements ISuiteListener
     {
         List<String> projects = new ArrayList<String>();
 
-        String testGroup = suite.getParameter(PARAM_TEST_GROUP);
+        String testGroup = suite.getParameter("testGroup");
         testGroup = testGroup != null ? testGroup : DEFAULT_TEST_GROUP;
         projects.add(testGroup);
 
