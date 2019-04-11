@@ -1,14 +1,22 @@
 package org.alfresco.utility.data.auth;
 
+import static org.alfresco.utility.report.log.Step.STEP;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+
+import javax.ws.rs.core.Response;
+
 import org.alfresco.utility.TasAisProperties;
+import org.alfresco.utility.data.AisToken;
 import org.alfresco.utility.model.UserModel;
 import org.apache.http.client.HttpClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.engines.ApacheHttpClient4Engine;
 import org.junit.Assert;
-import org.keycloak.admin.client.Keycloak;
-
 import org.keycloak.adapters.HttpClientBuilder;
+import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.authorization.client.AuthzClient;
@@ -21,13 +29,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
-
-import javax.ws.rs.core.Response;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-
-import static org.alfresco.utility.report.log.Step.STEP;
 
 /**
  * DataAIS provides access to Alfresco Identity Service users resource.
@@ -42,6 +43,7 @@ public class DataAIS implements InitializingBean
     private UsersResource usersResource;
     private AuthzClient authzClient;
     private boolean enabled;
+    private static HashMap<Integer, AisToken> aisTokens = new HashMap<>();
 
     @Autowired
     private TasAisProperties aisProperties;
@@ -163,6 +165,8 @@ public class DataAIS implements InitializingBean
             UserRepresentation userRepresentation = findUserByUsername(user.getUsername());
             if (userRepresentation != null)
             {
+                removeTokenForUser(generateTokenKey(user));
+
                 Response response = usersResource.delete(userRepresentation.getId());
                 response.close();
             }
@@ -197,6 +201,7 @@ public class DataAIS implements InitializingBean
             UserRepresentation userRepresentation = findUserByUsername(user.getUsername());
             userRepresentation.setEnabled(false);
             usersResource.get(userRepresentation.getId()).update(userRepresentation);
+            removeTokenForUser(generateTokenKey(user));
             return this;
         }
 
@@ -236,6 +241,70 @@ public class DataAIS implements InitializingBean
             }
 
             return user;
+        }
+
+        public synchronized void addTokenForUser(Integer key, AccessTokenResponse tokenResponse)
+        {
+            Long currentTime = System.currentTimeMillis();
+            AisToken token = new AisToken(tokenResponse.getToken(), tokenResponse.getRefreshToken(), currentTime, tokenResponse.getExpiresIn() * 1000);
+
+            aisTokens.put(key, token);
+        }
+
+        public synchronized void removeTokenForUser(Integer key)
+        {
+            aisTokens.remove(key);
+        }
+
+        public Boolean checkTokenValidity(Integer key)
+        {
+            Long currentTime = System.currentTimeMillis();
+
+            if (aisTokens.containsKey(key))
+            {
+                AisToken token = aisTokens.get(key);
+                if (currentTime < (token.getExpirationTime() - 5000))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /**
+         * Get user access token from cache or request a new token if the
+         * existing one is not valid
+         * 
+         * @param user
+         * @return
+         */
+        public AisToken getAccessToken(UserModel user)
+        {
+            Integer key = generateTokenKey(user);
+
+            if(!checkTokenValidity(key))
+            {
+                //Get and add new user token
+                AccessTokenResponse tokenReponse = obtainAccessToken(user);
+                addTokenForUser(key, tokenReponse);
+            }
+
+            return aisTokens.get(key);
+        }
+
+        /**
+         * Generate keys for the token caching mechanism
+         * @param user
+         * @return
+         */
+        private Integer generateTokenKey(UserModel user)
+        {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((user.getUsername() == null) ? 0 : user.getUsername().hashCode());
+            result = prime * result + ((user.getPassword() == null) ? 0 : user.getPassword().hashCode());
+            return result;
         }
     }
 }
