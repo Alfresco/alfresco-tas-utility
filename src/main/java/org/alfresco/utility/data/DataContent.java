@@ -10,17 +10,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import org.alfresco.dataprep.*;
 import org.alfresco.dataprep.CMISUtil.DocumentType;
-import org.alfresco.dataprep.ContentActions;
-import org.alfresco.dataprep.ContentAspects;
-import org.alfresco.dataprep.ContentService;
-import org.alfresco.dataprep.SiteService;
-import org.alfresco.dataprep.UserService;
 import org.alfresco.utility.Utility;
 import org.alfresco.utility.data.provider.XMLAspectData;
 import org.alfresco.utility.exception.DataPreparationException;
@@ -42,8 +35,15 @@ import org.apache.chemistry.opencmis.commons.enums.VersioningState;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisStorageException;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ContentStreamImpl;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpPost;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -57,6 +57,12 @@ import org.testng.Assert;
 public class DataContent extends TestData<DataContent>
 {
     private Session session;
+
+    private static Log logger = LogFactory.getLog(DataContent.class);
+
+    @Autowired
+    private AlfrescoHttpClientFactory alfrescoHttpClientFactory;
+
 
     @Autowired
     private ContentService contentService;
@@ -110,16 +116,60 @@ public class DataContent extends TestData<DataContent>
      * dataContent.usingUser(testUser).usingSite(testSite).createFolder(newRandomFolder);
      * <code>
      */
-    public FolderModel createFolder(FolderModel folderModel)
-    {
-        STEP(String.format("DATAPREP: Creating a new folder content %s in %s ", folderModel.getName(), getCurrentSpace()));
-        String location = Utility.buildPath(getCurrentSpace(), folderModel.getName());
-        setLastResource(location);
-        Folder cmisFolder = contentService.createFolderInRepository(getSession(), folderModel.getName(), getCurrentSpace());
-        folderModel.setProtocolLocation(location);
-        folderModel.setNodeRef(cmisFolder.getId());
-        folderModel.setCmisLocation(location);
-        return folderModel;
+
+    public FolderModel createFolder() throws IOException {
+        return createFolder(new FolderModel(UUID.randomUUID().toString()));
+    }
+
+
+    public FolderModel createFolder(FolderModel folderModel) throws IOException {
+        AlfrescoHttpClient client = alfrescoHttpClientFactory.getObject();
+        if(client.getAlfVersion() >= 5.2)
+        {
+            return createFolderV1Api(folderModel.getName(), getCurrentUser().getUsername(), getCurrentUser().getPassword());
+        }
+        else
+        {
+            return createFolderCmisApi();
+        }
+
+//        STEP(String.format("DATAPREP: Creating a new folder content %s in %s ", folderModel.getName(), getCurrentSpace()));
+//        String location = Utility.buildPath(getCurrentSpace(), folderModel.getName());
+//        setLastResource(location);
+//        Folder cmisFolder = contentService.createFolderInRepository(getSession(), folderModel.getName(), getCurrentSpace());
+//        folderModel.setProtocolLocation(location);
+//        folderModel.setNodeRef(cmisFolder.getId());
+//        folderModel.setCmisLocation(location);
+//        return folderModel;
+    }
+
+
+    public FolderModel createFolderV1Api(String folderName, String username, String password) throws IOException {
+        AlfrescoHttpClient client = alfrescoHttpClientFactory.getObject();
+        String nodeId = this.getNodeRef();
+        String reqUrl = client.getApiVersionUrl() + "nodes/" + nodeId + "/children";
+        HttpPost post  = new HttpPost(reqUrl);
+        JSONObject body = new JSONObject();
+        body.put("name", folderName);
+        body.put("nodeType", "cm:folder");
+
+        HttpResponse response = client.executeAndRelease(username, password, body, post);
+        if(HttpStatus.SC_CREATED == response.getStatusLine().getStatusCode())
+        {
+//            logger.info(String.format("Successfuly created site with id '%s' ", siteId));
+//            return true;
+        }
+        else
+        {
+//            logger.error(client.getParameterFromJSON(response,"briefSummary", "error"));
+        }
+//        return false;
+
+        FolderModel folderModel = new FolderModel();
+        InputStream responseDebug = response.getEntity().getContent();
+        String stringResponse = IOUtils.toString(responseDebug);
+        return new FolderModel();
+
     }
 
     /**
@@ -128,7 +178,7 @@ public class DataContent extends TestData<DataContent>
      * dataContent.usingUser(testUser).usingSite(testSite).createFolder();
      * <code>
      */
-    public FolderModel createFolder()
+    public FolderModel createFolderCmisApi()
     {
         String folderName = RandomData.getRandomName("Folder");
         STEP(String.format("DATAPREP: Create folder '%s' in %s", folderName, getCurrentSpace()));
