@@ -53,6 +53,7 @@ public class XmlTestsSuiteWriter
             Transformer transformer = transformerFactory.newTransformer();
 
             transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, "http://testng.org/testng-1.0.dtd");
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 
             DOMSource source = new DOMSource(doc);
 
