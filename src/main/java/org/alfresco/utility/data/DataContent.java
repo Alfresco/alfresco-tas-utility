@@ -63,7 +63,6 @@ public class DataContent extends TestData<DataContent>
     @Autowired
     private AlfrescoHttpClientFactory alfrescoHttpClientFactory;
 
-
     @Autowired
     private ContentService contentService;
 
@@ -117,59 +116,54 @@ public class DataContent extends TestData<DataContent>
      * <code>
      */
 
-    public FolderModel createFolder() throws IOException {
-        return createFolder(new FolderModel(UUID.randomUUID().toString()));
+    public FolderModel createFolder(){
+        return createFolder(new FolderModel(RandomData.getRandomName("Folder")));
     }
 
-
-    public FolderModel createFolder(FolderModel folderModel) throws IOException {
+    public FolderModel createFolder(FolderModel folderModel){
         AlfrescoHttpClient client = alfrescoHttpClientFactory.getObject();
         if(client.getAlfVersion() >= 5.2)
         {
-            return createFolderV1Api(folderModel.getName(), getCurrentUser().getUsername(), getCurrentUser().getPassword());
+            return createFolderV1Api(client, folderModel.getName(), getCurrentUser().getUsername(), getCurrentUser().getPassword());
         }
         else
         {
-            return createFolderCmisApi();
+            return createFolderCmisApi(folderModel.getName());
         }
-
-//        STEP(String.format("DATAPREP: Creating a new folder content %s in %s ", folderModel.getName(), getCurrentSpace()));
-//        String location = Utility.buildPath(getCurrentSpace(), folderModel.getName());
-//        setLastResource(location);
-//        Folder cmisFolder = contentService.createFolderInRepository(getSession(), folderModel.getName(), getCurrentSpace());
-//        folderModel.setProtocolLocation(location);
-//        folderModel.setNodeRef(cmisFolder.getId());
-//        folderModel.setCmisLocation(location);
-//        return folderModel;
     }
 
-
-    public FolderModel createFolderV1Api(String folderName, String username, String password) throws IOException {
-        AlfrescoHttpClient client = alfrescoHttpClientFactory.getObject();
+    public FolderModel createFolderV1Api(AlfrescoHttpClient client, String folderName, String username, String password)
+    {
+        // Build request
         String nodeId = this.getNodeRef();
         String reqUrl = client.getApiVersionUrl() + "nodes/" + nodeId + "/children";
         HttpPost post  = new HttpPost(reqUrl);
         JSONObject body = new JSONObject();
         body.put("name", folderName);
         body.put("nodeType", "cm:folder");
+        post.setEntity(client.setMessageBody(body));
 
-        HttpResponse response = client.executeAndRelease(username, password, body, post);
+        // Send Request
+        logger.info(String.format("Create folder with name '%s' by: ", folderName));
+        logger.info(String.format("POST: '%s'", reqUrl));
+        HttpResponse response = client.execute(username, password, post);
         if(HttpStatus.SC_CREATED == response.getStatusLine().getStatusCode())
         {
-//            logger.info(String.format("Successfuly created site with id '%s' ", siteId));
-//            return true;
+            JSONObject entryResponse = client.readStream(response.getEntity());
+            JSONObject entryValueMap = (JSONObject) entryResponse.get("entry");
+
+            FolderModel responseFolderModel = new FolderModel();
+            responseFolderModel.setNodeRef(entryValueMap.get("id").toString());
+            responseFolderModel.setName(entryValueMap.get("name").toString());
+
+            logger.info(String.format("Successful created folder with id '%s' ", entryValueMap.get("id").toString()));
+            return responseFolderModel;
         }
         else
         {
-//            logger.error(client.getParameterFromJSON(response,"briefSummary", "error"));
+            logger.error(client.getParameterFromJSON(response,"briefSummary", "error"));
+            return new FolderModel();
         }
-//        return false;
-
-        FolderModel folderModel = new FolderModel();
-        InputStream responseDebug = response.getEntity().getContent();
-        String stringResponse = IOUtils.toString(responseDebug);
-        return new FolderModel();
-
     }
 
     /**
@@ -178,9 +172,8 @@ public class DataContent extends TestData<DataContent>
      * dataContent.usingUser(testUser).usingSite(testSite).createFolder();
      * <code>
      */
-    public FolderModel createFolderCmisApi()
+    public FolderModel createFolderCmisApi(String folderName)
     {
-        String folderName = RandomData.getRandomName("Folder");
         STEP(String.format("DATAPREP: Create folder '%s' in %s", folderName, getCurrentSpace()));
         FolderModel folderModel = new FolderModel(folderName);
         String location = Utility.buildPath(getCurrentSpace(), folderName);
