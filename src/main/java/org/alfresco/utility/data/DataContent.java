@@ -242,6 +242,71 @@ public class DataContent extends TestData<DataContent>
      * @return
      * @throws DataPreparationException
      */
+
+
+//Start of my code
+    public FileModel createContent(){
+        return createContent(new FileModel(RandomData.getRandomName("File")));
+    }
+
+    public FileModel createContent(FileModel fileModel){
+        AlfrescoHttpClient client = alfrescoHttpClientFactory.getObject();
+
+        if(client.getAlfVersion() >= 5.2)
+        {
+            return createContentV1Api(client, fileModel);
+        }
+        else
+        {
+            return createContentCmisApi(fileModel);
+        }
+    }
+
+    public FileModel createContentV1Api(AlfrescoHttpClient client, FileModel fileModel)
+    {
+        // Build request
+        String nodeId = this.getNodeRef();
+        String reqUrl = client.getApiVersionUrl() + "nodes/" + nodeId + "/children";
+        HttpPost post  = new HttpPost(reqUrl);
+        JSONObject body = new JSONObject();
+        body.put("name", fileModel.getName());
+        body.put("nodeType", "cm:content");
+
+        // Set Title or Description if specified
+        if (fileModel.getTitle() != null || fileModel.getDescription() != null)
+        {
+            body.put("cm:title", fileModel.getTitle());
+            body.put("cm:description", fileModel.getDescription());
+
+        }
+
+        post.setEntity(client.setMessageBody(body));
+
+        // Send Request
+        logger.info(String.format("Create content with name '%s' by: ", fileModel.getName()));
+        logger.info(String.format("POST: '%s'", reqUrl));
+        HttpResponse response = client.execute(currentUser.getUsername(), currentUser.getPassword(), post);
+        if(HttpStatus.SC_CREATED == response.getStatusLine().getStatusCode())
+        {
+            JSONObject entryResponse = client.readStream(response.getEntity());
+            JSONObject entryValueMap = (JSONObject) entryResponse.get("entry");
+
+            FileModel responseFileModel = new FileModel();
+            responseFileModel.setNodeRef(entryValueMap.get("id").toString());
+            responseFileModel.setName(entryValueMap.get("name").toString());
+
+            logger.info(String.format("Successful created content with id '%s' ", entryValueMap.get("id").toString()));
+            return responseFileModel;
+        }
+        else
+        {
+            logger.error(client.getParameterFromJSON(response,"briefSummary", "error"));
+            return new FileModel();
+        }
+    }
+//    End of my code
+
+
     public FileModel createContent(DocumentType documentType) throws DataPreparationException
     {
         String newContent = String.format("%s.%s", RandomData.getRandomName("file"), Utility.cmisDocTypeToExtentions(documentType));
@@ -278,7 +343,7 @@ public class DataContent extends TestData<DataContent>
      * @return
      * @throws DataPreparationException
      */
-    public FileModel createContent(FileModel fileModel) throws DataPreparationException
+    public FileModel createContentCmisApi(FileModel fileModel) throws DataPreparationException
     {
         String fileFullName = fileModel.getName();
         if (FilenameUtils.getExtension(fileFullName).length() == 0)
