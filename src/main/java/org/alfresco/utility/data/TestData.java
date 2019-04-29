@@ -163,7 +163,7 @@ public abstract class TestData<Data> implements DSL<Data>
                 {
                     location = Utility.buildPath(getLastResource(), String.format("%s.%s", model.getName(), fileModel.getFileType().extention));
                 }
-                else 
+                else
                 {
                     location = Utility.buildPath(getLastResource(), model.getName());
                 }
