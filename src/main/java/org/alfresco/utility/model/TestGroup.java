@@ -81,6 +81,7 @@ public @interface TestGroup
     public static String ASS_1302 = "ASS_1.3.0.2"; // Alfresco Search Services 1.3.0.2 (Fingerprint MNT)
     public static String ASS_14 = "ASS_1.4.0"; // Alfresco Search Services 1.4
     public static String ASS_MASTER_SLAVE = "ASS_Master_Slave"; // Alfresco Search Services using master slave configurations
+    public static String ASS_MASTER ="ASS_Master"; // Alfresco search services using master/stand alone mode 
     
     public static String INSIGHT_10 = "InsightEngine_1.0.0"; // Alfresco Insight Engine 1.0
     public static String INSIGHT_11 = "InsightEngine_1.1.0"; // Alfresco Insight Engine 1.1
