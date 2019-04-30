@@ -118,8 +118,6 @@ public class XMLFolderData extends XMLCollection implements XMLDataItem
         this.customModel = customModel;
     }
 
-    @XmlElementWrapper
-    @XmlElement(name = "custom-model")
     public boolean isCustomModel()
     {
         return customModel != null;
