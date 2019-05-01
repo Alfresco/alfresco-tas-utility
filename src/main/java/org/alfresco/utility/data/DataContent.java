@@ -48,9 +48,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.protocol.HTTP;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -266,7 +272,9 @@ public class DataContent extends TestData<DataContent>
 
         if(client.getAlfVersion() >= 5.2)
         {
-            return createContentV1Api(client, fileModel);
+            FileModel createFile = createContentV1Api(client, fileModel);
+            updateContent(client, createFile.getNodeRef());
+            return createFile;
         }
         else
         {
@@ -329,6 +337,47 @@ public class DataContent extends TestData<DataContent>
     }
 
     /**
+     * This is the entry point of the createContent() method to make REST API or CMIS call
+     *
+     * @param client
+     * @param nodeRef
+     * @param documentType
+     * @return
+     * @throws
+     */
+    public FileModel updateContent(AlfrescoHttpClient client, String nodeRef)
+    {
+        // Build request
+        String nodeId = nodeRef;
+        String content = "This is a file file";
+        String reqUrl = client.getApiVersionUrl() + "nodes/" + nodeId + "/content";
+
+        HttpPut put  = new HttpPut(reqUrl);
+//        String contentType = documentType.type + ";charset=" + client.UTF_8_ENCODING;
+//        put.addHeader("Content-Type", contentType);
+        StringEntity se = new StringEntity(content, client.UTF_8_ENCODING);
+        se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, client.MIME_TYPE_JSON));
+        put.setEntity(se);
+        waitInSeconds(1);
+        try
+        {
+            HttpResponse response = client.executeAndRelease(currentUser.getUsername(), currentUser.getPassword(), put);
+            if(HttpStatus.SC_OK == response.getStatusLine().getStatusCode())
+            {
+                FileModel responseFileModel = new FileModel();
+                logger.info(String.format("Successful updated content with '%s' ", content));
+                return responseFileModel;
+            }
+        }
+        finally
+        {
+            put.releaseConnection();
+            client.close();
+        }
+        return new FileModel();
+    }
+
+    /**
      * Creates a random document based on {@link DocumentType} passed using CMIS
      * Return the {@link Document} object on success creation
      * <code>
@@ -379,7 +428,6 @@ public class DataContent extends TestData<DataContent>
         return fileModel;
     }
 
-
     /**
      * This is the entry point of the createContent() method to make REST API or CMIS call
      */
@@ -390,7 +438,9 @@ public class DataContent extends TestData<DataContent>
         if(client.getAlfVersion() >= 5.2)
         {
             FileModel fileModel = new FileModel(RandomData.getRandomName("file"));
-            return createContentDocTypeV1Api(client, fileModel, documentType);
+            FileModel createFile = createContentDocTypeV1Api(client, fileModel, documentType);
+            updateContent(client, createFile.getNodeRef(), documentType);
+            return createFile;
         }
         else
         {
@@ -405,6 +455,8 @@ public class DataContent extends TestData<DataContent>
      * dataContent.usingUser(userModel).usingResource(myFolder).createContent(DocumentType.TEXT_PLAIN);
      * </code>
      *
+     * @param client
+     * @param fileModel
      * @param documentType
      * @return
      * @throws DataPreparationException
@@ -420,7 +472,6 @@ public class DataContent extends TestData<DataContent>
         JSONObject body = new JSONObject();
         body.put("name", newContent);
         body.put("nodeType", "cm:content");
-
         // Set Title or Description if specified
         if (fileModel.getTitle() != null || fileModel.getDescription() != null)
         {
@@ -452,6 +503,64 @@ public class DataContent extends TestData<DataContent>
             logger.error(client.getParameterFromJSON(response,"briefSummary", "error"));
             return new FileModel();
         }
+    }
+
+    /**
+     * This is the entry point of the createContent() method to make REST API or CMIS call
+     *
+     * @param client
+     * @param nodeRef
+     * @param documentType
+     * @return
+     * @throws
+     */
+    public FileModel updateContent(AlfrescoHttpClient client, String nodeRef, DocumentType documentType)
+    {
+        // Build request
+        String nodeId = nodeRef;
+        String content = "This is a file file";
+        String reqUrl = client.getApiVersionUrl() + "nodes/" + nodeId + "/content";
+
+        HttpPut put  = new HttpPut(reqUrl);
+        String contentType = documentType.type + ";charset=" + client.UTF_8_ENCODING;
+        put.addHeader("Content-Type", contentType);
+        StringEntity se = new StringEntity(content, client.UTF_8_ENCODING);
+        se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, client.MIME_TYPE_JSON));
+        put.setEntity(se);
+        waitInSeconds(1);
+        try
+        {
+            HttpResponse response = client.executeAndRelease(currentUser.getUsername(), currentUser.getPassword(), put);
+            if(HttpStatus.SC_OK == response.getStatusLine().getStatusCode())
+            {
+                FileModel responseFileModel = new FileModel();
+                logger.info(String.format("Successful updated content with '%s' ", content));
+                return responseFileModel;
+            }
+        }
+        finally
+        {
+            put.releaseConnection();
+            client.close();
+        }
+        return new FileModel();
+    }
+
+    /**
+     * Method to wait for given seconds.
+     *
+     * @param seconds time in seconds
+     */
+    protected void waitInSeconds(int seconds)
+    {
+        long time0;
+        long time1;
+        time0 = System.currentTimeMillis();
+        do
+        {
+            time1 = System.currentTimeMillis();
+        }
+        while (time1 - time0 < seconds * 1000);
     }
 
     /**
