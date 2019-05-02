@@ -48,13 +48,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
 import org.json.simple.JSONObject;
@@ -350,11 +348,9 @@ public class DataContent extends TestData<DataContent>
         // Build request
         String nodeId = nodeRef;
         String content = "This is a file file";
-        String reqUrl = client.getApiVersionUrl() + "nodes/" + nodeId + "/content";
+        String reqUrl = client.getApiVersionUrl() + "nodes/" + nodeId + "/content?majorVersion=true";
 
         HttpPut put  = new HttpPut(reqUrl);
-//        String contentType = documentType.type + ";charset=" + client.UTF_8_ENCODING;
-//        put.addHeader("Content-Type", contentType);
         StringEntity se = new StringEntity(content, client.UTF_8_ENCODING);
         se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, client.MIME_TYPE_JSON));
         put.setEntity(se);
