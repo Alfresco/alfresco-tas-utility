@@ -20,6 +20,8 @@ import java.util.List;
  * "estimate": null,
  * "estimate_forecast": null,
  * "suite_id": 1,
+ * "display_order": 1,
+ * "custom_automation_type": 0,
  * "custom_preconds": null,
  * "custom_steps": null,
  * "custom_expected": null,
@@ -169,6 +171,16 @@ public class TestCase
     {
         this.estimate_forecast = estimate_forecast;
     }
+    
+    public int getDisplay_order()
+    {
+        return display_order;
+    }
+    
+    public void setDisplay_order(int display_order)
+    {
+        this.display_order = display_order;
+    }
 
     public int getSuite_id()
     {
@@ -259,6 +271,16 @@ public class TestCase
     {
         this.custom_executiontype = custom_executiontype;
     }
+    
+    public int getCustom_automation_type()
+    {
+        return custom_automation_type;
+    }
+    
+    public void setCustom_automation_type(int custom_automation_type)
+    {
+        this.custom_automation_type = custom_automation_type;
+    }
 
     public String getCustom_auto_ref()
     {
@@ -336,6 +358,7 @@ public class TestCase
     private String updated_on;
     private String estimate;
     private String estimate_forecast;
+    private int display_order;
     private int suite_id;
     private String custom_preconds;
     private String custom_steps;
@@ -345,6 +368,7 @@ public class TestCase
     private String custom_goals;
     private List<Integer> custom_exce_type;
     private boolean custom_executiontype;
+    private int custom_automation_type;
     private String custom_auto_ref;
     private String custom_description;
     private String custom_test_notes;

@@ -24,6 +24,7 @@ public class Result
     private String version;
     private String elapsed;
     private String defects;
+    private String[] attachment_ids; 
 
     public long getId()
     {
@@ -124,4 +125,14 @@ public class Result
     {
         this.defects = defects;
     }   
+    
+    public String[] getAttachment_ids()
+    {
+        return attachment_ids;
+    }
+    
+    public void setAttachment_ids(String[] attachment_ids)
+    {
+        this.attachment_ids = attachment_ids;
+    }
 }

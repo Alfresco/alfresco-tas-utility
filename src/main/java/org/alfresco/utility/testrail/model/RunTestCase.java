@@ -43,6 +43,7 @@ public class RunTestCase
     private String refs;
     private String milestone_id;
     private String custom_executiontype;
+    private int custom_automation_type;
     private String custom_auto_ref;
     private String custom_description;
     private String custom_test_notes;
@@ -189,6 +190,16 @@ public class RunTestCase
     public void setCustom_executiontype(String custom_executiontype)
     {
         this.custom_executiontype = custom_executiontype;
+    }
+    
+    public int getCustom_automation_type()
+    {
+        return custom_automation_type;
+    }
+    
+    public void setCustom_automation_type(int custom_automation_type)
+    {
+        this.custom_automation_type = custom_automation_type;
     }
 
     public String getCustom_auto_ref()
