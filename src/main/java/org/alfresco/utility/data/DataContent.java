@@ -519,7 +519,7 @@ public class DataContent extends TestData<DataContent>
         // Build request
         String nodeId = nodeRef;
         String content = "This is a file file";
-        String reqUrl = client.getApiVersionUrl() + "nodes/" + nodeId + "/content";
+        String reqUrl = client.getApiVersionUrl() + "nodes/" + nodeId + "/content?majorVersion=true";
 
         HttpPut put  = new HttpPut(reqUrl);
         String contentType = documentType.type + ";charset=" + client.UTF_8_ENCODING;
