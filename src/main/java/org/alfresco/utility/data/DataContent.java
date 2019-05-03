@@ -324,6 +324,10 @@ public class DataContent extends TestData<DataContent>
             responseFileModel.setNodeRef(entryValueMap.get("id").toString());
             responseFileModel.setName(entryValueMap.get("name").toString());
 
+            String fileLocation = Utility.buildPath(getLastResource(), fileModel.getName());
+            responseFileModel.setCmisLocation(fileLocation);
+            responseFileModel.setProtocolLocation(fileLocation);
+
             logger.info(String.format("Successful created content with id '%s' ", entryValueMap.get("id").toString()));
             return responseFileModel;
         }
@@ -490,6 +494,10 @@ public class DataContent extends TestData<DataContent>
             FileModel responseFileModel = new FileModel();
             responseFileModel.setNodeRef(entryValueMap.get("id").toString());
             responseFileModel.setName(entryValueMap.get("name").toString());
+
+            String fileLocation = Utility.buildPath(getLastResource(), newContent);
+            responseFileModel.setCmisLocation(fileLocation);
+            responseFileModel.setProtocolLocation(fileLocation);
 
             logger.info(String.format("Successful created content with id '%s' ", entryValueMap.get("id").toString()));
             return responseFileModel;
