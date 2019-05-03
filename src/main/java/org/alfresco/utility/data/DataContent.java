@@ -176,6 +176,10 @@ public class DataContent extends TestData<DataContent>
             responseFolderModel.setNodeRef(entryValueMap.get("id").toString());
             responseFolderModel.setName(entryValueMap.get("name").toString());
 
+            String folderLocation = Utility.buildPath(getLastResource(), folderName);
+            responseFolderModel.setCmisLocation(folderLocation);
+            responseFolderModel.setProtocolLocation(folderLocation);
+
             logger.info(String.format("Successful created folder with id '%s' ", entryValueMap.get("id").toString()));
             return responseFolderModel;
         }
@@ -306,7 +310,6 @@ public class DataContent extends TestData<DataContent>
         {
             body.put("cm:title", fileModel.getTitle());
             body.put("cm:description", fileModel.getDescription());
-
         }
 
         post.setEntity(client.setMessageBody(body));
@@ -477,7 +480,6 @@ public class DataContent extends TestData<DataContent>
         {
             body.put("cm:title", fileModel.getTitle());
             body.put("cm:description", fileModel.getDescription());
-
         }
 
         post.setEntity(client.setMessageBody(body));
