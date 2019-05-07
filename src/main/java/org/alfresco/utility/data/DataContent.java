@@ -138,7 +138,7 @@ public class DataContent extends TestData<DataContent>
         AlfrescoHttpClient client = alfrescoHttpClientFactory.getObject();
         if(client.getAlfVersion() >= 5.2)
         {
-            return createFolderV1Api(client, folderModel.getName(), getCurrentUser().getUsername(), getCurrentUser().getPassword());
+            return createFolderV1Api(client, folderModel, getCurrentUser().getUsername(), getCurrentUser().getPassword());
         }
         else
         {
@@ -152,19 +152,19 @@ public class DataContent extends TestData<DataContent>
      * dataContent.usingUser(testUser).usingSite(testSite).createFolder();
      * <code>
      */
-    public FolderModel createFolderV1Api(AlfrescoHttpClient client, String folderName, String username, String password)
+    public FolderModel createFolderV1Api(AlfrescoHttpClient client, FolderModel folderModel, String username, String password)
     {
         // Build request
         String nodeId = this.getNodeRef();
         String reqUrl = client.getApiVersionUrl() + "nodes/" + nodeId + "/children";
         HttpPost post  = new HttpPost(reqUrl);
         JSONObject body = new JSONObject();
-        body.put("name", folderName);
+        body.put("name", folderModel.getName());
         body.put("nodeType", "cm:folder");
         post.setEntity(client.setMessageBody(body));
 
         // Send Request
-        logger.info(String.format("Create folder with name '%s' by: ", folderName));
+        logger.info(String.format("Create folder with name '%s' by: ", folderModel.getName()));
         logger.info(String.format("POST: '%s'", reqUrl));
         HttpResponse response = client.execute(username, password, post);
         if(HttpStatus.SC_CREATED == response.getStatusLine().getStatusCode())
@@ -172,16 +172,15 @@ public class DataContent extends TestData<DataContent>
             JSONObject entryResponse = client.readStream(response.getEntity());
             JSONObject entryValueMap = (JSONObject) entryResponse.get("entry");
 
-            FolderModel responseFolderModel = new FolderModel();
-            responseFolderModel.setNodeRef(entryValueMap.get("id").toString());
-            responseFolderModel.setName(entryValueMap.get("name").toString());
+            folderModel.setNodeRef(entryValueMap.get("id").toString());
+            folderModel.setName(entryValueMap.get("name").toString());
 
-            String folderLocation = Utility.buildPath(getLastResource(), folderName);
-            responseFolderModel.setCmisLocation(folderLocation);
-            responseFolderModel.setProtocolLocation(folderLocation);
+            String folderLocation = Utility.buildPath(getLastResource(), folderModel.getName());
+            folderModel.setCmisLocation(folderLocation);
+            folderModel.setProtocolLocation(folderLocation);
 
             logger.info(String.format("Successful created folder with id '%s' ", entryValueMap.get("id").toString()));
-            return responseFolderModel;
+            return folderModel;
         }
         else
         {
@@ -274,6 +273,7 @@ public class DataContent extends TestData<DataContent>
 
         if(client.getAlfVersion() >= 5.2)
         {
+            fileModel.setContent("This is a test file");
             FileModel createFile = createContentV1Api(client, fileModel);
             updateContent(client, createFile);
             return createFile;
@@ -332,7 +332,6 @@ public class DataContent extends TestData<DataContent>
 
             logger.info(String.format("Successful created content with id '%s' ", entryValueMap.get("id").toString()));
             return fileModel;
-
         }
         else
         {
@@ -439,6 +438,7 @@ public class DataContent extends TestData<DataContent>
         if(client.getAlfVersion() >= 5.2)
         {
             FileModel fileModel = new FileModel(RandomData.getRandomName("file"));
+            fileModel.setContent("This is a test file");
             FileModel createFile = createContentDocTypeV1Api(client, fileModel, documentType);
             updateContent(client, createFile, documentType);
             return createFile;
