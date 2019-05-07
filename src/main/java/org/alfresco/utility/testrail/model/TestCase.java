@@ -27,7 +27,8 @@ import java.util.List;
  * "custom_expected": null,
  * "custom_steps_separated": null,
  * "custom_mission": null,
- * "custom_goals": null
+ * "custom_goals": null,
+ * "custom_testlink_id": null
  * }
  */
 public class TestCase
@@ -342,6 +343,16 @@ public class TestCase
     {
         this.custom_platform = custom_platform;
     }
+    
+    public int getCustom_testlink_id()
+    {
+        return custom_testlink_id;
+    }
+    
+    public void setCustom_testlink_id(int custom_testlink_id)
+    {
+        this.custom_testlink_id = custom_testlink_id;
+    }
  
 
     private int id;
@@ -375,4 +386,5 @@ public class TestCase
     private List<String> custom_min_vers;
     private List<String> custom_max_version;
     private int custom_platform;
+    private int custom_testlink_id;
 }
