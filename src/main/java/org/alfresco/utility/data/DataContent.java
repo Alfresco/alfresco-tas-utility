@@ -275,7 +275,7 @@ public class DataContent extends TestData<DataContent>
         if(client.getAlfVersion() >= 5.2)
         {
             FileModel createFile = createContentV1Api(client, fileModel);
-            updateContent(client, createFile.getNodeRef());
+            updateContent(client, createFile);
             return createFile;
         }
         else
@@ -291,9 +291,9 @@ public class DataContent extends TestData<DataContent>
      * dataContent.usingSite(site).createContent(sourceFile);
      * </code>
      *
-     * @param documentType
+     * @param client
+     * @param fileModel
      * @return
-     * @throws DataPreparationException
      */
     public FileModel createContentV1Api(AlfrescoHttpClient client, FileModel fileModel)
     {
@@ -323,16 +323,16 @@ public class DataContent extends TestData<DataContent>
             JSONObject entryResponse = client.readStream(response.getEntity());
             JSONObject entryValueMap = (JSONObject) entryResponse.get("entry");
 
-            FileModel responseFileModel = new FileModel();
-            responseFileModel.setNodeRef(entryValueMap.get("id").toString());
-            responseFileModel.setName(entryValueMap.get("name").toString());
+            fileModel.setNodeRef(entryValueMap.get("id").toString());
+            fileModel.setName(entryValueMap.get("name").toString());
 
             String fileLocation = Utility.buildPath(getLastResource(), fileModel.getName());
-            responseFileModel.setCmisLocation(fileLocation);
-            responseFileModel.setProtocolLocation(fileLocation);
+            fileModel.setCmisLocation(fileLocation);
+            fileModel.setProtocolLocation(fileLocation);
 
             logger.info(String.format("Successful created content with id '%s' ", entryValueMap.get("id").toString()));
-            return responseFileModel;
+            return fileModel;
+
         }
         else
         {
@@ -345,20 +345,18 @@ public class DataContent extends TestData<DataContent>
      * This is the entry point of the createContent() method to make REST API or CMIS call
      *
      * @param client
-     * @param nodeRef
-     * @param documentType
+     * @param fileModel
      * @return
      * @throws
      */
-    public FileModel updateContent(AlfrescoHttpClient client, String nodeRef)
+    public FileModel updateContent(AlfrescoHttpClient client, FileModel fileModel)
     {
         // Build request
-        String nodeId = nodeRef;
-        String content = "This is a file file";
+        String nodeId = fileModel.getNodeRef();
         String reqUrl = client.getApiVersionUrl() + "nodes/" + nodeId + "/content?majorVersion=true";
 
         HttpPut put  = new HttpPut(reqUrl);
-        StringEntity se = new StringEntity(content, client.UTF_8_ENCODING);
+        StringEntity se = new StringEntity(fileModel.getContent(), client.UTF_8_ENCODING);
         se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, client.MIME_TYPE_JSON));
         put.setEntity(se);
         waitInSeconds(1);
@@ -368,7 +366,7 @@ public class DataContent extends TestData<DataContent>
             if(HttpStatus.SC_OK == response.getStatusLine().getStatusCode())
             {
                 FileModel responseFileModel = new FileModel();
-                logger.info(String.format("Successful updated content with '%s' ", content));
+                logger.info(String.format("Successful updated content with '%s' ", fileModel.getContent()));
                 return responseFileModel;
             }
         }
@@ -387,7 +385,7 @@ public class DataContent extends TestData<DataContent>
      * dataContent.usingSite(site).createContent(sourceFile);
      * </code>
      *
-     * @param documentType
+     * @param fileModel
      * @return
      * @throws DataPreparationException
      */
@@ -442,7 +440,7 @@ public class DataContent extends TestData<DataContent>
         {
             FileModel fileModel = new FileModel(RandomData.getRandomName("file"));
             FileModel createFile = createContentDocTypeV1Api(client, fileModel, documentType);
-            updateContent(client, createFile.getNodeRef(), documentType);
+            updateContent(client, createFile, documentType);
             return createFile;
         }
         else
@@ -493,16 +491,15 @@ public class DataContent extends TestData<DataContent>
             JSONObject entryResponse = client.readStream(response.getEntity());
             JSONObject entryValueMap = (JSONObject) entryResponse.get("entry");
 
-            FileModel responseFileModel = new FileModel();
-            responseFileModel.setNodeRef(entryValueMap.get("id").toString());
-            responseFileModel.setName(entryValueMap.get("name").toString());
+            fileModel.setNodeRef(entryValueMap.get("id").toString());
+            fileModel.setName(entryValueMap.get("name").toString());
 
             String fileLocation = Utility.buildPath(getLastResource(), newContent);
-            responseFileModel.setCmisLocation(fileLocation);
-            responseFileModel.setProtocolLocation(fileLocation);
+            fileModel.setCmisLocation(fileLocation);
+            fileModel.setProtocolLocation(fileLocation);
 
             logger.info(String.format("Successful created content with id '%s' ", entryValueMap.get("id").toString()));
-            return responseFileModel;
+            return fileModel;
         }
         else
         {
@@ -515,22 +512,21 @@ public class DataContent extends TestData<DataContent>
      * This is the entry point of the createContent() method to make REST API or CMIS call
      *
      * @param client
-     * @param nodeRef
+     * @param fileModel
      * @param documentType
      * @return
      * @throws
      */
-    public FileModel updateContent(AlfrescoHttpClient client, String nodeRef, DocumentType documentType)
+    public FileModel updateContent(AlfrescoHttpClient client, FileModel fileModel, DocumentType documentType)
     {
         // Build request
-        String nodeId = nodeRef;
-        String content = "This is a file file";
+        String nodeId = fileModel.getNodeRef();
         String reqUrl = client.getApiVersionUrl() + "nodes/" + nodeId + "/content?majorVersion=true";
 
         HttpPut put  = new HttpPut(reqUrl);
         String contentType = documentType.type + ";charset=" + client.UTF_8_ENCODING;
         put.addHeader("Content-Type", contentType);
-        StringEntity se = new StringEntity(content, client.UTF_8_ENCODING);
+        StringEntity se = new StringEntity(fileModel.getContent(), client.UTF_8_ENCODING);
         se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, client.MIME_TYPE_JSON));
         put.setEntity(se);
         waitInSeconds(1);
@@ -540,7 +536,7 @@ public class DataContent extends TestData<DataContent>
             if(HttpStatus.SC_OK == response.getStatusLine().getStatusCode())
             {
                 FileModel responseFileModel = new FileModel();
-                logger.info(String.format("Successful updated content with '%s' ", content));
+                logger.info(String.format("Successful updated content with '%s' ", fileModel.getContent()));
                 return responseFileModel;
             }
         }
