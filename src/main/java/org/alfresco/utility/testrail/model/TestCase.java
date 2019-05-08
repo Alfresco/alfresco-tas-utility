@@ -3,7 +3,8 @@ package org.alfresco.utility.testrail.model;
 import java.util.List;
 
 /**
- * Represents one Test Case object from Test Rail
+ * Represents one Test Case object from Test Rail v5.7.0.3951
+ * 
  * {
  * "id": 10,
  * "title": "adminShouldCreateComments",

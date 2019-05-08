@@ -3,6 +3,8 @@ package org.alfresco.utility.testrail.model;
 import java.util.List;
 
 /**
+ * The model compatible with TestRail v5.7.0.3951
+ * 
  * "id": 6457024,
     "case_id": 309025,
     "status_id": 5,
