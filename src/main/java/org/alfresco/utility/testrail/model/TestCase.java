@@ -313,6 +313,15 @@ public class TestCase
         this.custom_test_notes = custom_test_notes;
     }
 
+    public List<String> getCustom_max_version() 
+    {
+		return custom_max_version;
+	}
+    
+    public void setCustom_max_version(List<String> custom_max_version) 
+    {
+		this.custom_max_version = custom_max_version;
+	}
     
     public List<String> getCustom_min_vers()
     {
@@ -324,16 +333,6 @@ public class TestCase
         this.custom_min_vers = custom_min_vers;
     }
     
- public List<String> getCustom_max_version()
-    {
-        return custom_max_version;
-    }
-
-    public void setCustom_max_version(List<String> custom_max_version)
-    {
-        this.custom_max_version = custom_max_version;
-    }
-
     public int getCustom_platform()
     {
         return custom_platform;
@@ -344,16 +343,15 @@ public class TestCase
         this.custom_platform = custom_platform;
     }
     
-    public int getCustom_testlink_id()
+    public String getCustom_testlink_id() 
     {
-        return custom_testlink_id;
-    }
+		return custom_testlink_id;
+	}
     
-    public void setCustom_testlink_id(int custom_testlink_id)
+    public void setCustom_testlink_id(String custom_testlink_id) 
     {
-        this.custom_testlink_id = custom_testlink_id;
-    }
- 
+		this.custom_testlink_id = custom_testlink_id;
+	}
 
     private int id;
     private String title;
@@ -383,8 +381,8 @@ public class TestCase
     private String custom_auto_ref;
     private String custom_description;
     private String custom_test_notes;
-    private List<String> custom_min_vers;
     private List<String> custom_max_version;
+    private List<String> custom_min_vers;
     private int custom_platform;
-    private int custom_testlink_id;
+    private String custom_testlink_id;
 }
