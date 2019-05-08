@@ -50,6 +50,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
@@ -215,6 +216,53 @@ public class DataContent extends TestData<DataContent>
      * </code>
      */
     public void deleteContent()
+    {
+        AlfrescoHttpClient client = alfrescoHttpClientFactory.getObject();
+
+        if(client.getAlfVersion() >= 5.2)
+        {
+            deleteContentV1RestApi(client);
+        }
+        else
+        {
+            deleteContentCmisApi();
+        }
+    }
+
+    /**
+     * Use this to delete the last resource, either file or folder using V1 RestApi
+     * <code>
+     *  dataContent.usingUser(adminUser).usingSite(siteModel).usingResource(repoFile).deleteContent();
+     * </code>
+     */
+    public void deleteContentV1RestApi(AlfrescoHttpClient client)
+    {
+        // Build request
+        String nodeId = this.getNodeRef();
+        String reqUrl = client.getApiVersionUrl() + "nodes/" + nodeId;
+        HttpDelete delete  = new HttpDelete(reqUrl);
+
+        // Send Request
+        logger.info(String.format("Delete content with name '%s' by: ", nodeId));
+        logger.info(String.format("DELETE: '%s'", reqUrl));
+        HttpResponse response = client.execute(currentUser.getUsername(), currentUser.getPassword(), delete);
+        if(HttpStatus.SC_NO_CONTENT == response.getStatusLine().getStatusCode())
+        {
+            logger.info(String.format("Successful deleted content with id '%s' ", nodeId));
+        }
+        else
+        {
+            logger.error(client.getParameterFromJSON(response,"briefSummary", "error"));
+        }
+    }
+
+    /**
+     * Use this to delete the last resource, either file or folder using CmisApi
+     * <code>
+     *  dataContent.usingUser(adminUser).usingSite(siteModel).usingResource(repoFile).deleteContent();
+     * </code>
+     */
+    public void deleteContentCmisApi()
     {
         STEP(String.format("DATAPREP: Deleting '%s'", getLastResource()));
         contentService.deleteContentByPath(getSession(), getLastResource());
