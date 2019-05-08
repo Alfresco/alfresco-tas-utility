@@ -321,9 +321,8 @@ public class DataContent extends TestData<DataContent>
 
         if(client.getAlfVersion() >= 5.2)
         {
-            fileModel.setContent("This is a test file");
             FileModel createFile = createContentV1Api(client, fileModel);
-            updateContent(client, createFile);
+            this.updateContent(client, createFile);
             return createFile;
         }
         else
@@ -486,9 +485,8 @@ public class DataContent extends TestData<DataContent>
         if(client.getAlfVersion() >= 5.2)
         {
             FileModel fileModel = new FileModel(RandomData.getRandomName("file"));
-            fileModel.setContent("This is a test file");
             FileModel createFile = createContentDocTypeV1Api(client, fileModel, documentType);
-            updateContent(client, createFile, documentType);
+            this.updateContent(client, createFile, documentType);
             return createFile;
         }
         else
@@ -545,6 +543,7 @@ public class DataContent extends TestData<DataContent>
             String fileLocation = Utility.buildPath(getLastResource(), newContent);
             fileModel.setCmisLocation(fileLocation);
             fileModel.setProtocolLocation(fileLocation);
+            fileModel.setContent("This is a test file");
 
             logger.info(String.format("Successful created content with id '%s' ", entryValueMap.get("id").toString()));
             return fileModel;
