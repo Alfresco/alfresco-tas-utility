@@ -349,7 +349,7 @@ public class DataContent extends TestData<DataContent>
         String reqUrl = client.getApiVersionUrl() + "nodes/" + nodeId + "/children";
         HttpPost post  = new HttpPost(reqUrl);
         JSONObject body = new JSONObject();
-        body.put("name", fileModel.getName());
+        body.put("name", String.format("%s.%s", fileModel.getName(), fileModel.getFileType().extention));
         body.put("nodeType", "cm:content");
 
         // Set Title or Description if specified
@@ -372,6 +372,7 @@ public class DataContent extends TestData<DataContent>
 
             fileModel.setNodeRef(entryValueMap.get("id").toString());
             fileModel.setName(entryValueMap.get("name").toString());
+            fileModel.setFileType(FileType.fromName(fileModel.getName()));
 
             String fileLocation = Utility.buildPath(getLastResource(), fileModel.getName());
             fileModel.setCmisLocation(fileLocation);
@@ -539,6 +540,7 @@ public class DataContent extends TestData<DataContent>
 
             fileModel.setNodeRef(entryValueMap.get("id").toString());
             fileModel.setName(entryValueMap.get("name").toString());
+            fileModel.setFileType(FileType.fromName(fileModel.getName()));
 
             String fileLocation = Utility.buildPath(getLastResource(), newContent);
             fileModel.setCmisLocation(fileLocation);
