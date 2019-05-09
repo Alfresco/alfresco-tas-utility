@@ -349,7 +349,7 @@ public class DataContent extends TestData<DataContent>
         String reqUrl = client.getApiVersionUrl() + "nodes/" + nodeId + "/children";
         HttpPost post  = new HttpPost(reqUrl);
         JSONObject body = new JSONObject();
-        body.put("name", String.format("%s.%s", fileModel.getName(), fileModel.getFileType().extention));
+        body.put("name", fileModel.getName());
         body.put("nodeType", "cm:content");
 
         // Set Title or Description if specified
