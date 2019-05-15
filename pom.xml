@@ -62,6 +62,14 @@
         </repository>
     </distributionManagement>
 
+    <!-- Alfresco Repository -->
+    <repositories>
+        <repository>
+            <id>alfresco-public</id>
+            <url>https://artifacts.alfresco.com/nexus/content/groups/public</url>
+        </repository>
+    </repositories>
+
 	<build>
 		<pluginManagement>
 			<plugins>
