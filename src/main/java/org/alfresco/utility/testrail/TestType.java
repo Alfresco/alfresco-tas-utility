@@ -16,6 +16,6 @@ public enum TestType
 
     public int value()
     {
-        return Integer.valueOf(this.value);
+        return new Integer(this.value);
     }
 }

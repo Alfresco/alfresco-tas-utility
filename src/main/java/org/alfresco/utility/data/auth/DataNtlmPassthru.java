@@ -1,20 +1,25 @@
 package org.alfresco.utility.data.auth;
 
-import static org.alfresco.utility.report.log.Step.STEP;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 import org.alfresco.utility.TasProperties;
 import org.alfresco.utility.Utility;
+import org.alfresco.utility.model.UserModel;
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+
+import static org.alfresco.utility.report.log.Step.STEP;
 
 /**
  * Created by Claudia Agache on 6/23/2017.

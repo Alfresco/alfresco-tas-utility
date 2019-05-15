@@ -3,8 +3,7 @@ package org.alfresco.utility.testrail.model;
 import java.util.List;
 
 /**
- * Represents one Test Case object from Test Rail v5.7.0.3951
- * 
+ * Represents one Test Case object from Test Rail
  * {
  * "id": 10,
  * "title": "adminShouldCreateComments",
@@ -21,15 +20,12 @@ import java.util.List;
  * "estimate": null,
  * "estimate_forecast": null,
  * "suite_id": 1,
- * "display_order": 1,
- * "custom_automation_type": 0,
  * "custom_preconds": null,
  * "custom_steps": null,
  * "custom_expected": null,
  * "custom_steps_separated": null,
  * "custom_mission": null,
- * "custom_goals": null,
- * "custom_testlink_id": null
+ * "custom_goals": null
  * }
  */
 public class TestCase
@@ -173,16 +169,6 @@ public class TestCase
     {
         this.estimate_forecast = estimate_forecast;
     }
-    
-    public int getDisplay_order()
-    {
-        return display_order;
-    }
-    
-    public void setDisplay_order(int display_order)
-    {
-        this.display_order = display_order;
-    }
 
     public int getSuite_id()
     {
@@ -273,16 +259,6 @@ public class TestCase
     {
         this.custom_executiontype = custom_executiontype;
     }
-    
-    public int getCustom_automation_type()
-    {
-        return custom_automation_type;
-    }
-    
-    public void setCustom_automation_type(int custom_automation_type)
-    {
-        this.custom_automation_type = custom_automation_type;
-    }
 
     public String getCustom_auto_ref()
     {
@@ -314,15 +290,6 @@ public class TestCase
         this.custom_test_notes = custom_test_notes;
     }
 
-    public List<String> getCustom_max_version() 
-    {
-		return custom_max_version;
-	}
-    
-    public void setCustom_max_version(List<String> custom_max_version) 
-    {
-		this.custom_max_version = custom_max_version;
-	}
     
     public List<String> getCustom_min_vers()
     {
@@ -334,6 +301,16 @@ public class TestCase
         this.custom_min_vers = custom_min_vers;
     }
     
+ public List<String> getCustom_max_version()
+    {
+        return custom_max_version;
+    }
+
+    public void setCustom_max_version(List<String> custom_max_version)
+    {
+        this.custom_max_version = custom_max_version;
+    }
+
     public int getCustom_platform()
     {
         return custom_platform;
@@ -343,16 +320,7 @@ public class TestCase
     {
         this.custom_platform = custom_platform;
     }
-    
-    public String getCustom_testlink_id() 
-    {
-		return custom_testlink_id;
-	}
-    
-    public void setCustom_testlink_id(String custom_testlink_id) 
-    {
-		this.custom_testlink_id = custom_testlink_id;
-	}
+ 
 
     private int id;
     private String title;
@@ -368,7 +336,6 @@ public class TestCase
     private String updated_on;
     private String estimate;
     private String estimate_forecast;
-    private int display_order;
     private int suite_id;
     private String custom_preconds;
     private String custom_steps;
@@ -378,12 +345,10 @@ public class TestCase
     private String custom_goals;
     private List<Integer> custom_exce_type;
     private boolean custom_executiontype;
-    private int custom_automation_type;
     private String custom_auto_ref;
     private String custom_description;
     private String custom_test_notes;
-    private List<String> custom_max_version;
     private List<String> custom_min_vers;
+    private List<String> custom_max_version;
     private int custom_platform;
-    private String custom_testlink_id;
 }

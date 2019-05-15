@@ -4,7 +4,7 @@
 	<groupId>org.alfresco.tas</groupId>
 	<artifactId>utility</artifactId>
 	<name>alfresco-tas-utility</name>
-	<version>2.0.21-SNAPSHOT</version>
+	<version>1.0.36-SNAPSHOT</version>
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-super-pom</artifactId>
@@ -21,22 +21,21 @@
 	</developers>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.build.sourceVersion>11</maven.build.sourceVersion>
+		<maven.build.sourceVersion>1.8</maven.build.sourceVersion>
+		<maven-release.version>2.5.3</maven-release.version>
 		<spring.version>4.3.11.RELEASE</spring.version>
 		<suiteXmlFile>src/test/resources/unit-test.xml</suiteXmlFile>
 		<testNG.version>6.9.10</testNG.version>
-		<dataPrep.version>2.1</dataPrep.version>
+		<dataPrep.version>1.33</dataPrep.version>
 		<slf4j.version>1.7.2</slf4j.version>
-		<maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
 		<maven-remote-resources.version>1.5</maven-remote-resources.version>
 		<extentreports.version>2.41.2</extentreports.version>
 		<google.guava.version>23.0</google.guava.version>
-		<jackson-databind.version>2.9.8</jackson-databind.version>
+		<jackson-databind.version>2.4.4</jackson-databind.version>
 		<org.jvnet.version>0.6.5</org.jvnet.version>
-		<javax.mail.version>1.6.2</javax.mail.version>
+		<javax.mail.version>1.5.1</javax.mail.version>
 		<seleniumjava.version>3.7.1</seleniumjava.version>
 		<yandex.qatools.version>1.18</yandex.qatools.version>
-		<java.version>11</java.version>
 		<dependency.keycloak.version>4.8.3.Final</dependency.keycloak.version>
 	</properties>
 
@@ -89,9 +88,8 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<release>${java.version}</release>
-					<showWarnings>true</showWarnings>
-					<showDeprecation>true</showDeprecation>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
 
@@ -103,9 +101,6 @@
 					<suiteXmlFiles>
 						<suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
 					</suiteXmlFiles>
-					<argLine>
-						--illegal-access=permit
-					</argLine>
 				</configuration>
 			</plugin>
 
@@ -126,40 +121,6 @@
 					</includes>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-enforcer-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>enforce-maven</id>
-						<goals>
-							<goal>enforce</goal>
-						</goals>
-						<configuration>
-							<rules>
-								<requireMavenVersion>
-									<version>3.3</version>
-								</requireMavenVersion>
-							</rules>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <doclint>none</doclint>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-           </plugin>
 		</plugins>
 
 		<resources>
@@ -314,34 +275,11 @@
 			<version>${jackson-databind.version}</version>
 		</dependency>
 
-		<!-- JAXB in java 8, removed in java 11 -->
-		<!-- http://openjdk.java.net/jeps/320#Java-EE-modules -->
+		<!-- JAXB -->
 		<dependency>
 			<groupId>org.jvnet.jaxb2_commons</groupId>
 			<artifactId>jaxb2-basics</artifactId>
 			<version>${org.jvnet.version}</version>
-		</dependency>
-
-		<!-- JAXB to fix javax in Java11 -->
-		<dependency>
-			<groupId>javax.xml.bind</groupId>
-			<artifactId>jaxb-api</artifactId>
-			<version>2.3.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.sun.xml.bind</groupId>
-			<artifactId>jaxb-core</artifactId>
-			<version>2.3.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.sun.xml.bind</groupId>
-			<artifactId>jaxb-impl</artifactId>
-			<version>2.3.0</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.annotation</groupId>
-			<artifactId>javax.annotation-api</artifactId>
-			<version>1.3.2</version>
 		</dependency>
 
 		<!-- Jolokia used for interacting with JMX though proxy -->

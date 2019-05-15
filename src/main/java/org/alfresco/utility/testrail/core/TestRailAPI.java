@@ -45,7 +45,7 @@ public class TestRailAPI
      * Test Rail Template:
      * 1 - Test Case
      */
-    private static final int TEMPLATE_ID = Integer.valueOf(1);
+    private static final int TEMPLATE_ID = new Integer(1);
     private static final int TEST_PRIORITY_MEDIUM = 2;
 
     Properties properties = new Properties();
@@ -564,7 +564,7 @@ public class TestRailAPI
             // data.put("custom_steps_separated", steps);
             // data.put("custom_steps", annotation.description());
             data.put("custom_auto_ref", currentTest.getId());
-            data.put("custom_executiontype", Boolean.valueOf(true)); // always automated
+            data.put("custom_executiontype", new Boolean(true)); // always automated
             data.put("custom_test_notes", currentTest.getNotes());
 
             // holds Sanity, Smoke, Regression, etc
@@ -576,7 +576,7 @@ public class TestRailAPI
 
             data.put("custom_exce_type", executionTypeList);
             data.put("custom_description", currentTest.getTestRailAnnotation().description());
-            data.put("priority_id", Integer.valueOf(TEST_PRIORITY_MEDIUM));
+            data.put("priority_id", new Integer(TEST_PRIORITY_MEDIUM));
             data.put("custom_platform", 1);
 
             LOG.info("TestRAILAPI: Upload TestCase: {} to {}", currentTest.getId(), currentTest.getTestCaseDestination().toString());

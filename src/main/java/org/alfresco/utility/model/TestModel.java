@@ -96,7 +96,7 @@ public abstract class TestModel implements Model
                     }
                     else if (TestModel.class.isAssignableFrom(field.getType()))
                     {
-                        Object model = field.getType().getDeclaredConstructor().newInstance();
+                        Object model = field.getType().newInstance();
                         setRandomValuesForAllFields((TestModel) model);
                         field.set(testModel, model);
                     }

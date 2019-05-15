@@ -3,40 +3,33 @@ package org.alfresco.utility.testrail.model;
 import java.util.List;
 
 /**
- * The model compatible with TestRail v5.7.0.3951
- * 
- * "id": 6457024,
-    "case_id": 309025,
-    "status_id": 5,
-    "assignedto_id": null,
-    "run_id": 749,
-    "title": "getDefaultRepositoryInstalledModules",
-    "template_id": 1,
-    "type_id": 6,
-    "priority_id": 2,
-    "estimate": null,
-    "estimate_forecast": null,
-    "refs": null,
-    "milestone_id": null,
-    "custom_executiontype": true,
-    "custom_platform": 1,
-    "custom_automation_type": null,
-    "custom_testlink_id": null,
-    "custom_auto_ref": "org.alfresco.rest.discovery.DiscoveryTests#getDefaultRepositoryInstalledModules",
-    "custom_description": "Sanity tests for GET /discovery endpoint",
-    "custom_test_notes": "\n\nTestCase Steps\n=========\n* REST API: Basic Authentication using user {\norg.alfresco.utility.model.UserModel@363751f2[\r\n  username=User-FOEUSgiRWEkvBHC\r\n  password=password\r\n  domain=<null>\r\n  firstName=<null>\r\n  lastName=<null>\r\n  userRole=<null>\r\n]}\n* Request: GET http://localhost:8084/alfresco/api/discovery/\n\n* REST API: Assert that status code is 200",
-    "custom_preconds": null,
-    "custom_expected": null,
-    "custom_steps_separated": null,
-    "custom_exce_type": [
-        2
-    ],
-    "custom_max_version": [],
-    "custom_min_vers": []
+ * "id": 545927,
+ * "case_id": 87292,
+ * "status_id": 3,
+ * "assignedto_id": null,
+ * "run_id": 147,
+ * "title": "one",
+ * "template_id": 1,
+ * "type_id": 6,
+ * "priority_id": 2,
+ * "estimate": null,
+ * "estimate_forecast": null,
+ * "refs": null,
+ * "milestone_id": null,
+ * "custom_executiontype": true,
+ * "custom_auto_ref": "org.alfresco.utility.testrail.RunTestRailIntegrationTest#one",
+ * "custom_description": "My Awesome test 100",
+ * "custom_test_notes": null,
+ * "custom_preconds": null,
+ * "custom_expected": null,
+ * "custom_exce_type": [
+ * 3
+ * ],
+ * "custom_min_vers": []
  */
 public class RunTestCase
 {
-	private long id;
+    private long id;
     private long case_id;
     private int status_id;
     private String assignedto_id;
@@ -50,17 +43,12 @@ public class RunTestCase
     private String refs;
     private String milestone_id;
     private String custom_executiontype;
-    private int custom_platform;
-    private int custom_automation_type;
-    private String custom_testlink_id;
     private String custom_auto_ref;
     private String custom_description;
     private String custom_test_notes;
     private String custom_preconds;
     private String custom_expected;
-    private List<CustomStepsSeparated> custom_steps_separated;
     private List<String> custom_exce_type;
-    private List<String> custom_max_version;
     private List<String> custom_min_vers;
 
     public long getId()
@@ -202,16 +190,6 @@ public class RunTestCase
     {
         this.custom_executiontype = custom_executiontype;
     }
-    
-    public int getCustom_automation_type()
-    {
-        return custom_automation_type;
-    }
-    
-    public void setCustom_automation_type(int custom_automation_type)
-    {
-        this.custom_automation_type = custom_automation_type;
-    }
 
     public String getCustom_auto_ref()
     {
@@ -282,36 +260,4 @@ public class RunTestCase
     {
         this.custom_min_vers = custom_min_vers;
     }
-    
-    public int getCustom_platform() {
-		return custom_platform;
-	}
-
-	public void setCustom_platform(int custom_platform) {
-		this.custom_platform = custom_platform;
-	}
-
-	public String getCustom_testlink_id() {
-		return custom_testlink_id;
-	}
-
-	public void setCustom_testlink_id(String custom_testlink_id) {
-		this.custom_testlink_id = custom_testlink_id;
-	}
-
-	public List<CustomStepsSeparated> getCustom_steps_separated() {
-		return custom_steps_separated;
-	}
-
-	public void setCustom_steps_separated(List<CustomStepsSeparated> custom_steps_separated) {
-		this.custom_steps_separated = custom_steps_separated;
-	}
-
-	public List<String> getCustom_max_version() {
-		return custom_max_version;
-	}
-
-	public void setCustom_max_version(List<String> custom_max_version) {
-		this.custom_max_version = custom_max_version;
-	}
 }
