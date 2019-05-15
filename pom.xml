@@ -4,11 +4,13 @@
 	<groupId>org.alfresco.tas</groupId>
 	<artifactId>utility</artifactId>
 	<name>alfresco-tas-utility</name>
-	<version>2.0.20-SNAPSHOT</version>
-	<organization>
-		<name>Alfresco Software</name>
-		<url>http://www.alfresco.com/</url>
-	</organization>
+	<version>2.0.21-SNAPSHOT</version>
+    <parent>
+        <groupId>org.alfresco</groupId>
+        <artifactId>alfresco-super-pom</artifactId>
+        <version>10</version>
+    </parent>
+
 	<developers>
 		<developer>
 			<name>Paul Brodner</name>
@@ -19,8 +21,7 @@
 	</developers>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.build.sourceVersion>1.8</maven.build.sourceVersion>
-		<maven-release.version>2.5.3</maven-release.version>
+		<maven.build.sourceVersion>11</maven.build.sourceVersion>
 		<spring.version>4.3.11.RELEASE</spring.version>
 		<suiteXmlFile>src/test/resources/unit-test.xml</suiteXmlFile>
 		<testNG.version>6.9.10</testNG.version>
@@ -71,15 +72,6 @@
     </repositories>
 
 	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<artifactId>maven-remote-resources-plugin</artifactId>
-					<version>${maven-remote-resources.version}</version>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -96,7 +88,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${maven-compiler-plugin.version}</version>
 				<configuration>
 					<release>${java.version}</release>
 					<showWarnings>true</showWarnings>
@@ -107,7 +98,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.0.0-M2</version>
 				<configuration>
 					<skipTests>true</skipTests>
 					<suiteXmlFiles>
@@ -122,6 +112,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-remote-resources-plugin</artifactId>
+                <version>${maven-remote-resources.version}</version>
 				<executions>
 					<execution>
 						<goals>
@@ -138,7 +129,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-enforcer-plugin</artifactId>
-				<version>3.0.0-M2</version>
 				<executions>
 					<execution>
 						<id>enforce-maven</id>
@@ -158,7 +148,6 @@
 			<plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.0.1</version>
                 <configuration>
                     <doclint>none</doclint>
                 </configuration>
