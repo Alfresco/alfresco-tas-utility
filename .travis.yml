@@ -11,6 +11,7 @@ cache:
 branches:
   only:
     - master
+    - /release\/.*/
 
 install: travis_retry mvn install -DskipTests=true -B -V
 
@@ -25,7 +26,7 @@ jobs:
       script: travis_retry mvn test
     - stage: release
       name: "Push to Nexus"
-      if: fork = false AND branch = master AND type != pull_request
+      if: fork = false AND (branch = master OR branch =~ /release\/.*/) AND type != pull_request
       before_install:
         - "cp .travis.settings.xml $HOME/.m2/settings.xml"
       script:
