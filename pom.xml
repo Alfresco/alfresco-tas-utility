@@ -4,7 +4,7 @@
 	<groupId>org.alfresco.tas</groupId>
 	<artifactId>utility</artifactId>
 	<name>alfresco-tas-utility</name>
-	<version>2.0.16-SNAPSHOT</version>
+	<version>2.0.17-SNAPSHOT</version>
 	<organization>
 		<name>Alfresco Software</name>
 		<url>http://www.alfresco.com/</url>
@@ -54,7 +54,7 @@
     <distributionManagement>
         <repository>
             <id>alfresco-public</id>
-            <url>https://nexus.alfresco.com/nexus/content/repositories/releases</url>
+            <url>https://artifacts.alfresco.com/nexus/content/repositories/releases</url>
         </repository>
     </distributionManagement>
 
