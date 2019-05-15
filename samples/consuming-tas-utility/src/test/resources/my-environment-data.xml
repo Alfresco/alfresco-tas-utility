@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testData>
+
+	<users>
+		<user id="user1" name="search" password="password" />
+	</users>
+
+	<sites>
+		<site id="s1" name="MySampleSite" createdBy="search"
+			visibility="PUBLIC">
+			<folders>
+				<folder id="f1" name="folder1" createdBy="search">
+					<custom-model name="F:tas:folder" />
+					<comments>
+						<comment id="c1" value="folderComment" createdBy="admin" />
+					</comments>
+					<files>
+						<file id="f1" name="f1.txt" createdBy="admin">
+							<content>content of f1</content>
+							<custom-model name="D:tas:document">
+								<properties>
+									<property name="tas:TextPropertyC" value="abcd" />
+								</properties>
+							</custom-model>
+							<comments>
+								<comment id="c2" value="haha" createdBy="admin" />
+							</comments>
+							<tags>
+								<tag id="tag-1" value="tag1" createdBy="admin" />
+								<tag id="tag-2" value="tag1" createdBy="admin" />
+							</tags>
+						</file>
+					</files>
+					<folders>
+						<folder id="f11" name="folderChildOfFolder1" createdBy="admin"/>						
+					</folders>
+				</folder>
+			</folders>
+		</site>
+	</sites>
+
+	<!--CMIS Queries: passing the search query as first param and results expected -->
+	<queries>
+		<query value="SELECT * FROM cmis:folder" expectedResults="100" />
+		<query value="SELECT * FROM cmis:document" expectedResults="100" />		
+	</queries>
+
+</testData>

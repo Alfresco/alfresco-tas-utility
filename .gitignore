@@ -1,0 +1,13 @@
+/target/
+/test-output/
+.settings
+.classpath
+.project
+*test-output*
+src/main/java/META-INF/sun-jaxb.episode
+.idea/
+*.log
+*.iml
+Vagrantfile
+.vagrant/
+test.sikuli/

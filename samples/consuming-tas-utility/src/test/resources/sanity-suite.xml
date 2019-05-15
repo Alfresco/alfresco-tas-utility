@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Suite" parallel="classes">
+	<listeners>
+		<listener class-name="org.alfresco.utility.report.ReportListenerAdapter"></listener>		
+	</listeners>
+	<test name="Sanity Demo Test">
+		<packages>
+			<package name="org.alfresco.sample"></package>
+		</packages>
+	</test>
+
+</suite> <!-- Suite -->
