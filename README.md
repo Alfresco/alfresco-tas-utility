@@ -1,5 +1,7 @@
 ---
  
+ [![Build Status](https://travis-ci.com/Alfresco/alfresco-tas-utility.svg?branch=master)](https://travis-ci.com/Alfresco/alfresco-tas-utility)
+ 
 ## Table of Contents
 * [Synopsis](#synopsis)
 * [Prerequisite](#prerequisite)
