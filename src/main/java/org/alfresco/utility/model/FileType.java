@@ -20,12 +20,12 @@ public enum FileType
     MSPOWERPOINT2007("application/vnd.openxmlformats-officedocument.presentationml.presentation", "pptx");
 
     public final String mimeType;
-    public final String extention;
+    public final String extension;
 
-    FileType(String mimeType, String extention)
+    FileType(String mimeType, String extension)
     {
         this.mimeType = mimeType;
-        this.extention = extention;
+        this.extension = extension;
     }
 
     public static FileType fromName(String fileName)
@@ -34,7 +34,7 @@ public enum FileType
 
         for (FileType ft : FileType.values())
         {
-            if (ft.extention.equals(extention))
+            if (ft.extension.equals(extention))
                 return ft;
         }
 

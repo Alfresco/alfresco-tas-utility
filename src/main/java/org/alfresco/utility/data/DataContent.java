@@ -372,7 +372,6 @@ public class DataContent extends TestData<DataContent>
 
             fileModel.setNodeRef(entryValueMap.get("id").toString());
             fileModel.setName(entryValueMap.get("name").toString());
-            fileModel.setFileType(FileType.fromName(fileModel.getName()));
 
             String fileLocation = Utility.buildPath(getLastResource(), fileModel.getName());
             fileModel.setCmisLocation(fileLocation);
@@ -440,7 +439,7 @@ public class DataContent extends TestData<DataContent>
     {
         String fileFullName = fileModel.getName();
         if (FilenameUtils.getExtension(fileFullName).length() == 0)
-            fileFullName = String.format("%s.%s", fileModel.getName(), fileModel.getFileType().extention);
+            fileFullName = String.format("%s.%s", fileModel.getName(), fileModel.getFileType().extension);
 
         STEP(String.format("DATAPREP: Creating a new non-empty content %s in %s ", fileModel.getName(), getLastResource()));
         if (getLastResource().isEmpty())
@@ -1005,9 +1004,9 @@ public class DataContent extends TestData<DataContent>
      */
     public void addFileToFavorites(FileModel file) throws DataPreparationException
     {
-        STEP(String.format("DATAPREP: Add file %s.%s to Favorites", file.getName(), file.getFileType().extention));
+        STEP(String.format("DATAPREP: Add file %s.%s to Favorites", file.getName(), file.getFileType().extension));
         contentActions.setFileAsFavorite(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getCurrentSite(),
-                String.format("%s.%s", file.getName(), file.getFileType().extention));
+                String.format("%s.%s", file.getName(), file.getFileType().extension));
     }
 
     /**
