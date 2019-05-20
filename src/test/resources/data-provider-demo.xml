@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xsi:noNamespaceSchemaLocation="https://gitlab.alfresco.com/tas/tas-namespaces/raw/master/input-test-data.xsd">
+
+	<users>
+		<user id="tasDataPrepUser" name="tasDataPrepUser" password="password" />
+	</users>
+
+	<sites>
+		<site name="tasDataPrepSite" createdBy="tasDataPrepUser" visibility="PUBLIC">
+			<folders>
+				<folder name="parent-folder-1" createdBy="tasDataPrepUser">
+					<files>
+						<file name="sub-file1.txt" createdBy="tasDataPrepUser">
+							<content>content sub-file 1</content>
+							<comments>
+								<comment createdBy="tasDataPrepUser" value="comment-1"></comment>
+								<comment createdBy="tasDataPrepUser" value="comment-2"></comment>
+							</comments>
+						</file>
+						<file name="sub-file2.txt" createdBy="tasDataPrepUser">
+							<content>content sub-file 2</content>
+							<tags>
+								<tag createdBy="tasDataPrepUser" value="tag-1"></tag>
+							</tags>
+							<aspects>
+								<aspect name="P:cm:geographic">
+									<properties>
+										<property name="cm:longitude" value="111"></property>
+										<property name="cm:latitude" value="222"></property>
+									</properties>
+								</aspect>
+							</aspects>
+						</file>
+					</files>
+					<folders>
+						<folder name="sub-folder-1" createdBy="tasDataPrepUser"></folder>
+					</folders>
+				</folder>
+			</folders>
+		</site>
+	</sites>
+</testData>

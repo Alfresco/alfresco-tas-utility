@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="MySuite">
+	<listeners>
+		<listener class-name="org.alfresco.utility.report.ReportListenerAdapter"></listener>
+		<listener class-name="org.alfresco.utility.report.log.LogsListener"></listener>
+		<listener class-name="org.alfresco.utility.testrail.TestRailExecutorListener"></listener>
+	</listeners>
+	<!-- add here proper information, read about TestNG suite.xml configuration 
+	<suite-files>
+		<suite-file path="link-to-existing-suite.xml-file.xml"></suite-file>
+	</suite-files>
+	 -->
+</suite> <!-- Suite -->
