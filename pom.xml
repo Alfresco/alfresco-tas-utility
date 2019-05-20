@@ -4,7 +4,7 @@
 	<groupId>org.alfresco.tas</groupId>
 	<artifactId>utility</artifactId>
 	<name>alfresco-tas-utility</name>
-	<version>repo-4250-1-SNAPSHOT</version>
+	<version>1.0.37.12-SNAPSHOT</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.build.sourceVersion>1.8</maven.build.sourceVersion>
