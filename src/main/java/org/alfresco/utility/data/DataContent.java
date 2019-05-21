@@ -388,14 +388,12 @@ public class DataContent extends TestData<DataContent>
     }
 
     /**
-     * This is the entry point of the createContent() method to make REST API or CMIS call
+     * This method updates the content of the created document
      *
      * @param client
      * @param fileModel
-     * @return
-     * @throws
      */
-    public FileModel updateContent(AlfrescoHttpClient client, FileModel fileModel)
+    public void updateContent(AlfrescoHttpClient client, FileModel fileModel)
     {
         // Build request
         String nodeId = fileModel.getNodeRef();
@@ -405,15 +403,13 @@ public class DataContent extends TestData<DataContent>
         StringEntity se = new StringEntity(fileModel.getContent(), client.UTF_8_ENCODING);
         se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, client.MIME_TYPE_JSON));
         put.setEntity(se);
-        waitInSeconds(1);
+
         try
         {
             HttpResponse response = client.executeAndRelease(currentUser.getUsername(), currentUser.getPassword(), put);
             if(HttpStatus.SC_OK == response.getStatusLine().getStatusCode())
             {
-                FileModel responseFileModel = new FileModel();
                 logger.info(String.format("Successful updated content with '%s' ", fileModel.getContent()));
-                return responseFileModel;
             }
         }
         finally
@@ -421,7 +417,6 @@ public class DataContent extends TestData<DataContent>
             put.releaseConnection();
             client.close();
         }
-        return new FileModel();
     }
 
     /**
@@ -557,15 +552,13 @@ public class DataContent extends TestData<DataContent>
     }
 
     /**
-     * This is the entry point of the createContent() method to make REST API or CMIS call
+     * This method updates the content of the created document
      *
      * @param client
      * @param fileModel
      * @param documentType
-     * @return
-     * @throws
      */
-    public FileModel updateContent(AlfrescoHttpClient client, FileModel fileModel, DocumentType documentType)
+    public void updateContent(AlfrescoHttpClient client, FileModel fileModel, DocumentType documentType)
     {
         // Build request
         String nodeId = fileModel.getNodeRef();
@@ -577,15 +570,13 @@ public class DataContent extends TestData<DataContent>
         StringEntity se = new StringEntity(fileModel.getContent(), client.UTF_8_ENCODING);
         se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, client.MIME_TYPE_JSON));
         put.setEntity(se);
-        waitInSeconds(1);
+
         try
         {
             HttpResponse response = client.executeAndRelease(currentUser.getUsername(), currentUser.getPassword(), put);
             if(HttpStatus.SC_OK == response.getStatusLine().getStatusCode())
             {
-                FileModel responseFileModel = new FileModel();
                 logger.info(String.format("Successful updated content with '%s' ", fileModel.getContent()));
-                return responseFileModel;
             }
         }
         finally
@@ -593,7 +584,6 @@ public class DataContent extends TestData<DataContent>
             put.releaseConnection();
             client.close();
         }
-        return new FileModel();
     }
 
     /**
@@ -649,11 +639,6 @@ public class DataContent extends TestData<DataContent>
         return newFile;
     }
 
-    /**
-     * @param fullPath - the full path to CMIS object
-     * @param userModel
-     * @throws TestConfigurationException
-     */
     public void assertContentExist() throws TestConfigurationException
     {
         STEP(String.format("DATAPREP: Check that content %s exists.", getLastResource()));
@@ -668,6 +653,11 @@ public class DataContent extends TestData<DataContent>
         Assert.assertFalse(contentDoesNotExist, String.format("Content {%s} was NOT found in repository", getLastResource()));
     }
 
+    /**
+     * @param fullPath - the full path to CMIS object
+     * @param userModel
+     * @throws TestConfigurationException
+     */
     public boolean checkContent(String fullPath, UserModel userModel) throws TestConfigurationException
     {
         if (fullPath == null || fullPath.isEmpty())
