@@ -21,6 +21,8 @@ import org.alfresco.dataprep.ContentAspects;
 import org.alfresco.dataprep.ContentService;
 import org.alfresco.dataprep.SiteService;
 import org.alfresco.dataprep.UserService;
+import org.alfresco.dataprep.AlfrescoHttpClient;
+import org.alfresco.dataprep.AlfrescoHttpClientFactory;
 import org.alfresco.utility.Utility;
 import org.alfresco.utility.data.provider.XMLAspectData;
 import org.alfresco.utility.exception.DataPreparationException;
@@ -44,6 +46,17 @@ import org.apache.chemistry.opencmis.commons.impl.dataobjects.ContentStreamImpl;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.protocol.HTTP;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -57,6 +70,11 @@ import org.testng.Assert;
 public class DataContent extends TestData<DataContent>
 {
     private Session session;
+
+    private static Log logger = LogFactory.getLog(DataContent.class);
+
+    @Autowired
+    private AlfrescoHttpClientFactory alfrescoHttpClientFactory;
 
     @Autowired
     private ContentService contentService;
@@ -110,27 +128,76 @@ public class DataContent extends TestData<DataContent>
      * dataContent.usingUser(testUser).usingSite(testSite).createFolder(newRandomFolder);
      * <code>
      */
-    public FolderModel createFolder(FolderModel folderModel)
-    {
-        STEP(String.format("DATAPREP: Creating a new folder content %s in %s ", folderModel.getName(), getCurrentSpace()));
-        String location = Utility.buildPath(getCurrentSpace(), folderModel.getName());
-        setLastResource(location);
-        Folder cmisFolder = contentService.createFolderInRepository(getSession(), folderModel.getName(), getCurrentSpace());
-        folderModel.setProtocolLocation(location);
-        folderModel.setNodeRef(cmisFolder.getId());
-        folderModel.setCmisLocation(location);
-        return folderModel;
+    public FolderModel createFolder(){
+        return createFolder(new FolderModel(RandomData.getRandomName("Folder")));
     }
 
     /**
-     * It will create a random folder in current resource
+     * This is the entry point of the createContent() method to make REST API or CMIS call
+     */
+    public FolderModel createFolder(FolderModel folderModel){
+        AlfrescoHttpClient client = alfrescoHttpClientFactory.getObject();
+        if(client.getAlfVersion() >= 5.2)
+        {
+            return createFolderV1Api(client, folderModel, getCurrentUser().getUsername(), getCurrentUser().getPassword());
+        }
+        else
+        {
+            return createFolderCmisApi(folderModel.getName());
+        }
+    }
+
+    /**
+     * It will create a random folder in current resource using REST API
      * <code>
      * dataContent.usingUser(testUser).usingSite(testSite).createFolder();
      * <code>
      */
-    public FolderModel createFolder()
+    public FolderModel createFolderV1Api(AlfrescoHttpClient client, FolderModel folderModel, String username, String password)
     {
-        String folderName = RandomData.getRandomName("Folder");
+        // Build request
+        String nodeId = this.getNodeRef();
+        String reqUrl = client.getApiVersionUrl() + "nodes/" + nodeId + "/children";
+        HttpPost post  = new HttpPost(reqUrl);
+        JSONObject body = new JSONObject();
+        body.put("name", folderModel.getName());
+        body.put("nodeType", "cm:folder");
+        post.setEntity(client.setMessageBody(body));
+
+        // Send Request
+        logger.info(String.format("Create folder with name '%s' by: ", folderModel.getName()));
+        logger.info(String.format("POST: '%s'", reqUrl));
+        HttpResponse response = client.execute(username, password, post);
+        if(HttpStatus.SC_CREATED == response.getStatusLine().getStatusCode())
+        {
+            JSONObject entryResponse = client.readStream(response.getEntity());
+            JSONObject entryValueMap = (JSONObject) entryResponse.get("entry");
+
+            folderModel.setNodeRef(entryValueMap.get("id").toString());
+            folderModel.setName(entryValueMap.get("name").toString());
+
+            String folderLocation = Utility.buildPath(getLastResource(), folderModel.getName());
+            folderModel.setCmisLocation(folderLocation);
+            folderModel.setProtocolLocation(folderLocation);
+
+            logger.info(String.format("Successful created folder with id '%s' ", entryValueMap.get("id").toString()));
+            return folderModel;
+        }
+        else
+        {
+            logger.error(client.getParameterFromJSON(response,"briefSummary", "error"));
+            return new FolderModel();
+        }
+    }
+
+    /**
+     * It will create a random folder in current resource using CMIS
+     * <code>
+     * dataContent.usingUser(testUser).usingSite(testSite).createFolder();
+     * <code>
+     */
+    public FolderModel createFolderCmisApi(String folderName)
+    {
         STEP(String.format("DATAPREP: Create folder '%s' in %s", folderName, getCurrentSpace()));
         FolderModel folderModel = new FolderModel(folderName);
         String location = Utility.buildPath(getCurrentSpace(), folderName);
@@ -149,6 +216,53 @@ public class DataContent extends TestData<DataContent>
      * </code>
      */
     public void deleteContent()
+    {
+        AlfrescoHttpClient client = alfrescoHttpClientFactory.getObject();
+
+        if(client.getAlfVersion() >= 5.2)
+        {
+            deleteContentV1RestApi(client);
+        }
+        else
+        {
+            deleteContentCmisApi();
+        }
+    }
+
+    /**
+     * Use this to delete the last resource, either file or folder using V1 RestApi
+     * <code>
+     *  dataContent.usingUser(adminUser).usingSite(siteModel).usingResource(repoFile).deleteContent();
+     * </code>
+     */
+    public void deleteContentV1RestApi(AlfrescoHttpClient client)
+    {
+        // Build request
+        String nodeId = this.getNodeRef();
+        String reqUrl = client.getApiVersionUrl() + "nodes/" + nodeId;
+        HttpDelete delete  = new HttpDelete(reqUrl);
+
+        // Send Request
+        logger.info(String.format("Delete content with name '%s' by: ", nodeId));
+        logger.info(String.format("DELETE: '%s'", reqUrl));
+        HttpResponse response = client.execute(currentUser.getUsername(), currentUser.getPassword(), delete);
+        if(HttpStatus.SC_NO_CONTENT == response.getStatusLine().getStatusCode())
+        {
+            logger.info(String.format("Successful deleted content with id '%s' ", nodeId));
+        }
+        else
+        {
+            logger.error(client.getParameterFromJSON(response,"briefSummary", "error"));
+        }
+    }
+
+    /**
+     * Use this to delete the last resource, either file or folder using CmisApi
+     * <code>
+     *  dataContent.usingUser(adminUser).usingSite(siteModel).usingResource(repoFile).deleteContent();
+     * </code>
+     */
+    public void deleteContentCmisApi()
     {
         STEP(String.format("DATAPREP: Deleting '%s'", getLastResource()));
         contentService.deleteContentByPath(getSession(), getLastResource());
@@ -189,57 +303,143 @@ public class DataContent extends TestData<DataContent>
     }
 
     /**
-     * Creates a random document based on {@link DocumentType} passed
-     * Return the {@link Document} object on success creation
+     * It will create a new file in current resource
      * <code>
-     * dataContent.usingUser(userModel).usingResource(myFolder).createContent(DocumentType.TEXT_PLAIN);
-     * </code>
-     * 
-     * @param documentType
-     * @return
-     * @throws DataPreparationException
+     * FileModel newRandomFile = FileModel.getRandomFileModel();
+     * dataContent.usingUser(testUser).usingSite(testSite).createContent(newRandomFile);
+     * <code>
      */
-    public FileModel createContent(DocumentType documentType) throws DataPreparationException
-    {
-        String newContent = String.format("%s.%s", RandomData.getRandomName("file"), Utility.cmisDocTypeToExtentions(documentType));
-        String newLocation = Utility.buildPath(getLastResource(), newContent);
-        STEP(String.format("DATAPREP: Creating a new non-empty content %s in %s ", newContent, getLastResource()));
-
-        if (getLastResource().isEmpty())
-            setLastResource(RandomData.getRandomName("Folder"));
-
-        Document cmisDocument = null;
-        try
-        {
-            cmisDocument = contentService.createDocumentInRepository(getSession(), getLastResource(), documentType, newContent, "This is a file file");
-        }
-        catch (CmisStorageException cse)
-        {
-            cmisDocument = contentService.createDocumentInRepository(getSession(), getLastResource(), documentType, newContent, "This is a file file");
-        }
-        FileModel newFile = new FileModel(cmisDocument.getName());
-        newFile.setCmisLocation(newLocation);
-        newFile.setProtocolLocation(newLocation);
-        newFile.setNodeRef(cmisDocument.getId());
-        return newFile;
+    public FileModel createContent(){
+        return createContent(new FileModel(RandomData.getRandomName("File")));
     }
 
     /**
-     * Creates a random document based on {@link DocumentType} passed
+     * This is the entry point of the createContent() method to make REST API or CMIS call
+     */
+    public FileModel createContent(FileModel fileModel){
+        AlfrescoHttpClient client = alfrescoHttpClientFactory.getObject();
+
+        if(client.getAlfVersion() >= 5.2)
+        {
+            FileModel createFile = createContentV1Api(client, fileModel);
+            this.updateContent(client, createFile);
+            return createFile;
+        }
+        else
+        {
+            return createContentCmisApi(fileModel);
+        }
+    }
+
+    /**
+     * Creates a random using document based on {@link DocumentType} passed using REST API
      * Return the {@link Document} object on success creation
      * <code>
      * dataContent.usingSite(site).createContent(sourceFile);
      * </code>
-     * 
-     * @param documentType
+     *
+     * @param client
+     * @param fileModel
+     * @return
+     */
+    public FileModel createContentV1Api(AlfrescoHttpClient client, FileModel fileModel)
+    {
+        // Build request
+        String nodeId = this.getNodeRef();
+        String reqUrl = client.getApiVersionUrl() + "nodes/" + nodeId + "/children";
+        HttpPost post  = new HttpPost(reqUrl);
+        JSONObject body = new JSONObject();
+        body.put("name", fileModel.getName());
+        body.put("nodeType", "cm:content");
+
+        // Set Title or Description if specified
+        if (fileModel.getTitle() != null || fileModel.getDescription() != null)
+        {
+            body.put("cm:title", fileModel.getTitle());
+            body.put("cm:description", fileModel.getDescription());
+        }
+
+        post.setEntity(client.setMessageBody(body));
+
+        // Send Request
+        logger.info(String.format("Create content with name '%s' by: ", fileModel.getName()));
+        logger.info(String.format("POST: '%s'", reqUrl));
+        HttpResponse response = client.execute(currentUser.getUsername(), currentUser.getPassword(), post);
+        if(HttpStatus.SC_CREATED == response.getStatusLine().getStatusCode())
+        {
+            JSONObject entryResponse = client.readStream(response.getEntity());
+            JSONObject entryValueMap = (JSONObject) entryResponse.get("entry");
+
+            fileModel.setNodeRef(entryValueMap.get("id").toString());
+            fileModel.setName(entryValueMap.get("name").toString());
+
+            String fileLocation = Utility.buildPath(getLastResource(), fileModel.getName());
+            fileModel.setCmisLocation(fileLocation);
+            fileModel.setProtocolLocation(fileLocation);
+
+            logger.info(String.format("Successful created content with id '%s' ", entryValueMap.get("id").toString()));
+            return fileModel;
+        }
+        else
+        {
+            logger.error(client.getParameterFromJSON(response,"briefSummary", "error"));
+            return new FileModel();
+        }
+    }
+
+    /**
+     * This is the entry point of the createContent() method to make REST API or CMIS call
+     *
+     * @param client
+     * @param fileModel
+     * @return
+     * @throws
+     */
+    public FileModel updateContent(AlfrescoHttpClient client, FileModel fileModel)
+    {
+        // Build request
+        String nodeId = fileModel.getNodeRef();
+        String reqUrl = client.getApiVersionUrl() + "nodes/" + nodeId + "/content?majorVersion=true";
+
+        HttpPut put  = new HttpPut(reqUrl);
+        StringEntity se = new StringEntity(fileModel.getContent(), client.UTF_8_ENCODING);
+        se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, client.MIME_TYPE_JSON));
+        put.setEntity(se);
+        waitInSeconds(1);
+        try
+        {
+            HttpResponse response = client.executeAndRelease(currentUser.getUsername(), currentUser.getPassword(), put);
+            if(HttpStatus.SC_OK == response.getStatusLine().getStatusCode())
+            {
+                FileModel responseFileModel = new FileModel();
+                logger.info(String.format("Successful updated content with '%s' ", fileModel.getContent()));
+                return responseFileModel;
+            }
+        }
+        finally
+        {
+            put.releaseConnection();
+            client.close();
+        }
+        return new FileModel();
+    }
+
+    /**
+     * Creates a random document based on {@link DocumentType} passed using CMIS
+     * Return the {@link Document} object on success creation
+     * <code>
+     * dataContent.usingSite(site).createContent(sourceFile);
+     * </code>
+     *
+     * @param fileModel
      * @return
      * @throws DataPreparationException
      */
-    public FileModel createContent(FileModel fileModel) throws DataPreparationException
+    public FileModel createContentCmisApi(FileModel fileModel) throws DataPreparationException
     {
         String fileFullName = fileModel.getName();
         if (FilenameUtils.getExtension(fileFullName).length() == 0)
-            fileFullName = String.format("%s.%s", fileModel.getName(), fileModel.getFileType().extention);
+            fileFullName = String.format("%s.%s", fileModel.getName(), fileModel.getFileType().extension);
 
         STEP(String.format("DATAPREP: Creating a new non-empty content %s in %s ", fileModel.getName(), getLastResource()));
         if (getLastResource().isEmpty())
@@ -273,6 +473,180 @@ public class DataContent extends TestData<DataContent>
         fileModel.setProtocolLocation(fileLocation);
         fileModel.setNodeRef(cmisDocument.getId());
         return fileModel;
+    }
+
+    /**
+     * This is the entry point of the createContent() method to make REST API or CMIS call
+     */
+    public FileModel createContent(DocumentType documentType) throws DataPreparationException
+    {
+        AlfrescoHttpClient client = alfrescoHttpClientFactory.getObject();
+
+        if(client.getAlfVersion() >= 5.2)
+        {
+            FileModel fileModel = new FileModel(RandomData.getRandomName("file"));
+            FileModel createFile = createContentDocTypeV1Api(client, fileModel, documentType);
+            this.updateContent(client, createFile, documentType);
+            return createFile;
+        }
+        else
+        {
+            return createContentDocTypeCmisApi(documentType);
+        }
+    }
+
+    /**
+     * Creates a random document based on {@link DocumentType} passed using REST API
+     * Return the {@link Document} object on success creation
+     * <code>
+     * dataContent.usingUser(userModel).usingResource(myFolder).createContent(DocumentType.TEXT_PLAIN);
+     * </code>
+     *
+     * @param client
+     * @param fileModel
+     * @param documentType
+     * @return
+     * @throws DataPreparationException
+     */
+    public FileModel createContentDocTypeV1Api(AlfrescoHttpClient client, FileModel fileModel, DocumentType documentType)
+    {
+        // Build request
+        String nodeId = this.getNodeRef();
+        String reqUrl = client.getApiVersionUrl() + "nodes/" + nodeId + "/children";
+        String newContent = String.format("%s.%s", fileModel.getName(), Utility.cmisDocTypeToExtentions(documentType));
+
+        HttpPost post  = new HttpPost(reqUrl);
+        JSONObject body = new JSONObject();
+        body.put("name", newContent);
+        body.put("nodeType", "cm:content");
+        // Set Title or Description if specified
+        if (fileModel.getTitle() != null || fileModel.getDescription() != null)
+        {
+            body.put("cm:title", fileModel.getTitle());
+            body.put("cm:description", fileModel.getDescription());
+        }
+
+        post.setEntity(client.setMessageBody(body));
+
+        // Send Request
+        logger.info(String.format("Create content with name '%s' by: ", newContent));
+        logger.info(String.format("POST: '%s'", reqUrl));
+        HttpResponse response = client.execute(currentUser.getUsername(), currentUser.getPassword(), post);
+        if(HttpStatus.SC_CREATED == response.getStatusLine().getStatusCode())
+        {
+            JSONObject entryResponse = client.readStream(response.getEntity());
+            JSONObject entryValueMap = (JSONObject) entryResponse.get("entry");
+
+            fileModel.setNodeRef(entryValueMap.get("id").toString());
+            fileModel.setName(entryValueMap.get("name").toString());
+            fileModel.setFileType(FileType.fromName(fileModel.getName()));
+
+            String fileLocation = Utility.buildPath(getLastResource(), newContent);
+            fileModel.setCmisLocation(fileLocation);
+            fileModel.setProtocolLocation(fileLocation);
+            fileModel.setContent("This is a test file");
+
+            logger.info(String.format("Successful created content with id '%s' ", entryValueMap.get("id").toString()));
+            return fileModel;
+        }
+        else
+        {
+            logger.error(client.getParameterFromJSON(response,"briefSummary", "error"));
+            return new FileModel();
+        }
+    }
+
+    /**
+     * This is the entry point of the createContent() method to make REST API or CMIS call
+     *
+     * @param client
+     * @param fileModel
+     * @param documentType
+     * @return
+     * @throws
+     */
+    public FileModel updateContent(AlfrescoHttpClient client, FileModel fileModel, DocumentType documentType)
+    {
+        // Build request
+        String nodeId = fileModel.getNodeRef();
+        String reqUrl = client.getApiVersionUrl() + "nodes/" + nodeId + "/content?majorVersion=true";
+
+        HttpPut put  = new HttpPut(reqUrl);
+        String contentType = documentType.type + ";charset=" + client.UTF_8_ENCODING;
+        put.addHeader("Content-Type", contentType);
+        StringEntity se = new StringEntity(fileModel.getContent(), client.UTF_8_ENCODING);
+        se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, client.MIME_TYPE_JSON));
+        put.setEntity(se);
+        waitInSeconds(1);
+        try
+        {
+            HttpResponse response = client.executeAndRelease(currentUser.getUsername(), currentUser.getPassword(), put);
+            if(HttpStatus.SC_OK == response.getStatusLine().getStatusCode())
+            {
+                FileModel responseFileModel = new FileModel();
+                logger.info(String.format("Successful updated content with '%s' ", fileModel.getContent()));
+                return responseFileModel;
+            }
+        }
+        finally
+        {
+            put.releaseConnection();
+            client.close();
+        }
+        return new FileModel();
+    }
+
+    /**
+     * Method to wait for given seconds.
+     *
+     * @param seconds time in seconds
+     */
+    protected void waitInSeconds(int seconds)
+    {
+        long time0;
+        long time1;
+        time0 = System.currentTimeMillis();
+        do
+        {
+            time1 = System.currentTimeMillis();
+        }
+        while (time1 - time0 < seconds * 1000);
+    }
+
+    /**
+     * Creates a random document based on {@link DocumentType} passed using CMIS
+     * Return the {@link Document} object on success creation
+     * <code>
+     * dataContent.usingUser(userModel).usingResource(myFolder).createContent(DocumentType.TEXT_PLAIN);
+     * </code>
+     *
+     * @param documentType
+     * @return
+     * @throws DataPreparationException
+     */
+    public FileModel createContentDocTypeCmisApi(DocumentType documentType) throws DataPreparationException
+    {
+        String newContent = String.format("%s.%s", RandomData.getRandomName("file"), Utility.cmisDocTypeToExtentions(documentType));
+        String newLocation = Utility.buildPath(getLastResource(), newContent);
+        STEP(String.format("DATAPREP: Creating a new non-empty content %s in %s ", newContent, getLastResource()));
+
+        if (getLastResource().isEmpty())
+            setLastResource(RandomData.getRandomName("Folder"));
+
+        Document cmisDocument = null;
+        try
+        {
+            cmisDocument = contentService.createDocumentInRepository(getSession(), getLastResource(), documentType, newContent, "This is a file file");
+        }
+        catch (CmisStorageException cse)
+        {
+            cmisDocument = contentService.createDocumentInRepository(getSession(), getLastResource(), documentType, newContent, "This is a file file");
+        }
+        FileModel newFile = new FileModel(cmisDocument.getName());
+        newFile.setCmisLocation(newLocation);
+        newFile.setProtocolLocation(newLocation);
+        newFile.setNodeRef(cmisDocument.getId());
+        return newFile;
     }
 
     /**
@@ -630,9 +1004,9 @@ public class DataContent extends TestData<DataContent>
      */
     public void addFileToFavorites(FileModel file) throws DataPreparationException
     {
-        STEP(String.format("DATAPREP: Add file %s.%s to Favorites", file.getName(), file.getFileType().extention));
+        STEP(String.format("DATAPREP: Add file %s.%s to Favorites", file.getName(), file.getFileType().extension));
         contentActions.setFileAsFavorite(getCurrentUser().getUsername(), getCurrentUser().getPassword(), getCurrentSite(),
-                String.format("%s.%s", file.getName(), file.getFileType().extention));
+                String.format("%s.%s", file.getName(), file.getFileType().extension));
     }
 
     /**

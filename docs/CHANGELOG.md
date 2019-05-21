@@ -247,7 +247,7 @@ If you are implementing a [custom extension](http://docs.alfresco.com/5.1/concep
 - ability of asserting if particular extension point is installed  
 
 ```java
-  dataContent.assertExtensionAmpExists("<artifact-id-of-extention-point>")
+  dataContent.assertExtensionAmpExists("<artifact-id-of-extension-point>")
 ```
 
 - ability to check the server health of Alfresco installed based only on IP and admin user provided.
