@@ -400,16 +400,23 @@ public class DataContent extends TestData<DataContent>
         String reqUrl = client.getApiVersionUrl() + "nodes/" + nodeId + "/content?majorVersion=true";
 
         HttpPut put  = new HttpPut(reqUrl);
-        StringEntity se = new StringEntity(fileModel.getContent(), client.UTF_8_ENCODING);
+        String fileContent = fileModel.getContent();
+        StringEntity se = new StringEntity(fileContent, client.UTF_8_ENCODING);
         se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, client.MIME_TYPE_JSON));
         put.setEntity(se);
+
+        // Wait in case of large file content
+        if (fileContent.length() > 100)
+        {
+            waitInSeconds(1);
+        }
 
         try
         {
             HttpResponse response = client.executeAndRelease(currentUser.getUsername(), currentUser.getPassword(), put);
             if(HttpStatus.SC_OK == response.getStatusLine().getStatusCode())
             {
-                logger.info(String.format("Successful updated content with '%s' ", fileModel.getContent()));
+                logger.info(String.format("Successful updated content with '%s' ", fileContent));
             }
         }
         finally
@@ -565,18 +572,25 @@ public class DataContent extends TestData<DataContent>
         String reqUrl = client.getApiVersionUrl() + "nodes/" + nodeId + "/content?majorVersion=true";
 
         HttpPut put  = new HttpPut(reqUrl);
+        String fileContent = fileModel.getContent();
         String contentType = documentType.type + ";charset=" + client.UTF_8_ENCODING;
         put.addHeader("Content-Type", contentType);
-        StringEntity se = new StringEntity(fileModel.getContent(), client.UTF_8_ENCODING);
+        StringEntity se = new StringEntity(fileContent, client.UTF_8_ENCODING);
         se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, client.MIME_TYPE_JSON));
         put.setEntity(se);
+
+        // Wait in case of large file content
+        if (fileContent.length() > 100)
+        {
+            waitInSeconds(1);
+        }
 
         try
         {
             HttpResponse response = client.executeAndRelease(currentUser.getUsername(), currentUser.getPassword(), put);
             if(HttpStatus.SC_OK == response.getStatusLine().getStatusCode())
             {
-                logger.info(String.format("Successful updated content with '%s' ", fileModel.getContent()));
+                logger.info(String.format("Successful updated content with '%s' ", fileContent));
             }
         }
         finally
