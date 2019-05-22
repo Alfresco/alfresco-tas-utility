@@ -133,7 +133,7 @@ public class DataContent extends TestData<DataContent>
     }
 
     /**
-     * This is the entry point of the createContent() method to make REST API or CMIS call
+     * This is the entry point of the createFolder() method to make REST API or CMIS call
      */
     public FolderModel createFolder(FolderModel folderModel){
         AlfrescoHttpClient client = alfrescoHttpClientFactory.getObject();
@@ -332,11 +332,8 @@ public class DataContent extends TestData<DataContent>
     }
 
     /**
-     * Creates a random using document based on {@link DocumentType} passed using REST API
-     * Return the {@link Document} object on success creation
-     * <code>
-     * dataContent.usingSite(site).createContent(sourceFile);
-     * </code>
+     * Creates a file using REST API
+     * Return the {@link FileModel} object on success creation
      *
      * @param client
      * @param fileModel
@@ -592,23 +589,6 @@ public class DataContent extends TestData<DataContent>
             put.releaseConnection();
             client.close();
         }
-    }
-
-    /**
-     * Method to wait for given seconds.
-     *
-     * @param seconds time in seconds
-     */
-    protected void waitInSeconds(int seconds)
-    {
-        long time0;
-        long time1;
-        time0 = System.currentTimeMillis();
-        do
-        {
-            time1 = System.currentTimeMillis();
-        }
-        while (time1 - time0 < seconds * 1000);
     }
 
     /**
