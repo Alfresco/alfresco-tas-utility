@@ -405,12 +405,6 @@ public class DataContent extends TestData<DataContent>
         se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, client.MIME_TYPE_JSON));
         put.setEntity(se);
 
-        // Wait in case of large file content
-        if (fileContent.length() > 100)
-        {
-            waitInSeconds(3);
-        }
-
         try
         {
             // Send Request
@@ -419,11 +413,7 @@ public class DataContent extends TestData<DataContent>
             HttpResponse response = client.executeAndRelease(currentUser.getUsername(), currentUser.getPassword(), put);
             if(HttpStatus.SC_OK == response.getStatusLine().getStatusCode())
             {
-                logger.info(String.format("Successful updated content"));
-            }
-            else
-            {
-                logger.info(String.format("Response: '%s'", response.getStatusLine().getStatusCode() + " Reason:" + response.getStatusLine().getReasonPhrase()));
+                logger.info(String.format("Successfully updated content"));
             }
         }
         finally
@@ -586,12 +576,6 @@ public class DataContent extends TestData<DataContent>
         se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, client.MIME_TYPE_JSON));
         put.setEntity(se);
 
-        // Wait in case of large file content
-        if (fileContent.length() > 100)
-        {
-            waitInSeconds(3);
-        }
-
         try
         {
             // Send Request
@@ -600,11 +584,7 @@ public class DataContent extends TestData<DataContent>
             HttpResponse response = client.executeAndRelease(currentUser.getUsername(), currentUser.getPassword(), put);
             if(HttpStatus.SC_OK == response.getStatusLine().getStatusCode())
             {
-                logger.info(String.format("Successful updated content"));
-            }
-            else
-            {
-                logger.info(String.format("Response: '%s'", response.getStatusLine().getStatusCode() + " Reason:" + response.getStatusLine().getReasonPhrase()));
+                logger.info(String.format("Successfully updated content"));
             }
         }
         finally
