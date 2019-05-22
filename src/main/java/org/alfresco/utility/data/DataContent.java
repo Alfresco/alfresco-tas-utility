@@ -408,11 +408,14 @@ public class DataContent extends TestData<DataContent>
         // Wait in case of large file content
         if (fileContent.length() > 100)
         {
-            waitInSeconds(1);
+            waitInSeconds(3);
         }
 
         try
         {
+            // Send Request
+            logger.info(String.format("Update content for file with name '%s' by: ", fileModel.getName()));
+            logger.info(String.format("POST: '%s'", reqUrl));
             HttpResponse response = client.executeAndRelease(currentUser.getUsername(), currentUser.getPassword(), put);
             if(HttpStatus.SC_OK == response.getStatusLine().getStatusCode())
             {
@@ -582,11 +585,14 @@ public class DataContent extends TestData<DataContent>
         // Wait in case of large file content
         if (fileContent.length() > 100)
         {
-            waitInSeconds(1);
+            waitInSeconds(3);
         }
 
         try
         {
+            // Send Request
+            logger.info(String.format("Update content for file with name '%s' by: ", fileModel.getName()));
+            logger.info(String.format("POST: '%s'", reqUrl));
             HttpResponse response = client.executeAndRelease(currentUser.getUsername(), currentUser.getPassword(), put);
             if(HttpStatus.SC_OK == response.getStatusLine().getStatusCode())
             {
