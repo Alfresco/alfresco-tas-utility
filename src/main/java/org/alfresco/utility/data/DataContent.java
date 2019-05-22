@@ -419,7 +419,11 @@ public class DataContent extends TestData<DataContent>
             HttpResponse response = client.executeAndRelease(currentUser.getUsername(), currentUser.getPassword(), put);
             if(HttpStatus.SC_OK == response.getStatusLine().getStatusCode())
             {
-                logger.info(String.format("Successful updated content with '%s' ", fileContent));
+                logger.info(String.format("Successful updated content"));
+            }
+            else
+            {
+                logger.info(String.format("Response: '%s'", response.getStatusLine().getStatusCode() + " Reason:" + response.getStatusLine().getReasonPhrase()));
             }
         }
         finally
@@ -596,7 +600,11 @@ public class DataContent extends TestData<DataContent>
             HttpResponse response = client.executeAndRelease(currentUser.getUsername(), currentUser.getPassword(), put);
             if(HttpStatus.SC_OK == response.getStatusLine().getStatusCode())
             {
-                logger.info(String.format("Successful updated content with '%s' ", fileContent));
+                logger.info(String.format("Successful updated content"));
+            }
+            else
+            {
+                logger.info(String.format("Response: '%s'", response.getStatusLine().getStatusCode() + " Reason:" + response.getStatusLine().getReasonPhrase()));
             }
         }
         finally
