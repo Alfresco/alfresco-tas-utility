@@ -155,6 +155,8 @@ public class DataContent extends TestData<DataContent>
      */
     public FolderModel createFolderV1Api(AlfrescoHttpClient client, FolderModel folderModel, String username, String password)
     {
+        STEP(String.format("DATAPREP: Create folder '%s' in %s", folderModel.getName(), getCurrentSpace()));
+
         // Build request
         String nodeId = this.getNodeRef();
         String reqUrl = client.getApiVersionUrl() + "nodes/" + nodeId + "/children";
@@ -165,7 +167,6 @@ public class DataContent extends TestData<DataContent>
         post.setEntity(client.setMessageBody(body));
 
         // Send Request
-        logger.info(String.format("Create folder with name '%s' by: ", folderModel.getName()));
         logger.info(String.format("POST: '%s'", reqUrl));
         HttpResponse response = client.execute(username, password, post);
         if(HttpStatus.SC_CREATED == response.getStatusLine().getStatusCode())
@@ -185,8 +186,7 @@ public class DataContent extends TestData<DataContent>
         }
         else
         {
-            logger.error(client.getParameterFromJSON(response,"briefSummary", "error"));
-            return new FolderModel();
+            throw new RuntimeException("Could not create folder. Request response: " + client.getParameterFromJSON(response,"briefSummary", "error"));
         }
     }
 
@@ -237,13 +237,14 @@ public class DataContent extends TestData<DataContent>
      */
     public void deleteContentV1RestApi(AlfrescoHttpClient client)
     {
+        STEP(String.format("DATAPREP: Deleting '%s' with id '%s'", getLastResource(), getNodeRef()));
+
         // Build request
         String nodeId = this.getNodeRef();
         String reqUrl = client.getApiVersionUrl() + "nodes/" + nodeId;
         HttpDelete delete  = new HttpDelete(reqUrl);
 
         // Send Request
-        logger.info(String.format("Delete content with name '%s' by: ", nodeId));
         logger.info(String.format("DELETE: '%s'", reqUrl));
         HttpResponse response = client.execute(currentUser.getUsername(), currentUser.getPassword(), delete);
         if(HttpStatus.SC_NO_CONTENT == response.getStatusLine().getStatusCode())
@@ -252,7 +253,7 @@ public class DataContent extends TestData<DataContent>
         }
         else
         {
-            logger.error(client.getParameterFromJSON(response,"briefSummary", "error"));
+            throw new RuntimeException("Could not delete file. Request response: " + client.getParameterFromJSON(response,"briefSummary", "error"));
         }
     }
 
@@ -322,7 +323,7 @@ public class DataContent extends TestData<DataContent>
         if(client.getAlfVersion() >= 5.2)
         {
             FileModel createFile = createContentV1Api(client, fileModel);
-            this.updateContent(client, createFile);
+            updateContent(client, createFile);
             return createFile;
         }
         else
@@ -341,6 +342,8 @@ public class DataContent extends TestData<DataContent>
      */
     public FileModel createContentV1Api(AlfrescoHttpClient client, FileModel fileModel)
     {
+        STEP(String.format("DATAPREP: Create file '%s' in %s", fileModel.getName(), getCurrentSpace()));
+
         // Build request
         String nodeId = this.getNodeRef();
         String reqUrl = client.getApiVersionUrl() + "nodes/" + nodeId + "/children";
@@ -350,16 +353,18 @@ public class DataContent extends TestData<DataContent>
         body.put("nodeType", "cm:content");
 
         // Set Title or Description if specified
-        if (fileModel.getTitle() != null || fileModel.getDescription() != null)
+        if (fileModel.getTitle() != null)
         {
             body.put("cm:title", fileModel.getTitle());
-            body.put("cm:description", fileModel.getDescription());
         }
 
+        if (fileModel.getDescription() != null)
+        {
+            body.put("cm:description", fileModel.getDescription());
+        }
         post.setEntity(client.setMessageBody(body));
 
         // Send Request
-        logger.info(String.format("Create content with name '%s' by: ", fileModel.getName()));
         logger.info(String.format("POST: '%s'", reqUrl));
         HttpResponse response = client.execute(currentUser.getUsername(), currentUser.getPassword(), post);
         if(HttpStatus.SC_CREATED == response.getStatusLine().getStatusCode())
@@ -369,18 +374,24 @@ public class DataContent extends TestData<DataContent>
 
             fileModel.setNodeRef(entryValueMap.get("id").toString());
             fileModel.setName(entryValueMap.get("name").toString());
-
+            FileType extension = FileType.fromName(fileModel.getName());
+            if (extension != FileType.UNDEFINED)
+            {
+                fileModel.setFileType(extension);
+            }
             String fileLocation = Utility.buildPath(getLastResource(), fileModel.getName());
             fileModel.setCmisLocation(fileLocation);
             fileModel.setProtocolLocation(fileLocation);
-
+            if(fileModel.getContent().isEmpty())
+            {
+                fileModel.setContent("This is a test file");
+            }
             logger.info(String.format("Successful created content with id '%s' ", entryValueMap.get("id").toString()));
             return fileModel;
         }
         else
         {
-            logger.error(client.getParameterFromJSON(response,"briefSummary", "error"));
-            return new FileModel();
+            throw new RuntimeException("Could not create file. Request response: " + client.getParameterFromJSON(response,"briefSummary", "error"));
         }
     }
 
@@ -392,32 +403,7 @@ public class DataContent extends TestData<DataContent>
      */
     public void updateContent(AlfrescoHttpClient client, FileModel fileModel)
     {
-        // Build request
-        String nodeId = fileModel.getNodeRef();
-        String reqUrl = client.getApiVersionUrl() + "nodes/" + nodeId + "/content?majorVersion=true";
-
-        HttpPut put  = new HttpPut(reqUrl);
-        String fileContent = fileModel.getContent();
-        StringEntity se = new StringEntity(fileContent, client.UTF_8_ENCODING);
-        se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, client.MIME_TYPE_JSON));
-        put.setEntity(se);
-
-        try
-        {
-            // Send Request
-            logger.info(String.format("Update content for file with name '%s' by: ", fileModel.getName()));
-            logger.info(String.format("POST: '%s'", reqUrl));
-            HttpResponse response = client.executeAndRelease(currentUser.getUsername(), currentUser.getPassword(), put);
-            if(HttpStatus.SC_OK == response.getStatusLine().getStatusCode())
-            {
-                logger.info(String.format("Successfully updated content"));
-            }
-        }
-        finally
-        {
-            put.releaseConnection();
-            client.close();
-        }
+        updateContent(client, fileModel, null);
     }
 
     /**
@@ -482,7 +468,7 @@ public class DataContent extends TestData<DataContent>
         {
             FileModel fileModel = new FileModel(RandomData.getRandomName("file"));
             FileModel createFile = createContentDocTypeV1Api(client, fileModel, documentType);
-            this.updateContent(client, createFile, documentType);
+            updateContent(client, createFile, documentType);
             return createFile;
         }
         else
@@ -506,50 +492,8 @@ public class DataContent extends TestData<DataContent>
      */
     public FileModel createContentDocTypeV1Api(AlfrescoHttpClient client, FileModel fileModel, DocumentType documentType)
     {
-        // Build request
-        String nodeId = this.getNodeRef();
-        String reqUrl = client.getApiVersionUrl() + "nodes/" + nodeId + "/children";
-        String newContent = String.format("%s.%s", fileModel.getName(), Utility.cmisDocTypeToExtentions(documentType));
-
-        HttpPost post  = new HttpPost(reqUrl);
-        JSONObject body = new JSONObject();
-        body.put("name", newContent);
-        body.put("nodeType", "cm:content");
-        // Set Title or Description if specified
-        if (fileModel.getTitle() != null || fileModel.getDescription() != null)
-        {
-            body.put("cm:title", fileModel.getTitle());
-            body.put("cm:description", fileModel.getDescription());
-        }
-
-        post.setEntity(client.setMessageBody(body));
-
-        // Send Request
-        logger.info(String.format("Create content with name '%s' by: ", newContent));
-        logger.info(String.format("POST: '%s'", reqUrl));
-        HttpResponse response = client.execute(currentUser.getUsername(), currentUser.getPassword(), post);
-        if(HttpStatus.SC_CREATED == response.getStatusLine().getStatusCode())
-        {
-            JSONObject entryResponse = client.readStream(response.getEntity());
-            JSONObject entryValueMap = (JSONObject) entryResponse.get("entry");
-
-            fileModel.setNodeRef(entryValueMap.get("id").toString());
-            fileModel.setName(entryValueMap.get("name").toString());
-            fileModel.setFileType(FileType.fromName(fileModel.getName()));
-
-            String fileLocation = Utility.buildPath(getLastResource(), newContent);
-            fileModel.setCmisLocation(fileLocation);
-            fileModel.setProtocolLocation(fileLocation);
-            fileModel.setContent("This is a test file");
-
-            logger.info(String.format("Successful created content with id '%s' ", entryValueMap.get("id").toString()));
-            return fileModel;
-        }
-        else
-        {
-            logger.error(client.getParameterFromJSON(response,"briefSummary", "error"));
-            return new FileModel();
-        }
+        fileModel.setName(String.format("%s.%s", fileModel.getName(), Utility.cmisDocTypeToExtentions(documentType)));
+        return createContentV1Api(client, fileModel);
     }
 
     /**
@@ -567,27 +511,25 @@ public class DataContent extends TestData<DataContent>
 
         HttpPut put  = new HttpPut(reqUrl);
         String fileContent = fileModel.getContent();
-        String contentType = documentType.type + ";charset=" + client.UTF_8_ENCODING;
-        put.addHeader("Content-Type", contentType);
+        if (documentType != null)
+        {
+            String contentType = documentType.type + ";charset=" + client.UTF_8_ENCODING;
+            put.addHeader("Content-Type", contentType);
+        }
         StringEntity se = new StringEntity(fileContent, client.UTF_8_ENCODING);
         se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, client.MIME_TYPE_JSON));
         put.setEntity(se);
 
-        try
+        // Send Request
+        logger.info(String.format("Update content for file with name '%s' by POST: '%s'", fileModel.getName(), reqUrl));
+        HttpResponse response = client.executeAndRelease(currentUser.getUsername(), currentUser.getPassword(), put);
+        if(HttpStatus.SC_OK == response.getStatusLine().getStatusCode())
         {
-            // Send Request
-            logger.info(String.format("Update content for file with name '%s' by: ", fileModel.getName()));
-            logger.info(String.format("POST: '%s'", reqUrl));
-            HttpResponse response = client.executeAndRelease(currentUser.getUsername(), currentUser.getPassword(), put);
-            if(HttpStatus.SC_OK == response.getStatusLine().getStatusCode())
-            {
-                logger.info(String.format("Successfully updated content"));
-            }
+            logger.info(String.format("Successfully updated content"));
         }
-        finally
+        else
         {
-            put.releaseConnection();
-            client.close();
+            throw new RuntimeException("Could not update file. Request response: " + client.getParameterFromJSON(response,"briefSummary", "error"));
         }
     }
 
