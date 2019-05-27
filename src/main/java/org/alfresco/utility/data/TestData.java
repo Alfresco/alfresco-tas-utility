@@ -161,9 +161,9 @@ public abstract class TestData<Data> implements DSL<Data>
                 FileModel fileModel = (FileModel) model;
                 if(FilenameUtils.getExtension(model.getName()).length() == 0)
                 {
-                    location = Utility.buildPath(getLastResource(), String.format("%s.%s", model.getName(), fileModel.getFileType().extention));
+                    location = Utility.buildPath(getLastResource(), String.format("%s.%s", model.getName(), fileModel.getFileType().extension));
                 }
-                else 
+                else
                 {
                     location = Utility.buildPath(getLastResource(), model.getName());
                 }

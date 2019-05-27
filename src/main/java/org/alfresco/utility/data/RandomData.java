@@ -43,10 +43,10 @@ public class RandomData
     /**
      * @param extention
      *            - as "txt", "pdf", "doc"
-     * @return random file with <extention>
+     * @return random file with <extension>
      */
     public static String getRandomFile(FileType fileType)
     {
-        return String.format("%s.%s", getRandomName("file"), fileType.extention);
+        return String.format("%s.%s", getRandomName("file"), fileType.extension);
     }
 }
