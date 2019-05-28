@@ -163,7 +163,7 @@ This project uses a simple maven project [archetype](https://maven.apache.org/pl
 │   │   │               │   ├──(...)
 │   │   │               ├── exception # custom exception
 │   │   │               │   (...)
-│   │   │               ├── extention # utilities that will handle testing of Extention Points
+│   │   │               ├── extension # utilities that will handle testing of Extension Points
 │   │   │               │   ├── ExtensionPointTestSuite.java
 │   │   │               │   ├── ExtentionPointTestUtility.java
 │   │   │               ├── model #modeling generic objects that will be reused in test

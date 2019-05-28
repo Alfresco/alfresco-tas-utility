@@ -126,7 +126,7 @@ public class FileModel extends ContentModel
     public FileModel cloneAsWorkingCopy()
     {
         FileModel workingCopy = new FileModel();
-        String type = FileType.fromName(getName()).extention;
+        String type = FileType.fromName(getName()).extension;
         String nameNoType = getName().replace("." + type, "");
         String workingCopyName = nameNoType + " (Working Copy)." + type;
         workingCopy.setName(workingCopyName);
