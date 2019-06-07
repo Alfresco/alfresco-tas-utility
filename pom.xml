@@ -4,7 +4,7 @@
 	<groupId>org.alfresco.tas</groupId>
 	<artifactId>utility</artifactId>
 	<name>alfresco-tas-utility</name>
-	<version>2.0.26-SNAPSHOT</version>
+	<version>3.0.0-SNAPSHOT</version>
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-super-pom</artifactId>
@@ -22,7 +22,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.build.sourceVersion>11</maven.build.sourceVersion>
-		<spring.version>4.3.11.RELEASE</spring.version>
+		<spring.version>5.1.7.RELEASE</spring.version>
 		<suiteXmlFile>src/test/resources/unit-test.xml</suiteXmlFile>
 		<testNG.version>6.9.10</testNG.version>
 		<dataPrep.version>2.2</dataPrep.version>
