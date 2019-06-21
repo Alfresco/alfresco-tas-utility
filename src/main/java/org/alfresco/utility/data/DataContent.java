@@ -158,7 +158,7 @@ public class DataContent extends TestData<DataContent>
         STEP(String.format("DATAPREP: Create folder '%s' in %s", folderModel.getName(), getCurrentSpace()));
 
         // Build request
-        String nodeId = this.getNodeRef();
+        String nodeId = this.getLastNodeId();
         String reqUrl = client.getApiVersionUrl() + "nodes/" + nodeId + "/children";
         HttpPost post  = new HttpPost(reqUrl);
         JSONObject body = new JSONObject();
@@ -237,10 +237,10 @@ public class DataContent extends TestData<DataContent>
      */
     public void deleteContentV1RestApi(AlfrescoHttpClient client)
     {
-        STEP(String.format("DATAPREP: Deleting '%s' with id '%s'", getLastResource(), getNodeRef()));
+        STEP(String.format("DATAPREP: Deleting '%s' with id '%s'", getLastResource(), getLastNodeId()));
 
         // Build request
-        String nodeId = this.getNodeRef();
+        String nodeId = this.getLastNodeId();
         String reqUrl = client.getApiVersionUrl() + "nodes/" + nodeId;
         HttpDelete delete  = new HttpDelete(reqUrl);
 
@@ -345,7 +345,7 @@ public class DataContent extends TestData<DataContent>
         STEP(String.format("DATAPREP: Create file '%s' in %s", fileModel.getName(), getCurrentSpace()));
 
         // Build request
-        String nodeId = this.getNodeRef();
+        String nodeId = this.getLastNodeId();
         String reqUrl = client.getApiVersionUrl() + "nodes/" + nodeId + "/children";
         HttpPost post  = new HttpPost(reqUrl);
         JSONObject body = new JSONObject();
