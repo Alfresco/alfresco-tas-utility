@@ -237,7 +237,7 @@ public class DataContent extends TestData<DataContent>
      */
     public void deleteContentV1RestApi(AlfrescoHttpClient client)
     {
-        STEP(String.format("DATAPREP: Deleting '%s' with id '%s'", getLastResource(), getNodeRef()));
+        STEP(String.format("DATAPREP: Deleting '%s' with id '%s'", getLastResource(), getLastNodeId()));
 
         // Build request
         String nodeId = this.getLastNodeId();
