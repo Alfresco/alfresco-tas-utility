@@ -193,15 +193,22 @@ public abstract class TestData<Data> implements DSL<Data>
 
     @Override
     @SuppressWarnings("unchecked")
+    public Data usingSite(String siteId) throws Exception
+    {
+        setCurrentSpace(String.format(getSitesPath(), siteId));
+        setCurrentSite(siteId);
+        setLastResource(getCurrentSpace());
+        setLastNodeId(getSiteDocLibNodeId(siteId));
+        return (Data) this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
     public Data usingSite(SiteModel siteModel) throws Exception
     {
         Utility.checkObjectIsInitialized(siteModel, "siteModel");
 
-        setCurrentSpace(String.format(getSitesPath(), siteModel.getId()));
-        setCurrentSite(siteModel.getId());
-        setLastResource(getCurrentSpace());
-        setLastNodeId(getSiteDocLibNodeId(siteModel));
-        return (Data) this;
+        return usingSite(siteModel.getId());
     }
 
     @Override
@@ -379,17 +386,16 @@ public abstract class TestData<Data> implements DSL<Data>
     }
 
     /**
-     * Returns doclib node id for a given site by parsing the site's children nodes
+     * Returns doclib node id for a given site
      *
      * @return NodeId
-     * @param site
+     * @param siteId
      * @throws Exception
      */
-    private String getSiteDocLibNodeId(SiteModel site)
+    private String getSiteDocLibNodeId(String siteId)
     {
-        String docLibId = null;
         AlfrescoHttpClient client = this.alfrescoHttpClientFactory.getObject();
-        String reqUrl = client.getApiVersionUrl() + "nodes/" + site.getGuidWithoutVersion() + "/children";
+        String reqUrl = client.getApiVersionUrl() + "sites/" + siteId + "/containers/documentLibrary";
 
         HttpGet get = new HttpGet(reqUrl);
         HttpResponse response = client.execute(tasProperties.getAdminUser(), tasProperties.getAdminPassword(), get);
@@ -397,21 +403,12 @@ public abstract class TestData<Data> implements DSL<Data>
         if (200 == response.getStatusLine().getStatusCode())
         {
             JSONObject jsonObject = new JSONObject(client.readStream(response.getEntity()));
-            JSONArray children = jsonObject.getJSONObject("list").getJSONArray("entries");
-            for (int i = 0; i < children.length(); i++)
-            {
-                JSONObject jsonObj = children.getJSONObject(i).getJSONObject("entry");
-                if (jsonObj.getString("name").equals("documentLibrary"))
-                {
-                    docLibId = jsonObj.get("id").toString();
-                }
-            }
+            return jsonObject.getJSONObject("entry").getString("id");
         }
         else
         {
             throw new RuntimeException(
                     "Could not set Doclib nodeId. Request response: " + client.getParameterFromJSON(response, "briefSummary", new String[] { "error" }));
         }
-        return docLibId;
     }
 }

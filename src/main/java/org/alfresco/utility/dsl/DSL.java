@@ -57,6 +57,16 @@ public interface DSL<Data>
     /**
      * Defines the current test site to be used
      * 
+     * @param siteId
+     * @return
+     * @throws Exception
+     */
+
+    Data usingSite(String siteId) throws Exception;
+
+    /**
+     * Defines the current test site to be used based on {@link SiteModel}
+     *
      * @param siteModel
      * @return
      * @throws Exception
