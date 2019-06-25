@@ -7,6 +7,8 @@ import java.util.Map;
 
 import javax.management.openmbean.CompositeData;
 
+import org.alfresco.dataprep.AlfrescoHttpClient;
+import org.alfresco.dataprep.AlfrescoHttpClientFactory;
 import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.TasProperties;
 import org.alfresco.utility.Utility;
@@ -25,7 +27,10 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.CharEncoding;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
@@ -59,8 +64,16 @@ public abstract class TestData<Data> implements DSL<Data>
      */
     private String lastResource = "";
 
+    /**
+     * The last content node id used
+     */
+    private String lastNodeId = "";
+
     @Autowired
     protected TasProperties tasProperties;
+
+    @Autowired
+    private AlfrescoHttpClientFactory alfrescoHttpClientFactory;
 
     public static String PASSWORD = "password";
     public static String EMAIL = "%s@tas-automation.org";
@@ -174,6 +187,7 @@ public abstract class TestData<Data> implements DSL<Data>
         }
         setLastResource(model.getCmisLocation());
         setCurrentSpace(model.getCmisLocation());
+        setLastNodeId(model.getNodeRefWithoutVersion());
         return (Data) this;
     }
 
@@ -184,13 +198,16 @@ public abstract class TestData<Data> implements DSL<Data>
         setCurrentSpace(String.format(getSitesPath(), siteId));
         setCurrentSite(siteId);
         setLastResource(getCurrentSpace());
+        setLastNodeId(getSiteDocLibNodeId(siteId));
         return (Data) this;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Data usingSite(SiteModel siteModel) throws Exception
     {
         Utility.checkObjectIsInitialized(siteModel, "siteModel");
+
         return usingSite(siteModel.getId());
     }
 
@@ -232,6 +249,16 @@ public abstract class TestData<Data> implements DSL<Data>
     public String getDataDictionaryPath() throws TestConfigurationException
     {
         return "/Data Dictionary";
+    }
+
+    public String getLastNodeId()
+    {
+        return lastNodeId;
+    }
+
+    public void setLastNodeId(String lastNodeId)
+    {
+        this.lastNodeId = lastNodeId;
     }
 
     public String getCurrentSite()
@@ -357,5 +384,31 @@ public abstract class TestData<Data> implements DSL<Data>
     {
         return new DSLJmx(jmxBuilder.getJmxClient());
     }
-    
+
+    /**
+     * Returns doclib node id for a given site
+     *
+     * @return NodeId
+     * @param siteId
+     * @throws Exception
+     */
+    private String getSiteDocLibNodeId(String siteId)
+    {
+        AlfrescoHttpClient client = this.alfrescoHttpClientFactory.getObject();
+        String reqUrl = client.getApiVersionUrl() + "sites/" + siteId + "/containers/documentLibrary";
+
+        HttpGet get = new HttpGet(reqUrl);
+        HttpResponse response = client.execute(tasProperties.getAdminUser(), tasProperties.getAdminPassword(), get);
+
+        if (200 == response.getStatusLine().getStatusCode())
+        {
+            JSONObject jsonObject = new JSONObject(client.readStream(response.getEntity()));
+            return jsonObject.getJSONObject("entry").getString("id");
+        }
+        else
+        {
+            throw new RuntimeException(
+                    "Could not set Doclib nodeId. Request response: " + client.getParameterFromJSON(response, "briefSummary", new String[] { "error" }));
+        }
+    }
 }
