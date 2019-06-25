@@ -213,20 +213,20 @@ public abstract class DSLProtocol<Client> extends DSLWrapper<Client> implements 
 
     public abstract Client disconnect() throws Exception;
 
+    @Override
+    public abstract Client usingSite(SiteModel siteModel) throws Exception;
+
     /**
      * User for changing current site location This method will build the path
      * of the siteId location Example: /Sites/<siteId>/documentLibrary Add
      * implementation for your protocol accordingly
-     * 
+     *
      * @param siteId
      * @return
      * @throws Exception
      */
     @Override
     public abstract Client usingSite(String siteId) throws Exception;
-
-    @Override
-    public abstract Client usingSite(SiteModel siteModel) throws Exception;
 
     @Override
     public abstract Client usingUserHome(String username) throws Exception;
