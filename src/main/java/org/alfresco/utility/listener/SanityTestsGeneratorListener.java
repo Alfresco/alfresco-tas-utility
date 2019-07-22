@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.utility.LogFactory;
-import org.alfresco.utility.model.TestGroup;
 import org.slf4j.Logger;
 import org.testng.ISuite;
 import org.testng.ISuiteListener;
@@ -28,15 +27,14 @@ import org.testng.internal.TestNGMethod;
 public class SanityTestsGeneratorListener implements ISuiteListener
 {
     private static Logger LOG = LogFactory.getLogger();
-    private String filePath = "src/main/resources";
-    private static String DEFAULT_TEST_GROUP = TestGroup.SANITY;
 
     @Override
     public void onStart(ISuite suite)
     {
 
         // the list of Test Groups to search for
-        List<String> projects = resolveTestGroup(suite);
+        List<String> projects = resolveTestGroups(suite);
+        String xmlFileName = resolveXMLFileName(suite);
 
         Collection<ITestNGMethod> testsOnRuntime = suite.getAllMethods();
         LOG.info("Total number of tests: " + testsOnRuntime.size());
@@ -74,27 +72,47 @@ public class SanityTestsGeneratorListener implements ISuiteListener
         }
 
         XmlTestsSuiteWriter writer = new XmlTestsSuiteWriter();
-        writer.generateXmlFile(filePath, testClasses, projects.get(0));
+        writer.generateXmlFile(fullPath(xmlFileName), testClasses, projects.get(0));
 
         System.exit(0);
     }
 
     /**
-     * Get the TestGroup param value from the xml file that run this listener. The default value for it is Sanity Test
-     * Group.
+     * Get the TestGroup parameter value from the XML file that run this listener. 
+     * The default value for it is Sanity Test Group.
      * 
      * @param suite The tests suite.
      * @return The test group value.
      */
-    private List<String> resolveTestGroup(ISuite suite)
+    private List<String> resolveTestGroups(ISuite suite)
     {
-        List<String> projects = new ArrayList<String>();
-
+        List<String> groups = new ArrayList<String>();
         String testGroup = suite.getParameter("testGroup");
-        testGroup = testGroup != null ? testGroup : DEFAULT_TEST_GROUP;
-        projects.add(testGroup);
+        
+        if (testGroup == null) {
+        	groups.add("sanity"); // default test group
+        	return groups;
+        }
+        String[] parameters = testGroup.split(",");
+        for (String group : parameters) 
+        {
+        	groups.add(group.trim());
+        }
 
-        return projects;
+        return groups;
+    }
+    
+    private String resolveXMLFileName(ISuite suite) {
+    	
+    	String testGroup = suite.getParameter("xmlFileName");
+    	if (testGroup == null) {
+    		return "tas-sanity-suite.xml"; // default XML file name
+    	}
+    	return testGroup;
+    }
+    
+    private String fullPath(String xmlFileName) {
+    	return "src/main/resources/" + xmlFileName;
     }
 
     @Override
