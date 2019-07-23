@@ -27,16 +27,15 @@ import org.w3c.dom.Element;
 public class XmlTestsSuiteWriter
 {
     public static Logger LOG = LogFactory.getLogger();
-    private String PROJECT_NAME = "tas";
     private static final String SUITE_NAME = "Tests for Test Group = ";
 
     /**
      * Generate the XML file suite and write it to the disk.
      * 
-     * @param filePath The file path where to save the file.
+     * @param xmlFileName The XML file name.
      * @param testClasses The map containing the classes and methods to be write on the XML file.
      */
-    public void generateXmlFile(String filePath, Map<String, List<String>> testClasses, String testGroup)
+    public void generateXmlFile(String xmlFileName, Map<String, List<String>> testClasses, String testGroup)
     {
         try
         {
@@ -57,18 +56,13 @@ public class XmlTestsSuiteWriter
 
             DOMSource source = new DOMSource(doc);
 
-            StreamResult result = new StreamResult(new File(getFullFilePath(filePath)));
+            StreamResult result = new StreamResult(new File(xmlFileName));
             transformer.transform(source, result);
         }
         catch (Exception e)
         {
             LOG.error("Cannot create the xml file log. Error: {}", e.getMessage());
         }
-    }
-
-    private String getFullFilePath(String filePath)
-    {
-        return filePath + File.separator + PROJECT_NAME + "-tests-suite.xml";
     }
 
     private void generateXMLBody(Document doc, Map<String, List<String>> testClasses, String testGroup)
