@@ -1,6 +1,7 @@
 package org.alfresco.utility.network;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
@@ -77,9 +78,9 @@ public abstract class HttpConsoleOperation
      * This is the method that will perform the actual POST command on alfresco console
      * 
      * @return
-     * @throws Exception
+     * @throws IOException
      */
-    public Element execute(BasicNameValuePair command) throws Exception
+    public Element execute(BasicNameValuePair command) throws IOException
     {
         HttpPost httpPost = new HttpPost(getAlfrescoConsolePath());
         httpPost.addHeader("Authorization", getAdminBasicAuthentication());
@@ -91,7 +92,7 @@ public abstract class HttpConsoleOperation
         CloseableHttpResponse postResponse = getHttpClient().execute(httpPost);
         try
         {
-            LOG.info("Executing command: {} -> Response: {}", String.valueOf(commands), postResponse.getStatusLine());
+            LOG.info("Executing command: {} -> Response: {}", commands, postResponse.getStatusLine());
             HttpEntity postEntity = postResponse.getEntity();
             EntityUtils.consume(postEntity);
         }
@@ -107,9 +108,9 @@ public abstract class HttpConsoleOperation
      * Perform the get request on console page.
      * 
      * @return {@link Document} object with entire HTML page
-     * @throws Exception
+     * @throws IOException
      */
-    protected Document fullResponseDocument() throws Exception
+    protected Document fullResponseDocument() throws IOException
     {
         URL url = new URL(getAlfrescoConsolePath());
 
@@ -131,9 +132,9 @@ public abstract class HttpConsoleOperation
 
     /**
      * @return the response value parsed
-     * @throws Exception
+     * @throws IOException
      */
-    protected Element parsedResponse() throws Exception
+    protected Element parsedResponse() throws IOException
     {
         Element last = fullResponseDocument().select("div.column-full").last();
         LOG.info("Response: {}", last.toString());

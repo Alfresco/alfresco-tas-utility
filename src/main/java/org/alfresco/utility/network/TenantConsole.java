@@ -1,5 +1,7 @@
 package org.alfresco.utility.network;
 
+import java.io.IOException;
+
 import org.alfresco.utility.TasProperties;
 import org.alfresco.utility.model.UserModel;
 import org.apache.http.message.BasicNameValuePair;
@@ -13,7 +15,7 @@ public class TenantConsole extends HttpConsoleOperation
         super("/alfresco/s/admin/admin-tenantconsole");
     }
 
-    public boolean tenantExist() throws Exception
+    public boolean tenantExist() throws IOException
     {
         return execute(new BasicNameValuePair("tenant-cmd", "show tenants")).toString().contains("tenant");
     }
