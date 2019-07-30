@@ -26,6 +26,7 @@ import org.alfresco.dataprep.AlfrescoHttpClientFactory;
 import org.alfresco.utility.Utility;
 import org.alfresco.utility.data.provider.XMLAspectData;
 import org.alfresco.utility.exception.DataPreparationException;
+import org.alfresco.utility.exception.IORuntimeException;
 import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.model.ContentModel;
 import org.alfresco.utility.model.FileModel;
@@ -292,9 +293,8 @@ public class DataContent extends TestData<DataContent>
      * 
      * @param alias
      * @return
-     * @throws Exception
      */
-    public String addEmailAlias(String alias) throws Exception
+    public String addEmailAlias(String alias)
     {
         String folderName = new File(getLastResource()).getName();
         Utility.checkObjectIsInitialized(folderName, "getLastResource()");
@@ -732,29 +732,43 @@ public class DataContent extends TestData<DataContent>
     {
         return customModel;
     }
-    
 
-
-    public ContentStream getContentStream(String fileName, String content) throws Exception
+    /**
+     * Create a content stream from some content.
+     *
+     * @param fileName A name for the content stream.
+     * @param content The content.
+     * @return The stream.
+     * @throws IORuntimeException if there is an issue creating the stream.
+     */
+    public ContentStream getContentStream(String fileName, String content) throws IORuntimeException
     {
         if (content == null)
         {
             content = "";
         }
-        byte[] byteContent = content.getBytes("UTF-8");
-        InputStream stream = new ByteArrayInputStream(byteContent);
-        DataInputStream dataInputStream = new DataInputStream(stream);
-        byteContent = new byte[content.length()];
-        dataInputStream.readFully(byteContent);
-        ByteArrayInputStream bInput = new ByteArrayInputStream(byteContent);
-        ContentStream contentStream = new ContentStreamImpl(fileName, BigInteger.valueOf(byteContent.length), FileType.fromName(fileName).mimeType, bInput);
-        bInput.close();
-        dataInputStream.close();
-        stream.close();
+        ContentStream contentStream;
+        try
+        {
+            byte[] byteContent = content.getBytes("UTF-8");
+            InputStream stream = new ByteArrayInputStream(byteContent);
+            DataInputStream dataInputStream = new DataInputStream(stream);
+            byteContent = new byte[content.length()];
+            dataInputStream.readFully(byteContent);
+            ByteArrayInputStream bInput = new ByteArrayInputStream(byteContent);
+            contentStream = new ContentStreamImpl(fileName, BigInteger.valueOf(byteContent.length), FileType.fromName(fileName).mimeType, bInput);
+            bInput.close();
+            dataInputStream.close();
+            stream.close();
+        }
+        catch (IOException e)
+        {
+            throw new IORuntimeException(e);
+        }
         return contentStream;
     }
 
-    public void closeContentStream(ContentStream contentStream) throws IOException
+    public void closeContentStream(ContentStream contentStream)
     {
         try
         {
@@ -770,9 +784,9 @@ public class DataContent extends TestData<DataContent>
      * @param contentModel
      * @param objectTypeID
      *            Example: objectTypeID = "D:cmis:document"
-     * @throws Exception
+     * @throws IORuntimeException if there is an issue creating the content.
      */
-    public ContentModel createCustomContent(ContentModel contentModel, String objectTypeID, CustomObjectTypeProperties objectTypeProperty) throws Exception
+    public ContentModel createCustomContent(ContentModel contentModel, String objectTypeID, CustomObjectTypeProperties objectTypeProperty) throws IORuntimeException
     {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put(PropertyIds.OBJECT_TYPE_ID, objectTypeID);
