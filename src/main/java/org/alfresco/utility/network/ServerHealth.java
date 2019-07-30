@@ -64,16 +64,25 @@ public class ServerHealth
         return reachable;
     }
 
-    public boolean isServerReachable() throws Exception
+    public boolean isServerReachable()
     {
         STEP(String.format("Check the server %s is reachable", properties.getFullServerUrl()));
         boolean reachable = isServerReachable(properties.getServer(), properties.getPort());
         if(properties.showTenantsOnServerHealth())
-            LOG.info("Check if there are Tenants Members on the Server: {}", tenantConsole.tenantExist());
+        {
+            try
+            {
+                LOG.info("Check if there are tenants on the server: {}", tenantConsole.tenantExist());
+            }
+            catch (IOException e)
+            {
+                LOG.error("Exception checking if there are tenants on the server", e);
+            }
+        }
         return reachable;
     }
 
-    public boolean isAlfrescoRunning() throws Exception
+    public boolean isAlfrescoRunning()
     {
         if (!isServerReachable())
             throw new ServerUnreachableException(properties);
@@ -113,9 +122,16 @@ public class ServerHealth
         return isAlfrescoRunning;
     }
 
-    public void assertServerIsOnline() throws Exception
+    /**
+     * Throw an exception if the server is not online.
+     *
+     * @throws ServerReachableAlfrescoIsNotRunningException If the server is not online.
+     */
+    public void assertServerIsOnline()
     {
         if (!isAlfrescoRunning())
+        {
             throw new ServerReachableAlfrescoIsNotRunningException(properties);
+        }
     }
 }
