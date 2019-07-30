@@ -1,6 +1,5 @@
 package org.alfresco.utility;
 
-import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -14,7 +13,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.RandomAccessFile;
 import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
@@ -28,6 +26,7 @@ import java.util.Random;
 import java.util.Scanner;
 
 import org.alfresco.dataprep.CMISUtil.DocumentType;
+import org.alfresco.utility.exception.DataPreparationException;
 import org.alfresco.utility.exception.TestConfigurationException;
 import org.alfresco.utility.exception.TestObjectNotDefinedException;
 import org.alfresco.utility.model.FileModel;
@@ -44,10 +43,19 @@ public class Utility
     static Logger LOG = LogFactory.getLogger();
     public static int retryCountSeconds = 15;
 
-    public static void checkObjectIsInitialized(Object model, String message) throws Exception
+    /**
+     * Check if the model object is null or not.
+     *
+     * @param model The object to check.
+     * @param message The message to return if there's an issue.
+     * @throws TestObjectNotDefinedException if the model object is null.
+     */
+    public static void checkObjectIsInitialized(Object model, String message) throws TestObjectNotDefinedException
     {
         if (model == null)
+        {
             throw new TestObjectNotDefinedException(message);
+        }
     }
 
     /**
@@ -79,11 +87,11 @@ public class Utility
      * @param fileName
      * @return the content of filename found in test/resources/testdata/
      *         <filename>
-     * @throws Exception
+     * @throws TestConfigurationException If the file cannot be read.
      */
-    public static String getResourceTestDataContent(String fileName) throws Exception
+    public static String getResourceTestDataContent(String fileName) throws TestConfigurationException
     {
-        StringBuilder result = new StringBuilder("");
+        StringBuilder result = new StringBuilder();
         File file = getResourceTestDataFile(fileName);
 
         try (Scanner scanner = new Scanner(file))
@@ -93,7 +101,6 @@ public class Utility
                 String line = scanner.nextLine();
                 result.append(line).append("\n");
             }
-            scanner.close();
         }
         catch (IOException e)
         {
@@ -148,10 +155,14 @@ public class Utility
         StringBuilder concatenatedPaths = new StringBuilder(parent);
         int lenPaths = paths.length;
         if (lenPaths == 0)
+        {
             return concatenatedPaths.toString();
+        }
 
         if (!parent.endsWith("/"))
+        {
             concatenatedPaths.append("/");
+        }
 
         for (String path : paths)
         {
@@ -171,7 +182,9 @@ public class Utility
         }
         String concatenated = concatenatedPaths.toString();
         if (lenPaths > 0 && paths[lenPaths - 1].contains("."))
+        {
             concatenated = StringUtils.removeEnd(concatenated, "/");
+        }
         return concatenated;
     }
 
@@ -242,10 +255,9 @@ public class Utility
     public static boolean isPropertyEnabled(String key)
     {
         boolean isEnabled = false;
-        Properties properties = new Properties();
         try
         {
-            properties = Utility.getProperties(TestRailExecutorListener.class, Utility.getEnvironmentPropertyFile());
+            Properties properties = Utility.getProperties(TestRailExecutorListener.class, Utility.getEnvironmentPropertyFile());
             isEnabled = Boolean.valueOf(Utility.getSystemOrFileProperty(key, properties));
         }
         catch (TestConfigurationException e1)
@@ -280,27 +292,30 @@ public class Utility
      * @param interval
      * @param maxTime
      * @param callback
-     * @throws Exception 
+     * @throws InterruptedException if the thread was interrupted while sleeping.
      */
-	public static void sleep(int interval, int maxTime, RetryOperation callback) throws Exception {
-		long currentTime = System.currentTimeMillis();
-		long endTime = 0;
-		do {
-			try {
-				endTime = System.currentTimeMillis();
-				callback.execute();
-				break;
-			} catch (AssertionError|Exception e) {
-				if (endTime - currentTime > maxTime) {
-					throw new AssertionError("Maximum retry period reached, test failed.", e);
-				}
-				Thread.sleep(interval);
-			}
-		} while (true);
-	};
-	
-	
-	
+    public static void sleep(int interval, int maxTime, RetryOperation callback) throws InterruptedException
+    {
+        long currentTime = System.currentTimeMillis();
+        long endTime = 0;
+        do
+        {
+            try
+            {
+                endTime = System.currentTimeMillis();
+                callback.execute();
+                break;
+            }
+            catch (AssertionError | Exception e)
+            {
+                if (endTime - currentTime > maxTime)
+                {
+                    throw new AssertionError("Maximum retry period reached, test failed.", e);
+                }
+                Thread.sleep(interval);
+            }
+        } while (true);
+    }
 
     /**
      * Pretty prints unformatted JSON
@@ -320,9 +335,8 @@ public class Utility
      * @param url
      * @param params
      * @return
-     * @throws UnsupportedEncodingException
      */
-    public static String toUrlParams(String url, Map<String, String> params) throws UnsupportedEncodingException
+    public static String toUrlParams(String url, Map<String, String> params)
     {
 
         List<String> listOfParams = new ArrayList<String>();
@@ -355,17 +369,22 @@ public class Utility
     {
         String envPropName = System.getProperty("environment");
         if (envPropName == null)
+        {
             envPropName = "default.properties";
+        }
         else
+        {
             envPropName = String.format("%s.properties", envPropName);
+        }
         return envPropName;
     }
 
     public static String splitGuidVersion(String guidWithVersion)
     {
         if (guidWithVersion != null && guidWithVersion.contains(";"))
+        {
             return guidWithVersion.split(";")[0];
-
+        }
         return guidWithVersion;
     }
 
@@ -381,7 +400,9 @@ public class Utility
         File[] list = directory.listFiles();
 
         if (list == null)
+        {
             return null;
+        }
 
         for (File f : list)
         {
@@ -406,20 +427,24 @@ public class Utility
      * @param fileName
      * @param sizeMB
      * @return {@link File}
-     * @throws Exception
+     * @throws DataPreparationException If there is an error preparing the file.
      */
-    public static File getFileWithSize(String fileName, int sizeMB) throws Exception
+    public static File getFileWithSize(String fileName, int sizeMB)
     {
         byte[] buffer = getRandomString(1024 * 1024).getBytes();
         int number_of_lines = sizeMB;
-        @SuppressWarnings("resource")
-        FileChannel rwChannel = new RandomAccessFile(fileName, "rw").getChannel();
-        ByteBuffer wrBuf = rwChannel.map(FileChannel.MapMode.READ_WRITE, 0, buffer.length * number_of_lines);
-        for (int i = 0; i < number_of_lines; i++)
+        try(FileChannel rwChannel = new RandomAccessFile(fileName, "rw").getChannel())
         {
-            wrBuf.put(buffer);
+            ByteBuffer wrBuf = rwChannel.map(FileChannel.MapMode.READ_WRITE, 0, buffer.length * number_of_lines);
+            for (int i = 0; i < number_of_lines; i++)
+            {
+                wrBuf.put(buffer);
+            }
         }
-        rwChannel.close();
+        catch (IOException e)
+        {
+            throw new DataPreparationException(e);
+        }
         File file1 = new File(fileName);
         return file1;
     }
@@ -443,8 +468,7 @@ public class Utility
         {
             return properties.getProperty(key);
         }
-        else
-            return value;
+        return value;
     }
 
     public static void executeOnUnixNoWait(String command) throws IOException
@@ -513,11 +537,14 @@ public class Utility
         String[] commands = new String[] { "/bin/sh", "-c", command };
      
         Process proc = null;
-        try {
-			proc = new ProcessBuilder(commands).start();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+        try
+        {
+            proc = new ProcessBuilder(commands).start();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
         
         return proc;
     }
@@ -529,7 +556,7 @@ public class Utility
      * @param command
      * @return the List of lines returned by command
      */
-    public static void executeOnWin(String command) throws Exception
+    public static void executeOnWin(String command) throws IOException
     {
         LOG.info("On Windows execute command: [{}]", command);
         Runtime.getRuntime().exec("cmd /c " + command);
@@ -580,12 +607,16 @@ public class Utility
         return file;
     }
 
-    public static void deleteFolder(File folder) throws Exception
+    public static void deleteFolder(File folder) throws IOException
     {
         if (SystemUtils.IS_OS_WINDOWS)
+        {
             executeOnWin(String.format("rmdir /S /Q %s", folder.getPath()));
+        }
         else if (SystemUtils.IS_OS_LINUX)
+        {
             executeOnUnixNoWait(String.format("sudo rm -rf %s", folder.getPath()));
+        }
     }
 
     /**
@@ -691,10 +722,7 @@ public class Utility
                 InputStream inputStream = p.getInputStream();
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 BufferedReader bufferReader = new BufferedReader(inputStreamReader);
-                if(bufferReader.readLine() != null)
-                	return true;
-                else
-                	return false;
+                return (bufferReader.readLine() != null);
             }
             
             InputStream inputStream = p.getInputStream();
@@ -704,7 +732,9 @@ public class Utility
             while ((line = bufferReader.readLine()) != null)
             {
                 if (line.toLowerCase().contains(processName))
+                {
                     return true;
+                }
             }
             inputStream.close();
             inputStreamReader.close();
@@ -734,15 +764,16 @@ public class Utility
         });
 
         if (filesInMountedDrive == null)
+        {
             throw new TestConfigurationException("It seems there is not mounted App on location: " + fromLocation.getPath());
+        }
 
         if (filesInMountedDrive.length > 0)
         {
             LOG.info("Found executable binary:  [{}] ", filesInMountedDrive[0].getPath());
             return filesInMountedDrive[0];
         }
-        else
-            return null;
+        return null;
     }
 
     /**
@@ -764,9 +795,8 @@ public class Utility
      * 
      * @param command
      * @return process output in String format
-     * @throws Exception
      */
-    public static String executeOnWinAndReturnOutput(String command) throws Exception
+    public static String executeOnWinAndReturnOutput(String command)
     {
         LOG.info("On Windows execute command: [{}]", command);
         StringBuilder sb = new StringBuilder();
@@ -871,7 +901,7 @@ public class Utility
         return osVersion.replaceAll(" ", "_").replaceAll("\"", "");
     }
 
-    public static boolean isWinServiceRunning(String serviceName) throws Exception
+    public static boolean isWinServiceRunning(String serviceName) throws IOException
     {
         String sys32 = System.getenv("SystemRoot") + "\\system32";
         Process process = new ProcessBuilder(Paths.get(sys32, "sc.exe").toString(), "query", serviceName).start();
@@ -901,9 +931,7 @@ public class Utility
         }
         else
         {
-            throw new Exception("Unknown Service: " + serviceName);
+            throw new RuntimeException("Unknown Service: " + serviceName);
         }
     }
-    
-   
 }
