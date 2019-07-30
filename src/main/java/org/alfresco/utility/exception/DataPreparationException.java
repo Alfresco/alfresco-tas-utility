@@ -6,6 +6,11 @@ public class DataPreparationException extends RuntimeException
 
     public DataPreparationException(String message)
     {
-        super(String.format("Errors on your test data preparation: %s", message));
+        super(String.format("Errors during test data preparation: %s", message));
+    }
+
+    public DataPreparationException(Exception e)
+    {
+        super("Errors during test data preparation", e);
     }
 }
