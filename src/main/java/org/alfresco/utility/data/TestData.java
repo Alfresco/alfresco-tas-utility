@@ -134,7 +134,7 @@ public abstract class TestData<Data> implements DSL<Data>
 
     @SuppressWarnings("unchecked")
     @Override
-    public Data usingRoot() throws Exception
+    public Data usingRoot()
     {
         setCurrentSpace("");
         return (Data) this;
@@ -160,7 +160,7 @@ public abstract class TestData<Data> implements DSL<Data>
      */
     @Override
     @SuppressWarnings("unchecked")
-    public Data usingResource(ContentModel model) throws Exception
+    public Data usingResource(ContentModel model)
     {
         if (model.getCmisLocation().equals(model.getName()))
         {
@@ -193,7 +193,7 @@ public abstract class TestData<Data> implements DSL<Data>
 
     @Override
     @SuppressWarnings("unchecked")
-    public Data usingSite(String siteId) throws Exception
+    public Data usingSite(String siteId)
     {
         setCurrentSpace(String.format(getSitesPath(), siteId));
         setCurrentSite(siteId);
@@ -204,7 +204,7 @@ public abstract class TestData<Data> implements DSL<Data>
 
     @Override
     @SuppressWarnings("unchecked")
-    public Data usingSite(SiteModel siteModel) throws Exception
+    public Data usingSite(SiteModel siteModel)
     {
         Utility.checkObjectIsInitialized(siteModel, "siteModel");
 
@@ -213,7 +213,7 @@ public abstract class TestData<Data> implements DSL<Data>
 
     @Override
     @SuppressWarnings("unchecked")
-    public Data usingUserHome(String username) throws Exception
+    public Data usingUserHome(String username)
     {
         setCurrentSpace(String.format(getUserHomesPath(), username));
         return (Data) this;
@@ -221,7 +221,7 @@ public abstract class TestData<Data> implements DSL<Data>
 
     @Override
     @SuppressWarnings("unchecked")
-    public Data usingUserHome() throws Exception
+    public Data usingUserHome()
     {
         setCurrentSpace(String.format(getUserHomesPath(), getCurrentUser().getUsername()));
         return (Data) this;
@@ -324,7 +324,7 @@ public abstract class TestData<Data> implements DSL<Data>
     }
 
     @SuppressWarnings("unchecked")
-    public Data assertLogLineIs(String logLine) throws Exception
+    public Data assertLogLineIs(String logLine)
     {
         STEP(String.format("Log API: Assert that log file contains %s", logLine));
         Assert.assertTrue(logResponse.contains(logLine), String.format("Log file doesn't contain %s. Found %s", logLine, logResponse));
@@ -390,7 +390,6 @@ public abstract class TestData<Data> implements DSL<Data>
      *
      * @return NodeId
      * @param siteId
-     * @throws Exception
      */
     private String getSiteDocLibNodeId(String siteId)
     {

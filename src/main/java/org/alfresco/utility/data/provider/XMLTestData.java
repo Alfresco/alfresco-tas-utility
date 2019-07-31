@@ -98,10 +98,8 @@ public class XMLTestData extends XMLCollection
 
     /**
      * Calling this method will create entire test data structure in your alfresco repository
-     * 
-     * @throws Exception
      */
-    public void createSitesStructure(DataSite dataSite, DataContent dataContent, DataUser dataUser) throws Exception
+    public void createSitesStructure(DataSite dataSite, DataContent dataContent, DataUser dataUser)
     {
         for (XMLSiteData site : getSites())
         {
@@ -132,9 +130,8 @@ public class XMLTestData extends XMLCollection
      * @param folderStructure
      * @param location
      * @param dataContent
-     * @throws Exception
      */
-    private void createFolderStructure(List<XMLFolderData> folderStructure, String location, DataContent dataContent) throws Exception
+    private void createFolderStructure(List<XMLFolderData> folderStructure, String location, DataContent dataContent)
     {
         // create structure in site
         for (XMLFolderData folder : folderStructure)
@@ -176,9 +173,8 @@ public class XMLTestData extends XMLCollection
      * @param filesStructure
      * @param parentFolder
      * @param dataContent
-     * @throws Exception
      */
-    private void createFilesStructure(List<XMLFileData> filesStructure, TestModel parentFolder, DataContent dataContent) throws Exception
+    private void createFilesStructure(List<XMLFileData> filesStructure, TestModel parentFolder, DataContent dataContent)
     {
         // create files
         for (XMLFileData file : filesStructure)
@@ -221,9 +217,7 @@ public class XMLTestData extends XMLCollection
 
     /**
      * Calling this method will delete entire test data structure from your alfresco repository
-     * @throws TestConfigurationException 
-     * 
-     * @throws Exception
+     * @throws TestConfigurationException
      */
     public void cleanup(DataContent dataContent) throws TestConfigurationException
     {
@@ -321,9 +315,8 @@ public class XMLTestData extends XMLCollection
      * @param membersStructure a list of users to be added as members
      * @param siteModel
      * @param dataUser
-     * @throws Exception
      */
-    private void addMembers(List<XMLUserData> membersStructure, SiteModel siteModel, DataUser dataUser) throws Exception
+    private void addMembers(List<XMLUserData> membersStructure, SiteModel siteModel, DataUser dataUser)
     {
         // add members to site
         for (XMLUserData user : membersStructure)
@@ -353,7 +346,7 @@ public class XMLTestData extends XMLCollection
     /*
      * applying all tags to created file
      */
-    private void addTags(String objectPathInCmis, List<XMLTagData> tags, DataContent dataContent) throws Exception
+    private void addTags(String objectPathInCmis, List<XMLTagData> tags, DataContent dataContent)
     {
         if (tags.size() > 0)
             LOG.info("Adding Tags Count: {} to object: {}", tags.size(), objectPathInCmis);
