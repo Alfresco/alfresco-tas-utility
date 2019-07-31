@@ -1,12 +1,13 @@
 package org.alfresco.utility.data.provider;
 
+import static org.alfresco.utility.Utility.checkObjectIsInitialized;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.datatype.DatatypeConfigurationException;
 
 import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.constants.UserRole;
@@ -405,9 +406,8 @@ public class XMLTestData extends XMLCollection
     /**
      * @param id
      * @return {@link XMLDataItem} based on the id of the object
-     * @throws DatatypeConfigurationException 
      */
-    public XMLDataItem getTestDataItemWithId(String id) throws DatatypeConfigurationException
+    public XMLDataItem getTestDataItemWithId(String id)
     {
         LOG.info("Searching for Test Data Item with id: {}", id);
         XMLDataItem dataFound = null;
@@ -424,9 +424,8 @@ public class XMLTestData extends XMLCollection
                 break;
             }
         }
-        
-        if(dataFound==null)
-            throw new DatatypeConfigurationException("It seems you don't have a Test Data with ID " + id + " in your input xml file.");
+
+        checkObjectIsInitialized(dataFound, "It seems you don't have a Test Data with ID " + id + " in your input xml file.");
         return dataFound;
     }
 }
