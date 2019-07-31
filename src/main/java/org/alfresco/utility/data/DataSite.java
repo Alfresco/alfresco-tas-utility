@@ -37,7 +37,6 @@ public class DataSite extends TestData<DataSite>
      * 
      * method for defining a new user rather than admin
      * @param siteModel
-     * @param userModel
      * @return
      * @throws DataPreparationException
      */
@@ -188,10 +187,8 @@ public class DataSite extends TestData<DataSite>
     /**
      * Create a new RM Site
      * Using {@link #assertExtensionAmpExists} we assert if the RM AMP is first applied on the test server.
-     * @throws Exception 
-     * 
      */
-    public synchronized SiteModel createRMSite(RMSiteCompliance compliance) throws Exception
+    public synchronized SiteModel createRMSite(RMSiteCompliance compliance)
     {
         String rmSiteName = "rm";
         boolean rmCreated =siteService.createRMSite(getCurrentUser().getUsername(), getCurrentUser().getPassword(), rmSiteName, "create by TAS -> createRMSite method", compliance);        

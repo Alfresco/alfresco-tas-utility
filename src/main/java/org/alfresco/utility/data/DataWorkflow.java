@@ -35,9 +35,8 @@ public class DataWorkflow extends TestData<DataWorkflow>
      * 
      * @param userModel
      * @return
-     * @throws Exception
      */
-    public TaskModel createNewTaskAndAssignTo(UserModel userModel) throws Exception
+    public TaskModel createNewTaskAndAssignTo(UserModel userModel)
     {
         return createNewTask(new TaskModel(userModel.getUsername()));
     }
@@ -50,9 +49,8 @@ public class DataWorkflow extends TestData<DataWorkflow>
      * @param userModel
      * @param processDefId id of a process definition
      * @return
-     * @throws Exception
      */
-    public TaskModel createTaskWithProcessDefAndAssignTo(String processDefId, UserModel userModel) throws Exception
+    public TaskModel createTaskWithProcessDefAndAssignTo(String processDefId, UserModel userModel)
     {
         return createTaskWithProcessDefId(new TaskModel(userModel.getUsername()), processDefId);
     }
@@ -62,9 +60,8 @@ public class DataWorkflow extends TestData<DataWorkflow>
      * 
      * @param taskModel
      * @return
-     * @throws Exception
      */
-    public TaskModel createNewTask(TaskModel taskModel) throws Exception
+    public TaskModel createNewTask(TaskModel taskModel)
     {
         STEP(String.format("DATAPREP: User %s creates new task %s and assigns it to user %s", getCurrentUser().getUsername(), taskModel.getMessage(),
                 taskModel.getAssignee()));
@@ -94,9 +91,8 @@ public class DataWorkflow extends TestData<DataWorkflow>
      * 
      * @param taskModel
      * @return
-     * @throws Exception
      */
-    public TaskModel createTaskWithProcessDefId(TaskModel taskModel, String processDefId) throws Exception
+    public TaskModel createTaskWithProcessDefId(TaskModel taskModel, String processDefId)
     {
         STEP(String.format("DATAPREP: User %s creates new task %s with and assigns it to user %s", getCurrentUser().getUsername(), taskModel.getMessage(),
                 taskModel.getAssignee()));
@@ -129,9 +125,8 @@ public class DataWorkflow extends TestData<DataWorkflow>
      * 
      * @param userModel
      * @return
-     * @throws Exception
      */
-    public TaskModel createPooledReviewTaskAndAssignTo(GroupModel groupModel) throws Exception
+    public TaskModel createPooledReviewTaskAndAssignTo(GroupModel groupModel)
     {
         TaskModel taskModel = new TaskModel(groupModel.getDisplayName());
         STEP(String.format("DATAPREP: User %s creates new task %s and assigns it to group %s", getCurrentUser().getUsername(), taskModel.getMessage(),
@@ -164,9 +159,8 @@ public class DataWorkflow extends TestData<DataWorkflow>
      * 
      * @param userModel
      * @return
-     * @throws Exception
      */
-    public ProcessModel createMoreReviewersWorkflowAndAssignTo(UserModel... users) throws Exception
+    public ProcessModel createMoreReviewersWorkflowAndAssignTo(UserModel... users)
     {
         STEP(String.format("DATAPREP: User %s creates 'One or More Reviewers' workflow/process", getCurrentUser().getUsername()));
         ProcessModel process = new ProcessModel();
@@ -205,9 +199,8 @@ public class DataWorkflow extends TestData<DataWorkflow>
      * 
      * @param userModel
      * @return
-     * @throws Exception
      */
-    public ProcessModel createGroupReviewTaskAndAssignTo(GroupModel groupModel) throws Exception
+    public ProcessModel createGroupReviewTaskAndAssignTo(GroupModel groupModel)
     {
         ProcessModel process = new ProcessModel();
         STEP(String.format("DATAPREP: User %s creates new 'group review' workflow and assigns it to group %s", getCurrentUser().getUsername(), 
@@ -234,9 +227,8 @@ public class DataWorkflow extends TestData<DataWorkflow>
      * 
      * @param userModel
      * @return
-     * @throws Exception
      */
-    public ProcessModel createSingleReviewerTaskAndAssignTo(UserModel userModel) throws Exception
+    public ProcessModel createSingleReviewerTaskAndAssignTo(UserModel userModel)
     {
         ProcessModel process = new ProcessModel();
         STEP(String.format("DATAPREP: User %s creates new 'single reviewer' workflow and assigns it to user %s", getCurrentUser().getUsername(), 
