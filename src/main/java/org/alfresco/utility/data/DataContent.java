@@ -741,7 +741,7 @@ public class DataContent extends TestData<DataContent>
      * @return The stream.
      * @throws IORuntimeException if there is an issue creating the stream.
      */
-    public ContentStream getContentStream(String fileName, String content) throws IORuntimeException
+    public ContentStream getContentStream(String fileName, String content)
     {
         if (content == null)
         {
@@ -786,7 +786,7 @@ public class DataContent extends TestData<DataContent>
      *            Example: objectTypeID = "D:cmis:document"
      * @throws IORuntimeException if there is an issue creating the content.
      */
-    public ContentModel createCustomContent(ContentModel contentModel, String objectTypeID, CustomObjectTypeProperties objectTypeProperty) throws IORuntimeException
+    public ContentModel createCustomContent(ContentModel contentModel, String objectTypeID, CustomObjectTypeProperties objectTypeProperty)
     {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put(PropertyIds.OBJECT_TYPE_ID, objectTypeID);
