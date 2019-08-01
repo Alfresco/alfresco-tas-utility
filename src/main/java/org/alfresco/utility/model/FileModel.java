@@ -1,9 +1,11 @@
 package org.alfresco.utility.model;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.alfresco.utility.Utility;
 import org.alfresco.utility.data.RandomData;
+import org.alfresco.utility.exception.IORuntimeException;
 import org.testng.reporters.Files;
 
 public class FileModel extends ContentModel
@@ -106,15 +108,22 @@ public class FileModel extends ContentModel
      * This will generate a new FileModel having one existing file from src/main/resources/shared-data location
      * @param resourceDataFile
      * @return
-     * @throws Exception
+     * @throws IORuntimeException if the file cannot be read.
      */
-    public static FileModel getFileModelBasedOnTestDataFile(String resourceDataFile) throws Exception
+    public static FileModel getFileModelBasedOnTestDataFile(String resourceDataFile)
     {
         File tmp = Utility.getResourceTestDataFile(resourceDataFile);        
         FileModel testFile = new FileModel(tmp.getPath(), FileType.fromName(tmp.getName()));
         testFile.setCmisLocation(tmp.getName());
-        String content = Files.readFile(tmp).replace("\n", "");
-        testFile.setContent(content);
+        try
+        {
+            String content = Files.readFile(tmp).replace("\n", "");
+            testFile.setContent(content);
+        }
+        catch (IOException e)
+        {
+            throw new IORuntimeException(e);
+        }
 
         return testFile;
     }
@@ -142,7 +151,7 @@ public class FileModel extends ContentModel
      *
      * e.g.: getFileModelWithContentSizeOfxMB(1) will return a FileModel with a content of 1 MB
      */
-    public static FileModel getFileModelWithContentSizeOfxMB(int size) throws Exception
+    public static FileModel getFileModelWithContentSizeOfxMB(int size)
     {
         FileModel contentModel = new FileModel(RandomData.getRandomName("file"));
         contentModel.setContent(new String(new char[1024 * 1024 * size]));

@@ -25,7 +25,7 @@ public class ContentModel extends RepoTestModel
         setCmisLocation(name);
     }
 
-    public ContentModel rename(String newName) throws Exception
+    public ContentModel rename(String newName)
     {
         setName(newName);       
         setCmisLocation(Paths.get(Paths.get(getCmisLocation()).getParent().toString(), newName).toString());
