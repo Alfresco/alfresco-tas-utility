@@ -353,15 +353,17 @@ public class DataContent extends TestData<DataContent>
         body.put("nodeType", "cm:content");
 
         // Set Title or Description if specified
+        JSONObject properties = new JSONObject();
         if (fileModel.getTitle() != null)
         {
-            body.put("cm:title", fileModel.getTitle());
+            properties.put("cm:title", fileModel.getTitle());
         }
-
         if (fileModel.getDescription() != null)
         {
-            body.put("cm:description", fileModel.getDescription());
+            properties.put("cm:description", fileModel.getDescription());
         }
+        body.put("properties", properties);
+
         post.setEntity(client.setMessageBody(body));
 
         // Send Request
