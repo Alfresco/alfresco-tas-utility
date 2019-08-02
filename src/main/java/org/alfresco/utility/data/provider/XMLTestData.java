@@ -156,7 +156,8 @@ public class XMLTestData extends XMLCollection
             else // create a basic folder model using standard CMIS object type id
             {
 
-                folderInRepo = dataContent.usingUser(userFolder).setCurrentSpace(location).createFolder(folder.getModel());
+                // Note that folders may be created in the wrong location if using the v1 REST API as we are not setting LastNodeId.
+                folderInRepo = dataContent.usingUser(userFolder).setCurrentSpace(location).createFolder(folder.getModel(), false);
             }
 
             addAspects(folder, folder.getAspects(), dataContent);
@@ -265,7 +266,7 @@ public class XMLTestData extends XMLCollection
         }
         catch (Exception e)
         {
-            LOG.error("Could not delete custom model file: {}", e);
+            LOG.error("Ignoring failure to delete custom model file.", e);
         }
         LOG.info("CLEANUP finished!");
     }
