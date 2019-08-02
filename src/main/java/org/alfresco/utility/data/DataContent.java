@@ -88,10 +88,10 @@ public class DataContent extends TestData<DataContent>
 
     @Autowired
     private SiteService siteService;
-    
+
     @Autowired
     private UserService userService;
-    
+
     private FileModel customModel;
 
     public ContentActions getContentActions()
@@ -291,7 +291,7 @@ public class DataContent extends TestData<DataContent>
      * <code>
      *        dataContent.usingUser(adminUser).usingSite(siteModel).usingResource(repoFolder).renameContent(newRepoFolder);
      * </code>
-     * 
+     *
      * @param newContent
      */
     public void renameContent(ContentModel newContent)
@@ -306,7 +306,7 @@ public class DataContent extends TestData<DataContent>
      * <code>
      *  dataContent.usingSite(testSite).usingResource(testFolder).addEmailAlias("aliasTas");
      * </code>
-     * 
+     *
      * @param alias
      * @return
      */
@@ -392,10 +392,14 @@ public class DataContent extends TestData<DataContent>
 
             fileModel.setNodeRef(entryValueMap.get("id").toString());
             fileModel.setName(entryValueMap.get("name").toString());
-            FileType extension = FileType.fromName(fileModel.getName());
-            if (extension != FileType.UNDEFINED)
+            // Try to determine the file type automatically if it is not provided.
+            if (fileModel.getFileType() == null)
             {
-                fileModel.setFileType(extension);
+                FileType extension = FileType.fromName(fileModel.getName());
+                if (extension != FileType.UNDEFINED)
+                {
+                    fileModel.setFileType(extension);
+                }
             }
             String fileLocation = Utility.buildPath(getLastResource(), fileModel.getName());
             fileModel.setCmisLocation(fileLocation);
@@ -629,7 +633,7 @@ public class DataContent extends TestData<DataContent>
 
     /**
      * Wait and retry for 15 seconds checking if a resource is created
-     * 
+     *
      * @param fullPath
      */
     public void waitUntilContentIsCreated(String fullPath)
@@ -647,7 +651,7 @@ public class DataContent extends TestData<DataContent>
 
     /**
      * Wait and retry for 15 seconds checking if a resource is created for Linux OS
-     * 
+     *
      * @param fullPath
      */
     public void waitUntilContentIsCreatedInLinux(String fullPath)
@@ -660,7 +664,7 @@ public class DataContent extends TestData<DataContent>
 
     /**
      * Delete a site
-     * 
+     *
      * @param site
      */
     @SuppressWarnings("deprecation")
@@ -675,7 +679,7 @@ public class DataContent extends TestData<DataContent>
 
     /**
      * Delete parent folder along with all children in it
-     * 
+     *
      * @param from
      */
     public void deleteTree(FolderModel from)
@@ -687,7 +691,7 @@ public class DataContent extends TestData<DataContent>
     /**
      * Deploy a custom content model to repository
      * http://docs.alfresco.com/5.1/tasks/deploy-dynamic.html
-     * 
+     *
      * @param localModelXMLFilePath
      * @throws TestConfigurationException
      */
@@ -729,19 +733,19 @@ public class DataContent extends TestData<DataContent>
             modelInRepo = model.createDocument(props, contentStream, VersioningState.MAJOR);
             LOG.info("Custom Content Model [{}] is now deployed under [/Data Dictionary/Models/] location", localModelXMLFilePath);
         }
-        
+
         this.customModel = new FileModel(modelInRepo.getName());
         this.customModel.setNodeRef(modelInRepo.getId());
         this.customModel.setNodeRef( this.customModel.getNodeRefWithoutVersion());
         this.customModel.setCmisLocation(String.format("/Data Dictionary/Models/%s", file.getName()));
         LOG.info("Custom Model file: " + this.customModel.getCmisLocation());
     }
-    
+
     public void deployContentModel(String localModelXMLFilePath) throws TestConfigurationException
-    { 
+    {
         setCustomModel(localModelXMLFilePath);
     }
-    
+
     /**
      * Returns customModel file is one exists or is deployed using deployContentModel
      * otherwise null
@@ -856,7 +860,7 @@ public class DataContent extends TestData<DataContent>
     /**
      * Creates a tag for a content file
      * You must use this in correlation with {@link DataContent#usingResource(ContentModel)}
-     * 
+     *
      * @param fileModel
      * @param model tag model
      * @throws TestConfigurationException
@@ -872,7 +876,7 @@ public class DataContent extends TestData<DataContent>
 
     /**
      * Verify content has tag
-     * 
+     *
      * @param cmisObjectPath
      * @param model
      */
@@ -903,7 +907,7 @@ public class DataContent extends TestData<DataContent>
 
     /**
      * Get the corresponding CMIS Document Object of a file using only the file path
-     * 
+     *
      * @param filePath
      * @return {@link Document}
      */
@@ -914,7 +918,7 @@ public class DataContent extends TestData<DataContent>
 
     /**
      * Get the corresponding CMIS Folder Object of a file using only the file path
-     * 
+     *
      * @param filePath
      * @return {@link Folder}
      */
@@ -925,7 +929,7 @@ public class DataContent extends TestData<DataContent>
 
     /**
      * Adding aspects to ContentModels
-     * 
+     *
      * @param object
      */
     public void addAspect(List<XMLAspectData> aspects)
@@ -974,7 +978,7 @@ public class DataContent extends TestData<DataContent>
 
     /**
      * Asserting the version of the content
-     * 
+     *
      * @param version
      */
     public void assertContentVersionIs(String version)
@@ -983,10 +987,10 @@ public class DataContent extends TestData<DataContent>
         String currentVersion = getCMISDocument(getLastResource()).getVersionLabel();
         Assert.assertEquals(currentVersion, version);
     }
-    
+
     /**
      * Asserting the size of the content
-     * 
+     *
      * @param sizeInBytes size in bytes
      */
     public void assertContentSizeIs(long sizeInBytes)
@@ -1014,7 +1018,7 @@ public class DataContent extends TestData<DataContent>
         STEP(String.format("DATAPREP: Cancel check out on document %s", getLastResource()));
         contentActions.cancelCheckOut(getSession(), getLastResource());
     }
-    
+
     /**
      * Update document content
      * @param newContent
@@ -1025,10 +1029,10 @@ public class DataContent extends TestData<DataContent>
         STEP(String.format("DATAPREP: Update content for document from %s", path));
         contentService.updateDocumentContent(getCurrentUser().getUsername(), getCurrentUser().getPassword(), path, newContent);
     }
-    
+
     /**
      * Check in document.
-     * 
+     *
      * @param newContent
      * @param majorVersion true to set major version(e.g. 2.0)
      * @param checkInComment
@@ -1039,7 +1043,7 @@ public class DataContent extends TestData<DataContent>
         STEP(String.format("DATAPREP: Check in document %s", docName));
         contentActions.checkIn(getSession(), getLastResource(), newContent, majorVersion, checkInComment);
     }
-    
+
     public void setInheritPermissions(boolean inheritPermissions)
     {
         String contentPath = getLastResource();
