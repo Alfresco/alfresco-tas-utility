@@ -134,11 +134,27 @@ public class DataContent extends TestData<DataContent>
     }
 
     /**
-     * This is the entry point of the createFolder() method to make REST API or CMIS call
+     * This is the entry point of the createFolder() method to make REST API or CMIS call.
+     *
+     * If the Alfresco version is at least 5.2 then the v1 REST API will be used.
      */
-    public FolderModel createFolder(FolderModel folderModel){
+    public FolderModel createFolder(FolderModel folderModel)
+    {
         AlfrescoHttpClient client = alfrescoHttpClientFactory.getObject();
-        if(client.getAlfVersion() >= 5.2)
+        return createFolder(folderModel, (client.getAlfVersion() >= 5.2));
+    }
+
+    /**
+     * Create a folder.
+     *
+     * @param folderModel The folder to create.
+     * @param useV1API If true then the v1 REST API will be used, otherwise CMIS will be used.
+     * @return The folder.
+     */
+    public FolderModel createFolder(FolderModel folderModel, boolean useV1API)
+    {
+        AlfrescoHttpClient client = alfrescoHttpClientFactory.getObject();
+        if (useV1API)
         {
             return createFolderV1Api(client, folderModel, getCurrentUser().getUsername(), getCurrentUser().getPassword());
         }
