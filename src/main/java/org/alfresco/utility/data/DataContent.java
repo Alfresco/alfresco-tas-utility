@@ -392,15 +392,6 @@ public class DataContent extends TestData<DataContent>
 
             fileModel.setNodeRef(entryValueMap.get("id").toString());
             fileModel.setName(entryValueMap.get("name").toString());
-            // Try to determine the file type automatically if it is not provided.
-            if (fileModel.getFileType() == null)
-            {
-                FileType extension = FileType.fromName(fileModel.getName());
-                if (extension != FileType.UNDEFINED)
-                {
-                    fileModel.setFileType(extension);
-                }
-            }
             String fileLocation = Utility.buildPath(getLastResource(), fileModel.getName());
             fileModel.setCmisLocation(fileLocation);
             fileModel.setProtocolLocation(fileLocation);
@@ -425,7 +416,8 @@ public class DataContent extends TestData<DataContent>
      */
     public void updateContent(AlfrescoHttpClient client, FileModel fileModel)
     {
-        updateContent(client, fileModel, null);
+        DocumentType documentType = fileModel.getFileType().getDocumentType();
+        updateContent(client, fileModel, documentType);
     }
 
     /**

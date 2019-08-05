@@ -1,8 +1,11 @@
 package org.alfresco.utility.model;
 
-import org.alfresco.utility.data.DataValue;
+import java.util.stream.Stream;
 
 import com.google.common.io.Files;
+
+import org.alfresco.dataprep.CMISUtil.DocumentType;
+import org.alfresco.utility.data.DataValue;
 
 public enum FileType
 {
@@ -30,14 +33,33 @@ public enum FileType
 
     public static FileType fromName(String fileName)
     {
-        String extention = Files.getFileExtension(fileName);
+        String extension = Files.getFileExtension(fileName);
 
         for (FileType ft : FileType.values())
         {
-            if (ft.extension.equals(extention))
+            if (ft.extension.equals(extension))
                 return ft;
         }
 
         return FileType.UNDEFINED;
+    }
+
+    /**
+     * Try to find a DataPrep {@link DocumentType} that is equivalent to this FileType value.
+     *
+     * @return The DocumentType, or null if no equivalent type could be found.
+     */
+    public DocumentType getDocumentType()
+    {
+        // Try to find a DocumentType with a matching MIME type.
+        return Stream.of(DocumentType.values())
+                     .filter(documentType -> documentType.type.equals(this.mimeType))
+                     .findFirst()
+                     // If that fails then try to match the extension.
+                     .orElse(Stream.of(DocumentType.values())
+                                   .filter(documentType -> documentType.extention.equals(this.extension))
+                                   .findFirst()
+                                   // If that fails then return null.
+                                   .orElse(null));
     }
 }
