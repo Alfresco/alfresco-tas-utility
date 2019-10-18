@@ -480,7 +480,8 @@ public class DataContent extends TestData<DataContent>
 
         if(client.getAlfVersion() >= 5.2)
         {
-            FileModel fileModel = new FileModel(RandomData.getRandomName("file"));
+            String fileName = RandomData.getRandomName("file");
+            FileModel fileModel = new FileModel(fileName, FileType.fromName(fileName + "." + documentType.extention));
             FileModel createFile = createContentDocTypeV1Api(client, fileModel, documentType);
             updateContent(client, createFile, documentType);
             return createFile;
