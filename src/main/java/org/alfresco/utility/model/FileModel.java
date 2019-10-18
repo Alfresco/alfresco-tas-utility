@@ -153,7 +153,7 @@ public class FileModel extends ContentModel
      */
     public static FileModel getFileModelWithContentSizeOfxMB(int size)
     {
-        FileModel contentModel = new FileModel(RandomData.getRandomName("file"));
+        FileModel contentModel = new FileModel(RandomData.getRandomName("file"), FileType.TEXT_PLAIN);
         contentModel.setContent(new String(new char[1024 * 1024 * size]));
         return contentModel;
     }
