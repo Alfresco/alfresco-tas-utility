@@ -32,12 +32,18 @@ public class Step
 
         for (StackTraceElement stack : stackTrace)
         {
-
-            Class<?> newClass = null;
-            String methodNameKey = null;
+            Class<?> newClass;
             try
             {
                 newClass = Class.forName(stack.getClassName());
+            }
+            catch (ClassNotFoundException | NoClassDefFoundError cl)
+            {
+                continue;
+            }
+            String methodNameKey = null;
+            try
+            {
                 if ((newClass.toString().endsWith("Test") || newClass.toString().endsWith("Tests")) && (newClass.toString().contains("org.alfresco")))
                 {
                     Method method  = null;
