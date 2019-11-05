@@ -143,7 +143,13 @@ public @interface TestGroup
      * Mark tests that require a certain module
      */
     public static String REQUIRE_SHARE = "require-share";
+    /**
+     * The tests are now using {@link #RENDITIONS}
+     */
+    @Deprecated
     public static String REQUIRE_TRANSFORMATION = "require-transformation";
+    // mark transformation/rendition tests that are not (yet) supported by Transform Service
+    public static String NOT_SUPPORTED_BY_ATS = "not-supported-by-ats";
     public static String REQUIRE_JMX = "require-jmx";
     public static String REQUIRE_SOLR = "require-solr";
 
@@ -151,5 +157,9 @@ public @interface TestGroup
     public static String REQUIRES_AMP = "requires=amp";
 
     //Marks the test as renditions regression test, these tests run in their own separate test suit
+    /**
+     * The tests are now using {@link #RENDITIONS}
+     */
+    @Deprecated
     public static String RENDITIONS_REGRESSION = "renditions-regression";
 }
