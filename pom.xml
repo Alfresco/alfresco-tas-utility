@@ -31,7 +31,7 @@
 		<maven-remote-resources.version>1.5</maven-remote-resources.version>
 		<extentreports.version>2.41.2</extentreports.version>
 		<google.guava.version>23.0</google.guava.version>
-		<jackson-databind.version>2.9.8</jackson-databind.version>
+		<jackson-databind.version>2.9.10.1</jackson-databind.version>
 		<org.jvnet.version>0.6.5</org.jvnet.version>
 		<javax.mail.version>1.6.2</javax.mail.version>
 		<seleniumjava.version>3.7.1</seleniumjava.version>
