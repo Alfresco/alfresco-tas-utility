@@ -28,7 +28,7 @@
 		<dataPrep.version>2.3</dataPrep.version>
 		<slf4j.version>1.7.2</slf4j.version>
 		<maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
-		<maven-remote-resources.version>1.5</maven-remote-resources.version>
+		<maven-remote-resources.version>1.6.0</maven-remote-resources.version>
 		<extentreports.version>2.41.2</extentreports.version>
 		<google.guava.version>23.0</google.guava.version>
 		<jackson-databind.version>2.9.8</jackson-databind.version>
