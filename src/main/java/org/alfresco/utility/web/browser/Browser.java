@@ -100,7 +100,7 @@ public enum Browser
                     env.put("DISPLAY", Xport);
                     FirefoxOptions options1 = setFirefoxOptions(properties);
                     options1.setBinary(firefoxBinary);
-                    return new FirefoxDriver(new GeckoDriverService.Builder().withEnvironment(env).build());
+                    return new FirefoxDriver(new GeckoDriverService.Builder().withEnvironment(env).build(), options1);
                 }
                 else
                 {
