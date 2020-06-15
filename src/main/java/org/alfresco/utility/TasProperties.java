@@ -735,8 +735,11 @@ public class TasProperties
         return String.format("%s://%s", getSolrScheme(), getSolrServer());
     }
     
-    public String getDisplayXport() {
+    /**
+     * @return displayXport
+     */
+    public String getDisplayXport() 
+    {
 		return displayXport;
 	}
-    
 }
