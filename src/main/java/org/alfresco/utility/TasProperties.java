@@ -179,8 +179,12 @@ public class TasProperties
 
     @Value("${solr.port:8983}")
     private int solrPort;
+    
+    @Value("${display.xport:1}")
+    private String displayXport;
 
-    public Boolean showTenantsOnServerHealth()
+    
+	public Boolean showTenantsOnServerHealth()
     {
         return showTenantsOnServerHealth;
     }
@@ -730,4 +734,12 @@ public class TasProperties
     {
         return String.format("%s://%s", getSolrScheme(), getSolrServer());
     }
+    
+    public String getDisplayXport() {
+		return displayXport;
+	}
+
+	public void setDisplayXport(String displayXport) {
+		this.displayXport = displayXport;
+	}
 }
