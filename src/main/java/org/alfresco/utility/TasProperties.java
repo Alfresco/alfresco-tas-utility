@@ -738,8 +738,5 @@ public class TasProperties
     public String getDisplayXport() {
 		return displayXport;
 	}
-
-	public void setDisplayXport(String displayXport) {
-		this.displayXport = displayXport;
-	}
+    
 }
