@@ -93,11 +93,10 @@ public enum Browser
                 setFirefoxDriver();
                 if (SystemUtils.IS_OS_LINUX)
                 {
-                    String Xport = System.getProperty("lmportal.xvfb.id", ":1");
                     FirefoxBinary firefoxBinary = new FirefoxBinary();
                     firefoxBinary.addCommandLineOptions("-headless");
                     Map<String, String> env = new HashMap<String, String>();
-                    env.put("DISPLAY", Xport);
+                    env.put("DISPLAY", ":" + properties.getDisplayXport());
                     FirefoxOptions options1 = setFirefoxOptions(properties);
                     options1.setBinary(firefoxBinary);
                     return new FirefoxDriver(new GeckoDriverService.Builder().withEnvironment(env).build());
@@ -182,4 +181,6 @@ public enum Browser
         }
         return properties.getBrowserLanguage();
     }
+    
+   
 }
