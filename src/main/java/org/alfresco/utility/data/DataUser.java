@@ -72,9 +72,10 @@ public class DataUser extends TestData<DataUser>
         UserModel newUser = new UserModel(userName, password);
         STEP(String.format("DATAPREP: Creating %s user", newUser.getUsername()));
         LOG.info("Create user {}", newUser.toString());
-
-        Boolean created = userService.create(getAdminUser().getUsername(), getAdminUser().getPassword(), userName, password, String.format(EMAIL, userName),
-                String.format("%s FirstName", userName), String.format("LN-%s", userName));
+        newUser.setFirstName(String.format("FN-%s", userName));
+        newUser.setLastName(String.format("LN-%s", userName));
+        Boolean created = userService.create(getAdminUser().getUsername(), getAdminUser().getPassword(), userName, password,
+                String.format(EMAIL, userName), newUser.getFirstName(), newUser.getLastName());
         if (!created)
             throw new DataPreparationException(String.format(USER_NOT_CREATED, newUser.toString()));
 
@@ -277,7 +278,7 @@ public class DataUser extends TestData<DataUser>
     /**
      * Verify if content exists in trash can
      *
-     * @param content {@link ContentModel} content to verify
+     * @param contents {@link ContentModel} content to verify
      */
     public void assertTrashCanHasContent(ContentModel... contents)
     {
@@ -295,7 +296,7 @@ public class DataUser extends TestData<DataUser>
     /**
      * Verify that content does not exist in trash can
      *
-     * @param content {@link ContentModel} content to verify
+     * @param contents {@link ContentModel} content to verify
      */
     public void assertTrashCanDoesNotHaveContent(ContentModel... contents)
     {

@@ -1,6 +1,7 @@
 package org.alfresco.utility.web.browser;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.events.WebDriverEventListener;
@@ -84,6 +85,18 @@ public class EventWebBrowserListener implements WebDriverEventListener
     }
 
     @Override
+    public void beforeSwitchToWindow(String s, WebDriver webDriver)
+    {
+
+    }
+
+    @Override
+    public void afterSwitchToWindow(String s, WebDriver webDriver)
+    {
+
+    }
+
+    @Override
     public void beforeClickOn(WebElement arg0, WebDriver arg1)
     {
         LOG.debug("Trying to click '{}'", getElementName(arg0));
@@ -119,6 +132,28 @@ public class EventWebBrowserListener implements WebDriverEventListener
     public void onException(Throwable arg0, WebDriver arg1)
     {
         LOG.error(arg0.getClass().getName(), arg0);
+    }
+
+    @Override
+    public <X> void beforeGetScreenshotAs(OutputType<X> outputType)
+    {
+
+    }
+
+    @Override
+    public <X> void afterGetScreenshotAs(OutputType<X> outputType, X x)
+    {
+
+    }
+
+    @Override
+    public void beforeGetText(WebElement webElement, WebDriver webDriver) {
+
+    }
+
+    @Override
+    public void afterGetText(WebElement webElement, WebDriver webDriver, String s) {
+
     }
 
     private String getElementName(WebElement arg0)

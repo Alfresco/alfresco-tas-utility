@@ -64,7 +64,7 @@ public class WebBrowser extends EventFiringWebDriver
     }
 
     /**
-     * This is working in combination with {@link #authenticateSession(String, String)}
+     * This is working in combination with {@link #authenticatedSession(HttpState)}
      */
     public void cleanUpAuthenticatedSession()
     {
@@ -261,7 +261,7 @@ public class WebBrowser extends EventFiringWebDriver
     /**
      * Helper method to find and return a slow loading collection of {@link WebElement}.
      * 
-     * @param criteria {@link By} search criteria
+     * @param locator {@link By} search criteria
      * @return Collection of {@link WebElement} HTML elements
      */
     public List<WebElement> waitUntilElementsVisible(By locator)
