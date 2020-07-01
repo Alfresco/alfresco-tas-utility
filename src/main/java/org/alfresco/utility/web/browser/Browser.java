@@ -94,7 +94,7 @@ public enum Browser
                 if (SystemUtils.IS_OS_LINUX)
                 {
                     FirefoxBinary firefoxBinary = new FirefoxBinary();
-                    firefoxBinary.addCommandLineOptions("-headless");
+                    firefoxBinary.addCommandLineOptions("--headless");
                     Map<String, String> env = new HashMap<String, String>();
                     env.put("DISPLAY", ":" + properties.getDisplayXport());
                     FirefoxOptions options1 = setFirefoxOptions(properties);

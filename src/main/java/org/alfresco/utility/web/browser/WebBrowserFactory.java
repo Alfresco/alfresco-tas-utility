@@ -3,6 +3,7 @@ package org.alfresco.utility.web.browser;
 import java.net.MalformedURLException;
 
 import org.alfresco.utility.TasProperties;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.slf4j.Logger;
@@ -78,7 +79,10 @@ public class WebBrowserFactory implements FactoryBean<WebBrowser>
         DesiredCapabilities caps = new DesiredCapabilities(Browser.getBrowserFromProperties(properties).getCapabilities());
         caps.setCapability("version", properties.getBrowserVersion());
         caps.setCapability("platform", properties.getEnvPlatformName());
-
+        if(properties.getBrowserName().toLowerCase().equals("firefox"))
+        {
+            caps.setCapability(FirefoxOptions.FIREFOX_OPTIONS, Browser.setFirefoxOptions(properties));
+        }
         RemoteWebDriver remoteWebDriver = new RemoteWebDriver(properties.getGridUrl(), caps);
         return remoteWebDriver;
     }
