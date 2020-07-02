@@ -494,6 +494,29 @@ public class WebBrowser extends EventFiringWebDriver
     }
 
     /**
+     * Wait until the invisibility of given Element for given seconds.
+     *
+     * @param locator {@link By} Locator
+     * @param timeOutInSeconds timeout In Seconds
+     */
+    public void waitUntilElementDisappears(WebElement locator, long timeOutInSeconds)
+    {
+        Parameter.checkIsMandotary("Locator", locator);
+        WebDriverWait wait = new WebDriverWait(this, timeOutInSeconds);
+        wait.until(ExpectedConditions.invisibilityOf(locator));
+    }
+
+    /**
+     * Wait until the invisibility of given Element for given seconds.
+     *
+     * @param locator CSS Locator
+     */
+    public void waitUntilElementDisappears(WebElement locator)
+    {
+        waitUntilElementDisappears(locator, properties.getExplicitWait());
+    }
+
+    /**
      * Returns true if the element is displayed else false.
      * 
      * @param locator
