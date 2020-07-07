@@ -27,6 +27,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
 /**
  * A wrapper around an arbitrary WebDriver instance which supports registering
@@ -302,13 +303,57 @@ public class WebBrowser extends EventFiringWebDriver
      */
     public void waitUntilElementIsDisplayedWithRetry(By locator, int secondsToWait)
     {
+        waitUntilElementIsDisplayedWithRetry(locator, secondsToWait, 3);
+    }
+
+    /**
+     * Wait the element is displayed by refreshing the page
+     *
+     * @param locator {@link By} query
+     * @param secondsToWait
+     * @param retryTimes
+     */
+    public void waitUntilElementIsDisplayedWithRetry(By locator, int secondsToWait, int retryTimes)
+    {
         Parameter.checkIsMandotary("Locator", locator);
+        int counter = 1;
+        while (counter <= retryTimes)
+        {
+            if (isElementDisplayed(locator))
+            {
+                break;
+            }
+            else
+            {
+                LOG.info(String.format("Wait for element %s seconds after refresh: %s", secondsToWait, counter));
+                refresh();
+                waitInSeconds(secondsToWait);
+                counter++;
+            }
+        }
+    }
+
+    public WebElement waitWithRetryAndReturnWebElement(By locator, int secondsToWait, int retryTimes)
+    {
+        waitUntilElementIsDisplayedWithRetry(locator, secondsToWait, retryTimes );
+        return findElement(locator);
+    }
+
+    /**
+     * Wait the element is displayed by refreshing the page
+     *
+     * @param webElement {@link WebElement} query
+     * @param secondsToWait
+     */
+    public void waitUntilElementIsDisplayedWithRetry(WebElement webElement, int secondsToWait)
+    {
+        Parameter.checkIsMandotary("WebElement", webElement);
         int counter = 1;
         int retryRefreshCount = 3;
 
         while (counter <= retryRefreshCount)
         {
-            if (isElementDisplayed(locator))
+            if (isElementDisplayed(webElement))
             {
                 break;
             }
