@@ -33,6 +33,7 @@ public @interface TestGroup
     public static String PEOPLE = "people";
     public static String RATINGS = "ratings";
     public static String SITES = "sites";
+    public static String SITE_MEMBERS = "site-members";
     public static String SHAREDLINKS = "shared-links";
     public static String SYNC_API = "sync-api";
     public static String TAGS = "tags";
@@ -102,9 +103,12 @@ public @interface TestGroup
     public static String SITES_FEATURES = "sites-features";
     public static String ADMIN_TOOLS = "admin-tools";
     public static String USER_DASHBOARD = "user-dashboard";
+    public static String SITE_DASHBOARD = "site-dashboard";
     public static String GOOGLE_DOCS = "google-docs";
     public static String USER = "user";
     public static String MANAGE_INVITES = "manage-invites";
+    public static String USER_ROLES = "user-roles";
+
 
     /*
      * Used in Admin Console
