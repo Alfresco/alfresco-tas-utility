@@ -19,8 +19,12 @@ import org.springframework.stereotype.Service;
 @Scope(value = "prototype")
 public class DataGroup extends TestData<DataGroup>
 {
-    @Autowired
-    private GroupService groupService;
+    private final GroupService groupService;
+
+    public DataGroup(GroupService groupService)
+    {
+        this.groupService = groupService;
+    }
 
     /**
      * Creates a new random group.
@@ -31,11 +35,8 @@ public class DataGroup extends TestData<DataGroup>
     {
         String groupName = RandomData.getRandomName("Group");
         STEP(String.format("DATAPREP: Creating group %s with admin", groupName));
-
         GroupModel groupModel = new GroupModel(groupName);
-
         groupModel = createGroup(groupModel);
-
         return groupModel;
     }
 
@@ -48,7 +49,6 @@ public class DataGroup extends TestData<DataGroup>
     {
         STEP(String.format("DATAPREP: Creating group %s with admin", groupModel.getDisplayName()));
         groupService.createGroup(getAdminUser().getUsername(), getAdminUser().getPassword(), groupModel.getDisplayName());
-
         return groupModel;
     }
 
@@ -62,10 +62,18 @@ public class DataGroup extends TestData<DataGroup>
     public GroupModel addUserToGroup(GroupModel groupModel)
     {
         STEP(String.format("DATAPREP: Add user %s to group %s", getCurrentUser().getUsername(), groupModel.getDisplayName()));
-
         groupService.addUserToGroup(getAdminUser().getUsername(), getAdminUser().getPassword(), groupModel.getDisplayName(), getCurrentUser().getUsername());
-
         return groupModel;
+    }
+
+    public void addGroupToParentGroup(GroupModel parentGroup, GroupModel... groupsToAdd)
+    {
+        for(GroupModel groupModel : groupsToAdd)
+        {
+            STEP(String.format("DATAPREP: Add group %s to group %s", groupModel.getDisplayName(), parentGroup.getDisplayName()));
+            groupService.addSubGroup(getAdminUser().getUsername(), getAdminUser().getPassword(),
+                parentGroup.getGroupIdentifier(), groupModel.getGroupIdentifier());
+        }
     }
 
     /**
@@ -82,7 +90,6 @@ public class DataGroup extends TestData<DataGroup>
             STEP(String.format("DATAPREP: Add user %s to group %s", getCurrentUser().getUsername(), groupModel.getDisplayName()));
             usingUser(userModel).addUserToGroup(groupModel);
         }
-
         return groupModel;
     }
 
@@ -90,16 +97,12 @@ public class DataGroup extends TestData<DataGroup>
      * Delete group
      * 
      * @param groupModel GroupModel group to delete
-     * @throws DataPreparationException
      */
     public void deleteGroup(GroupModel groupModel) throws DataPreparationException
     {
         STEP(String.format("DATAPREP: Deleting %s group", groupModel.getGroupIdentifier()));
-        boolean deleted = groupService.removeGroup(getAdminUser().getUsername(), getAdminUser().getPassword(), groupModel.getGroupIdentifier());
-        if (!deleted)
-        {
-            throw new DataPreparationException(String.format("Failed to delete group '%s'.", groupModel.getGroupIdentifier()));
-        }
+        groupService.removeGroup(getAdminUser().getUsername(), getAdminUser().getPassword(), groupModel.getGroupIdentifier());
+
     }
 
     /**
@@ -109,12 +112,7 @@ public class DataGroup extends TestData<DataGroup>
     public void removeUserFromGroup(GroupModel groupModel, UserModel userToRemove) throws DataPreparationException
     {
         STEP(String.format("DATAPREP: Remove user %s from group %s", userToRemove.getUsername(), groupModel.getGroupIdentifier()));
-        boolean removed = groupService.removeUserFromGroup(getAdminUser().getUsername(), getAdminUser().getPassword(), groupModel.getGroupIdentifier(),
-                userToRemove.getUsername());
-        if (!removed)
-        {
-            throw new DataPreparationException(
-                    String.format("Failed to remove %s from '%s' group.", userToRemove.getUsername(), groupModel.getGroupIdentifier()));
-        }
+        groupService.removeUserFromGroup(getAdminUser().getUsername(), getAdminUser().getPassword(), groupModel.getGroupIdentifier(),
+            userToRemove.getUsername());
     }
 }
