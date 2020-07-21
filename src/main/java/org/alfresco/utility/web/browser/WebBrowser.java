@@ -3,6 +3,7 @@ package org.alfresco.utility.web.browser;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.alfresco.utility.TasProperties;
 import org.alfresco.utility.exception.PageOperationException;
@@ -1204,5 +1205,16 @@ public class WebBrowser extends EventFiringWebDriver
         Parameter.checkIsMandotary("Element", element);
         WebDriverWait wait = new WebDriverWait(this, properties.getExplicitWait());
         wait.until(ExpectedConditions.not(ExpectedConditions.textToBePresentInElement(element, text)));
+    }
+
+    public List<String> getTextFromLocatorList(By elementsList)
+    {
+        List<WebElement> elements = waitUntilElementsVisible(elementsList);
+        return elements.stream().map(WebElement::getText).collect(Collectors.toList());
+    }
+
+    public List<String> getTextFromElementList(List<WebElement> elementsList)
+    {
+        return elementsList.stream().map(WebElement::getText).collect(Collectors.toList());
     }
 }
