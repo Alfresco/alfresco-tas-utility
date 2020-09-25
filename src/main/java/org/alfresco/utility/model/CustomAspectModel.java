@@ -17,7 +17,7 @@ public class CustomAspectModel extends TestModel
     @JsonProperty
     private String title;
     
-    @JsonProperty(required = true)
+    @JsonProperty
     private List<CustomAspectPropertiesModel> properties;
     
     public CustomAspectModel()
