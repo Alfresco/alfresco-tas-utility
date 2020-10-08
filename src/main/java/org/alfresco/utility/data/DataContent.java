@@ -1047,4 +1047,13 @@ public class DataContent extends TestData<DataContent>
     {
         userService.emptyTrashcan(user.getUsername(), user.getPassword());
     }
+
+    public FileModel uploadDocument(File fileToUpload)
+    {
+        contentService.uploadFileInRepository(getCurrentUser().getUsername(), getCurrentUser().getPassword(),
+               Utility.removeLastSlash(getLastResource()), fileToUpload.getAbsolutePath());
+        FileModel alfrescoFile = new FileModel(fileToUpload.getName());
+        alfrescoFile.setCmisLocation(Utility.buildPath(getLastResource(), fileToUpload.getName()));
+        return alfrescoFile;
+    }
 }
