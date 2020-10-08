@@ -71,8 +71,14 @@ public class DataGroup extends TestData<DataGroup>
         for(GroupModel groupModel : groupsToAdd)
         {
             STEP(String.format("DATAPREP: Add group %s to group %s", groupModel.getDisplayName(), parentGroup.getDisplayName()));
-            groupService.addSubGroup(getAdminUser().getUsername(), getAdminUser().getPassword(),
+            boolean added = groupService.addSubGroup(getAdminUser().getUsername(), getAdminUser().getPassword(),
                 parentGroup.getGroupIdentifier(), groupModel.getGroupIdentifier());
+            if(!added)
+            {
+                LOG.info(String.format("Retry add group %s to group %s", groupModel.getDisplayName(), parentGroup.getDisplayName()));
+                groupService.addSubGroup(getAdminUser().getUsername(), getAdminUser().getPassword(),
+                        parentGroup.getGroupIdentifier(), groupModel.getGroupIdentifier());
+            }
         }
     }
 
