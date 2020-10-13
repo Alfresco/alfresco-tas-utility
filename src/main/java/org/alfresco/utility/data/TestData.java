@@ -60,7 +60,7 @@ public abstract class TestData<Data> implements DSL<Data>
     private String currentSite = "";
 
     /**
-     * The last content used when calling {@link #usingResource(String)} method
+     * The last content used when calling {@link #usingResource(ContentModel)} (String)} method
      */
     private String lastResource = "";
 
@@ -319,7 +319,7 @@ public abstract class TestData<Data> implements DSL<Data>
 
         get.getParams().setSoTimeout(5000);
         client.executeMethod(get);
-        logResponse = IOUtils.toString(get.getResponseBodyAsStream(), CharEncoding.UTF_8);
+        logResponse = IOUtils.toString(get.getResponseBodyAsStream(), "UTF-8");
         return (Data) this;
     }
 

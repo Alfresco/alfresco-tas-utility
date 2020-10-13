@@ -38,6 +38,7 @@
 		<yandex.qatools.version>1.20.0</yandex.qatools.version>
 		<java.version>11</java.version>
 		<dependency.keycloak.version>4.8.3.Final</dependency.keycloak.version>
+		<apache.commons>3.11</apache.commons>
 	</properties>
 
 	<scm>
@@ -395,6 +396,12 @@
 			<groupId>ru.yandex.qatools.htmlelements</groupId>
 			<artifactId>htmlelements-java</artifactId>
 			<version>${yandex.qatools.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${apache.commons}</version>
 		</dependency>
 	</dependencies>
 </project>
