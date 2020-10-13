@@ -37,7 +37,7 @@
 		<seleniumjava.version>3.141.59</seleniumjava.version>
 		<yandex.qatools.version>1.20.0</yandex.qatools.version>
 		<java.version>11</java.version>
-		<dependency.keycloak.version>4.8.3.Final</dependency.keycloak.version>
+		<dependency.keycloak.version>11.0.2</dependency.keycloak.version>
 		<apache.commons>3.11</apache.commons>
 	</properties>
 
