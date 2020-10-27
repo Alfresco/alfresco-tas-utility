@@ -51,6 +51,9 @@ public @interface TestGroup
     public static String SMTP = "smtp";
     public static String CIFS = "cifs";
     public static String CMIS = "cmis";
+    public static String NOT_SUPPORTED_ON_CMIS_BROWSER = "not_supported_on_cmis_browser";
+    public static String NOT_SUPPORTED_ON_CMIS_ATOM = "not_supported_on_cmis_atom";
+    public static String NOT_SUPPORTED_ON_CMIS_WS = "not_supported_on_cmis_ws";
     public static String QUERIES = "queries";
     public static String WEBDAV = "webdav";
     public static String FTP = "ftp";
