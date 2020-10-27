@@ -436,6 +436,12 @@ public class WebBrowser extends EventFiringWebDriver
         return wait.until(ExpectedConditions.elementToBeClickable(element));
     }
 
+    public WebElement waitUntilElementClickable(By locator)
+    {
+        WebDriverWait wait = new WebDriverWait(this, properties.getExplicitWait());
+        return wait.until(ExpectedConditions.elementToBeClickable(locator));
+    }
+
     /**
      * Wait until the Clickable of given Element for given seconds.
      * 

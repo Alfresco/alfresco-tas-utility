@@ -2,10 +2,17 @@ package org.alfresco.utility.data;
 
 import static org.alfresco.utility.report.log.Step.STEP;
 
+import org.alfresco.dataprep.AlfrescoHttpClient;
+import org.alfresco.dataprep.AlfrescoHttpClientFactory;
 import org.alfresco.dataprep.GroupService;
+import org.alfresco.utility.constants.UserRole;
 import org.alfresco.utility.exception.DataPreparationException;
 import org.alfresco.utility.model.GroupModel;
+import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.UserModel;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpDelete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -20,6 +27,9 @@ import org.springframework.stereotype.Service;
 public class DataGroup extends TestData<DataGroup>
 {
     private final GroupService groupService;
+
+    @Autowired
+    private AlfrescoHttpClientFactory alfrescoHttpClientFactory;
 
     public DataGroup(GroupService groupService)
     {
@@ -75,7 +85,7 @@ public class DataGroup extends TestData<DataGroup>
                 parentGroup.getGroupIdentifier(), groupModel.getGroupIdentifier());
             if(!added)
             {
-                LOG.info(String.format("Retry add group %s to group %s", groupModel.getDisplayName(), parentGroup.getDisplayName()));
+                LOG.error(String.format("Retry add group %s to group %s", groupModel.getDisplayName(), parentGroup.getDisplayName()));
                 groupService.addSubGroup(getAdminUser().getUsername(), getAdminUser().getPassword(),
                         parentGroup.getGroupIdentifier(), groupModel.getGroupIdentifier());
             }
@@ -120,5 +130,38 @@ public class DataGroup extends TestData<DataGroup>
         STEP(String.format("DATAPREP: Remove user %s from group %s", userToRemove.getUsername(), groupModel.getGroupIdentifier()));
         groupService.removeUserFromGroup(getAdminUser().getUsername(), getAdminUser().getPassword(), groupModel.getGroupIdentifier(),
             userToRemove.getUsername());
+    }
+
+    public void addGroupToSite(GroupModel groupToInvite, SiteModel site, UserRole role)
+    {
+        STEP(String.format("DATAPREP: Invite group '%s' to site %s with role %s", groupToInvite.getDisplayName(), site.getTitle(), role.toString()));
+        groupService.inviteGroupToSite(getCurrentUser().getUsername(), getCurrentUser().getPassword(),
+            site.getId(), groupToInvite.getGroupIdentifier(), role.toString());
+    }
+
+    public void updateGroupRole(GroupModel groupToUpdate, SiteModel site, UserRole role)
+    {
+        STEP(String.format("DATAPREP: Update group role '%s' to %s in site %s", groupToUpdate.getDisplayName(), role.toString(), site.getTitle()));
+        groupService.changeGroupRole(getCurrentUser().getUsername(), getCurrentUser().getPassword(),
+            site.getId(), groupToUpdate.getGroupIdentifier(), role.toString());
+    }
+
+    public void removeGroupFromSite(GroupModel groupToRemove, SiteModel site)
+    {
+        AlfrescoHttpClient client = alfrescoHttpClientFactory.getObject();
+
+        String reqUrl = String.format(client.getApiUrl() + "sites/%s/memberships/GROUP_%s",
+            site.getId().toLowerCase(), groupToRemove.getGroupIdentifier());
+        HttpDelete deleteReq = new HttpDelete(reqUrl);
+        HttpResponse response = client.executeAndRelease(getCurrentUser().getUsername(), getCurrentUser().getPassword(), deleteReq);
+        if(HttpStatus.SC_OK == response.getStatusLine().getStatusCode())
+        {
+            LOG.info("Group {} was removed from site {}", groupToRemove.getDisplayName(), site.getId());
+        }
+        else
+        {
+            LOG.error("Failed to remove group {} from site {}. Error: {}", groupToRemove.getDisplayName(),
+                site.getId(), response.toString());
+        }
     }
 }
