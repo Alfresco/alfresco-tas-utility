@@ -288,7 +288,12 @@ public class DataUser extends TestData<DataUser>
         {
             matches.clear();
             STEP(String.format("DATAPREP: Verify if %s is in trash can", content.getName()));
-            matches = nodes.stream().filter(it -> it.contains(content.getNodeRef().split(";")[0])).collect(Collectors.toList());
+
+            String contentNodeId = content.getNodeRefWithoutVersion()
+                    .replace("workspace://SpacesStore/", "")
+                    .replace("archive://SpacesStore/", "");
+
+            matches = nodes.stream().filter(it -> it.contains(contentNodeId)).collect(Collectors.toList());
             Assert.assertFalse(matches.isEmpty(), String.format("Item %s found in trash can", content.getName()));
         }
     }
@@ -306,7 +311,12 @@ public class DataUser extends TestData<DataUser>
         {
             matches.clear();
             STEP(String.format("DATAPREP: Verify if %s is not in trash can", content.getName()));
-            matches = nodes.stream().filter(it -> it.contains(content.getNodeRef().split(";")[0])).collect(Collectors.toList());
+
+            String contentNodeId = content.getNodeRefWithoutVersion()
+                    .replace("workspace://SpacesStore/", "")
+                    .replace("archive://SpacesStore/", "");
+
+            matches = nodes.stream().filter(it -> it.contains(contentNodeId)).collect(Collectors.toList());
             Assert.assertTrue(matches.isEmpty(), String.format("Item %s found in trash can", content.getName()));
         }
     }
