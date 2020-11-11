@@ -108,6 +108,18 @@ public class WebBrowser extends EventFiringWebDriver
     }
 
     /**
+     * Method to perform mouse over to a given web element, using JavaScript
+     *
+     * @param webElement web element which will take the mouse over event
+     */
+    public void mouseOverViaJavascript(WebElement webElement) {
+        String javaScript = "var event = document.createEvent('MouseEvents');" +
+            "event.initMouseEvent(\"mouseover\",true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);" +
+            "arguments[0].dispatchEvent(event);";
+        executeScript(javaScript, webElement);
+    }
+
+    /**
      * Acts as a refresh page action similar to F5 key.
      */
     public void refresh()
