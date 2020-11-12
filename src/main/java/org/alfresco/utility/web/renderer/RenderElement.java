@@ -72,6 +72,17 @@ public abstract class RenderElement implements Renderer
     {
         this.renderAnnotation = renderAnnotation;
         By locator = buildFromFindBy((FindBy) findByAnnotation);
+        render(locator, browser, properties);
+    }
+
+    public void render(RenderWebElement renderAnnotation, By locator, WebBrowser browser, TasProperties properties)
+    {
+        this.renderAnnotation = renderAnnotation;
+        render(locator, browser, properties);
+    }
+
+    private void render(By locator, WebBrowser browser, TasProperties properties)
+    {
         LOG.info("Waiting to render element {} using {} worker", locator.toString(), this.getClass().getSimpleName());
         try
         {
@@ -87,9 +98,9 @@ public abstract class RenderElement implements Renderer
     /**
      * This will perform the actual action of rendering the element
      * 
-     * @param findByAnnotation
+     * @param locator
      * @param browser
-     * @param properties
+     * @param timeOutInSeconds
      */
     protected abstract void doWork(By locator, WebBrowser browser, long timeOutInSeconds);
 }
