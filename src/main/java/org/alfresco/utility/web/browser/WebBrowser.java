@@ -139,6 +139,13 @@ public class WebBrowser extends EventFiringWebDriver
         wait.until(ExpectedConditions.attributeContains(element, attribute, value));
     }
 
+    public void waitUntilElementHasAttribute(By locator, String attribute, String value)
+    {
+        Parameter.checkIsMandotary("Element", locator);
+        WebDriverWait wait = new WebDriverWait(this, properties.getExplicitWait());
+        wait.until(ExpectedConditions.attributeContains(locator, attribute, value));
+    }
+
     /**
      * Wait until the element is visible for the specified amount of time.
      * 
