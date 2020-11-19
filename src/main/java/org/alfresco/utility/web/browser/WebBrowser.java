@@ -500,6 +500,18 @@ public class WebBrowser extends EventFiringWebDriver
     }
 
     /**
+     * Wait until the given text is present in the given Locator
+     *
+     * @param locator Locator
+     */
+    public void waitUntilElementContainsText(By locator, String text)
+    {
+        Parameter.checkIsMandotary("Locator", locator);
+        WebDriverWait wait = new WebDriverWait(this, properties.getExplicitWait());
+        wait.until(ExpectedConditions.textToBePresentInElementLocated(locator, text));
+    }
+
+    /**
      * Wait until url contains the given URL fraction.
      *
      * @param URLfraction
