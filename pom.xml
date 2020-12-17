@@ -25,7 +25,7 @@
 		<spring.version>5.2.4.RELEASE</spring.version>
 		<suiteXmlFile>src/test/resources/unit-test.xml</suiteXmlFile>
 		<testNG.version>6.9.10</testNG.version>
-		<dataPrep.version>2.5</dataPrep.version>
+		<dataPrep.version>2.6</dataPrep.version>
 		<slf4j.version>1.7.30</slf4j.version>
 		<maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
 		<maven-remote-resources.version>1.7.0</maven-remote-resources.version>
