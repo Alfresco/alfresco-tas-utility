@@ -109,7 +109,7 @@ public class HtmlReportListener implements IReporter
 
     private String trackerUrl(String issueID)
     {
-        return String.format("<a href=\"https://issues.alfresco.com/jira/browse/%s\" target=\"_blank\">%s</a>", issueID, issueID);
+        return String.format("<a href=\"https://alfresco.atlassian.net/browse/%s\" target=\"_blank\">%s</a>", issueID, issueID);
     }
 
     private void buildTestNodes(IResultMap tests, LogStatus status)
