@@ -71,6 +71,7 @@ public @interface TestGroup
     public static String ALL_AMPS = "all_amps"; // this is a test group used to mark tests that are ONLY for all amps install
     public static String CLUSTER = "cluster";
     public static String LDAP = "ldap";
+    public static String MODEL = "model";
 
     public static String WONT_FIX = "wont-fix";
     public static String OS_WIN = "windows"; // this will mark tests that needs to be executed ONLY on Windows
