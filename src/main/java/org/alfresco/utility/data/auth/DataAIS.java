@@ -1,7 +1,5 @@
 package org.alfresco.utility.data.auth;
 
-import static org.alfresco.utility.report.log.Step.STEP;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +9,8 @@ import javax.ws.rs.core.Response;
 import org.alfresco.utility.TasAisProperties;
 import org.alfresco.utility.data.AisToken;
 import org.alfresco.utility.model.UserModel;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.HttpClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.engines.ApacheHttpClient4Engine;
@@ -40,6 +40,7 @@ import org.springframework.stereotype.Service;
 @Scope(value = "prototype")
 public class DataAIS implements InitializingBean
 {
+    private static Log LOG = LogFactory.getLog(DataAIS.class);
     private UsersResource usersResource;
     private AuthzClient authzClient;
     private boolean enabled;
@@ -50,7 +51,7 @@ public class DataAIS implements InitializingBean
     private TasAisProperties aisProperties;
 
     @Override
-    public void afterPropertiesSet() throws Exception
+    public void afterPropertiesSet()
     {
         AdapterConfig aisAdapterConfig = aisProperties.getAdapterConfig();
         String authServerUrl = aisAdapterConfig.getAuthServerUrl();
@@ -72,7 +73,7 @@ public class DataAIS implements InitializingBean
             Assert.assertTrue("AIS adminUsername can not be empty", adminUsername!=null && !adminUsername.isEmpty());
             Assert.assertTrue("AIS adminPassword can not be empty", adminPassword!=null && !adminPassword.isEmpty());
 
-            STEP(String.format("[AlfrescoIdentityService] Building Keycloak clients. Url= %s ", authServerUrl));
+            LOG.info(String.format("[AlfrescoIdentityService] Building Keycloak clients. Url= %s ", authServerUrl));
 
             // Configure http client
             HttpClient httpClient = new HttpClientBuilder()
@@ -81,21 +82,21 @@ public class DataAIS implements InitializingBean
 
             // Configure usersResource
             Keycloak  keycloak = KeycloakBuilder
-                    .builder()
-                    .serverUrl(authServerUrl)
-                    .realm(realm)
-                    .username(adminUsername)
-                    .password(adminPassword)
-                    .clientId(resource)
-                    .resteasyClient(new ResteasyClientBuilder()
-                            .httpEngine(httpEngine)
-                            .build())
-                    .build();
+                .builder()
+                .serverUrl(authServerUrl)
+                .realm(realm)
+                .username(adminUsername)
+                .password(adminPassword)
+                .clientId(resource)
+                .resteasyClient(new ResteasyClientBuilder()
+                    .httpEngine(httpEngine)
+                    .build())
+                .build();
             usersResource = keycloak.realm(realm).users();
 
             // Configure authzClient
             Configuration authzConfig = new Configuration(authServerUrl, realm, resource,
-                    aisAdapterConfig.getCredentials(), httpClient);
+                aisAdapterConfig.getCredentials(), httpClient);
             authzClient = AuthzClient.create(authzConfig);
         }
     }
@@ -128,7 +129,6 @@ public class DataAIS implements InitializingBean
 
     public class Builder implements UserManageable
     {
-
         private Builder()
         {
         }
@@ -136,7 +136,7 @@ public class DataAIS implements InitializingBean
         @Override
         public Builder createUser(UserModel user)
         {
-            STEP(String.format("[AlfrescoIdentityService] Add user %s", user.getUsername()));
+            LOG.info(String.format("[AlfrescoIdentityService] Add user %s", user.getUsername()));
 
             CredentialRepresentation credential = new CredentialRepresentation();
             credential.setType(CredentialRepresentation.PASSWORD);
@@ -161,7 +161,7 @@ public class DataAIS implements InitializingBean
         @Override
         public Builder deleteUser(UserModel user)
         {
-            STEP(String.format("[AlfrescoIdentityService] Delete user %s", user.getUsername()));
+            LOG.info(String.format("[AlfrescoIdentityService] Delete user %s", user.getUsername()));
 
             UserRepresentation userRepresentation = findUserByUsername(user.getUsername());
             if (userRepresentation != null)
@@ -183,7 +183,7 @@ public class DataAIS implements InitializingBean
         @Override
         public Builder assertUserExists(UserModel user)
         {
-            STEP(String.format("[AlfrescoIdentityService] Assert user %s exists", user.getUsername()));
+            LOG.info(String.format("[AlfrescoIdentityService] Assert user %s exists", user.getUsername()));
             Assert.assertNotNull(findUserByUsername(user.getUsername()));
             return this;
         }
@@ -191,14 +191,14 @@ public class DataAIS implements InitializingBean
         @Override
         public Builder assertUserDoesNotExist(UserModel user)
         {
-            STEP(String.format("[AlfrescoIdentityService] Assert user %s does not exists", user.getUsername()));
+            LOG.info(String.format("[AlfrescoIdentityService] Assert user %s does not exists", user.getUsername()));
             Assert.assertNull(findUserByUsername(user.getUsername()));
             return this;
         }
 
         public Builder disableUser(UserModel user)
         {
-            STEP(String.format("[AlfrescoIdentityService] Disable user %s", user.getUsername()));
+            LOG.info(String.format("[AlfrescoIdentityService] Disable user %s", user.getUsername()));
             UserRepresentation userRepresentation = findUserByUsername(user.getUsername());
             userRepresentation.setEnabled(false);
             usersResource.get(userRepresentation.getId()).update(userRepresentation);
@@ -208,7 +208,7 @@ public class DataAIS implements InitializingBean
 
         public Builder enableUser(UserModel user)
         {
-            STEP(String.format("[AlfrescoIdentityService] Disable user %s", user.getUsername()));
+            LOG.info(String.format("[AlfrescoIdentityService] Disable user %s", user.getUsername()));
             UserRepresentation userRepresentation = findUserByUsername(user.getUsername());
             userRepresentation.setEnabled(true);
             usersResource.get(userRepresentation.getId()).update(userRepresentation);
@@ -217,7 +217,7 @@ public class DataAIS implements InitializingBean
 
         public AccessTokenResponse obtainAccessToken(UserModel user)
         {
-            STEP(String.format("[AlfrescoIdentityService] Obtain access token for user %s", user.getUsername()));
+            LOG.info(String.format("[AlfrescoIdentityService] Obtain access token for user %s", user.getUsername()));
             return authzClient.obtainAccessToken(user.getUsername(), user.getPassword());
         }
 
