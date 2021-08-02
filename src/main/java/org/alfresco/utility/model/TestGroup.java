@@ -51,6 +51,7 @@ public @interface TestGroup
     public static String SMTP = "smtp";
     public static String CIFS = "cifs";
     public static String CMIS = "cmis";
+    public static String NOT_SUPPORTED_ON_SINGLE_PIPELINE = "not_supported_on_single_pipeline";
     public static String NOT_SUPPORTED_ON_CMIS_BROWSER = "not_supported_on_cmis_browser";
     public static String NOT_SUPPORTED_ON_CMIS_ATOM = "not_supported_on_cmis_atom";
     public static String NOT_SUPPORTED_ON_CMIS_WS = "not_supported_on_cmis_ws";
