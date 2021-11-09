@@ -234,7 +234,7 @@
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-client</artifactId>
-            <version>3.6.3.Final</version>
+            <version>4.5.7.Final</version>
         </dependency>
 
         <!--Guava is a suite of core and expanded libraries that include utility
