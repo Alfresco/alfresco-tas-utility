@@ -35,6 +35,7 @@ import org.alfresco.utility.testrail.TestRailExecutorListener;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.testng.Assert;
@@ -321,13 +322,21 @@ public class Utility
     /**
      * Pretty prints unformatted JSON
      * 
-     * @param unformattetJson
+     * @param unformattedJson
      * @return
      */
-    public static String prettyPrintJsonString(String unformattetJson)
-    {
-        JSONObject prettyPrint = new JSONObject(unformattetJson);
-        return prettyPrint.toString(3);
+    public static String prettyPrintJsonString(String unformattedJson) {
+        String prettyPrint = null;
+        try
+        {
+            JSONObject jsonObject = new JSONObject(unformattedJson);
+            prettyPrint = jsonObject.toString(3);
+        }
+        catch(JSONException ex)
+        {
+            prettyPrint = ex.getMessage();
+        }
+        return prettyPrint;
     }
 
     /**
