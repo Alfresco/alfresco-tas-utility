@@ -121,6 +121,18 @@ public class BeansTest extends AbstractTestNGSpringContextTests
         Assert.assertNotNull(dataUser, "Bean DataUser is initialised");
     }
 
+    @Test
+    public void getDefaultSolrSecretName()
+    {
+        Assert.assertEquals(properties.getSolrSecretName(), "X-Alfresco-Search-Secret");
+    }
+
+    @Test
+    public void getDefaultSolrSecret()
+    {
+        Assert.assertTrue(properties.getSolrSecret().isEmpty());
+    }
+
     @Test(enabled=false)
     public void createFolderAndContent() throws Exception
     {

@@ -179,6 +179,12 @@ public class TasProperties
 
     @Value("${solr.port:8983}")
     private int solrPort;
+
+    @Value("${solr.secretName:X-Alfresco-Search-Secret}")
+    private String solrSecretName;
+
+    @Value("${solr.secret:}")
+    private String solrSecret;
     
     @Value("${display.xport:1}")
     private String displayXport;
@@ -726,7 +732,27 @@ public class TasProperties
     {
         this.solrPort = solrPort;
     }
-    
+
+    public String getSolrSecretName()
+    {
+        return solrSecretName;
+    }
+
+    public void setSolrSecretName(String solrSecretName)
+    {
+        this.solrSecretName = solrSecretName;
+    }
+
+    public String getSolrSecret()
+    {
+        return solrSecret;
+    }
+
+    public void setSolrSecret(String solrSecret)
+    {
+        this.solrSecret = solrSecret;
+    }
+
     /**
      * @return host: <schema>://<server>
      */
@@ -742,4 +768,5 @@ public class TasProperties
     {
 		return displayXport;
 	}
+
 }
