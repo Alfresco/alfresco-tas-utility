@@ -1,8 +1,10 @@
-dist: trusty
-sudo: required
 language: java
-jdk:
-  - openjdk17
+jdk: openjdk17
+dist: focal
+
+git:
+  depth: false
+  quiet: true
 
 cache:
   directories:
