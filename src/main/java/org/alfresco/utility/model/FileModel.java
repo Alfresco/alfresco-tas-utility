@@ -1,6 +1,7 @@
 package org.alfresco.utility.model;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 import org.alfresco.utility.Utility;
@@ -117,7 +118,7 @@ public class FileModel extends ContentModel
         testFile.setCmisLocation(tmp.getName());
         try
         {
-            String content = Files.readFile(tmp).replace("\n", "");
+            String content = Files.readFile(new FileInputStream(tmp)).replace("\n", "");
             testFile.setContent(content);
         }
         catch (IOException e)
