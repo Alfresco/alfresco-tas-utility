@@ -36,7 +36,7 @@ public class TestCountListener implements ISuiteListener
         while (iterator.hasNext())
         {
             TestNGMethod test = (TestNGMethod) iterator.next();
-            if (test.getMethod().getDeclaredAnnotationsByType(Bug.class).length == 1)
+            if (test.getConstructorOrMethod().getMethod().getDeclaredAnnotationsByType(Bug.class).length == 1)
                 bugAnnotation++;
         }
 
@@ -79,7 +79,7 @@ public class TestCountListener implements ISuiteListener
                 while (iterator.hasNext())
                 {
                     TestNGMethod test = (TestNGMethod) iterator.next();
-                    int bugLength = test.getMethod().getDeclaredAnnotationsByType(Bug.class).length;
+                    int bugLength = test.getConstructorOrMethod().getMethod().getDeclaredAnnotationsByType(Bug.class).length;
 
                     List<String> testgroups = Arrays.asList(test.getGroups());
 

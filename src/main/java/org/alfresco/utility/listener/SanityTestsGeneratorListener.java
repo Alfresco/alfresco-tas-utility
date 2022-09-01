@@ -56,7 +56,7 @@ public class SanityTestsGeneratorListener implements ISuiteListener
                     TestNGMethod test = (TestNGMethod) iterator.next();
 
                     // add the class name and the method name to the map
-                    String className = test.getMethod().getDeclaringClass().getName();
+                    String className = test.getConstructorOrMethod().getMethod().getDeclaringClass().getName();
                     if (testClasses.containsKey(className))
                     {
                         testClasses.get(className).add(test.getMethodName());
