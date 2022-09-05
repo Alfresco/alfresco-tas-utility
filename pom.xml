@@ -22,7 +22,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.build.sourceVersion>11</maven.build.sourceVersion>
-        <spring.version>5.2.4.RELEASE</spring.version>
+        <spring.version>5.3.18</spring.version>
         <suiteXmlFile>src/test/resources/unit-test.xml</suiteXmlFile>
         <testNG.version>7.6.1</testNG.version>
         <dataPrep.version>2.6</dataPrep.version>
@@ -37,7 +37,7 @@
         <javax.mail.version>1.6.2</javax.mail.version>
         <seleniumjava.version>3.141.59</seleniumjava.version>
         <yandex.qatools.version>1.20.0</yandex.qatools.version>
-        <java.version>11</java.version>
+        <java.version>17</java.version>
         <dependency.keycloak.version>18.0.0</dependency.keycloak.version>
         <apache.commons>3.11</apache.commons>
     </properties>
