@@ -37,7 +37,7 @@
         <javax.mail.version>1.6.2</javax.mail.version>
         <seleniumjava.version>3.141.59</seleniumjava.version>
         <yandex.qatools.version>1.20.0</yandex.qatools.version>
-        <java.version>17</java.version>
+        <java.version>11</java.version>
         <dependency.keycloak.version>18.0.0</dependency.keycloak.version>
         <apache.commons>3.11</apache.commons>
     </properties>
