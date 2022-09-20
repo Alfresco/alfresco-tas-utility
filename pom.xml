@@ -26,7 +26,8 @@
         <suiteXmlFile>src/test/resources/unit-test.xml</suiteXmlFile>
         <testNG.version>7.6.1</testNG.version>
         <dataPrep.version>2.6</dataPrep.version>
-        <slf4j.version>1.7.30</slf4j.version>
+        <slf4j.version>2.0.1</slf4j.version>
+        <reload4j.version>1.2.22</reload4j.version>
         <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
         <maven-remote-resources.version>1.7.0</maven-remote-resources.version>
         <extentreports.version>2.41.2</extentreports.version>
@@ -303,8 +304,18 @@
         <!-- default logger -->
         <dependency>
             <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
+            <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-reload4j</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.reload4j</groupId>
+            <artifactId>reload4j</artifactId>
+            <version>${reload4j.version}</version>
         </dependency>
 
         <!-- custom report -->
