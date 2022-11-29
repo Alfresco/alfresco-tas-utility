@@ -14,6 +14,7 @@ branches:
   only:
     - master
     - /release\/.*/
+    - /feature\/.*/
 
 install: travis_retry mvn install -DskipTests=true -B -V
 
