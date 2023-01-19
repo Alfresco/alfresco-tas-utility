@@ -22,7 +22,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.build.sourceVersion>11</maven.build.sourceVersion>
-        <spring.version>5.3.20</spring.version>
+        <spring.version>5.3.25</spring.version>
         <suiteXmlFile>src/test/resources/unit-test.xml</suiteXmlFile>
         <testNG.version>7.6.1</testNG.version>
         <dataPrep.version>2.6</dataPrep.version>
