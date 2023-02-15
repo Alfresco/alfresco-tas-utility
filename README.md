@@ -1,7 +1,7 @@
 ---
  
- [![Build Status](https://travis-ci.com/Alfresco/alfresco-tas-utility.svg?branch=master)](https://travis-ci.com/Alfresco/alfresco-tas-utility)
- 
+[![Build Status](https://github.com/Alfresco/alfresco-tas-utility/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/Alfresco/alfresco-tas-utility/actions/workflows/ci.yml)
+
 ## Table of Contents
 * [Synopsis](#synopsis)
 * [Prerequisite](#prerequisite)
