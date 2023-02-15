@@ -1,0 +1,20 @@
+name: Alfresco TAS Utility CI
+
+on:
+  pull_request:
+    branches:
+      - master
+      - release/**
+  push:
+    branches:
+      - master
+      - release/**
+  workflow_dispatch:
+
+jobs:
+  build_and_release:
+    name: "Build and Release"
+    uses: Alfresco/alfresco-build-tools/.github/workflows/build-and-release-maven.yml@v1.35.0
+    secrets: inherit
+    with:
+      release-branches: "^master$|^release/.+$"
