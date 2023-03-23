@@ -26,9 +26,9 @@ import com.google.gson.Gson;
 
 import org.junit.Assert;
 
-class IdsAdminClient
+class AISClient
 {
-    private String clientId;
+    private final String clientId;
     private final String adminUsername;
     private final String adminPassword;
     private final URI tokenUri;
@@ -36,7 +36,7 @@ class IdsAdminClient
     private final java.net.http.HttpClient httpClient;
     private static final Gson GSON = new Gson();
 
-    IdsAdminClient(String clientId, String adminUsername, String adminPassword, URI tokenUri, URI usersUri, java.net.http.HttpClient httpClient)
+    AISClient(String clientId, String adminUsername, String adminPassword, URI tokenUri, URI usersUri, java.net.http.HttpClient httpClient)
     {
         this.clientId = requireNonNull(clientId);
         this.adminUsername = requireNonNull(adminUsername);

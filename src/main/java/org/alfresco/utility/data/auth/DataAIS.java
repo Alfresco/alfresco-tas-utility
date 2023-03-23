@@ -1,6 +1,6 @@
 package org.alfresco.utility.data.auth;
 
-import static org.alfresco.utility.data.auth.IdsAdminClient.extractUserId;
+import static org.alfresco.utility.data.auth.AISClient.extractUserId;
 import static org.springframework.web.util.UriComponentsBuilder.fromUri;
 import static org.springframework.web.util.UriComponentsBuilder.fromUriString;
 
@@ -38,7 +38,7 @@ public class DataAIS implements InitializingBean
 
     @Autowired
     private TasAisProperties aisProperties;
-    private IdsAdminClient adminClient;
+    private AISClient aisClient;
 
     @Override
     public void afterPropertiesSet()
@@ -70,7 +70,7 @@ public class DataAIS implements InitializingBean
 
             // Configure http client
             final HttpClient httpClient = HttpClient.newHttpClient();
-            adminClient = new IdsAdminClient(resource, adminUsername, adminPassword, tokenUri, usersUri, httpClient);
+            aisClient = new AISClient(resource, adminUsername, adminPassword, tokenUri, usersUri, httpClient);
         }
     }
 
@@ -94,7 +94,7 @@ public class DataAIS implements InitializingBean
         @Override
         public Builder createUser(UserModel user)
         {
-            adminClient.createUser(user.getUsername(), user.getPassword(), user.getFirstName(), user.getLastName());
+            aisClient.createUser(user.getUsername(), user.getPassword(), user.getFirstName(), user.getLastName());
             return this;
         }
 
@@ -108,7 +108,7 @@ public class DataAIS implements InitializingBean
             {
                 removeTokenForUser(generateTokenKey(user));
 
-                adminClient.deleteUser(userId);
+                aisClient.deleteUser(userId);
             }
             return this;
         }
@@ -139,8 +139,8 @@ public class DataAIS implements InitializingBean
         {
             LOG.info(String.format("[AlfrescoIdentityService] Disable user %s", user.getUsername()));
             Map<String, Object> userRepresentation = findUserByUsername(user.getUsername());
-            IdsAdminClient.setEnabled(userRepresentation, false);
-            adminClient.updateUser(userRepresentation);
+            AISClient.setEnabled(userRepresentation, false);
+            aisClient.updateUser(userRepresentation);
             removeTokenForUser(generateTokenKey(user));
             return this;
         }
@@ -149,20 +149,20 @@ public class DataAIS implements InitializingBean
         {
             LOG.info(String.format("[AlfrescoIdentityService] Enable user %s", user.getUsername()));
             Map<String, Object> userRepresentation = findUserByUsername(user.getUsername());
-            IdsAdminClient.setEnabled(userRepresentation, true);
-            adminClient.updateUser(userRepresentation);
+            AISClient.setEnabled(userRepresentation, true);
+            aisClient.updateUser(userRepresentation);
             return this;
         }
 
         private Map<String, ?> obtainAccessToken(UserModel user)
         {
             LOG.info(String.format("[AlfrescoIdentityService] Obtain access token for user %s", user.getUsername()));
-            return adminClient.authorizeUser(user.getUsername(), user.getPassword());
+            return aisClient.authorizeUser(user.getUsername(), user.getPassword());
         }
 
         private Map<String, Object> findUserByUsername(String username)
         {
-            final List<Map<String, Object>> matchingUsers = adminClient.findUser(username);
+            final List<Map<String, Object>> matchingUsers = aisClient.findUser(username);
 
             if (matchingUsers.size() == 1)
             {
