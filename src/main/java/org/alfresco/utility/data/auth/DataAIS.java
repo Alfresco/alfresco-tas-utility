@@ -1,6 +1,7 @@
 package org.alfresco.utility.data.auth;
 
 import static org.alfresco.utility.data.auth.AISClient.extractUserId;
+import static org.alfresco.utility.data.auth.AISClient.setEnabled;
 import static org.springframework.web.util.UriComponentsBuilder.fromUri;
 import static org.springframework.web.util.UriComponentsBuilder.fromUriString;
 
@@ -94,6 +95,8 @@ public class DataAIS implements InitializingBean
         @Override
         public Builder createUser(UserModel user)
         {
+            LOG.info(String.format("[AlfrescoIdentityService] Add user %s", user.getUsername()));
+
             aisClient.createUser(user.getUsername(), user.getPassword(), user.getFirstName(), user.getLastName());
             return this;
         }
@@ -139,7 +142,7 @@ public class DataAIS implements InitializingBean
         {
             LOG.info(String.format("[AlfrescoIdentityService] Disable user %s", user.getUsername()));
             Map<String, Object> userRepresentation = findUserByUsername(user.getUsername());
-            AISClient.setEnabled(userRepresentation, false);
+            setEnabled(userRepresentation, false);
             aisClient.updateUser(userRepresentation);
             removeTokenForUser(generateTokenKey(user));
             return this;
@@ -149,7 +152,7 @@ public class DataAIS implements InitializingBean
         {
             LOG.info(String.format("[AlfrescoIdentityService] Enable user %s", user.getUsername()));
             Map<String, Object> userRepresentation = findUserByUsername(user.getUsername());
-            AISClient.setEnabled(userRepresentation, true);
+            setEnabled(userRepresentation, true);
             aisClient.updateUser(userRepresentation);
             return this;
         }
