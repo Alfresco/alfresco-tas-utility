@@ -1,30 +1,22 @@
 package org.alfresco.utility.data.auth;
 
-import java.util.Arrays;
+import static org.alfresco.utility.data.auth.AISClient.extractUserId;
+import static org.alfresco.utility.data.auth.AISClient.setEnabled;
+import static org.springframework.web.util.UriComponentsBuilder.fromUri;
+import static org.springframework.web.util.UriComponentsBuilder.fromUriString;
+
+import java.net.URI;
+import java.net.http.HttpClient;
 import java.util.HashMap;
 import java.util.List;
-
-import javax.ws.rs.core.Response;
+import java.util.Map;
 
 import org.alfresco.utility.TasAisProperties;
 import org.alfresco.utility.data.AisToken;
 import org.alfresco.utility.model.UserModel;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.client.HttpClient;
-import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
-import org.jboss.resteasy.client.jaxrs.engines.ApacheHttpClient4Engine;
 import org.junit.Assert;
-import org.keycloak.adapters.HttpClientBuilder;
-import org.keycloak.admin.client.Keycloak;
-import org.keycloak.admin.client.KeycloakBuilder;
-import org.keycloak.admin.client.resource.UsersResource;
-import org.keycloak.authorization.client.AuthzClient;
-import org.keycloak.authorization.client.Configuration;
-import org.keycloak.representations.AccessTokenResponse;
-import org.keycloak.representations.adapters.config.AdapterConfig;
-import org.keycloak.representations.idm.CredentialRepresentation;
-import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -40,31 +32,29 @@ import org.springframework.stereotype.Service;
 @Scope(value = "prototype")
 public class DataAIS implements InitializingBean
 {
-    private static Log LOG = LogFactory.getLog(DataAIS.class);
-    private UsersResource usersResource;
-    private AuthzClient authzClient;
-    private boolean enabled;
-    private static HashMap<Integer, AisToken> aisTokens = new HashMap<>();
+    private static final Log LOG = LogFactory.getLog(DataAIS.class);
+    private static final HashMap<Integer, AisToken> aisTokens = new HashMap<>();
     private static final int TIMEOUT_DELTA_MILLISECONDS = 5000;
+    private boolean enabled;
 
     @Autowired
     private TasAisProperties aisProperties;
+    private AISClient aisClient;
 
     @Override
     public void afterPropertiesSet()
     {
-        AdapterConfig aisAdapterConfig = aisProperties.getAdapterConfig();
-        String authServerUrl = aisAdapterConfig.getAuthServerUrl();
+        String authServerUrl = aisProperties.getAuthServerUrl();
         if (authServerUrl != null && !authServerUrl.isEmpty())
         {
             enabled = true;
         }
 
-        // Check the minimal set of properties required to communicate with the keycloak server
+        // Check the minimal set of properties required to communicate with the AIS server
         if (enabled)
         {
-            String realm = aisAdapterConfig.getRealm();
-            String resource = aisAdapterConfig.getResource();
+            String realm = aisProperties.getRealm();
+            String resource = aisProperties.getResource();
             String adminUsername = aisProperties.getAdminUsername();
             String adminPassword = aisProperties.getAdminPassword();
 
@@ -73,52 +63,21 @@ public class DataAIS implements InitializingBean
             Assert.assertTrue("AIS adminUsername can not be empty", adminUsername!=null && !adminUsername.isEmpty());
             Assert.assertTrue("AIS adminPassword can not be empty", adminPassword!=null && !adminPassword.isEmpty());
 
-            LOG.info(String.format("[AlfrescoIdentityService] Building Keycloak clients. Url= %s ", authServerUrl));
+            LOG.info(String.format("[AlfrescoIdentityService] Building AIS clients. Url= %s ", authServerUrl));
+
+            URI issuerUri = fromUriString(authServerUrl).pathSegment("realms", realm).build().toUri();
+            URI tokenUri = fromUri(issuerUri).pathSegment("protocol", "openid-connect", "token").build().toUri();
+            URI usersUri = fromUriString(authServerUrl).pathSegment("admin", "realms", realm, "users").build().toUri();
 
             // Configure http client
-            HttpClient httpClient = new HttpClientBuilder()
-                    .build(aisAdapterConfig);
-            ApacheHttpClient4Engine httpEngine = new ApacheHttpClient4Engine(httpClient);
-
-            // Configure usersResource
-            Keycloak  keycloak = KeycloakBuilder
-                .builder()
-                .serverUrl(authServerUrl)
-                .realm(realm)
-                .username(adminUsername)
-                .password(adminPassword)
-                .clientId(resource)
-                .resteasyClient(new ResteasyClientBuilder()
-                    .httpEngine(httpEngine)
-                    .build())
-                .build();
-            usersResource = keycloak.realm(realm).users();
-
-            // Configure authzClient
-            Configuration authzConfig = new Configuration(authServerUrl, realm, resource,
-                aisAdapterConfig.getCredentials(), httpClient);
-            authzClient = AuthzClient.create(authzConfig);
+            final HttpClient httpClient = HttpClient.newHttpClient();
+            aisClient = new AISClient(resource, adminUsername, adminPassword, tokenUri, usersUri, httpClient);
         }
     }
 
     public boolean isEnabled()
     {
         return enabled;
-    }
-
-    public void setUsersResource(UsersResource usersResource)
-    {
-        this.usersResource = usersResource;
-    }
-
-    public void setAuthzClient(AuthzClient authzClient)
-    {
-        this.authzClient = authzClient;
-    }
-
-    public void setAisProperties(TasAisProperties aisProperties)
-    {
-        this.aisProperties = aisProperties;
     }
 
     public DataAIS.Builder perform()
@@ -138,23 +97,7 @@ public class DataAIS implements InitializingBean
         {
             LOG.info(String.format("[AlfrescoIdentityService] Add user %s", user.getUsername()));
 
-            CredentialRepresentation credential = new CredentialRepresentation();
-            credential.setType(CredentialRepresentation.PASSWORD);
-            credential.setValue(user.getPassword());
-            credential.setTemporary(false);
-
-            UserRepresentation userRepresentation = new UserRepresentation();
-            userRepresentation.setUsername(user.getUsername());
-            userRepresentation.setFirstName(user.getFirstName());
-            userRepresentation.setLastName(user.getLastName());
-            userRepresentation.setCredentials(Arrays.asList(credential));
-            userRepresentation.setEnabled(true);
-
-            Response response = usersResource.create(userRepresentation);
-            Assert.assertTrue("Failed to create user in Keycloak: " + response.getStatusInfo(),
-                    response.getStatusInfo().equals(Response.Status.CREATED));
-            response.close();
-
+            aisClient.createUser(user.getUsername(), user.getPassword(), user.getFirstName(), user.getLastName());
             return this;
         }
 
@@ -163,13 +106,12 @@ public class DataAIS implements InitializingBean
         {
             LOG.info(String.format("[AlfrescoIdentityService] Delete user %s", user.getUsername()));
 
-            UserRepresentation userRepresentation = findUserByUsername(user.getUsername());
-            if (userRepresentation != null)
+            String userId = extractUserId(findUserByUsername(user.getUsername()));
+            if (userId != null)
             {
                 removeTokenForUser(generateTokenKey(user));
 
-                Response response = usersResource.delete(userRepresentation.getId());
-                response.close();
+                aisClient.deleteUser(userId);
             }
             return this;
         }
@@ -199,55 +141,60 @@ public class DataAIS implements InitializingBean
         public Builder disableUser(UserModel user)
         {
             LOG.info(String.format("[AlfrescoIdentityService] Disable user %s", user.getUsername()));
-            UserRepresentation userRepresentation = findUserByUsername(user.getUsername());
-            userRepresentation.setEnabled(false);
-            usersResource.get(userRepresentation.getId()).update(userRepresentation);
+            Map<String, Object> userRepresentation = findUserByUsername(user.getUsername());
+            setEnabled(userRepresentation, false);
+            aisClient.updateUser(userRepresentation);
             removeTokenForUser(generateTokenKey(user));
             return this;
         }
 
         public Builder enableUser(UserModel user)
         {
-            LOG.info(String.format("[AlfrescoIdentityService] Disable user %s", user.getUsername()));
-            UserRepresentation userRepresentation = findUserByUsername(user.getUsername());
-            userRepresentation.setEnabled(true);
-            usersResource.get(userRepresentation.getId()).update(userRepresentation);
+            LOG.info(String.format("[AlfrescoIdentityService] Enable user %s", user.getUsername()));
+            Map<String, Object> userRepresentation = findUserByUsername(user.getUsername());
+            setEnabled(userRepresentation, true);
+            aisClient.updateUser(userRepresentation);
             return this;
         }
 
-        public AccessTokenResponse obtainAccessToken(UserModel user)
+        private Map<String, ?> obtainAccessToken(UserModel user)
         {
             LOG.info(String.format("[AlfrescoIdentityService] Obtain access token for user %s", user.getUsername()));
-            return authzClient.obtainAccessToken(user.getUsername(), user.getPassword());
+            return aisClient.authorizeUser(user.getUsername(), user.getPassword());
         }
 
-        public UserRepresentation findUserByUsername(String username)
+        private Map<String, Object> findUserByUsername(String username)
         {
-            UserRepresentation user = null;
-            List<UserRepresentation> ur = usersResource.search(username, null, null, null, 0, Integer.MAX_VALUE);
-            if (ur.size() == 1)
+            final List<Map<String, Object>> matchingUsers = aisClient.findUser(username);
+
+            if (matchingUsers.size() == 1)
             {
-                user = ur.get(0);
+                return matchingUsers.get(0);
             }
 
-            if (ur.size() > 1) // try to be more specific
+            if (matchingUsers.size() > 1) // try to be more specific
             {
-                for (UserRepresentation rep : ur)
+                for (Map<String, Object> user : matchingUsers)
                 {
-                    if (rep.getUsername().equalsIgnoreCase(username))
+                    if (username.equalsIgnoreCase((String)user.get("username")))
                     {
-                        return rep;
+                        return user;
                     }
                 }
             }
 
-            return user;
+            return null;
         }
 
-        public synchronized void addTokenForUser(Integer key, AccessTokenResponse tokenResponse)
+        public synchronized void addTokenForUser(Integer key, Map<String, ?> tokenResponse)
         {
-            Long currentTime = System.currentTimeMillis();
-            AisToken token = new AisToken(tokenResponse.getToken(), tokenResponse.getRefreshToken(), currentTime, tokenResponse.getExpiresIn() * 1000);
+            long currentTime = System.currentTimeMillis();
+            
+            AisToken token = new AisToken(
+                    (String) tokenResponse.get("access_token"),
+                    (String) tokenResponse.get("refresh_token"),
+                    currentTime,
+                    ((Number)tokenResponse.get("expires_in")).longValue() * 1000);
 
             aisTokens.put(key, token);
         }
@@ -259,15 +206,12 @@ public class DataAIS implements InitializingBean
 
         public Boolean checkTokenValidity(Integer key)
         {
-            Long currentTime = System.currentTimeMillis();
+            long currentTime = System.currentTimeMillis();
 
             if (aisTokens.containsKey(key))
             {
                 AisToken token = aisTokens.get(key);
-                if (currentTime < (token.getExpirationTime() - TIMEOUT_DELTA_MILLISECONDS))
-                {
-                    return true;
-                }
+                return currentTime < (token.getExpirationTime() - TIMEOUT_DELTA_MILLISECONDS);
             }
 
             return false;
@@ -287,8 +231,8 @@ public class DataAIS implements InitializingBean
             if(!checkTokenValidity(key))
             {
                 //Get and add new user token
-                AccessTokenResponse tokenReponse = obtainAccessToken(user);
-                addTokenForUser(key, tokenReponse);
+                Map<String, ?> tokenResponse = obtainAccessToken(user);
+                addTokenForUser(key, tokenResponse);
             }
 
             return aisTokens.get(key);
