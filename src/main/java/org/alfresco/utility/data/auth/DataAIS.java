@@ -189,7 +189,7 @@ public class DataAIS implements InitializingBean
         public synchronized void addTokenForUser(Integer key, Map<String, ?> tokenResponse)
         {
             long currentTime = System.currentTimeMillis();
-            //AisToken token = new AisToken(tokenResponse.get("access_token"), tokenResponse.get("refresh_token"), currentTime, tokenResponse.getExpiresIn() * 1000);
+            
             AisToken token = new AisToken(
                     (String) tokenResponse.get("access_token"),
                     (String) tokenResponse.get("refresh_token"),
