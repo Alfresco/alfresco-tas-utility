@@ -9,6 +9,7 @@ import static org.springframework.web.util.UriComponentsBuilder.fromUri;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublisher;
 import java.net.http.HttpRequest.BodyPublishers;
@@ -33,10 +34,10 @@ class AISClient
     private final String adminPassword;
     private final URI tokenUri;
     private final URI usersUri;
-    private final java.net.http.HttpClient httpClient;
+    private final HttpClient httpClient;
     private static final Gson GSON = new Gson();
 
-    AISClient(String clientId, String adminUsername, String adminPassword, URI tokenUri, URI usersUri, java.net.http.HttpClient httpClient)
+    AISClient(String clientId, String adminUsername, String adminPassword, URI tokenUri, URI usersUri, HttpClient httpClient)
     {
         this.clientId = requireNonNull(clientId);
         this.adminUsername = requireNonNull(adminUsername);

@@ -187,7 +187,11 @@ public class DataAIS implements InitializingBean
         {
             long currentTime = System.currentTimeMillis();
             //AisToken token = new AisToken(tokenResponse.get("access_token"), tokenResponse.get("refresh_token"), currentTime, tokenResponse.getExpiresIn() * 1000);
-            AisToken token = new AisToken((String) tokenResponse.get("access_token"), (String) tokenResponse.get("refresh_token"), currentTime, 1234 * 1000);
+            AisToken token = new AisToken(
+                    (String) tokenResponse.get("access_token"),
+                    (String) tokenResponse.get("refresh_token"),
+                    currentTime,
+                    ((Number)tokenResponse.get("expires_in")).longValue() * 1000);
 
             aisTokens.put(key, token);
         }
