@@ -53,7 +53,7 @@ Using a centralized location (Nexus), everyone will be able to reuse this indivi
 
 ## Prerequisite 
 (tested on unix/non-unix destribution)
-* [Java 17ž](http://www.oracle.com/technetwork/java/javase/downloads/index.html).
+* [Java 11](http://www.oracle.com/technetwork/java/javase/downloads/index.html).
 * [Maven 3.3](https://maven.apache.org/download.cgi) installed and configure according to [Windows OS](https://maven.apache.org/guides/getting-started/windows-prerequisites.html) or [Mac OS](https://maven.apache.org/install.html).
 * Configure Maven to use Alfresco alfresco-internal repository following this [Guide](https://ts.alfresco.com/share/page/site/eng/wiki-page?title=Maven_Setup).
 We are using also the internal-snapshot repository, so here it is the full settings.xml file
