@@ -21,7 +21,10 @@
     </developers>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.build.sourceVersion>11</maven.build.sourceVersion>
+        <java.version>17</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <maven.build.sourceVersion>17</maven.build.sourceVersion>
         <spring.version>5.3.25</spring.version>
         <suiteXmlFile>src/test/resources/unit-test.xml</suiteXmlFile>
         <testNG.version>7.6.1</testNG.version>
@@ -37,7 +40,6 @@
         <javax.mail.version>1.6.2</javax.mail.version>
         <seleniumjava.version>3.141.59</seleniumjava.version>
         <yandex.qatools.version>1.20.0</yandex.qatools.version>
-        <java.version>11</java.version>
         <apache.commons>3.11</apache.commons>
     </properties>
 
