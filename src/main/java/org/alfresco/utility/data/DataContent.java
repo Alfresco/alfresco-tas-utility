@@ -181,6 +181,18 @@ public class DataContent extends TestData<DataContent>
         JSONObject body = new JSONObject();
         body.put("name", folderModel.getName());
         body.put("nodeType", "cm:folder");
+
+        JSONObject properties = new JSONObject();
+        if (folderModel.getTitle() != null)
+        {
+            properties.put("cm:title", folderModel.getTitle());
+        }
+        if (folderModel.getDescription() != null)
+        {
+            properties.put("cm:description", folderModel.getDescription());
+        }
+        body.put("properties", properties);
+
         post.setEntity(client.setMessageBody(body));
 
         // Send Request
