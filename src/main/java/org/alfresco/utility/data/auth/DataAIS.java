@@ -14,6 +14,7 @@ import java.util.Map;
 import org.alfresco.utility.TasAisProperties;
 import org.alfresco.utility.data.AisToken;
 import org.alfresco.utility.model.UserModel;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Assert;
@@ -36,6 +37,7 @@ public class DataAIS implements InitializingBean
     private static final HashMap<Integer, AisToken> aisTokens = new HashMap<>();
     private static final int TIMEOUT_DELTA_MILLISECONDS = 5000;
     private boolean enabled;
+    private boolean isKeycloak;
 
     @Autowired
     private TasAisProperties aisProperties;
@@ -48,6 +50,10 @@ public class DataAIS implements InitializingBean
         if (authServerUrl != null && !authServerUrl.isEmpty())
         {
             enabled = true;
+            if(StringUtils.isBlank(aisProperties.getRealm()))
+            {
+                isKeycloak = false;
+            }
         }
 
         // Check the minimal set of properties required to communicate with the AIS server
@@ -58,20 +64,30 @@ public class DataAIS implements InitializingBean
             String adminUsername = aisProperties.getAdminUsername();
             String adminPassword = aisProperties.getAdminPassword();
 
-            Assert.assertTrue("AIS realm can not be empty", realm!=null && !realm.isEmpty());
+
             Assert.assertTrue("AIS resource can not be empty", resource!=null && !resource.isEmpty());
             Assert.assertTrue("AIS adminUsername can not be empty", adminUsername!=null && !adminUsername.isEmpty());
             Assert.assertTrue("AIS adminPassword can not be empty", adminPassword!=null && !adminPassword.isEmpty());
 
             LOG.info(String.format("[AlfrescoIdentityService] Building AIS clients. Url= %s ", authServerUrl));
 
+            URI usersUri = null;
             URI issuerUri = fromUriString(authServerUrl).pathSegment("realms", realm).build().toUri();
             URI tokenUri = fromUri(issuerUri).pathSegment("protocol", "openid-connect", "token").build().toUri();
-            URI usersUri = fromUriString(authServerUrl).pathSegment("admin", "realms", realm, "users").build().toUri();
 
+            if(isKeycloak)
+            {
+                Assert.assertTrue("AIS realm can not be empty", realm!=null && !realm.isEmpty());
+                usersUri = fromUriString(authServerUrl).pathSegment("admin", "realms", realm, "users").build().toUri();
+            }
+            else
+            {
+                issuerUri = fromUriString(authServerUrl).build().toUri();
+                tokenUri = fromUri(issuerUri).pathSegment("oauth", "token").build().toUri();
+            }
             // Configure http client
             final HttpClient httpClient = HttpClient.newHttpClient();
-            aisClient = new AISClient(resource, adminUsername, adminPassword, tokenUri, usersUri, httpClient);
+            aisClient = new AISClient(resource, adminUsername, adminPassword, tokenUri, usersUri, httpClient, isKeycloak, aisProperties);
         }
     }
 
@@ -251,5 +267,10 @@ public class DataAIS implements InitializingBean
             result = prime * result + ((user.getPassword() == null) ? 0 : user.getPassword().hashCode());
             return result;
         }
+    }
+
+    public boolean isKeycloak()
+    {
+        return isKeycloak;
     }
 }

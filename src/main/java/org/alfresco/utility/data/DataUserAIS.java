@@ -1,5 +1,6 @@
 package org.alfresco.utility.data;
 
+import org.alfresco.utility.TasAisProperties;
 import org.alfresco.utility.data.auth.DataAIS;
 import org.alfresco.utility.exception.DataPreparationException;
 import org.alfresco.utility.model.UserModel;
@@ -21,11 +22,24 @@ public class DataUserAIS extends DataUser
     @Autowired
     DataAIS dataAIS;
 
+    @Autowired
+    TasAisProperties aisProperties;
+
     @Override
     public UserModel createUser(String userName, String password) throws DataPreparationException
     {
-        UserModel userModel = super.createUser(userName, password);
-        createUserInAIS(userModel);
+        UserModel userModel;
+        if(dataAIS.isKeycloak())
+        {
+            userModel = super.createUser(userName, password);
+            createUserInAIS(userModel);
+            return userModel;
+        }
+        else
+        {
+            userModel = super.isUserInRepo(aisProperties.getTestUserUsername()) ?
+                new UserModel(aisProperties.getTestUserUsername(), aisProperties.getTestUserPassword()) : super.createUser(aisProperties.getTestUserUsername(), aisProperties.getTestUserPassword());
+        }
         return userModel;
     }
 

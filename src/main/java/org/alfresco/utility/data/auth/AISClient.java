@@ -15,6 +15,7 @@ import java.net.http.HttpRequest.BodyPublisher;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -25,6 +26,9 @@ import java.util.stream.Stream;
 
 import com.google.gson.Gson;
 
+import org.alfresco.utility.TasAisProperties;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 
 class AISClient
@@ -35,25 +39,36 @@ class AISClient
     private final URI tokenUri;
     private final URI usersUri;
     private final HttpClient httpClient;
+    private final boolean isKeycloak;
+    private final TasAisProperties aisProperties;
     private static final Gson GSON = new Gson();
 
-    AISClient(String clientId, String adminUsername, String adminPassword, URI tokenUri, URI usersUri, HttpClient httpClient)
+    AISClient(String clientId, String adminUsername, String adminPassword, URI tokenUri, URI usersUri, HttpClient httpClient, boolean isKeycloak, TasAisProperties aisProperties)
     {
         this.clientId = requireNonNull(clientId);
         this.adminUsername = requireNonNull(adminUsername);
         this.adminPassword = requireNonNull(adminPassword);
         this.tokenUri = requireNonNull(tokenUri);
-        this.usersUri = requireNonNull(usersUri);
+        this.usersUri = usersUri;
         this.httpClient = requireNonNull(httpClient);
+        this.isKeycloak = requireNonNull(isKeycloak);
+        this.aisProperties = requireNonNull(aisProperties);
     }
 
     Map<String, ?> authorizeUser(String username, String password)
     {
-        final HttpRequest request = createFormPostRequest(tokenUri, Map.of(
-                "grant_type", "password",
-                "username", username,
-                "password", password,
-                "client_id", clientId));
+        Map<String, String> requestForm = Map.of(
+            "grant_type", "password",
+            "username", username,
+            "password", password,
+            "scope", "openid",
+            "client_id", clientId);
+        if(!isKeycloak && StringUtils.isNotBlank(aisProperties.getAudience()))
+        {
+            requestForm = new HashMap<>(requestForm);
+            requestForm.put("audience", aisProperties.getAudience());
+        }
+        final HttpRequest request = createFormPostRequest(tokenUri, requestForm);
 
         String response = getResponse(request, requireOkStatus(r -> format("Failed to obtain AIS User (%s) Access Token: %s", username, r.body())));
 
@@ -168,12 +183,19 @@ class AISClient
                                        .map(e -> e.getKey() + "=" + encode(e.getValue(), UTF_8))
                                        .collect(Collectors.joining("&"));
 
-        return HttpRequest.newBuilder()
+        HttpRequest.Builder httpRequestBuilder = HttpRequest.newBuilder()
                           .uri(uri)
                           .headers("Content-Type", "application/x-www-form-urlencoded")
                           .header("Accept", "application/json")
-                          .POST(BodyPublishers.ofString(encodedForm))
-                          .build();
+                          .POST(BodyPublishers.ofString(encodedForm));
+
+        if(StringUtils.isNotBlank(aisProperties.getResource()) && StringUtils.isNotBlank(aisProperties.getCredentialsSecret()))
+        {
+            httpRequestBuilder
+                .header("Authorization", "Basic " + new String(Base64.encodeBase64((aisProperties.getResource() + ":" + aisProperties.getCredentialsSecret()).getBytes())));
+        }
+
+        return httpRequestBuilder.build();
     }
 
     static void setEnabled(Map<String, Object> user, boolean isEnabled)

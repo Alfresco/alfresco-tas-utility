@@ -133,6 +133,15 @@ public class TasAisProperties
     @Value("${identity-service.adminPassword:admin}")
     String adminPassword;
 
+    @Value("${identity-service.testUserUsername:#{null}}")
+    String testUserUsername;
+
+    @Value("${identity-service.testUserPassword:#{null}}")
+    String testUserPassword;
+
+    @Value("${identity-service.audience:#{null}}")
+    String audience;
+
     public String getAdminUsername()
     {
         return adminUsername;
@@ -166,5 +175,25 @@ public class TasAisProperties
     public String getResource()
     {
         return resource;
+    }
+
+    public String getCredentialsSecret()
+    {
+        return credentialsSecret;
+    }
+
+    public String getAudience()
+    {
+        return audience;
+    }
+
+    public String getTestUserUsername()
+    {
+        return testUserUsername;
+    }
+
+    public String getTestUserPassword()
+    {
+        return testUserPassword;
     }
 }
