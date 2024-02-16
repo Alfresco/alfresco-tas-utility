@@ -37,7 +37,7 @@ public class DataAIS implements InitializingBean
     private static final HashMap<Integer, AisToken> aisTokens = new HashMap<>();
     private static final int TIMEOUT_DELTA_MILLISECONDS = 5000;
     private boolean enabled;
-    private boolean isKeycloak;
+    private boolean isKeycloak = true;
 
     @Autowired
     private TasAisProperties aisProperties;
