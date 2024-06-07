@@ -74,12 +74,13 @@ class AISClient
         return GSON.fromJson(response, List.class);
     }
 
-    void createUser(String username, String password, String firstName, String lastName)
+    void createUser(String username, String password, String firstName, String lastName, String email)
     {
         final HttpRequest request = authenticatedRequestBuilder(usersUri)
                 .header("Content-Type", "application/json;charset=UTF-8")
                 .POST(asJson(Map.of(
                         "username", username,
+                        "email", email,
                         "firstName", firstName,
                         "lastName", lastName,
                         "enabled", true,

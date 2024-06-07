@@ -97,7 +97,7 @@ public class DataAIS implements InitializingBean
         {
             LOG.info(String.format("[AlfrescoIdentityService] Add user %s", user.getUsername()));
 
-            aisClient.createUser(user.getUsername(), user.getPassword(), user.getFirstName(), user.getLastName());
+            aisClient.createUser(user.getUsername(), user.getPassword(), user.getFirstName(), user.getLastName(), user.getEmailAddress());
             return this;
         }
 
