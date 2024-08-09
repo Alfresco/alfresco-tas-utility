@@ -28,7 +28,7 @@
         <maven.build.sourceVersion>${java.version}</maven.build.sourceVersion>
         <spring.version>5.3.25</spring.version>
         <suiteXmlFile>src/test/resources/unit-test.xml</suiteXmlFile>
-        <testNG.version>7.6.1</testNG.version>
+        <testNG.version>7.9.0</testNG.version>
         <dataPrep.version>2.6</dataPrep.version>
         <dependency.log4j.version>2.19.0</dependency.log4j.version>
         <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
