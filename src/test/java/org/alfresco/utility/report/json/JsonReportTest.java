@@ -1,6 +1,5 @@
 package org.alfresco.utility.report.json;
 
-import org.alfresco.utility.report.json.JsonReportListener;
 import org.testng.Assert;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;

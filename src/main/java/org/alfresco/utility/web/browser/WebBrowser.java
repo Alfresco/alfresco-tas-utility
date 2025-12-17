@@ -1,5 +1,6 @@
 package org.alfresco.utility.web.browser;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -22,32 +23,33 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
-import org.openqa.selenium.support.events.EventFiringWebDriver;
-import org.openqa.selenium.support.events.WebDriverEventListener;
+import org.openqa.selenium.support.events.WebDriverListener;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
 /**
  * A wrapper around an arbitrary WebDriver instance which supports registering
- * of a {@link WebDriverEventListener} for logging purposes.
+ * of a {@link WebDriverListener} for logging purposes.
  * 
  * @author Paul.Brodner
  */
-public class WebBrowser extends EventFiringWebDriver
+public class WebBrowser
 {
     protected static final Logger LOG = LoggerFactory.getLogger(WebBrowser.class);
     protected TasProperties properties;
-
+    protected final WebDriver driver;
     String mainWindow;
 
-    public WebBrowser(WebDriver driver, TasProperties properties)
-    {
-        super(driver);
+    public WebBrowser(WebDriver baseDriver, TasProperties properties) {
+        this.driver = baseDriver;
         this.properties = properties;
-        LOG.info("Initialising driver '{}'", driver.toString());
+        LOG.info("Initialising driver '{}'", driver);
+    }
+
+    public WebBrowser(WebDriver driver) {
+        this.driver = driver;
     }
 
     /**
@@ -59,9 +61,9 @@ public class WebBrowser extends EventFiringWebDriver
         {
             throw new RuntimeException("Failed to login");
         }
-        navigate().to(properties.getShareUrl());
-        manage().addCookie(new Cookie(httpState.getCookies()[0].getName(), httpState.getCookies()[0].getValue()));
-        navigate().refresh();
+        driver.navigate().to(properties.getShareUrl());
+        driver.manage().addCookie(new Cookie(httpState.getCookies()[0].getName(), httpState.getCookies()[0].getValue()));
+        driver.navigate().refresh();
         return this;
     }
 
@@ -70,7 +72,7 @@ public class WebBrowser extends EventFiringWebDriver
      */
     public void cleanUpAuthenticatedSession()
     {
-        manage().deleteAllCookies();
+        driver.manage().deleteAllCookies();
     }
 
     /**
@@ -85,12 +87,12 @@ public class WebBrowser extends EventFiringWebDriver
         try
         {
             Parameter.checkIsMandotary("WebElement", element);
-            new Actions(this).moveToElement(element).perform();
+            new Actions(driver).moveToElement(element).perform();
         }
         catch(MoveTargetOutOfBoundsException ex)
         {
-            ((JavascriptExecutor) this).executeScript("arguments[0].scrollIntoView(true);", element);
-            new Actions(this).moveToElement(element).perform();
+            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
+            new Actions(driver).moveToElement(element).perform();
         }
     }
 
@@ -104,7 +106,7 @@ public class WebBrowser extends EventFiringWebDriver
     public void mouseOver(WebElement element, int xOffset, int yOffset)
     {
         Parameter.checkIsMandotary("WebElement", element);
-        new Actions(this).moveToElement(element, xOffset, yOffset).perform();
+        new Actions(driver).moveToElement(element, xOffset, yOffset).perform();
     }
 
     /**
@@ -116,7 +118,7 @@ public class WebBrowser extends EventFiringWebDriver
         String javaScript = "var event = document.createEvent('MouseEvents');" +
             "event.initMouseEvent(\"mouseover\",true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);" +
             "arguments[0].dispatchEvent(event);";
-        executeScript(javaScript, webElement);
+        ((JavascriptExecutor) driver).executeScript(javaScript, webElement);
     }
 
     /**
@@ -124,7 +126,7 @@ public class WebBrowser extends EventFiringWebDriver
      */
     public void refresh()
     {
-        this.navigate().refresh();
+        driver.navigate().refresh();
     }
 
     /**
@@ -135,14 +137,14 @@ public class WebBrowser extends EventFiringWebDriver
     public void waitUntilElementHasAttribute(WebElement element, String attribute, String value)
     {
         Parameter.checkIsMandotary("Element", element);
-        WebDriverWait wait = new WebDriverWait(this, properties.getExplicitWait());
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(properties.getExplicitWait()));
         wait.until(ExpectedConditions.attributeContains(element, attribute, value));
     }
 
     public void waitUntilElementHasAttribute(By locator, String attribute, String value)
     {
         Parameter.checkIsMandotary("Element", locator);
-        WebDriverWait wait = new WebDriverWait(this, properties.getExplicitWait());
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(properties.getExplicitWait()));
         wait.until(ExpectedConditions.attributeContains(locator, attribute, value));
     }
 
@@ -165,7 +167,7 @@ public class WebBrowser extends EventFiringWebDriver
     public WebElement waitUntilElementVisible(By locator, long timeOutInSeconds)
     {
         Parameter.checkIsMandotary("Locator", locator);
-        WebDriverWait wait = new WebDriverWait(this, timeOutInSeconds);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(properties.getExplicitWait()));
         return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
     
@@ -179,7 +181,7 @@ public class WebBrowser extends EventFiringWebDriver
     public WebElement waitUntilElementIsPresent(By locator, long timeOutInSeconds)
     {
         Parameter.checkIsMandotary("Locator", locator);
-        WebDriverWait wait = new WebDriverWait(this, timeOutInSeconds);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(properties.getExplicitWait()));
         return wait.until(ExpectedConditions.presenceOfElementLocated(locator));
     }
     
@@ -206,7 +208,7 @@ public class WebBrowser extends EventFiringWebDriver
     {
         Parameter.checkIsMandotary("Parent locator", parentLocator);
         Parameter.checkIsMandotary("Child locator", childLocator);
-        WebDriverWait wait = new WebDriverWait(this, timeOutInSeconds);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(properties.getExplicitWait()));
         return wait.until(ExpectedConditions.presenceOfNestedElementLocatedBy(parentLocator, childLocator));
     }
     
@@ -221,7 +223,7 @@ public class WebBrowser extends EventFiringWebDriver
     {
         Parameter.checkIsMandotary("Parent locator", parentLocator);
         Parameter.checkIsMandotary("Child locator", childLocator);
-        WebDriverWait wait = new WebDriverWait(this, properties.getExplicitWait());
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(properties.getExplicitWait()));
         return wait.until(ExpectedConditions.presenceOfNestedElementLocatedBy(parentLocator, childLocator));
     }
     
@@ -237,7 +239,7 @@ public class WebBrowser extends EventFiringWebDriver
     {
         Parameter.checkIsMandotary("Parent locator", parentLocator);
         Parameter.checkIsMandotary("Child locator", childLocator);
-        WebDriverWait wait = new WebDriverWait(this, timeOutInSeconds);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(properties.getExplicitWait()));
         return wait.until(ExpectedConditions.presenceOfNestedElementLocatedBy(parentLocator, childLocator));
     }
     
@@ -252,7 +254,7 @@ public class WebBrowser extends EventFiringWebDriver
     {
         Parameter.checkIsMandotary("Parent locator", parentLocator);
         Parameter.checkIsMandotary("Child locator", childLocator);
-        WebDriverWait wait = new WebDriverWait(this, properties.getExplicitWait());
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(properties.getExplicitWait()));
         return wait.until(ExpectedConditions.presenceOfNestedElementLocatedBy(parentLocator, childLocator));
     }
 
@@ -275,7 +277,7 @@ public class WebBrowser extends EventFiringWebDriver
     public WebElement waitUntilElementVisible(WebElement element, long timeOutInSeconds)
     {
         Parameter.checkIsMandotary("Element", element);
-        WebDriverWait wait = new WebDriverWait(this, timeOutInSeconds);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(properties.getExplicitWait()));
         return wait.until(ExpectedConditions.visibilityOf(element));
     }
 
@@ -288,7 +290,7 @@ public class WebBrowser extends EventFiringWebDriver
     public List<WebElement> waitUntilElementsVisible(By locator)
     {
         Parameter.checkIsMandotary("Locator", locator);
-        WebDriverWait wait = new WebDriverWait(this, properties.getExplicitWait());
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(properties.getExplicitWait()));
         return wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(locator));
     }
 
@@ -300,7 +302,7 @@ public class WebBrowser extends EventFiringWebDriver
      */
     public List<WebElement> waitUntilElementsVisible(List<WebElement> elements)
     {
-        WebDriverWait wait = new WebDriverWait(this, properties.getExplicitWait());
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(properties.getExplicitWait()));
         return wait.until(ExpectedConditions.visibilityOfAllElements(elements));
     }
 
@@ -356,7 +358,7 @@ public class WebBrowser extends EventFiringWebDriver
     public WebElement waitWithRetryAndReturnWebElement(By locator, int secondsToWait, int retryTimes)
     {
         waitUntilElementIsDisplayedWithRetry(locator, secondsToWait, retryTimes );
-        return findElement(locator);
+        return driver.findElement(locator);
     }
 
     /**
@@ -451,13 +453,13 @@ public class WebBrowser extends EventFiringWebDriver
      */
     public WebElement waitUntilElementClickable(WebElement element)
     {
-        WebDriverWait wait = new WebDriverWait(this, properties.getExplicitWait());
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(properties.getExplicitWait()));
         return wait.until(ExpectedConditions.elementToBeClickable(element));
     }
 
     public WebElement waitUntilElementClickable(By locator)
     {
-        WebDriverWait wait = new WebDriverWait(this, properties.getExplicitWait());
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(properties.getExplicitWait()));
         return wait.until(ExpectedConditions.elementToBeClickable(locator));
     }
 
@@ -470,7 +472,7 @@ public class WebBrowser extends EventFiringWebDriver
     public WebElement waitUntilElementClickable(By locator, long timeOutInSeconds)
     {
         Parameter.checkIsMandotary("Locator", locator);
-        WebDriverWait wait = new WebDriverWait(this, timeOutInSeconds);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(properties.getExplicitWait()));
         return wait.until(ExpectedConditions.elementToBeClickable(locator));
     }
 
@@ -483,7 +485,7 @@ public class WebBrowser extends EventFiringWebDriver
     public WebElement waitUntilElementClickable(WebElement element, long timeOutInSeconds)
     {
         Parameter.checkIsMandotary("Element", element);
-        WebDriverWait wait = new WebDriverWait(this, timeOutInSeconds);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(properties.getExplicitWait()));
         return wait.until(ExpectedConditions.elementToBeClickable(element));
     }
 
@@ -495,7 +497,7 @@ public class WebBrowser extends EventFiringWebDriver
     public void waitUntilElementContainsText(WebElement element, String text)
     {
         Parameter.checkIsMandotary("Element", element);
-        WebDriverWait wait = new WebDriverWait(this, properties.getExplicitWait());
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(properties.getExplicitWait()));
         wait.until(ExpectedConditions.textToBePresentInElement(element, text));
     }
 
@@ -507,7 +509,7 @@ public class WebBrowser extends EventFiringWebDriver
     public void waitUntilElementContainsText(By locator, String text)
     {
         Parameter.checkIsMandotary("Locator", locator);
-        WebDriverWait wait = new WebDriverWait(this, properties.getExplicitWait());
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(properties.getExplicitWait()));
         wait.until(ExpectedConditions.textToBePresentInElementLocated(locator, text));
     }
 
@@ -520,7 +522,7 @@ public class WebBrowser extends EventFiringWebDriver
     public void waitUrlContains(String URLfraction, long timeOutInSeconds)
     {
         Parameter.checkIsMandotary("Element", URLfraction);
-        WebDriverWait wait = new WebDriverWait(this, timeOutInSeconds);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(properties.getExplicitWait()));
         wait.until(ExpectedConditions.urlContains(URLfraction));
     }
 
@@ -543,10 +545,10 @@ public class WebBrowser extends EventFiringWebDriver
     public void waitUntilElementDeletedFromDom(By locator, long timeOutInSeconds)
     {
         Parameter.checkIsMandotary("Locator", locator);
-        WebDriverWait wait = new WebDriverWait(this, timeOutInSeconds);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(properties.getExplicitWait()));
         try
         {
-            wait.until(ExpectedConditions.stalenessOf(this.findElement(locator)));
+            wait.until(ExpectedConditions.stalenessOf(driver.findElement(locator)));
         }
         catch (NoSuchElementException e)
         {
@@ -572,7 +574,7 @@ public class WebBrowser extends EventFiringWebDriver
     public void waitUntilElementDisappears(By locator, long timeOutInSeconds)
     {
         Parameter.checkIsMandotary("Locator", locator);
-        WebDriverWait wait = new WebDriverWait(this, timeOutInSeconds);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(properties.getExplicitWait()));
         wait.until(ExpectedConditions.invisibilityOfElementLocated(locator));
     }
 
@@ -585,7 +587,7 @@ public class WebBrowser extends EventFiringWebDriver
     public void waitUntilElementDisappears(WebElement locator, long timeOutInSeconds)
     {
         Parameter.checkIsMandotary("Locator", locator);
-        WebDriverWait wait = new WebDriverWait(this, timeOutInSeconds);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(properties.getExplicitWait()));
         wait.until(ExpectedConditions.invisibilityOf(locator));
     }
 
@@ -611,7 +613,7 @@ public class WebBrowser extends EventFiringWebDriver
         Parameter.checkIsMandotary("Locator", locator);
         try
         {
-            return this.findElement(locator).isDisplayed();
+            return driver.findElement(locator).isDisplayed();
         }
         catch (NoSuchElementException nse)
         {
@@ -705,7 +707,7 @@ public class WebBrowser extends EventFiringWebDriver
      */
     public String getPreviousUrl()
     {
-        String url = (String) executeScript("return document.referrer;");
+        String url = (String) ((JavascriptExecutor) driver).executeScript("return document.referrer;");
         if (url == null || url.isEmpty())
         {
             throw new UnsupportedOperationException("There is no previous url value");
@@ -722,7 +724,7 @@ public class WebBrowser extends EventFiringWebDriver
     public void switchToFrame(String frameId)
     {
         Parameter.checkIsMandotary("FrameId", frameId);
-        this.switchTo().frame(frameId);
+        driver.switchTo().frame(frameId);
     }
 
     /**
@@ -730,7 +732,7 @@ public class WebBrowser extends EventFiringWebDriver
      */
     public void switchToDefaultContent()
     {
-        this.switchTo().defaultContent();
+        driver.switchTo().defaultContent();
     }
 
     /**
@@ -738,8 +740,8 @@ public class WebBrowser extends EventFiringWebDriver
      */
     public void switchWindow()
     {
-        mainWindow = this.getWindowHandle();
-        Set<String> windows = this.getWindowHandles();
+        mainWindow = driver.getWindowHandle();
+        Set<String> windows = driver.getWindowHandles();
         windows.remove(mainWindow);
         this.switchToWindow(windows.iterator().next());
     }
@@ -749,8 +751,8 @@ public class WebBrowser extends EventFiringWebDriver
      */
     public void switchWindow(int windowIndex)
     {
-        mainWindow = this.getWindowHandle();
-        Set<String> windows = this.getWindowHandles();
+        mainWindow = driver.getWindowHandle();
+        Set<String> windows = driver.getWindowHandles();
         int windowsNumber = windows.size();
         int counter = 1;
         int retryRefreshCount = 5;
@@ -765,7 +767,7 @@ public class WebBrowser extends EventFiringWebDriver
             }
             LOG.info("Wait for window: " + counter);
             waitInSeconds(2);
-            windowsNumber = this.getWindowHandles().size();
+            windowsNumber = driver.getWindowHandles().size();
             counter++;
         }
     }
@@ -775,17 +777,17 @@ public class WebBrowser extends EventFiringWebDriver
      */
     public void switchWindow(String winHandler)
     {
-        mainWindow = this.getWindowHandle();
-        for (String winHandle : this.getWindowHandles())
+        mainWindow = driver.getWindowHandle();
+        for (String winHandle : driver.getWindowHandles())
         {
-            this.switchTo().window(winHandle);
-            if (this.getCurrentUrl().contains(winHandler))
+            driver.switchTo().window(winHandle);
+            if (driver.getCurrentUrl().contains(winHandler))
             {
                 break;
             }
             else
             {
-                this.switchTo().window(mainWindow);
+                driver.switchTo().window(mainWindow);
             }
         }
     }
@@ -795,7 +797,7 @@ public class WebBrowser extends EventFiringWebDriver
      */
     public void closeWindowAndSwitchBack()
     {
-        this.close();
+        driver.close();
         this.switchToWindow(mainWindow);
     }
 
@@ -805,16 +807,16 @@ public class WebBrowser extends EventFiringWebDriver
 
     public void closeWindowAndSwitchBackParametrized(String windowToSwitchTo, String windowToClose)
     {
-        String currentWindow = this.getWindowHandle();
+        String currentWindow = driver.getWindowHandle();
 
         if (currentWindow.equals(windowToClose))
         {
-            this.close();
+            driver.close();
             this.switchToWindow(windowToSwitchTo);
         }
         else
         {
-            LOG.info("You are not on the expected page, you are on: " + this.getCurrentUrl());
+            LOG.info("You are not on the expected page, you are on: " + driver.getCurrentUrl());
         }
     }
 
@@ -824,8 +826,8 @@ public class WebBrowser extends EventFiringWebDriver
 
     public void closeWindowAcceptingModalDialog()
     {
-        this.close();
-        Alert alert = this.switchTo().alert();
+        driver.close();
+        Alert alert = driver.switchTo().alert();
         String alertText = alert.getText().trim();
         LOG.info("Alert data: " + alertText);
         alert.accept();
@@ -842,7 +844,7 @@ public class WebBrowser extends EventFiringWebDriver
     public void switchToWindow(String windowHandle)
     {
         Parameter.checkIsMandotary("windowHandle", windowHandle);
-        this.switchTo().window(windowHandle);
+        driver.switchTo().window(windowHandle);
     }
 
     /**
@@ -858,7 +860,7 @@ public class WebBrowser extends EventFiringWebDriver
         {
             throw new IllegalArgumentException("Cookie identifier is required.");
         }
-        Set<Cookie> cookies = this.manage().getCookies();
+        Set<Cookie> cookies = driver.manage().getCookies();
         if (cookies != null)
         {
             for (Cookie cookie : cookies)
@@ -878,7 +880,7 @@ public class WebBrowser extends EventFiringWebDriver
     public void deleteCookies()
     {
 
-        this.manage().deleteAllCookies();
+        driver.manage().deleteAllCookies();
     }
 
     /**
@@ -890,7 +892,7 @@ public class WebBrowser extends EventFiringWebDriver
     public void deleteCookie(Cookie cookie)
     {
         Parameter.checkIsMandotary("Cookie", cookie);
-        this.manage().deleteCookie(cookie);
+        driver.manage().deleteCookie(cookie);
     }
 
     /**
@@ -898,7 +900,7 @@ public class WebBrowser extends EventFiringWebDriver
      */
     public void maximize()
     {
-        this.manage().window().maximize();
+        driver.manage().window().maximize();
     }
 
     /**
@@ -911,7 +913,7 @@ public class WebBrowser extends EventFiringWebDriver
     {
         Parameter.checkIsMandotary("source element", source);
         Parameter.checkIsMandotary("target element", target);
-        Actions builder = new Actions(this);
+        Actions builder = new Actions(driver);
         builder.dragAndDrop(source, target).perform();
     }
 
@@ -925,7 +927,7 @@ public class WebBrowser extends EventFiringWebDriver
     public void dragAndDrop(WebElement source, int x, int y)
     {
         Parameter.checkIsMandotary("source element", source);
-        Actions builder = new Actions(this);
+        Actions builder = new Actions(driver);
         Action dragAndDrop = builder.dragAndDropBy(source, x, y).build();
         dragAndDrop.perform();
     }
@@ -938,7 +940,7 @@ public class WebBrowser extends EventFiringWebDriver
     public void doubleClickOnElement(WebElement element)
     {
         Parameter.checkIsMandotary("doubleclick element", element);
-        Actions builder = new Actions(this);
+        Actions builder = new Actions(driver);
         Action doubleClick = builder.doubleClick(element).build();
         doubleClick.perform();
     }
@@ -951,7 +953,7 @@ public class WebBrowser extends EventFiringWebDriver
     public void rightClickOnElement(WebElement element)
     {
         Parameter.checkIsMandotary("right element", element);
-        Actions builder = new Actions(this);
+        Actions builder = new Actions(driver);
         Action rightClick = builder.contextClick(element).build();
         rightClick.perform();
     }
@@ -1030,7 +1032,7 @@ public class WebBrowser extends EventFiringWebDriver
     public List<WebElement> findDisplayedElementsFromLocator(By selector)
     {
         Parameter.checkIsMandotary("Locator", selector);
-        List<WebElement> elementList = this.findElements(selector);
+        List<WebElement> elementList = driver.findElements(selector);
         List<WebElement> displayedElementList = new ArrayList<WebElement>();
         for (WebElement elementSelected : elementList)
         {
@@ -1158,7 +1160,7 @@ public class WebBrowser extends EventFiringWebDriver
 
     public boolean isAlertPresent() {
         try {
-            this.switchTo().alert();
+            driver.switchTo().alert();
             return true;
         } catch (Exception e) {
             return false;
@@ -1167,7 +1169,7 @@ public class WebBrowser extends EventFiringWebDriver
 
     public void handleModalDialogAcceptingAlert() {
         if (isAlertPresent()) {
-            Alert alert = this.switchTo().alert();
+            Alert alert = driver.switchTo().alert();
             String alertText = alert.getText().trim();
             LOG.info("Alert data: " + alertText);
             alert.accept();
@@ -1176,7 +1178,7 @@ public class WebBrowser extends EventFiringWebDriver
 
     public void handleModalDialogDismissingAlert() {
         if (isAlertPresent()) {
-            Alert alert = this.switchTo().alert();
+            Alert alert = driver.switchTo().alert();
             String alertText = alert.getText().trim();
             LOG.info("Alert data: " + alertText);
             alert.dismiss();
@@ -1240,7 +1242,7 @@ public class WebBrowser extends EventFiringWebDriver
     public void waitUntilElementDoesNotContainText(WebElement element, String text)
     {
         Parameter.checkIsMandotary("Element", element);
-        WebDriverWait wait = new WebDriverWait(this, properties.getExplicitWait());
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(properties.getExplicitWait()));
         wait.until(ExpectedConditions.not(ExpectedConditions.textToBePresentInElement(element, text)));
     }
 
@@ -1253,5 +1255,38 @@ public class WebBrowser extends EventFiringWebDriver
     public List<String> getTextFromElementList(List<WebElement> elementsList)
     {
         return elementsList.stream().map(WebElement::getText).collect(Collectors.toList());
+    }
+
+    public WebDriver.Navigation navigate() { return driver.navigate(); }
+
+    public WebDriver getDriver()
+    {
+        return driver;
+    }
+
+    public WebElement findElement(By by) {
+        return driver.findElement(by);
+    }
+
+    public java.util.List<WebElement> findElements(By by) {
+        return driver.findElements(by);
+    }
+
+    public WebDriver.TargetLocator switchTo() {
+        return driver.switchTo();
+    }
+
+    public String getCurrentUrl() {
+        return driver.getCurrentUrl();
+    }
+
+    public void get(String url)
+    {
+        driver.get(url);
+    }
+
+    public void quit()
+    {
+        driver.quit();
     }
 }

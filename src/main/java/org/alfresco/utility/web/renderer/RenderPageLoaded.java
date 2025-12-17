@@ -9,6 +9,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
+
 /**
  * Render one element using selenium's expectedCondition.
  * Just annotate your {@link PageObject} with
@@ -60,7 +62,7 @@ public class RenderPageLoaded extends RenderElement
         };
         try
         {
-            new WebDriverWait(browser, timeOutInSeconds).until(expectation);
+            new WebDriverWait(browser.getDriver(), Duration.ofSeconds(timeOutInSeconds)).until(expectation);
         }
         catch (TimeoutException exception)
         {
