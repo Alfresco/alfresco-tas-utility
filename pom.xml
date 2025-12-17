@@ -4,7 +4,7 @@
     <groupId>org.alfresco.tas</groupId>
     <artifactId>utility</artifactId>
     <name>alfresco-tas-utility</name>
-    <version>5.0.3-SNAPSHOT</version>
+    <version>5.0.3</version>
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-super-pom</artifactId>
@@ -48,7 +48,7 @@
         <connection>scm:git:https://github.com/Alfresco/alfresco-tas-utility.git</connection>
         <developerConnection>scm:git:https://github.com/Alfresco/alfresco-tas-utility.git</developerConnection>
         <url>https://github.com/Alfresco/alfresco-tas-utility</url>
-        <tag>HEAD</tag>
+        <tag>utility-5.0.3</tag>
     </scm>
 
     <issueManagement>
