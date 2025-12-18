@@ -56,7 +56,7 @@ public class EventWebBrowserListener implements WebDriverListener {
         String targetName = (target != null) ? target.getClass().getSimpleName() : "Unknown target";
         String methodName = (method != null) ? method.getName() : "Unknown method";
 
-        LOG.error("Error occurred in [{}] while calling method [{}] with args {}",
+        LOG.error("Error occurred in [{}] while calling method [{}] with throwable {}",
                 targetName, methodName, cause);
     }
 

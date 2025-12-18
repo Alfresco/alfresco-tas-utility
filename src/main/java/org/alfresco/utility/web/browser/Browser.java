@@ -19,27 +19,29 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.safari.SafariDriver;
 
 /**
- * Return differed DesiredCapabilities for {@link WebDriver}
+ *  * Provides browser-specific configurations and creates corresponding {@link WebDriver}
+ *  * instances using Selenium options classes (for example {@link FirefoxOptions},
+ *  * {@link ChromeOptions}, etc.).
  *
  * @author Paul.Brodner
  */
 public enum Browser
 {
     FIREFOX {
-                @Override
-                public WebDriver createWebDriver(TasProperties properties) {
-                    setFirefoxDriver();
-                    FirefoxOptions options = setFirefoxOptions(properties);
-                    if (SystemUtils.IS_OS_LINUX) {
-                        options.addArguments("--headless");
-                        Map<String, String> env = new HashMap<>();
-                        env.put("DISPLAY", ":" + properties.getDisplayXport());
-                        return new FirefoxDriver(new GeckoDriverService.Builder().withEnvironment(env).build(), options);
-                    } else {
-                        return new FirefoxDriver(options);
-                    }
-                }
-            },
+        @Override
+        public WebDriver createWebDriver(TasProperties properties) {
+            setFirefoxDriver();
+            FirefoxOptions options = setFirefoxOptions(properties);
+            if (SystemUtils.IS_OS_LINUX) {
+                options.addArguments("--headless");
+                Map<String, String> env = new HashMap<>();
+                env.put("DISPLAY", ":" + properties.getDisplayXport());
+                return new FirefoxDriver(new GeckoDriverService.Builder().withEnvironment(env).build(), options);
+            } else {
+                return new FirefoxDriver(options);
+            }
+        }
+    },
     CHROME {
         @Override
         public WebDriver createWebDriver(TasProperties properties) {

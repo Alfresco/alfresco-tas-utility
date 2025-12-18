@@ -167,7 +167,7 @@ public class WebBrowser
     public WebElement waitUntilElementVisible(By locator, long timeOutInSeconds)
     {
         Parameter.checkIsMandotary("Locator", locator);
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(properties.getExplicitWait()));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeOutInSeconds));
         return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
     
@@ -181,7 +181,7 @@ public class WebBrowser
     public WebElement waitUntilElementIsPresent(By locator, long timeOutInSeconds)
     {
         Parameter.checkIsMandotary("Locator", locator);
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(properties.getExplicitWait()));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeOutInSeconds));
         return wait.until(ExpectedConditions.presenceOfElementLocated(locator));
     }
     
@@ -239,7 +239,7 @@ public class WebBrowser
     {
         Parameter.checkIsMandotary("Parent locator", parentLocator);
         Parameter.checkIsMandotary("Child locator", childLocator);
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(properties.getExplicitWait()));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeOutInSeconds));
         return wait.until(ExpectedConditions.presenceOfNestedElementLocatedBy(parentLocator, childLocator));
     }
     
@@ -277,7 +277,7 @@ public class WebBrowser
     public WebElement waitUntilElementVisible(WebElement element, long timeOutInSeconds)
     {
         Parameter.checkIsMandotary("Element", element);
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(properties.getExplicitWait()));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeOutInSeconds));
         return wait.until(ExpectedConditions.visibilityOf(element));
     }
 
@@ -522,7 +522,7 @@ public class WebBrowser
     public void waitUrlContains(String URLfraction, long timeOutInSeconds)
     {
         Parameter.checkIsMandotary("Element", URLfraction);
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(properties.getExplicitWait()));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeOutInSeconds));
         wait.until(ExpectedConditions.urlContains(URLfraction));
     }
 
@@ -545,7 +545,7 @@ public class WebBrowser
     public void waitUntilElementDeletedFromDom(By locator, long timeOutInSeconds)
     {
         Parameter.checkIsMandotary("Locator", locator);
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(properties.getExplicitWait()));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeOutInSeconds));
         try
         {
             wait.until(ExpectedConditions.stalenessOf(driver.findElement(locator)));
@@ -587,7 +587,7 @@ public class WebBrowser
     public void waitUntilElementDisappears(WebElement locator, long timeOutInSeconds)
     {
         Parameter.checkIsMandotary("Locator", locator);
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(properties.getExplicitWait()));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeOutInSeconds));
         wait.until(ExpectedConditions.invisibilityOf(locator));
     }
 
