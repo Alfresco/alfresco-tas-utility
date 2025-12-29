@@ -75,7 +75,7 @@ public abstract class HtmlPage extends WebDriverAware
      */
     public String getPageTitle()
     {
-        return browser.getTitle();
+        return browser.getDriver().getTitle();
     }
 
     /**

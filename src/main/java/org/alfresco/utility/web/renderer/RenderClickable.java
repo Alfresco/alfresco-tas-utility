@@ -6,6 +6,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
+
 /**
  * Render one element using selenium's expectedCondition.
  * Just annotate your {@link PageObject} with
@@ -22,7 +24,7 @@ public class RenderClickable extends RenderElement
     @Override
     protected void doWork(By locator, WebBrowser browser, long timeOutInSeconds)
     {
-        WebDriverWait wait = new WebDriverWait(browser, timeOutInSeconds);
+        WebDriverWait wait = new WebDriverWait(browser.getDriver(), Duration.ofSeconds(timeOutInSeconds));
         wait.until(ExpectedConditions.elementToBeClickable(locator));
     }
 }
