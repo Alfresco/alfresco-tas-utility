@@ -4,7 +4,7 @@
     <groupId>org.alfresco.tas</groupId>
     <artifactId>utility</artifactId>
     <name>alfresco-tas-utility</name>
-    <version>5.0.3-SNAPSHOT</version>
+    <version>6.0.0-A.1-SNAPSHOT</version>
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-super-pom</artifactId>
@@ -26,7 +26,7 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <maven.build.sourceVersion>${java.version}</maven.build.sourceVersion>
-        <spring.version>5.3.25</spring.version>
+        <spring.version>7.0.2</spring.version>
         <suiteXmlFile>src/test/resources/unit-test.xml</suiteXmlFile>
         <testNG.version>7.6.1</testNG.version>
         <dataPrep.version>2.6</dataPrep.version>
@@ -190,6 +190,12 @@
     </dependencyManagement>
 
     <dependencies>
+
+        <dependency>
+            <groupId>jakarta.platform</groupId>
+            <artifactId>jakarta.jakartaee-api</artifactId>
+            <version>11.0.0</version>
+        </dependency>
 
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
