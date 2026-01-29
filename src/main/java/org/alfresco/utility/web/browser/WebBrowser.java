@@ -1257,26 +1257,33 @@ public class WebBrowser
         return elementsList.stream().map(WebElement::getText).collect(Collectors.toList());
     }
 
-    public WebDriver.Navigation navigate() { return driver.navigate(); }
+    public WebDriver.Navigation navigate()
+    {
+        return driver.navigate();
+    }
 
     public WebDriver getDriver()
     {
         return driver;
     }
 
-    public WebElement findElement(By by) {
+    public WebElement findElement(By by)
+    {
         return driver.findElement(by);
     }
 
-    public java.util.List<WebElement> findElements(By by) {
+    public java.util.List<WebElement> findElements(By by)
+    {
         return driver.findElements(by);
     }
 
-    public WebDriver.TargetLocator switchTo() {
+    public WebDriver.TargetLocator switchTo()
+    {
         return driver.switchTo();
     }
 
-    public String getCurrentUrl() {
+    public String getCurrentUrl()
+    {
         return driver.getCurrentUrl();
     }
 
