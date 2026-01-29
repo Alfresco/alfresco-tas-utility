@@ -39,8 +39,7 @@
         <dependency.jackson.version>2.14.2</dependency.jackson.version>
         <org.jvnet.version>0.6.5</org.jvnet.version>
         <dependency.jakarta-ee-mail.version>2.0.1</dependency.jakarta-ee-mail.version>
-        <seleniumjava.version>3.141.59</seleniumjava.version>
-        <yandex.qatools.version>1.20.0</yandex.qatools.version>
+        <seleniumjava.version>4.40.0</seleniumjava.version>
         <apache.commons>3.11</apache.commons>
     </properties>
 
@@ -354,13 +353,6 @@
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
             <version>${seleniumjava.version}</version>
-        </dependency>
-
-        <!-- yandex -->
-        <dependency>
-            <groupId>ru.yandex.qatools.htmlelements</groupId>
-            <artifactId>htmlelements-java</artifactId>
-            <version>${yandex.qatools.version}</version>
         </dependency>
 
         <dependency>

@@ -12,49 +12,70 @@ import org.apache.commons.lang3.SystemUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.GeckoDriverService;
 import org.openqa.selenium.ie.InternetExplorerDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.safari.SafariDriver;
 
 /**
- * Return differed DesiredCapabilities for {@link WebDriver}
- * 
+ *  * Provides browser-specific configurations and creates corresponding {@link WebDriver}
+ *  * instances using Selenium options classes (for example {@link FirefoxOptions},
+ *  * {@link ChromeOptions}, etc.).
+ *
  * @author Paul.Brodner
  */
 public enum Browser
 {
-    FIREFOX(DesiredCapabilities.firefox()),
-    CHROME(DesiredCapabilities.chrome()),
-    //HTMLUNIT(DesiredCapabilities.htmlUnit()),
-    INTERNETEXPLORER(DesiredCapabilities.internetExplorer()),
-    OPERA(DesiredCapabilities.operaBlink()),
-    HTMLINITDRIVER(DesiredCapabilities.htmlUnit()),
+    FIREFOX {
+        @Override
+        public WebDriver createWebDriver(TasProperties properties) {
+            setFirefoxDriver();
+            FirefoxOptions options = setFirefoxOptions(properties);
+            if (SystemUtils.IS_OS_LINUX) {
+                options.addArguments("--headless");
+                Map<String, String> env = new HashMap<>();
+                env.put("DISPLAY", ":" + properties.getDisplayXport());
+                return new FirefoxDriver(new GeckoDriverService.Builder().withEnvironment(env).build(), options);
+            } else {
+                return new FirefoxDriver(options);
+            }
+        }
+    },
+    CHROME {
+        @Override
+        public WebDriver createWebDriver(TasProperties properties) {
+            setChromeDriver();
+            HashMap<String, Object> chromePrefs = new HashMap<>();
+            chromePrefs.put("profile.default_content_settings.popups", 0);
+            chromePrefs.put("download.default_directory", getDownloadLocation());
 
-    /*
-     * Add Safari-Driver extension prior to tests
-     * http://selenium-release.storage.googleapis.com/2.48/SafariDriver.safariextz
-     */
-    SAFARI(DesiredCapabilities.safari());
+            ChromeOptions chromeOptions = new ChromeOptions();
+            chromeOptions.addArguments("--start-maximized");
+            chromeOptions.addArguments(String.format("--lang=%s", getBrowserLanguage(properties)));
+            chromeOptions.setExperimentalOption("prefs", chromePrefs);
+            return new ChromeDriver(chromeOptions);
+        }
+    },
+    //HTMLUNIT(DesiredCapabilities.htmlUnit()),
+    INTERNETEXPLORER {
+        @Override
+        public WebDriver createWebDriver(TasProperties properties) {
+            return new InternetExplorerDriver();
+        }
+    },
+    SAFARI {
+        @Override
+        public WebDriver createWebDriver(TasProperties properties) {
+            return new SafariDriver();
+        }
+    };
+
+    public abstract WebDriver createWebDriver(TasProperties properties);
 
     public static Browser getBrowserFromProperties(TasProperties properties)
     {
         return valueOf(properties.getBrowserName().toUpperCase());
-    }
-
-    private final DesiredCapabilities capabilities;
-
-    Browser(DesiredCapabilities caps)
-    {
-        this.capabilities = caps;
-    }
-
-    public DesiredCapabilities getCapabilities()
-    {
-        return capabilities;
     }
 
     /*
@@ -91,19 +112,17 @@ public enum Browser
         {
             case "firefox":
                 setFirefoxDriver();
+                FirefoxOptions firefoxOptions = setFirefoxOptions(properties);
                 if (SystemUtils.IS_OS_LINUX)
                 {
-                    FirefoxBinary firefoxBinary = new FirefoxBinary();
-                    firefoxBinary.addCommandLineOptions("--headless");
+                    firefoxOptions.addArguments("--headless");
                     Map<String, String> env = new HashMap<String, String>();
                     env.put("DISPLAY", ":" + properties.getDisplayXport());
-                    FirefoxOptions options1 = setFirefoxOptions(properties);
-                    options1.setBinary(firefoxBinary);
-                    return new FirefoxDriver(new GeckoDriverService.Builder().withEnvironment(env).build(), options1);
+                    return new FirefoxDriver(new GeckoDriverService.Builder().withEnvironment(env).build(), firefoxOptions);
                 }
                 else
                 {
-                    return new FirefoxDriver(setFirefoxOptions(properties));
+                    return new FirefoxDriver(firefoxOptions);
                 }
             case "chrome":
                 setChromeDriver();
@@ -111,12 +130,11 @@ public enum Browser
                 chromePrefs.put("profile.default_content_settings.popups", 0);
                 chromePrefs.put("download.default_directory", getDownloadLocation());
 
-                ChromeOptions options = new ChromeOptions();
-                options.addArguments("--start-maximized");
-                options.addArguments(String.format("--lang=%s", getBrowserLanguage(properties)));
-                options.setExperimentalOption("prefs", chromePrefs);
-                ChromeDriver chromeDriver = new ChromeDriver(options);
-                return chromeDriver;
+                ChromeOptions chromeOptions = new ChromeOptions();
+                chromeOptions.addArguments("--start-maximized");
+                chromeOptions.addArguments(String.format("--lang=%s", getBrowserLanguage(properties)));
+                chromeOptions.setExperimentalOption("prefs", chromePrefs);
+                return new ChromeDriver(chromeOptions);
             case "ie":
                 return new InternetExplorerDriver();
             //case "htmlunit":
@@ -172,7 +190,7 @@ public enum Browser
         String testDataFolder = srcRoot + "testdata" + File.separator;
         return testDataFolder;
     }
-    
+
     private static String getBrowserLanguage(TasProperties properties)
     {
         if(!StringUtils.isEmpty(properties.getBrowserLanguageCountry()))
@@ -181,6 +199,4 @@ public enum Browser
         }
         return properties.getBrowserLanguage();
     }
-    
-   
 }

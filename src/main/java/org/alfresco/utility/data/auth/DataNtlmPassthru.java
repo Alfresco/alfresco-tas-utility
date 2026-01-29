@@ -4,13 +4,12 @@ import static org.alfresco.utility.report.log.Step.STEP;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 
 import org.alfresco.utility.TasProperties;
 import org.alfresco.utility.Utility;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -19,6 +18,7 @@ import org.springframework.stereotype.Service;
 /**
  * Created by Claudia Agache on 6/23/2017.
  * https://support.microsoft.com/en-in/help/322684/how-to-use-the-directory-service-command-line-tools-to-manage-active-directory-objects-in-windows-server-2003
+   Updated By Swarnajit Adhikary on 12/17/2025
  */
 @Service
 @Scope(value = "prototype")
@@ -60,15 +60,12 @@ public class DataNtlmPassthru
 
     private WebDriver setDriver() throws MalformedURLException
     {
-        DesiredCapabilities cap = DesiredCapabilities.firefox();
-        cap.setBrowserName("firefox");
-        cap.setPlatform(Platform.WIN8);
-        cap.setCapability("marionette", true);
-        cap.setCapability("network.automatic-ntlm-auth.trusted-uris", tasProperties.getTestServerUrl());
+        FirefoxOptions options = new FirefoxOptions();
+        options.setCapability("network.automatic-ntlm-auth.trusted-uris", tasProperties.getTestServerUrl());
 
-        WebDriver driver = new RemoteWebDriver(new URL(String.format("%s/wd/hub", hub)), cap);
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-        driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
+        WebDriver driver = new RemoteWebDriver(new URL(String.format("%s/wd/hub", hub)), options);
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
 
         return driver;
     }
