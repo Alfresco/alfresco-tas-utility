@@ -1,12 +1,13 @@
 package org.alfresco.utility.network;
 
-import javax.annotation.PostConstruct;
 
+import jakarta.annotation.PostConstruct;
 import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.TasProperties;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 
 @Service
 public class JmxBuilder
