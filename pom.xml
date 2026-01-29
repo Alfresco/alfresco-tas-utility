@@ -355,13 +355,6 @@
             <version>${seleniumjava.version}</version>
         </dependency>
 
-        <!-- yandex -->
-        <dependency>
-            <groupId>ru.yandex.qatools.htmlelements</groupId>
-            <artifactId>htmlelements-java</artifactId>
-            <version>${yandex.qatools.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
