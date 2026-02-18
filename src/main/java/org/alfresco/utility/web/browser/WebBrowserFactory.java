@@ -20,7 +20,6 @@ import org.springframework.stereotype.Component;
  * Take a look on {@link ContextAwareParallelSampleTest} for a simple example on how to use it
  * 
  * @author Paul.Brodner
- * @updated By Swarnajit Adhikary
  */
 @Component
 public class WebBrowserFactory implements FactoryBean<WebBrowser>
