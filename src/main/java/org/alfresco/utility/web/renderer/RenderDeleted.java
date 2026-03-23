@@ -3,8 +3,11 @@ package org.alfresco.utility.web.renderer;
 import org.alfresco.utility.web.browser.WebBrowser;
 import org.alfresco.utility.web.annotation.PageObject;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
 
 /**
  * Render one element using selenium's expectedCondition.
@@ -16,13 +19,14 @@ import org.openqa.selenium.support.ui.WebDriverWait;
  * {code}
  * 
  * @author Paul.Brodner
+ * updated By Swarnajit Adhikary
  */
-public class RenderDeleted extends RenderElement
-{
+public class RenderDeleted extends RenderElement {
+
     @Override
-    public void doWork(By locator, WebBrowser browser, long timeOutInSeconds)
-    {
-        WebDriverWait wait = new WebDriverWait(browser, timeOutInSeconds);
-        wait.until(ExpectedConditions.stalenessOf(browser.findElement(locator)));
+    public void doWork(By locator, WebBrowser browser, long timeOutInSeconds) {
+        WebDriver driver = browser.getDriver();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeOutInSeconds));
+        wait.until(ExpectedConditions.stalenessOf(driver.findElement(locator)));
     }
 }

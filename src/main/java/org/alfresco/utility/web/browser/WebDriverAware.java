@@ -10,18 +10,15 @@ import org.alfresco.utility.web.HtmlPage;
 import org.openqa.selenium.support.PageFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import ru.yandex.qatools.htmlelements.loader.decorator.HtmlElementDecorator;
-import ru.yandex.qatools.htmlelements.loader.decorator.HtmlElementLocatorFactory;
-
 public abstract class WebDriverAware
 {
     protected WebBrowser browser;
-    
+
     public WebBrowser getBrowser()
     {
-        return browser;                
+        return browser;
     }
-    
+
     public void setBrowser(WebBrowser webBrowser)
     {
         if (webBrowser.equals(this.browser))
@@ -31,7 +28,7 @@ public abstract class WebDriverAware
         }
 
         this.browser = webBrowser;
-        PageFactory.initElements(new HtmlElementDecorator(new HtmlElementLocatorFactory(webBrowser)), this);
+        PageFactory.initElements(webBrowser.getDriver(), this);
 
         List<Field> allFields = getAllDeclaredFields(new LinkedList<Field>(), this.getClass());
         for (Field field : allFields)

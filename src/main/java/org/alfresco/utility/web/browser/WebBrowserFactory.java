@@ -3,8 +3,9 @@ package org.alfresco.utility.web.browser;
 import java.net.MalformedURLException;
 
 import org.alfresco.utility.TasProperties;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,29 +29,23 @@ public class WebBrowserFactory implements FactoryBean<WebBrowser>
     @Autowired
     TasProperties properties;
 
-    public WebBrowser getWebBrowser() throws Exception
-    {
-        WebBrowser webbrowser = null;
+    public WebBrowser getWebBrowser() throws Exception {
+        WebBrowser webBrowser;
 
-        if (properties.isGridEnabled())
-        {
-            webbrowser = new WebBrowser(getRemoteWebDriver(properties), properties);
+        if (properties.isGridEnabled()) {
+            // Remote execution on Selenium Grid
+            webBrowser = new WebBrowser(getRemoteWebDriver(properties), properties);
+        } else {
+            // Local execution
+            webBrowser = new WebBrowser(Browser.fromProperties(properties), properties);
         }
-        else
-        {
-            webbrowser = new WebBrowser(Browser.fromProperties(properties), properties);
-        }
-        //EventWebBrowserListener listener = new EventWebBrowserListener();
-        //webbrowser.register(listener);
 
-        //long default_wait = Long.valueOf(properties.getImplicitWait());
-        //webbrowser.manage().timeouts().implicitlyWait(default_wait, TimeUnit.SECONDS);
-        if(!properties.getBrowserName().toLowerCase().equals("chrome"))
-        {
-            if(!properties.isGridEnabled())
-            webbrowser.maximize();
+        // Maximize window for non-Chrome browsers when running locally
+        if (!properties.getBrowserName().equalsIgnoreCase("chrome") && !properties.isGridEnabled()) {
+            webBrowser.maximize();
         }
-        return webbrowser;
+
+        return webBrowser;
     }
 
     @Override
@@ -72,18 +67,38 @@ public class WebBrowserFactory implements FactoryBean<WebBrowser>
      * @return
      * @throws MalformedURLException
      */
-    private static RemoteWebDriver getRemoteWebDriver(TasProperties properties) throws MalformedURLException
-    {
-        LOG.info("Using RemoteWebDriver on Hub URL {}", properties.getGridUrl().toString());
+    private static RemoteWebDriver getRemoteWebDriver(TasProperties properties) throws MalformedURLException {
+        LOG.info("Using RemoteWebDriver on Hub URL {}", properties.getGridUrl());
 
-        DesiredCapabilities caps = new DesiredCapabilities(Browser.getBrowserFromProperties(properties).getCapabilities());
-        caps.setCapability("version", properties.getBrowserVersion());
-        caps.setCapability("platform", properties.getEnvPlatformName());
-        if(properties.getBrowserName().toLowerCase().equals("firefox"))
-        {
-            caps.setCapability(FirefoxOptions.FIREFOX_OPTIONS, Browser.setFirefoxOptions(properties));
+        String browserName = properties.getBrowserName().toLowerCase();
+        RemoteWebDriver remoteWebDriver;
+
+        switch (browserName) {
+            case "firefox":
+                FirefoxOptions firefoxOptions = Browser.setFirefoxOptions(properties);
+                firefoxOptions.setCapability("browserVersion", properties.getBrowserVersion());
+                firefoxOptions.setCapability("platformName", properties.getEnvPlatformName());
+                remoteWebDriver = new RemoteWebDriver(properties.getGridUrl(), firefoxOptions);
+                break;
+
+            case "chrome":
+                ChromeOptions chromeOptions = new ChromeOptions();
+                chromeOptions.setCapability("browserVersion", properties.getBrowserVersion());
+                chromeOptions.setCapability("platformName", properties.getEnvPlatformName());
+                remoteWebDriver = new RemoteWebDriver(properties.getGridUrl(), chromeOptions);
+                break;
+
+            case "edge":
+                EdgeOptions edgeOptions = new EdgeOptions();
+                edgeOptions.setCapability("browserVersion", properties.getBrowserVersion());
+                edgeOptions.setCapability("platformName", properties.getEnvPlatformName());
+                remoteWebDriver = new RemoteWebDriver(properties.getGridUrl(), edgeOptions);
+                break;
+
+            default:
+                throw new IllegalArgumentException("Unsupported browser: " + properties.getBrowserName());
         }
-        RemoteWebDriver remoteWebDriver = new RemoteWebDriver(properties.getGridUrl(), caps);
+
         return remoteWebDriver;
     }
 
@@ -92,10 +107,4 @@ public class WebBrowserFactory implements FactoryBean<WebBrowser>
     {
         return getWebBrowser();
     }
-
-    public void quit() throws Exception
-    {
-        getWebBrowser().quit();
-    }
-
 }
