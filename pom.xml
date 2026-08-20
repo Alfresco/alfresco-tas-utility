@@ -30,7 +30,7 @@
         <suiteXmlFile>src/test/resources/unit-test.xml</suiteXmlFile>
         <testNG.version>7.6.1</testNG.version>
         <dataPrep.version>2.6</dataPrep.version>
-        <dependency.log4j.version>2.19.0</dependency.log4j.version>
+        <dependency.log4j.version>2.25.5</dependency.log4j.version>
         <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
         <maven-remote-resources.version>1.7.0</maven-remote-resources.version>
         <extentreports.version>2.41.2</extentreports.version>
