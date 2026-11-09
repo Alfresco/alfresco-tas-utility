@@ -4,7 +4,7 @@
     <groupId>org.alfresco.tas</groupId>
     <artifactId>utility</artifactId>
     <name>alfresco-tas-utility</name>
-    <version>6.0.3-SNAPSHOT</version>
+    <version>6.0.3-A.1</version>
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-super-pom</artifactId>
