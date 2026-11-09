@@ -47,7 +47,7 @@ As a high level overview, this project contains a couple of functionalities usef
 
 (take a look also on [this](https://git.alfresco.com/tas/alfresco-tas-utility/wikis/Features) page: we will try to keep it up to date with the latest features based on each release)
 
-Using a centralized location (Nexus), everyone will be able to reuse this individual interfaces in their own projects, adding new functionalities, extending also the automation core functionalities - that will be shared across teams. 
+Using a centralized Maven repository, everyone will be able to reuse this individual interfaces in their own projects, adding new functionalities, extending also the automation core functionalities - that will be shared across teams.
 
 **[Back to Top ^](#table-of-contents)**
 
@@ -55,66 +55,15 @@ Using a centralized location (Nexus), everyone will be able to reuse this indivi
 (tested on unix/non-unix destribution)
 * [Java 17](http://www.oracle.com/technetwork/java/javase/downloads/index.html).
 * [Maven 3.3](https://maven.apache.org/download.cgi) installed and configure according to [Windows OS](https://maven.apache.org/guides/getting-started/windows-prerequisites.html) or [Mac OS](https://maven.apache.org/install.html).
-* Configure Maven to use Alfresco alfresco-internal repository following this [Guide](https://ts.alfresco.com/share/page/site/eng/wiki-page?title=Maven_Setup).
-We are using also the internal-snapshot repository, so here it is the full settings.xml file
-```
-<settings>
-  <profiles>
-    <profile>
-      <id>alfresco-internal</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <repositories>
-        <repository>
-          <id>alfresco-internal</id>
-          <releases>
-            <enabled>true</enabled>
-          </releases>
-          <snapshots>
-            <enabled>true</enabled>
-          </snapshots>
-          <name>Alfresco Internal Repository</name>
-          <url>https://artifacts.alfresco.com/nexus/content/groups/internal/</url>
-        </repository>
-        <repository>
-            <id>alfresco-internal-snapshots</id>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <name>Alfresco Internal Snapshots Repository</name>
-            <url>https://artifacts.alfresco.com/nexus/content/groups/internal-snapshots/</url>
-        </repository>
-      </repositories>
-      <pluginRepositories>
-        <pluginRepository>
-          <id>alfresco-internal</id>
-          <name>Alfresco Internal Repository</name>
-          <url>https://artifacts.alfresco.com/nexus/content/groups/public</url>
-        </pluginRepository>
-      </pluginRepositories>
-    </profile>
-</profiles>
-  <servers>
-      <server>
-        <id>alfresco-internal</id>
-        <username>Your_LDAP_Login</username>
-	    <password>Your_LDAP_Password</password>      
-      </server>
-      <server>
-          <id>alfresco-internal-snapshots</id>
-          <username>Your_LDAP_Login</username>
-	      <password>Your_LDAP_Password</password>  
-     </server>
-  </servers>
-</settings>
-```
+* Dependencies and build plugins resolve from Maven Central and the anonymous
+[Alfresco Public Repository](https://artifacts.hyland.dev/public/alfresco-public/maven/).
+Local builds do not need repository credentials. The POM disables the snapshot
+repository inherited from its parent.
+CI uses [.ci.settings.xml](.ci.settings.xml) to mirror only Maven Central through
+`cic-ext-pull-through`, authenticated by `cloudsmith-auth`; `alfresco-public`
+remains anonymous. Do not use CI settings for an anonymous local build.
 
 * Your favorite IDE as [Eclipse](https://eclipse.org/downloads/) or [InteliJ](https://www.jetbrains.com/idea).
-* Access to [Nexus](https://nexus.alfresco.com/nexus/) repository.
 * Access to Git [TAS](https://git.alfresco.com/tas/) repository.
 * Git client for your operating system. (we recommend [SourceTree](https://www.sourcetreeapp.com) - use your google account for initial setup).
 * Getting familiar with [Basic Git Commands](http://docs.gitlab.com/ee/gitlab-basics/basic-git-commands.html).
@@ -273,7 +222,9 @@ In your maven project, in your pom.xml file add the following dependency
 			<version>${tas.utility.version}</version>
 </dependency>
 ```
-(where ${tas.utility.version} is the latest verion released on [Nexus](https://artifacts.alfresco.com/nexus/content/groups/internal) internal)
+(where ${tas.utility.version} is a released version available through the
+[Alfresco Public Repository](https://artifacts.hyland.dev/public/alfresco-public/maven/);
+new snapshot versions are not published)
 You can also take a look on our [changelog](docs/CHANGELOG.md) page for more details.
 
 **_NOTE_:** _you can also browse the [samples](samples) folder for simple maven projects that is consuming this library. Just import this existing Maven project in your IDE (if you are using Eclipse follow [this](http://help.eclipse.org/kepler/index.jsp?topic=%2Forg.eclipse.platform.doc.user%2Ftasks%2Ftasks-importproject.htm) guide)_
@@ -641,11 +592,38 @@ As contributors and maintainers of this project, we pledge to respect all people
 
 ## Releasing
 
-Any commit done on this project should be automatically executed by [TAS Build Plan](https://bamboo.alfresco.com/bamboo/browse/TAS-TAS)
-If the build passes, then you didn't broke anything.
+The [CI workflow](.github/workflows/ci.yml) builds pull requests and pushes to
+`master` and `release/**`. Successful builds on `master` automatically release
+unless the commit message contains `[no-release]`. The workflow can also be
+started manually; releases remain restricted to `master`.
 
-If you want to perform a release, open [TAS-Utility](https://bamboo.alfresco.com/bamboo/browse/TAS-UT) Bamboo Build.
-Run the Default stage and if it passes, then manually perform the Release stage (this will auto-increment the version in pom.xml) 
+This is a public repository. All Maven releases use the same public destination:
+
+| Version | Repository |
+|---------|------------|
+| GA, M, and A releases, such as `6.0.4-A.1` | `alfresco-community-releases` |
+
+No separate prerelease profile is needed. The existing Maven release process
+still creates the release tag and advances the next development version.
+Snapshot artifacts are not published.
+
+CI uses `cloudsmith-auth` from `alfresco-build-tools` v19.11.0 to obtain temporary
+`CLOUDSMITH_USERNAME` and `CLOUDSMITH_API_KEY` credentials through GitHub OIDC.
+The workflow requires `id-token: write`, the organization variable
+`CLOUDSMITH_NAMESPACE`, and a service account for
+`Alfresco/alfresco-tas-utility` with read access to `cic-ext-pull-through` and write
+access to `alfresco-community-releases`. Uploads use the
+`alfresco-releases` server in [.ci.settings.xml](.ci.settings.xml); no stored
+Maven repository credentials are required in GitHub. The existing
+`BOT_GITHUB_USERNAME`, `BOT_GITHUB_EMAIL`, and `BOT_GITHUB_TOKEN` secrets are
+still used for Git release commits and tags.
+
+Pull requests from forks are not supported by this CI authentication setup:
+GitHub does not provide them with the required OIDC token.
+
+Upload URLs use `https://maven.cloudsmith.io/hyland/<repository>/` until the DNS
+record for `maven.artifacts.hyland.dev` exists. `CLOUDSMITH_NAMESPACE` configures
+OIDC only; the upload workspace is fixed to `hyland`.
 
 ## License
 

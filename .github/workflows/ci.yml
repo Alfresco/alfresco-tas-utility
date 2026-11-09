@@ -11,10 +11,54 @@ on:
       - release/**
   workflow_dispatch:
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
-  build_and_release:
-    name: "Build and Release"
-    uses: Alfresco/alfresco-build-tools/.github/workflows/build-and-release-maven.yml@v12.4.2
-    secrets: inherit
-    with:
-      release-branches: "^master$"
+  build:
+    name: "Build"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@482401ef42e6503cfa54d5873f1a768a0ecb3e0e # v19.11.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@482401ef42e6503cfa54d5873f1a768a0ecb3e0e # v19.11.0
+        with:
+          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
+      - name: "Build and Test"
+        run: mvn -B -V install
+
+  release:
+    name: "Release"
+    runs-on: ubuntu-latest
+    needs: build
+    if: >-
+      github.event_name != 'pull_request' &&
+      github.ref == 'refs/heads/master' &&
+      !contains(github.event.head_commit.message, '[no-release]')
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@482401ef42e6503cfa54d5873f1a768a0ecb3e0e # v19.11.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@482401ef42e6503cfa54d5873f1a768a0ecb3e0e # v19.11.0
+        with:
+          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
+      - uses: Alfresco/alfresco-build-tools/.github/actions/configure-git-author@482401ef42e6503cfa54d5873f1a768a0ecb3e0e # v19.11.0
+        with:
+          username: ${{ secrets.BOT_GITHUB_USERNAME }}
+          email: ${{ secrets.BOT_GITHUB_EMAIL }}
+      - name: "Build"
+        run: mvn -B -V install -DskipTests
+      - name: "Release"
+        env:
+          GITHUB_USERNAME: ${{ secrets.BOT_GITHUB_USERNAME }}
+          GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
+        run: |
+          mvn -B \
+            -DscmCommentPrefix="[maven-release-plugin][skip ci] " \
+            -Dusername="$GITHUB_USERNAME" \
+            -Dpassword="$GITHUB_TOKEN" \
+            -DskipTests \
+            -Darguments="-DskipTests" \
+            release:clean release:prepare release:perform

@@ -1,10 +1,23 @@
 <settings>
-    <!-- required to push artifacts to repositories -->
+    <mirrors>
+        <mirror>
+            <id>cic-ext-pull-through</id>
+            <name>Maven Central</name>
+            <url>https://artifacts.hyland.dev/basic/cic-ext-pull-through/maven/</url>
+            <mirrorOf>central</mirrorOf>
+        </mirror>
+    </mirrors>
+
     <servers>
         <server>
-            <id>alfresco-public</id>
-            <username>${env.MAVEN_USERNAME}</username>
-            <password>${env.MAVEN_PASSWORD}</password>
+            <id>cic-ext-pull-through</id>
+            <username>${env.CLOUDSMITH_USERNAME}</username>
+            <password>${env.CLOUDSMITH_API_KEY}</password>
+        </server>
+        <server>
+            <id>alfresco-releases</id>
+            <username>${env.CLOUDSMITH_USERNAME}</username>
+            <password>${env.CLOUDSMITH_API_KEY}</password>
         </server>
     </servers>
 </settings>
