@@ -607,23 +607,13 @@ No separate prerelease profile is needed. The existing Maven release process
 still creates the release tag and advances the next development version.
 Snapshot artifacts are not published.
 
-CI uses `cloudsmith-auth` from `alfresco-build-tools` v19.11.0 to obtain temporary
-`CLOUDSMITH_USERNAME` and `CLOUDSMITH_API_KEY` credentials through GitHub OIDC.
-The workflow requires `id-token: write`, the organization variable
-`CLOUDSMITH_NAMESPACE`, and a service account for
-`Alfresco/alfresco-tas-utility` with read access to `cic-ext-pull-through` and write
-access to `alfresco-community-releases`. Uploads use the
-`alfresco-releases` server in [.ci.settings.xml](.ci.settings.xml); no stored
-Maven repository credentials are required in GitHub. The existing
+CI authenticates through GitHub OIDC, so no stored Maven repository credentials
+are required in GitHub. The existing
 `BOT_GITHUB_USERNAME`, `BOT_GITHUB_EMAIL`, and `BOT_GITHUB_TOKEN` secrets are
 still used for Git release commits and tags.
 
 Pull requests from forks are not supported by this CI authentication setup:
 GitHub does not provide them with the required OIDC token.
-
-Upload URLs use `https://maven.cloudsmith.io/hyland/<repository>/` until the DNS
-record for `maven.artifacts.hyland.dev` exists. `CLOUDSMITH_NAMESPACE` configures
-OIDC only; the upload workspace is fixed to `hyland`.
 
 ## License
 

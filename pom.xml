@@ -58,6 +58,7 @@
     <distributionManagement>
         <repository>
             <id>alfresco-releases</id>
+            <name>Alfresco Community Releases</name>
             <!-- TODO: switch to maven.artifacts.hyland.dev once its DNS record exists -->
             <url>https://maven.cloudsmith.io/hyland/alfresco-community-releases/</url>
         </repository>
